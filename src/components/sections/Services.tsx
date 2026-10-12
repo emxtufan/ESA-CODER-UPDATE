@@ -11,17 +11,21 @@ import {slugify} from '@/lib/slugify';
 import ShimmerMask from '@/components/services/ShimmerMask';
 import {SERVICES} from '@/components/services/servicesData';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Services");
+
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 const PLATFORMS = [
-  {name: 'Webflow', src: '/platforms/webflow.png'},
-  {name: 'WordPress', src: '/platforms/wordpress.png'},
-  {name: 'Wix', src: '/platforms/wix.png'},
-  {name: 'Framer', src: '/platforms/framer.png'},
-  {name: 'Hostinger', src: '/platforms/hostinger.png'},
-  {name: 'Squarespace', src: '/platforms/squarespace.png'},
-  {name: 'Shopify', src: '/platforms/shopify.png'},
-  {name: 'Figma', src: '/platforms/figma.png'},
+  {name: $t("webflow"), src: '/platforms/webflow.png'},
+  {name: $t("wordpress"), src: '/platforms/wordpress.png'},
+  {name: $t("wix"), src: '/platforms/wix.png'},
+  {name: $t("framer"), src: '/platforms/framer.png'},
+  {name: $t("hostinger"), src: '/platforms/hostinger.png'},
+  {name: $t("squarespace"), src: '/platforms/squarespace.png'},
+  {name: $t("shopify"), src: '/platforms/shopify.png'},
+  {name: $t("figma"), src: '/platforms/figma.png'},
 ];
 
 export default function Services() {
@@ -105,22 +109,22 @@ export default function Services() {
             id="services-heading"
             className="font-display text-[clamp(38px,4.6vw,64px)] leading-[1] font-medium tracking-h1"
           >
-            Elevate your
+            {$t("elevate-your")}
             <br />
-            digital footprint.
+            {$t("digital-footprint")}
           </h2>
           <div className="flex shrink-0 flex-wrap gap-3">
             <Link
               href="/services"
               className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
             >
-              <RollText text="View all services" />
+              <RollText text={$t("view-all-services")} />
             </Link>
             <Link
               href="/contact"
               className="inline-flex items-center rounded-full border border-transparent bg-fg/15 px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:bg-fg/25"
             >
-              <RollText text="Start a project" />
+              <RollText text={$t("start-a-project")} />
             </Link>
           </div>
         </div>
@@ -170,20 +174,19 @@ export default function Services() {
               <source src="/platform-starfield.mp4" type="video/mp4" />
             </video>
             <h3 className="font-display text-[clamp(28px,2.6vw,36px)] leading-[1.1] font-medium tracking-h2 text-white">
-              Platform flexibility.
+              {$t("platform-flexibility")}
               <br />
-              Design consistency.
+              {$t("design-consistency")}
             </h3>
             <p className="mt-3 max-w-[568px] text-lead leading-[1.6] text-white/75">
-              No matter the platform, our design language stays{' '}
-              <span className="text-white">consistent, refined, responsive,</span> and built to
-              perform.
+              {$t("no-matter-the-platform-our-design")}{' '}
+              <span className="text-white">{$t("consistent-refined-responsive")}</span>{$t("and-built-to-perform")}
             </p>
             <Link
               href="/works"
               className="mt-5 inline-flex items-center rounded-[8px] bg-white/20 px-[15px] py-[10px] text-[14px] leading-none font-medium text-white transition-colors hover:bg-white/30"
             >
-              <RollText text="See our work" />
+              <RollText text={$t("see-our-work")} />
             </Link>
           </div>
           <ul className="grid grid-cols-4 grid-rows-2 gap-px overflow-hidden rounded-[12px] border border-line bg-line sm:min-h-[294px]">
@@ -203,7 +206,7 @@ export default function Services() {
                 {'Wix' === platform.name && (
                   <img
                     src="/platforms/wix-partner.png"
-                    alt="Wix Legend Partner"
+                    alt={$t("wix-legend-partner")}
                     className="absolute right-2 bottom-1 size-[32px] origin-center rotate-[25deg] object-contain transition-transform duration-[400ms] ease-out group-hover/cell:scale-[4] group-hover/cell:rotate-0 sm:right-4 sm:bottom-[5px] sm:size-[46px]"
                     loading="lazy"
                     decoding="async"

@@ -4,6 +4,11 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import RollText from '@/components/RollText';
 import ServicesBackdrop from '@/components/services/ServicesBackdrop';
 
+import {text} from '@/lib/text';
+import RecentWork from '@/components/works/RecentWork';
+
+const $t = text("/services/ux-centric-strategy");
+
 // Converted 1:1 from the RSC payload of /services/ux-centric-strategy.
 export default function Page_services__ux_centric_strategy() {
   return (
@@ -25,11 +30,11 @@ export default function Page_services__ux_centric_strategy() {
                 <path d="m12 19-7-7 7-7" />
               </svg>
             </span>
-            <RollText text="All services" />
+            <RollText text={$t("all-services")} />
           </Link>
           <HeadingReveal className="mt-10">
             <h1 className="font-display text-[clamp(40px,7vw,104px)] leading-[1] font-medium tracking-[-0.05em]">
-              {"UX Centric\nStrategy"}
+              {$t("ux-centric-strategy")}
             </h1>
           </HeadingReveal>
         </header>
@@ -37,152 +42,108 @@ export default function Page_services__ux_centric_strategy() {
           <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[1fr_0.78fr]">
             <div className="max-w-[660px]">
               <p className="text-[clamp(20px,2vw,26px)] leading-[1.5] font-medium text-fg">
-                Design grounded in user behavior and intent. We ensure every page feels intuitive, logical, and conversion-ready.
+                {$t("design-grounded-in-user-behavior-and")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Most websites that fail do so before a single visual decision is made. The navigation is organised around how the company is structured rather than what visitors are looking for, the homepage explains the business instead of the offer, and the route from arriving to enquiring is longer than anyone intended. No amount of design rescues a structure that works against the reader.
+                {$t("most-websites-that-fail-do-so")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                So structure comes first. We establish who is arriving, what they need to be confident about before they act, and what the shortest honest path to that action is. Navigation, page order and content hierarchy follow from that, and they are agreed before layouts are drawn — changing a sitemap costs an afternoon, changing it after twenty pages are designed costs a great deal more.
+                {$t("so-structure-comes-first-we-establish")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Wireframes are used to settle those questions without the distraction of finished visuals. Seeing a page as blocks makes it obvious when a section is doing nothing, when the call to action is below the point most people stop reading, or when three things are competing to be the most important element on screen.
+                {$t("wireframes-are-used-to-settle-those")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Every page is planned mobile-first, because that is where most of the decisions get made and because a layout that survives a narrow screen is almost always the clearer one. What is essential has to be identified in order to fit, and that discipline improves the desktop version too.
+                {$t("every-page-is-planned-mobile-first")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Accessibility is treated as part of the structure rather than an audit at the end: a sensible heading order, meaningful link text, real focus states, and a page that can be operated from a keyboard. That work overlaps almost entirely with what search engines reward, so it is rarely a trade-off.
+                {$t("accessibility-is-treated-as-part-of")}
               </p>
             </div>
             <div className="relative h-fit rounded-[16px] border border-fg/12 bg-bg/30 p-7 backdrop-blur-[14px] lg:sticky lg:top-[104px]">
               <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-text-primary) 40%, transparent) 50%, transparent 100%)" }} />
               <h2 className="text-[12px] leading-none font-medium tracking-[0.14em] text-fg-subtle uppercase">
-                What’s included
+                {$t("what-s-included")}
               </h2>
               <ul className="mt-6 flex flex-col gap-4">
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Content and navigation structure
+                  {$t("content-and-navigation-structure")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Wireframe and layout planning
+                  {$t("wireframe-and-layout-planning")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  CTA and user flow optimization
+                  {$t("cta-and-user-flow-optimization")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Accessibility and mobile-first design
+                  {$t("accessibility-and-mobile-first-design")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Sitemap agreed before any layouts are drawn
+                  {$t("sitemap-agreed-before-any-layouts-are")}
                 </li>
               </ul>
               <Link href="/contact" className="mt-7 flex h-11 items-center justify-center rounded-full bg-fg text-[14px] font-medium text-bg transition-opacity hover:opacity-90">
-                <RollText text="Start a project" />
+                <RollText text={$t("start-a-project")} />
               </Link>
             </div>
           </div>
         </section>
         <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
           <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
-            Recent work
+            {$t("recent-work")}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <Link data-reveal href="/works/4dolfins" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/54f06e115564feee03cc900ead225dd7.jpg" alt="4Dolfins" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                4Dolfins
-              </h3>
-            </Link>
-            <Link data-reveal href="/works/orvel" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/eace44ddc70352a3c3d0d1ea71b9fcb9.jpg" alt="Orvel" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                Orvel
-              </h3>
-            </Link>
-            <Link data-reveal href="/works/lasada-pippen" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/6c273acf295ebe4fcd8cfcb2a86bda56.jpg" alt="Lasada Pippen" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                Lasada Pippen
-              </h3>
-            </Link>
+            <RecentWork />
           </div>
         </RevealBatch>
         <section className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
           <div className="flex flex-col items-start gap-6 rounded-[12px] border border-fg/12 bg-bg/30 p-8 backdrop-blur-[14px] md:flex-row md:items-center md:justify-between md:p-10">
             <div>
               <h2 className="font-display text-[clamp(24px,2.6vw,34px)] leading-[1.15] font-medium tracking-h3">
-                Need this for your project?
+                {$t("need-this-for-your-project")}
               </h2>
               <p className="mt-2 text-body-s text-fg-muted">
-                Tell us where you are and we will tell you what it takes.
+                {$t("tell-us-where-you-are-and")}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/contact" className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong">
-                <RollText text="Get in touch" />
+                <RollText text={$t("get-in-touch")} />
               </Link>
               <Link href="/services/performance-optimization" className="inline-flex items-center rounded-full border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface">
-                <RollText text={"Next: Performance\nOptimization"} />
+                <RollText text={$t("next-performance-optimization")} />
               </Link>
             </div>
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">
             <li>
               <Link href="/services/crafted-websites" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"Crafted\nWebsites"}
+                {$t("crafted-websites")}
               </Link>
             </li>
             <li>
               <Link href="/services/website-redesign" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"Website\nRedesign"}
+                {$t("website-redesign")}
               </Link>
             </li>
             <li>
               <Link href="/services/ecommerce-website-design" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"eCommerce\nWebsite Design"}
+                {$t("ecommerce-website-design")}
               </Link>
             </li>
           </ul>

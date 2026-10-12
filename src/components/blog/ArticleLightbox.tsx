@@ -3,6 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/blog/ArticleLightbox");
+
 export default function ArticleLightbox() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const [items, setItems] = useState<{ src: string; alt: string; caption: string }[]>([]);
@@ -75,7 +79,7 @@ export default function ArticleLightbox() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={current.alt || current.caption || 'Image'}
+      aria-label={current.alt || current.caption || $t("image")}
       className="vv-lightbox fixed inset-0 z-[350] flex flex-col"
       onClick={close}
     >
@@ -88,7 +92,7 @@ export default function ArticleLightbox() {
           type="button"
           onClick={close}
           autoFocus
-          aria-label="Close"
+          aria-label={$t("close")}
           className="vv-lightbox-btn grid size-9 place-items-center rounded-full"
         >
           <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -104,7 +108,7 @@ export default function ArticleLightbox() {
           <>
             <button
               type="button"
-              aria-label="Previous image"
+              aria-label={$t("previous-image")}
               onClick={(e) => {
                 e.stopPropagation();
                 step(-1);
@@ -117,7 +121,7 @@ export default function ArticleLightbox() {
             </button>
             <button
               type="button"
-              aria-label="Next image"
+              aria-label={$t("next-image")}
               onClick={(e) => {
                 e.stopPropagation();
                 step(1);
@@ -154,9 +158,9 @@ export default function ArticleLightbox() {
           </p>
         ) : null}
         <p className="mt-1 text-[11px]" style={{ color: 'var(--vv-text-subtle)' }}>
-          {zoomed ? 'Click the image to fit' : 'Click the image to zoom'}
-          {multiple ? ' · Arrow keys to browse' : ''}
-          {' · Esc to close'}
+          {zoomed ? $t("click-the-image-to-fit") : $t("click-the-image-to-zoom")}
+          {multiple ? $t("arrow-keys-to-browse") : ''}
+          {$t("esc-to-close")}
         </p>
       </div>
     </div>,

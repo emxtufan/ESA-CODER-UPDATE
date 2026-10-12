@@ -4,17 +4,21 @@ import gsap from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
 import {useGSAP} from '@gsap/react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/TechStack");
+
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const LOGOS = [
-  {name: 'Wix Studio', src: '/tech/wix-studio.webp', w: 720},
-  {name: 'Notion', src: '/tech/notion.webp', w: 348},
-  {name: 'Figma', src: '/tech/figma.webp', w: 433},
-  {name: 'Adobe', src: '/tech/adobe.webp', w: 455},
-  {name: 'Claude', src: '/tech/claude.svg', w: 550},
-  {name: 'Framer', src: '/tech/framer.svg', w: 446},
-  {name: 'Blender', src: '/tech/blender.webp', w: 447},
-  {name: 'Google Analytics', src: '/tech/analytics.webp', w: 489},
+  {name: $t("wix-studio"), src: '/tech/wix-studio.webp', w: 720},
+  {name: $t("notion"), src: '/tech/notion.webp', w: 348},
+  {name: $t("figma"), src: '/tech/figma.webp', w: 433},
+  {name: $t("adobe"), src: '/tech/adobe.webp', w: 455},
+  {name: $t("claude"), src: '/tech/claude.svg', w: 550},
+  {name: $t("framer"), src: '/tech/framer.svg', w: 446},
+  {name: $t("blender"), src: '/tech/blender.webp', w: 447},
+  {name: $t("google-analytics"), src: '/tech/analytics.webp', w: 489},
 ];
 
 const MASK = 'linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)';
@@ -44,7 +48,7 @@ export default function TechStack() {
   return (
     <section
       ref={sectionRef}
-      aria-label="Tools and platforms we build with"
+      aria-label={$t("tools-and-platforms-we-build-with")}
       className="px-6 py-[clamp(40px,5vw,72px)] md:px-8"
     >
       <div

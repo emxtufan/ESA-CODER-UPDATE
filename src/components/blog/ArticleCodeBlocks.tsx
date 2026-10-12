@@ -1,6 +1,10 @@
 // module 7338
 import { useEffect } from 'react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/blog/ArticleCodeBlocks");
+
 const COPY_ICON =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>';
 
@@ -43,7 +47,7 @@ export default function ArticleCodeBlocks() {
       button.type = 'button';
       button.className = 'vv-code-copy';
       button.innerHTML = COPY_ICON;
-      button.title = 'Copy code';
+      button.title = $t("copy-code");
       button.setAttribute('aria-label', 'Copy code to clipboard');
       button.addEventListener('click', async () => {
         const text = (pre.querySelector('code') ?? pre).textContent ?? '';

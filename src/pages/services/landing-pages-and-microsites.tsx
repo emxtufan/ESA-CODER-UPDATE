@@ -4,6 +4,11 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import RollText from '@/components/RollText';
 import ServicesBackdrop from '@/components/services/ServicesBackdrop';
 
+import {text} from '@/lib/text';
+import RecentWork from '@/components/works/RecentWork';
+
+const $t = text("/services/landing-pages-and-microsites");
+
 // Converted 1:1 from the RSC payload of /services/landing-pages-and-microsites.
 export default function Page_services__landing_pages_and_microsites() {
   return (
@@ -25,11 +30,11 @@ export default function Page_services__landing_pages_and_microsites() {
                 <path d="m12 19-7-7 7-7" />
               </svg>
             </span>
-            <RollText text="All services" />
+            <RollText text={$t("all-services")} />
           </Link>
           <HeadingReveal className="mt-10">
             <h1 className="font-display text-[clamp(40px,7vw,104px)] leading-[1] font-medium tracking-[-0.05em]">
-              {"Landing Pages\n& Microsites"}
+              {$t("landing-pages-microsites")}
             </h1>
           </HeadingReveal>
         </header>
@@ -37,158 +42,114 @@ export default function Page_services__landing_pages_and_microsites() {
           <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[1fr_0.78fr]">
             <div className="max-w-[660px]">
               <p className="text-[clamp(20px,2vw,26px)] leading-[1.5] font-medium text-fg">
-                Focused, fast-loading pages created to capture attention and drive conversions. Perfect for campaigns, events, or single service promotions.
+                {$t("focused-fast-loading-pages-created-to")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                A landing page has one job, and every element on it either serves that job or works against it. That is what separates it from a homepage: no navigation to elsewhere, no secondary offers, no invitation to browse. One argument, made in the order someone needs to hear it, ending in one action.
+                {$t("a-landing-page-has-one-job")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                These earn their place when traffic is being bought or sent deliberately — an ad campaign, a launch, a conference, a partnership, a single service you want to sell without the rest of the business competing for attention. Sending paid traffic to a general homepage wastes a measurable share of it, because the visitor has to work out for themselves which part of the page is about the thing they clicked.
+                {$t("these-earn-their-place-when-traffic")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Speed is not a nicety here, it is the economics. Every second of load time on a paid campaign is spend you have already committed and visitors you no longer have. These pages are built lean: minimal scripts, images sized and compressed for the layout, fonts loaded so text is readable immediately rather than after a delay.
+                {$t("speed-is-not-a-nicety-here")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                The structure follows the decision rather than the org chart. What it is, who it is for, what it costs or what it takes, what proof exists, what objection remains, and then the action — with the call to action repeated at the points where someone is actually ready to take it rather than only at the bottom.
+                {$t("the-structure-follows-the-decision-rather")}
               </p>
               <p className="mt-5 text-lead leading-[1.75] text-fg-muted">
-                Analytics and conversion tracking are configured before launch, so you can see what the page did rather than guess. Where you want to test a headline, an offer or a layout, the page is built so a variant can be run without rebuilding it.
+                {$t("analytics-and-conversion-tracking-are-configured")}
               </p>
             </div>
             <div className="relative h-fit rounded-[16px] border border-fg/12 bg-bg/30 p-7 backdrop-blur-[14px] lg:sticky lg:top-[104px]">
               <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-text-primary) 40%, transparent) 50%, transparent 100%)" }} />
               <h2 className="text-[12px] leading-none font-medium tracking-[0.14em] text-fg-subtle uppercase">
-                What’s included
+                {$t("what-s-included")}
               </h2>
               <ul className="mt-6 flex flex-col gap-4">
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  1 custom landing page
+                  {$t("1-custom-landing-page")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Optimized content structure
+                  {$t("optimized-content-structure")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Responsive design
+                  {$t("responsive-design")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Conversion-focused layout
+                  {$t("conversion-focused-layout")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Analytics and tracking integration
+                  {$t("analytics-and-tracking-integration")}
                 </li>
                 <li className="flex gap-3 text-[15px] leading-[1.5] text-fg-strong">
                   <svg viewBox="0 0 24 24" className="mt-[3px] size-[15px] shrink-0 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="m5 13 4 4L19 7" />
                   </svg>
-                  Built lean for paid traffic
+                  {$t("built-lean-for-paid-traffic")}
                 </li>
               </ul>
               <Link href="/contact" className="mt-7 flex h-11 items-center justify-center rounded-full bg-fg text-[14px] font-medium text-bg transition-opacity hover:opacity-90">
-                <RollText text="Start a project" />
+                <RollText text={$t("start-a-project")} />
               </Link>
             </div>
           </div>
         </section>
         <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
           <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
-            Recent work
+            {$t("recent-work")}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <Link data-reveal href="/works/4dolfins" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/54f06e115564feee03cc900ead225dd7.jpg" alt="4Dolfins" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                4Dolfins
-              </h3>
-            </Link>
-            <Link data-reveal href="/works/orvel" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/eace44ddc70352a3c3d0d1ea71b9fcb9.jpg" alt="Orvel" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                Orvel
-              </h3>
-            </Link>
-            <Link data-reveal href="/works/lasada-pippen" className="group relative rounded-[12px] border border-fg/12 bg-bg/30 p-[10px] pb-4 backdrop-blur-[14px]">
-              <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
-              <div className="relative overflow-hidden rounded-[6px] bg-surface" style={{ aspectRatio: "4 / 3" }}>
-                <img src="/media/6c273acf295ebe4fcd8cfcb2a86bda56.jpg" alt="Lasada Pippen" className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
-                <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-                  <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
-                    View Project
-                  </span>
-                </span>
-              </div>
-              <h3 className="mt-4 px-3 font-display text-[20px] leading-[1.2] font-medium tracking-h3">
-                Lasada Pippen
-              </h3>
-            </Link>
+            <RecentWork />
           </div>
         </RevealBatch>
         <section className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
           <div className="flex flex-col items-start gap-6 rounded-[12px] border border-fg/12 bg-bg/30 p-8 backdrop-blur-[14px] md:flex-row md:items-center md:justify-between md:p-10">
             <div>
               <h2 className="font-display text-[clamp(24px,2.6vw,34px)] leading-[1.15] font-medium tracking-h3">
-                Need this for your project?
+                {$t("need-this-for-your-project")}
               </h2>
               <p className="mt-2 text-body-s text-fg-muted">
-                Tell us where you are and we will tell you what it takes.
+                {$t("tell-us-where-you-are-and")}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/contact" className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong">
-                <RollText text="Get in touch" />
+                <RollText text={$t("get-in-touch")} />
               </Link>
               <Link href="/services/consistent-identity" className="inline-flex items-center rounded-full border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface">
-                <RollText text={"Next: Consistent\nIdentity"} />
+                <RollText text={$t("next-consistent-identity")} />
               </Link>
             </div>
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">
             <li>
               <Link href="/services/crafted-websites" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"Crafted\nWebsites"}
+                {$t("crafted-websites")}
               </Link>
             </li>
             <li>
               <Link href="/services/website-redesign" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"Website\nRedesign"}
+                {$t("website-redesign")}
               </Link>
             </li>
             <li>
               <Link href="/services/ecommerce-website-design" className="inline-flex rounded-full border border-line px-4 py-2 text-body-s text-fg-muted transition-colors hover:border-line-strong hover:text-fg">
-                {"eCommerce\nWebsite Design"}
+                {$t("ecommerce-website-design")}
               </Link>
             </li>
           </ul>

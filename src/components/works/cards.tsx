@@ -5,6 +5,10 @@ import BadgeImage from '@/components/BadgeImage';
 import ShineBorder from '@/components/ShineBorder';
 import {mediaSrcSet} from '@/lib/media';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/works/cards");
+
 export function CardGrid({children, mobileColumns = 2}: any) {
   return (
     <div className="mx-auto max-w-[1425px] px-4 pb-[clamp(80px,10vw,140px)] md:px-8">
@@ -24,7 +28,7 @@ export function ProjectCard({
   sub,
   action,
   actionHref,
-  overlay = 'View Project',
+  overlay = $t("view-project"),
   meta,
   aspect = '4 / 3',
   focus = 'top',

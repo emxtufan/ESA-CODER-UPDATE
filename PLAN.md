@@ -62,7 +62,35 @@ același DOM/clase, același CSS compilat, aceleași animații (GSAP 3.15 + Spli
 - [x] Verificare: SSR pe fiecare pagină vs. HTML original (98,6–99,5%, diferențe doar din harness), test CDP în Edge:
       15 rute încărcate direct + navigare prin click + history.back, fără erori JS
 
+## Etapa 4 — texte centralizate
+- [x] `source_data.json` (rădăcina proiectului): ~3000 de texte în 98 de scope-uri (pagini + componente), plus titlurile paginilor și lista de țări
+- [x] Codemod pe AST TypeScript (`%TEMP%v	ools\extract_texts.mjs`): textele din JSX, atributele text, datele (title/name/quote…) și HTML-ul articolelor → `$t('cheie')`; accesor în `src/lib/text.ts`
+- [x] Verificat: toate cele 3567 de chei există, nicio intrare nefolosită; HTML-ul randat al celor 70 de pagini e identic byte cu byte cu cel de dinainte; navigare + formular OK
+- Rămase în cod (nu sunt texte afișate direct): harta fus orar → țară (`timeZoneCountries.ts`, folosită la preselectare), JSON-LD din pagini, meta-urile din `index.html`
+
+## Etapa 5 — admin
+- [x] `/admin` (shadcn/Apple): secțiune → imagini → texte; parolă (ADMIN_PASSWORD sau generată în data/), sesiune HMAC 7 zile
+- [x] Producție: textele vin din `/content.js` (fișierul live), deci editările apar fără rebuild; imaginile se înlocuiesc pe loc
+- [x] Admin arată doar textele vizibile (`scripts/admin-index.mjs` → `server/admin-visible.json`)
+
+## Etapa 6 — colecții
+- Decizie: conținutul repetabil devine colecții în `source_data.json` → `_collections`: projects, testimonials,
+  posts, postCategories, templates, faqs, pages (pagini noi). Rute dinamice `/works/:slug`, `/blog/:slug`,
+  `/blog/category/:key`, `/:slug` (`src/lib/dynamicRoutes.ts` + `server/routes.mjs`), template-uri în `src/templates/`.
+- Schema pentru admin per colecție: `server/schema/<nume>.json`.
+- `source_data.json` se modifică din scripturi doar prin `scripts/data-merge.mjs` (lock + scriere atomică).
+- Verificare: `scripts/ssr-check.mjs` randează prin router; referința dinainte = %TEMP%vase2 (70 de pagini, deterministă).
+- Backup înainte de etapă: %TEMP%vackup-before-collections.zip
+- [x] proiecte (40) + recenzii (3) · [x] blog: 7 articole + 2 categorii · [x] template-uri (24), FAQ (6), pagini noi · [x] admin colecții
+- [x] integrare: JSON-LD FAQ/recenzii din colecții, „Recent work” din servicii din colecție, câmpuri goale ascunse în template-ul de proiect
+- [x] verificat: 70/70 pagini identice byte cu byte cu referința; tsc + build OK; test în browser: proiect nou adăugat din admin → pagină 200 + apare în /works; API: pagină nouă + articol nou → 200; adresă rezervată refuzată
+- Nu sunt colecții (rămân editabile doar ca texte/imagini): cele 10 servicii (ilustrații unice), About, Contact, Privacy, Terms
+
 ## Probleme deschise
-- Formularul de contact face POST la `/api/contact` (ca originalul) — nu există backend; trimiterea afișează eroarea.
 - Modulul 5347 (conversie Google Ads pe thank-you) și 4438 (GA) omise intenționat.
-- Pentru găzduire statică e nevoie de fallback SPA (toate rutele → index.html); `npm run preview` îl are.
+- Mesajele de contact se salvează doar local (fără notificare pe email).
+
+## Etapa 3 — server
+- [x] `server/index.mjs` (Express 5): dev = Vite middleware, prod = `dist/` + toate rutele (404 real pentru URL-uri necunoscute, din `dist/routes.json` generat la build)
+- [x] `POST /api/contact` → validare, honeypot, rate limit 5/10 min/IP, salvare atomică în `data/contacts.json` (în .gitignore)
+- [x] Testat: rute 200/404, cache imutabil pe /assets, validări 422, 429, trimitere reală din formular în Edge headless → /contact/thank-you + intrare în JSON

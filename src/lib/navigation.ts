@@ -54,8 +54,11 @@ const router = {
   refresh: () => emit(),
 };
 
+// During server rendering (tests) the path can be set with globalThis.__SSR_PATH__.
+const serverPathname = () => normalize((globalThis as any).__SSR_PATH__ ?? '/');
+
 export function usePathname() {
-  return useSyncExternalStore(subscribe, getPathname, () => '/');
+  return useSyncExternalStore(subscribe, getPathname, serverPathname);
 }
 
 export function useRouter() {

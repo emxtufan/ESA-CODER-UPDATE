@@ -3,6 +3,10 @@ import HeadingReveal from '@/components/motion/HeadingReveal';
 import Link from '@/components/Link';
 import RollText from '@/components/RollText';
 
+import {text} from '@/lib/text';
+
+const $t = text("/contact/thank-you");
+
 // Converted 1:1 from the RSC payload of /contact/thank-you.
 export default function Page_contact__thank_you() {
   return (
@@ -16,14 +20,14 @@ export default function Page_contact__thank_you() {
           <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-text-primary) 45%, transparent) 50%, transparent 100%)" }} />
           <HeadingReveal>
             <h1 className="font-display text-[clamp(38px,5vw,56px)] leading-[1.1] font-medium tracking-[-0.03em]">
-              Thank You!
+              {$t("thank-you")}
             </h1>
           </HeadingReveal>
           <p className="mx-auto mt-4 max-w-[420px] text-[16px] leading-[1.7] text-fg-muted">
-            Your submission has been received. We will be in touch shortly via your preferred response method.
+            {$t("your-submission-has-been-received-we")}
           </p>
           <Link href="/" className="mt-8 inline-flex h-[52px] w-full max-w-[420px] items-center justify-center rounded-full bg-fg text-[16px] font-medium text-bg transition-opacity hover:opacity-90">
-            <RollText text="Back to Home" />
+            <RollText text={$t("back-to-home")} />
           </Link>
         </div>
       </main>

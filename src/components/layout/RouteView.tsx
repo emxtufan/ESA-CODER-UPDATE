@@ -1,13 +1,13 @@
 import {Suspense, useEffect, useLayoutEffect} from 'react';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
 import {usePathname} from '@/lib/navigation';
-import {routes} from '@/routes';
+import {resolveRoute, routes} from '@/routes';
 
 // Renders the page for the current URL inside the site layout (the slot that
 // Next's layout router fills in the original).
 export default function RouteView() {
   const pathname = usePathname();
-  const route = routes[pathname] ?? routes['/'];
+  const route = resolveRoute(pathname) ?? routes['/'];
   const Page = route.page;
 
   useLayoutEffect(() => {
@@ -16,7 +16,7 @@ export default function RouteView() {
 
   return (
     <Suspense fallback={null}>
-      <Page key={pathname} />
+      <Page key={pathname} {...route.props} />
       <AfterRender pathname={pathname} />
     </Suspense>
   );

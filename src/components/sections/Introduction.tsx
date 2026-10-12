@@ -7,6 +7,10 @@ import {useGSAP} from '@gsap/react';
 import Link from '@/components/Link';
 import RollText from '@/components/RollText';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Introduction");
+
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 const CARD_WIDTH = 1072 / 3;
@@ -200,13 +204,13 @@ export default function Introduction() {
                 id="intro-heading"
                 className="font-display text-h3 leading-[1.1] font-medium tracking-h3 md:whitespace-nowrap"
               >
-                Design that speaks.
+                {$t("design-that-speaks")}
                 <br />
-                Delivery that converts.
+                {$t("delivery-that-converts")}
               </h2>
               <p className="mt-2.5 max-w-[450px] text-lead text-fg-muted">
                 {
-                  'Visuvate crafts focused digital experiences that captivate audiences and drive growth. Combining bold design with smart strategy, we elevate your brand to win and convert—seamlessly.'
+                  $t("visuvate-crafts-focused-digital-experiences-that")
                 }
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
@@ -214,13 +218,13 @@ export default function Introduction() {
                   href="/about-us"
                   className="inline-flex items-center rounded-[12px] border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
                 >
-                  <RollText text="About Us" />
+                  <RollText text={$t("about-us")} />
                 </Link>
                 <Link
                   href="/works"
                   className="inline-flex items-center rounded-[12px] border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
                 >
-                  <RollText text="See our work" />
+                  <RollText text={$t("see-our-work")} />
                 </Link>
               </div>
             </div>

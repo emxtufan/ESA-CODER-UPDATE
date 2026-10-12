@@ -10,6 +10,10 @@ import Badge from '@/components/hero/Badge';
 import GradientBars from '@/components/hero/GradientBars';
 import Studio from '@/components/hero/Studio';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Hero");
+
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 // True until the first hero intro has been handled
@@ -108,31 +112,31 @@ export default function Hero({projects}: {projects: any[]}) {
         <GradientBars numBars={15} />
       </div>
       <div className="mx-auto max-w-[1440px] px-6 md:px-8">
-        <Badge>Design In Details</Badge>
+        <Badge>{$t("design-in-details")}</Badge>
         <h1
           className="mb-6 font-display text-[clamp(48px,6.4vw,92px)] leading-[1] font-medium tracking-[-0.06em]"
           style={{fontFeatureSettings: "'ss02' 1"}}
         >
           <span className="hh-line block">
-            Crafted <span className="vv-accent">Websites</span>
+            {$t("crafted")}<span className="vv-accent">{$t("websites")}</span>
           </span>
           <span className="hh-line block">
-            <span className="vv-accent-roman">Lasting</span> Impressions
+            <span className="vv-accent-roman">{$t("lasting")}</span>{$t("impressions")}
           </span>
         </h1>
-        <p className="hh-sub mb-9 text-lead text-fg-muted">Premium websites crafted for bold brands.</p>
+        <p className="hh-sub mb-9 text-lead text-fg-muted">{$t("premium-websites-crafted-for-bold-brands")}</p>
         <div className="hh-ctas mb-[60px] flex flex-wrap justify-center gap-2.5">
           <Link
             href="/contact"
             className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
           >
-            <RollText text="Get in touch" />
+            <RollText text={$t("get-in-touch")} />
           </Link>
           <Link
             href="/works"
             className="inline-flex items-center rounded-full border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
           >
-            <RollText text="See our work" />
+            <RollText text={$t("see-our-work")} />
           </Link>
         </div>
         <Studio projects={projects} />

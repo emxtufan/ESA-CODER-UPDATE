@@ -1,0 +1,20 @@
+{
+  "label": "Articole",
+  "itemLabel": "title",
+  "itemImage": "image",
+  "route": "/blog/{slug}",
+  "order": 20,
+  "fields": [
+    {"key": "title", "label": "Titlu", "type": "text", "required": true},
+    {"key": "slug", "label": "Adresă (URL)", "type": "slug", "required": true, "unique": true, "from": "title"},
+    {"key": "category", "label": "Categorie", "type": "select", "collection": "postCategories", "options": ["framer", "wix-studio"]},
+    {"key": "date", "label": "Data (AAAA-LL-ZZ)", "type": "text", "required": true},
+    {"key": "readMinutes", "label": "Timp de citire (minute)", "type": "number"},
+    {"key": "image", "label": "Imagine de copertă", "type": "image"},
+    {"key": "excerpt", "label": "Rezumat", "type": "textarea"},
+    {"key": "html", "label": "Conținut", "type": "html"},
+    {"key": "related", "label": "Articole asemănătoare (implicit primele 3)", "type": "refs", "collection": "posts", "advanced": true},
+    {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
+  ],
+  "defaults": {"metaTitle": "{title} | Visuvate", "readMinutes": 4}
+}

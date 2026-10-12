@@ -5,6 +5,10 @@ import HeadingReveal from '@/components/motion/HeadingReveal';
 import Link from '@/components/Link';
 import RollText from '@/components/RollText';
 
+import {text} from '@/lib/text';
+
+const $t = text("404");
+
 // Converted 1:1 from the RSC payload of the not-found page.
 export default function Page_this_page_does_not_exist() {
   return (
@@ -22,21 +26,21 @@ export default function Page_this_page_does_not_exist() {
           </p>
           <HeadingReveal>
             <h1 className="font-display text-[clamp(30px,4.2vw,44px)] leading-[1.1] font-medium tracking-[-0.03em]">
-              This page doesn’t exist
+              {$t("this-page-doesn-t-exist")}
             </h1>
           </HeadingReveal>
           <p className="mx-auto mt-4 max-w-[420px] text-[16px] leading-[1.7] text-fg-muted">
-            The link may be out of date, or the address slightly off. Everything the studio has published is still one click away.
+            {$t("the-link-may-be-out-of")}
           </p>
           <Link href="/" className="mt-8 inline-flex h-[52px] w-full max-w-[420px] items-center justify-center rounded-full bg-fg text-[16px] font-medium text-bg transition-opacity hover:opacity-90">
-            <RollText text="Back to Home" />
+            <RollText text={$t("back-to-home")} />
           </Link>
           <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[14px]">
             <Link href="/works" className="text-fg-muted underline decoration-fg/20 underline-offset-4 transition-colors hover:text-fg">
-              See our work
+              {$t("see-our-work")}
             </Link>
             <Link href="/contact" className="text-fg-muted underline decoration-fg/20 underline-offset-4 transition-colors hover:text-fg">
-              Get in touch
+              {$t("get-in-touch")}
             </Link>
           </div>
         </div>

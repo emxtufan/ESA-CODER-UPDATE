@@ -1,6 +1,10 @@
 // module 1659 (inspector icons + tooltip)
 import type {ReactNode} from 'react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/hero/icons");
+
 export const chevronRight = (className = 'w-3') => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 6l6 6-6 6" />
@@ -104,8 +108,8 @@ export function Tip({text, children, open = false}: {text: string; children?: Re
 export const TOOLS = [
   {
     id: 'cursor',
-    label: 'Select',
-    tip: 'Hold a shot to preview',
+    label: $t("select"),
+    tip: $t("hold-a-shot-to-preview"),
     icon: (className = 'size-6') => (
       <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5">
         <path d="M8.084 20.276c-1.06 1.38-3.264.66-3.306-1.079L4.443 5.392C4.407 3.932 6 3.012 7.247 3.773l11.788 7.192c1.485.906 1.006 3.176-.719 3.403l-5.581.738a1.84 1.84 0 0 0-1.221.705z" />
@@ -114,8 +118,8 @@ export const TOOLS = [
   },
   {
     id: 'zoom',
-    label: 'Zoom',
-    tip: 'Click a shot to open its project',
+    label: $t("zoom"),
+    tip: $t("click-a-shot-to-open-its"),
     icon: (className = 'size-6') => (
       <svg viewBox="0 0 24 24" className={className} fill="currentColor">
         <path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5" />
@@ -124,8 +128,8 @@ export const TOOLS = [
   },
   {
     id: 'hand',
-    label: 'Pan',
-    tip: 'Drag the strip',
+    label: $t("pan"),
+    tip: $t("drag-the-strip"),
     icon: (className = 'size-6') => (
       <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
         <path d="M7.315 11.055v4.176m3.246-6.593V6.555c0-.892-.727-1.615-1.623-1.615s-1.623.723-1.623 1.615v3.747m3.246-.566V4.365a1.62 1.62 0 0 1 1.623-1.615c.897 0 1.623.723 1.623 1.615V9.73m0 .005v-3.18a1.624 1.624 0 0 1 3.246 0v2.19m0 0v.99m0-.99a1.62 1.62 0 0 1 1.624-1.615A1.62 1.62 0 0 1 20.3 8.745v5.935a6.57 6.57 0 0 1-6.57 6.57h-2.95a7.08 7.08 0 0 1-7.069-7.492l.015-.256a3.06 3.06 0 0 1 2.13-2.738l1.458-.462m0 0V11.4" />

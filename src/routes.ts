@@ -1,76 +1,39 @@
 import {lazy} from 'react';
+import {text} from '@/lib/text';
+import {resolveDynamic, type ResolvedRoute} from '@/lib/dynamicRoutes';
 
-// Generated route table: every URL of the original sitemap.
-export const routes: Record<string, {title: string; page: ReturnType<typeof lazy>}> = {
-  '/': {title: "Visuvate | Premium Web Design Studio", page: lazy(() => import('@/pages/Home'))},
-  "/about-us": {title: "About Our Web Design Studio | Visuvate", page: lazy(() => import('@/pages/about-us'))},
-  "/blog": {title: "Web Design Insights & Tutorials | Visuvate", page: lazy(() => import('@/pages/blog'))},
-  "/blog/advanced-cms-slideshow-for-framer": {title: "Advanced CMS Slideshow for Framer | Visuvate", page: lazy(() => import('@/pages/blog/advanced-cms-slideshow-for-framer'))},
-  "/blog/category/framer": {title: "Framer Tutorials & Guides | Visuvate", page: lazy(() => import('@/pages/blog/category/framer'))},
-  "/blog/category/wix-studio": {title: "Wix Studio Tutorials & Guides | Visuvate", page: lazy(() => import('@/pages/blog/category/wix-studio'))},
-  "/blog/editable-vector-text-effect": {title: "How to Create an Editable Vector Text Effect in Adobe Illustrator", page: lazy(() => import('@/pages/blog/editable-vector-text-effect'))},
-  "/blog/smart-animated-counters-in-wix-studio": {title: "Smart Animated Counters in Wix Studio | Visuvate", page: lazy(() => import('@/pages/blog/smart-animated-counters-in-wix-studio'))},
-  "/blog/smart-theme-switch-framer-component": {title: "Smart Theme Switch ~ Framer Component | Visuvate", page: lazy(() => import('@/pages/blog/smart-theme-switch-framer-component'))},
-  "/blog/smooth-scroll-in-a-wix-website": {title: "How to Add Smooth Scroll in a Wix Website | Visuvate", page: lazy(() => import('@/pages/blog/smooth-scroll-in-a-wix-website'))},
-  "/blog/stylesync": {title: "StyleSync ~ Import Styles | Visuvate", page: lazy(() => import('@/pages/blog/stylesync'))},
-  "/blog/wix-studio-preloader-animation": {title: "Smooth Wix Studio Preloader Animation | Visuvate", page: lazy(() => import('@/pages/blog/wix-studio-preloader-animation'))},
-  "/contact": {title: "Contact — Start Your Web Design Project | Visuvate", page: lazy(() => import('@/pages/contact'))},
-  "/contact/thank-you": {title: "Thank You | Visuvate", page: lazy(() => import('@/pages/contact/thank-you'))},
-  "/privacy-policy": {title: "Privacy Policy | Visuvate", page: lazy(() => import('@/pages/privacy-policy'))},
-  "/services": {title: "Web Design & Development Services | Visuvate", page: lazy(() => import('@/pages/services'))},
-  "/services/cms-and-dynamic-websites": {title: "CMS & Dynamic Websites — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/cms-and-dynamic-websites'))},
-  "/services/consistent-identity": {title: "Consistent Identity — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/consistent-identity'))},
-  "/services/crafted-websites": {title: "Crafted Websites — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/crafted-websites'))},
-  "/services/ecommerce-website-design": {title: "eCommerce Website Design — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/ecommerce-website-design'))},
-  "/services/landing-pages-and-microsites": {title: "Landing Pages & Microsites — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/landing-pages-and-microsites'))},
-  "/services/maintenance-and-ongoing-support": {title: "Maintenance & Ongoing Support | Visuvate", page: lazy(() => import('@/pages/services/maintenance-and-ongoing-support'))},
-  "/services/motion-and-interaction-design": {title: "Motion & Interaction Design — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/motion-and-interaction-design'))},
-  "/services/performance-optimization": {title: "Performance Optimization — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/performance-optimization'))},
-  "/services/ux-centric-strategy": {title: "UX Centric Strategy — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/ux-centric-strategy'))},
-  "/services/website-redesign": {title: "Website Redesign — Web Design Service | Visuvate", page: lazy(() => import('@/pages/services/website-redesign'))},
-  "/templates": {title: "Premium Website Templates | Visuvate", page: lazy(() => import('@/pages/templates'))},
-  "/terms-and-conditions": {title: "Terms and conditions | Visuvate", page: lazy(() => import('@/pages/terms-and-conditions'))},
-  "/works": {title: "Web Design Portfolio & Case Studies | Visuvate", page: lazy(() => import('@/pages/works'))},
-  "/works/4dolfins": {title: "4Dolfins — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/4dolfins'))},
-  "/works/aesthica": {title: "Aesthica — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/aesthica'))},
-  "/works/agency": {title: "Agency — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/agency'))},
-  "/works/alvara-house": {title: "Alvara House — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/alvara-house'))},
-  "/works/avara": {title: "Avara — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/avara'))},
-  "/works/aveline-dental": {title: "Aveline Dental — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/aveline-dental'))},
-  "/works/averleigh": {title: "Averleigh — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/averleigh'))},
-  "/works/devansh-portfolio": {title: "Devansh Portfolio — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/devansh-portfolio'))},
-  "/works/ellery-kowal": {title: "Ellery Kowal — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/ellery-kowal'))},
-  "/works/empire-rugby": {title: "Empire Rugby — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/empire-rugby'))},
-  "/works/evercraft": {title: "Evercraft — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/evercraft'))},
-  "/works/forma": {title: "Forma — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/forma'))},
-  "/works/future-flow": {title: "Future Flow — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/future-flow'))},
-  "/works/green-earth": {title: "Green Earth — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/green-earth'))},
-  "/works/guardian-vets": {title: "Guardian Vets — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/guardian-vets'))},
-  "/works/halden-roofing": {title: "Halden Roofing — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/halden-roofing'))},
-  "/works/health-core": {title: "Health Core — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/health-core'))},
-  "/works/horizone": {title: "Horizone — Car Rental Website Case Study | Visuvate", page: lazy(() => import('@/pages/works/horizone'))},
-  "/works/ines-calder": {title: "Ines Calder — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/ines-calder'))},
-  "/works/ironwood": {title: "Ironwood — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/ironwood'))},
-  "/works/kingswell-law": {title: "Kingswell Law — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/kingswell-law'))},
-  "/works/lasada-pippen": {title: "Lasada Pippen — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/lasada-pippen'))},
-  "/works/launchfolio": {title: "Launchfolio — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/launchfolio'))},
-  "/works/longitude-society": {title: "Longitude Society — Travel Website Case Study | Visuvate", page: lazy(() => import('@/pages/works/longitude-society'))},
-  "/works/lumora": {title: "Lumora — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/lumora'))},
-  "/works/meridian-ecom": {title: "Meridian eCom — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/meridian-ecom'))},
-  "/works/norholm-freight": {title: "Norholm Freight — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/norholm-freight'))},
-  "/works/orvel": {title: "Orvel — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/orvel'))},
-  "/works/parley": {title: "Parley — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/parley'))},
-  "/works/photofolio": {title: "Photofolio — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/photofolio'))},
-  "/works/recapture-life": {title: "Recapture Life — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/recapture-life'))},
-  "/works/restra": {title: "Restra — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/restra'))},
-  "/works/showin": {title: "ShowIn — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/showin'))},
-  "/works/stillroom": {title: "Stillroom — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/stillroom'))},
-  "/works/tigre-tigre": {title: "Tigre-Tigre — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/tigre-tigre'))},
-  "/works/tubwell": {title: "Tubwell — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/tubwell'))},
-  "/works/upwell": {title: "Upwell — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/upwell'))},
-  "/works/valden": {title: "Valden — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/valden'))},
-  "/works/watches": {title: "Watches — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/watches'))},
-  "/works/wrenmoor-heath": {title: "Wrenmoor Heath — Website Design Case Study | Visuvate", page: lazy(() => import('@/pages/works/wrenmoor-heath'))},
+// Static pages. Projects, blog posts, blog categories and custom pages are resolved from
+// collections (src/lib/dynamicRoutes.ts). Titles live in source_data.json.
+export const routes: Record<string, ResolvedRoute> = {
+  '/': {title: text('/')('meta-title'), page: lazy(() => import('@/pages/Home'))},
+  "/about-us": {title: text("/about-us")('meta-title'), page: lazy(() => import('@/pages/about-us'))},
+  "/blog": {title: text("/blog")('meta-title'), page: lazy(() => import('@/pages/blog'))},
+  "/contact": {title: text("/contact")('meta-title'), page: lazy(() => import('@/pages/contact'))},
+  "/contact/thank-you": {title: text("/contact/thank-you")('meta-title'), page: lazy(() => import('@/pages/contact/thank-you'))},
+  "/privacy-policy": {title: text("/privacy-policy")('meta-title'), page: lazy(() => import('@/pages/privacy-policy'))},
+  "/services": {title: text("/services")('meta-title'), page: lazy(() => import('@/pages/services'))},
+  "/services/cms-and-dynamic-websites": {title: text("/services/cms-and-dynamic-websites")('meta-title'), page: lazy(() => import('@/pages/services/cms-and-dynamic-websites'))},
+  "/services/consistent-identity": {title: text("/services/consistent-identity")('meta-title'), page: lazy(() => import('@/pages/services/consistent-identity'))},
+  "/services/crafted-websites": {title: text("/services/crafted-websites")('meta-title'), page: lazy(() => import('@/pages/services/crafted-websites'))},
+  "/services/ecommerce-website-design": {title: text("/services/ecommerce-website-design")('meta-title'), page: lazy(() => import('@/pages/services/ecommerce-website-design'))},
+  "/services/landing-pages-and-microsites": {title: text("/services/landing-pages-and-microsites")('meta-title'), page: lazy(() => import('@/pages/services/landing-pages-and-microsites'))},
+  "/services/maintenance-and-ongoing-support": {title: text("/services/maintenance-and-ongoing-support")('meta-title'), page: lazy(() => import('@/pages/services/maintenance-and-ongoing-support'))},
+  "/services/motion-and-interaction-design": {title: text("/services/motion-and-interaction-design")('meta-title'), page: lazy(() => import('@/pages/services/motion-and-interaction-design'))},
+  "/services/performance-optimization": {title: text("/services/performance-optimization")('meta-title'), page: lazy(() => import('@/pages/services/performance-optimization'))},
+  "/services/ux-centric-strategy": {title: text("/services/ux-centric-strategy")('meta-title'), page: lazy(() => import('@/pages/services/ux-centric-strategy'))},
+  "/services/website-redesign": {title: text("/services/website-redesign")('meta-title'), page: lazy(() => import('@/pages/services/website-redesign'))},
+  "/templates": {title: text("/templates")('meta-title'), page: lazy(() => import('@/pages/templates'))},
+  "/terms-and-conditions": {title: text("/terms-and-conditions")('meta-title'), page: lazy(() => import('@/pages/terms-and-conditions'))},
+  "/works": {title: text("/works")('meta-title'), page: lazy(() => import('@/pages/works'))},
 };
 
-export const notFound = {title: "Page Not Found | Visuvate", page: lazy(() => import('@/pages/NotFound'))};
+export const notFound = {title: text('404')('meta-title'), page: lazy(() => import('@/pages/NotFound'))};
+
+export type {ResolvedRoute};
+
+/** Static pages first, then collection-backed URLs (projects, posts, custom pages). */
+export function resolveRoute(pathname: string): ResolvedRoute | null {
+  const route = routes[pathname];
+  if (route) return route;
+  return resolveDynamic(pathname);
+}

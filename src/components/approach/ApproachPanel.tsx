@@ -4,6 +4,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/approach/ApproachPanel");
+
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const FRAME = { left: 36, top: 201, width: 685, height: 450 };
@@ -18,8 +22,8 @@ const SITES = [
   { src: 'site-d', x: 595, y: 80, w: 200 },
 ];
 const CURSORS = [
-  { name: 'Alex', x: 124, y: 262, ax: 79, ay: 238, size: 20, float: 0, entry: false, followY: true },
-  { name: 'Gangu', x: 607, y: 338, ax: 567, ay: 319, size: 18, float: 23, entry: true, followY: false },
+  { name: $t("alex"), x: 124, y: 262, ax: 79, ay: 238, size: 20, float: 0, entry: false, followY: true },
+  { name: $t("gangu"), x: 607, y: 338, ax: 567, ay: 319, size: 18, float: 23, entry: true, followY: false },
 ];
 const TAN_20 = Math.tan((20 * Math.PI) / 180);
 
@@ -144,7 +148,7 @@ export default function ApproachPanel() {
                   className="font-text text-white"
                   style={{ marginLeft: 3 * SCALE, fontSize: 8 * SCALE, lineHeight: 1 }}
                 >
-                  Desktop
+                  {$t("desktop")}
                 </span>
               </div>
             ))}

@@ -2,47 +2,52 @@ import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
 import TemplatesGrid from '@/components/templates/TemplatesGrid';
 
+import {text} from '@/lib/text';
+import {collection} from '@/lib/collections';
+
+const $t = text("/templates");
+
 // Converted 1:1 from the RSC payload of /templates.
 export default function Page_templates() {
   return (
     <>
       <main className="relative isolate">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Templates\",\"item\":\"https://visuvate.com/templates\"}]}" }} />
-        <PageTitle lead="Tem" trail="plates">
+        <PageTitle lead={$t("tem")} trail={$t("plates")}>
           <p className="mx-auto mt-8 max-w-[640px] text-center text-lead leading-[1.6] text-fg-muted">
-            Every template here began as a client project. These are the builds we liked enough to keep — rebuilt as clean starting points, priced at a fraction of the commission.
+            {$t("every-template-here-began-as-a")}
           </p>
         </PageTitle>
-        <TemplatesGrid items={[{ id: "cb9813f1-4167-456b-9e97-7aedf03f8daf", title: "Photofolio", category: "Creative", image: "/media/fd913096e4d07dc1036fe315b506b88b.jpg", href: "https://www.framer.com/marketplace/templates/photofolio-darkroom/", price: "Free", was: "$89", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "040ca3a5-01c6-45cb-986e-3cd0dea96183", title: "Forma", category: "SaaS", image: "/media/f269d34335f280511b8bdb20a6c0212a.jpg", href: "https://www.framer.com/marketplace/templates/forma-desk/", price: "Free", was: "$99", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "858c5656-c086-4290-a689-bde42c1e6930", title: "Valden", category: "Agency", image: "/media/844396da09e74fc2d96a433de019306f.jpg", href: "https://www.framer.com/marketplace/templates/valden/", price: "Free", was: "$129", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "b47811cb-77a0-42f0-af20-4279fc563e55", title: "Horizone", category: "eCommerce", image: "/media/ae4d73e3a7d806960f421c98e525ac2a.jpg", href: "https://www.framer.com/marketplace/templates/horizone-rental/", price: "Free", was: "$120", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "ef6c69df-7040-4e24-bf39-94557c38d32b", title: "Ellery Kowal", category: "Legal", image: "/media/e939665a2da8212ca0f1667b5c552c51.jpg", href: "https://www.framer.com/marketplace/templates/ellery/", price: "Free", was: "$129", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "a9fbedf4-c59d-4c44-bab1-d73140cf427a", title: "Ironwood", category: "Corporate", image: "/media/a593e5373ed93302134ec5f4240761a0.jpg", href: "https://www.framer.com/community/marketplace/templates/constructal/", price: "Free", was: "$199", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "a89ac2f1-b4cb-4739-a63c-4e3f0b814762", title: "Averleigh", category: "Sports", image: "/media/fa6a9d8c4c3126f5ceb10e26d0d16805.jpg", href: "https://www.framer.com/marketplace/templates/averleigh-orchard/", price: "Free", was: "$120", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "9616d179-169b-407e-b7c0-7b07df0dbfa8", title: "Tubwell", category: "eCommerce", image: "/media/8c1a7114fc1bfec6490aeb80e841b066.jpg", href: "https://www.framer.com/marketplace/templates/tubwell/", price: "Free", was: "$89", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "fedc2d3d-5d07-4256-ac3f-2b11a02c7acb", title: "Aveline Dental", category: "Healthcare", image: "/media/f23aef1579afdfca8471ccc112558b8c.jpg", href: "https://www.framer.com/marketplace/templates/aveline-floss/", price: "Free", was: "$199", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "c1576805-7667-4ab2-ad7f-254a91546ee7", title: "Norholm Freight", category: "Corporate", image: "/media/4d59097cf94138641cab2e0c0055de66.jpg", href: "https://www.framer.com/marketplace/templates/norholm-quay/", price: "Free", was: "$89", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "2068cbeb-fdc8-451e-8a1a-7e8e1ddd615a", title: "Alvara House", category: "Real Estate", image: "/media/43a45f30543208de53ade25795bdc673.jpg", href: "https://www.framer.com/marketplace/templates/alvara-house/", price: "Free", was: "$120", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "54e1701e-f196-4d2c-9ab4-ad3b5c7976ef", title: "Wrenmoor Heath", category: "Sports", image: "/media/93d9ff71e8d770563f89acba46eca4ad.jpg", href: "https://www.framer.com/marketplace/templates/wrenmoor-heath/", price: "Free", was: "$99", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "a1c1a8f6-6b08-47ad-bcaf-0063cdfb463a", title: "Avara", category: "Fitness", image: "/media/cc006c5370888cd2c9322a58fa0c6c8e.jpg", href: "https://www.wix.com/marketplace/template/264b6a90-7b04-4d61-a86f-69d69a687b22?utm_source=email_mkt&utm_campaign=em__&experiment_id=text_link_3_resp", price: "$50", was: "$149", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "4bfcc0ba-23a3-42d7-96d0-0868c506ec4b", title: "Green Earth", category: "Blog", image: "/media/737afb03c48637032184fb23285fb3e7.jpg", href: "https://www.wix.com/marketplace/template/2fd2260b-c0d5-42d3-9cf3-29ded5eb1a33", price: "$50", was: "$99", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "516b4bd1-15d3-4b18-8d4c-d5d71716c119", title: "Halden Roofing", category: "Construction", image: "/media/a03f2481d76e9d0690f6edc96827ddfa.jpg", href: "https://www.framer.com/marketplace/templates/halden-gable/", price: "Free", was: "$120", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "268af21f-30f0-4fe3-99e4-385267849adf", title: "Meridian eCom", category: "eCommerce", image: "/media/880bc5394692eafe333491e29aba8c01.jpg", href: "https://visuvate.lemonsqueezy.com/checkout/buy/c4b9caef-f975-487d-80da-ddaf68fbd31b", price: "$70", was: "$199", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "d1d7399c-2857-48fd-9c3a-f4da3287cca1", title: "Ines Calder", category: "Corporate", image: "/media/826472097849e4bfb406db53602a4409.jpg", href: "https://www.framer.com/marketplace/templates/ines-rhythm/", price: "Free", was: "$79", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "102d62c3-d61a-4bea-bd8d-68e3ec563bc8", title: "Future Flow", category: "Corporate", image: "/media/43fe4f361d143d491f5e0b33bf39570e.jpg", href: "https://www.wix.com/marketplace/template/81ca6c13-16c9-40c9-8028-6d9bb7b9c499", price: "$50", was: "$199", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "0a5d1819-8506-4d0e-a69b-1e3cf97dd9ef", title: "Kingswell Law", category: "Legal", image: "/media/22a5dffdffc0fa56ba73f27161d35579.png", href: "https://www.framer.com/community/marketplace/templates/attorn/", price: "Free", was: "$199", platformLogo: "/media/b8f738a1ce12a869dd6b08b1ea128e6b.png", platformName: "Framer" }, { id: "1052e177-4f74-4850-b75c-bce205182e43", title: "Agency", category: "Agency", image: "/media/4c6e61f552c0a8b4e8388e69047fc85c.jpg", href: "https://www.wix.com/marketplace/template/da68fa7c-33c9-43c4-9c17-fde986f793b7", price: "$50", was: "$199", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "bee8d8f8-4ba0-49e9-b5d3-dd51b1644066", title: "ShowIn", category: "Creative", image: "/media/c4ff901853766ee186a422794a19d78d.jpg", href: "https://www.wix.com/marketplace/template/11aa170c-f5e1-4cb4-912d-774609ef77c1", price: "$50", was: "$99", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "ecb8bb0c-8d28-497d-b4fa-0b7c87e832b8", title: "Lumora", category: "Agency", image: "/media/74825dc609fef87875347b831325907d.jpg", href: "https://www.wix.com/marketplace/template/d8cba37e-3820-4e47-96e9-62bda0b902dd?utm_source=email_mkt&utm_campaign=em__&experiment_id=text_link_3_resp", price: "$50", was: "$199", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "3ad23513-1bf9-41ee-ba3f-6c58a5c5279c", title: "Watches", category: "eCommerce", image: "/media/8744a96e0e97b16474c2b55f7994802c.jpg", href: "https://www.wix.com/marketplace/template/426d0ab2-72f6-4f67-9865-72549f99999d", price: "$50", was: "$199", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }, { id: "cffb7b5d-8d26-4a2f-832c-d5f92492bed4", title: "Launchfolio", category: "Creative", image: "/media/59bf096736975eef06373da5bb110cb3.jpg", href: "https://www.wix.com/marketplace/template/49d3f50a-f183-4c03-96a1-473f185d4ed5", price: "Free", was: "$99", platformLogo: "/media/12f174fbe6106094af5b31e0042943c2.png", platformName: "Wix Studio" }]} />
+        <TemplatesGrid items={collection<any>('templates').map((t, i) => ({...t, id: t.id || `template-${i}`}))} />
         <section aria-labelledby="templates-how" className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
           <div className="mx-auto max-w-[720px]">
             <h2 id="templates-how" className="font-display text-[clamp(26px,3vw,40px)] leading-[1.15] font-medium tracking-[-0.03em]">
-              How the templates work
+              {$t("how-the-templates-work")}
             </h2>
             <div className="mt-6 flex flex-col gap-5 text-lead leading-[1.75] text-fg-muted">
               <p>
-                Each template is a complete, production-ready site — pages, components, CMS collections where the design calls for them, and the animations you see in the preview. Nothing is a mockup: what you buy is the working build, running on Framer or Wix Studio, ready for your own content.
+                {$t("each-template-is-a-complete-production")}
               </p>
               <p>
-                Buying one takes you to the platform’s own marketplace, where payment and delivery are handled by Framer or Wix directly. You get the template into your own account immediately, edit everything in the platform’s visual editor, and publish under your own domain. No code is required to change text, images, colours or pages.
+                {$t("buying-one-takes-you-to-the")}
               </p>
               <p>
-                Because each one started life as a commissioned project, the design decisions have already survived contact with a real business — the structure, the hierarchy and the responsive behaviour were built for a paying client, not assembled for a thumbnail.
+                {$t("because-each-one-started-life-as")}
               </p>
               <p>
-                Framer and Wix Studio suit different situations, and each template names its platform on the card. Framer’s editor is the more design-led of the two — fast, canvas-first, and strong on animation. Wix Studio carries a broader business toolkit behind the site: ecommerce, bookings, members and payments are native rather than bolted on. If you already work in one of them, staying with it outweighs most other considerations; if you are starting fresh, pick by what the site has to do rather than by the editor.
+                {$t("framer-and-wix-studio-suit-different")}
               </p>
               <p>
-                {"If a template is close but not quite right, we adapt them. Rebranding one around your identity, adding pages, or reworking sections costs far less than a from-scratch commission — "}
+                {$t("if-a-template-is-close-but")}
                 <Link href="/contact" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
-                  tell us what you need
+                  {$t("tell-us-what-you-need")}
                 </Link>
-                {" and we’ll tell you honestly whether the template or a"}
+                {$t("and-we-ll-tell-you-honestly")}
                 {" "}
                 <Link href="/services/crafted-websites" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
-                  custom build
+                  {$t("custom-build")}
                 </Link>
-                {" serves you better."}
+                {$t("serves-you-better")}
               </p>
             </div>
           </div>

@@ -4,6 +4,10 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import {CategoryFilter, ALL_CATEGORY, getCategories, getCategoryCounts} from '@/components/works/filters';
 import {CardGrid, ProjectCard} from '@/components/works/cards';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/works/WorksGrid");
+
 export default function WorksGrid({items}: any) {
   const [active, setActive] = useState(ALL_CATEGORY);
   const categories = useMemo(() => getCategories(items), [items]);
@@ -16,7 +20,7 @@ export default function WorksGrid({items}: any) {
         counts={counts}
         active={active}
         onSelect={setActive}
-        label="Work categories"
+        label={$t("work-categories")}
       />
       <RevealBatch refresh={active}>
         <CardGrid>

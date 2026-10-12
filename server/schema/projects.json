@@ -1,0 +1,205 @@
+{
+  "label": "Proiecte",
+  "itemLabel": "title",
+  "itemImage": "image",
+  "route": "/works/{slug}",
+  "order": 10,
+  "fields": [
+    {
+      "key": "title",
+      "label": "Titlu",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "slug",
+      "label": "Adresă (URL)",
+      "type": "slug",
+      "required": true,
+      "unique": true,
+      "from": "title"
+    },
+    {
+      "key": "category",
+      "label": "Categorie (ex. Agency, Healthcare)",
+      "type": "text"
+    },
+    {
+      "key": "image",
+      "label": "Imagine card",
+      "type": "image"
+    },
+    {
+      "key": "url",
+      "label": "Link site live",
+      "type": "url"
+    },
+    {
+      "key": "platform",
+      "label": "Platformă",
+      "type": "select",
+      "options": [
+        "Framer",
+        "Wix Studio",
+        "WordPress",
+        "Astro",
+        "Next.js",
+        "Custom Code"
+      ]
+    },
+    {
+      "key": "created",
+      "label": "An",
+      "type": "number",
+      "advanced": true
+    },
+    {
+      "key": "pageCount",
+      "label": "Număr de pagini",
+      "type": "number",
+      "advanced": true
+    },
+    {
+      "key": "overview",
+      "label": "Prezentare scurtă",
+      "type": "html"
+    },
+    {
+      "key": "brief",
+      "label": "Brief",
+      "type": "textarea"
+    },
+    {
+      "key": "approach",
+      "label": "Abordare",
+      "type": "textarea"
+    },
+    {
+      "key": "outcome",
+      "label": "Rezultat",
+      "type": "textarea"
+    },
+    {
+      "key": "about",
+      "label": "Despre proiect",
+      "type": "html"
+    },
+    {
+      "key": "shots",
+      "label": "Capturi de ecran",
+      "type": "list",
+      "fields": [
+        {
+          "key": "src",
+          "label": "Imagine",
+          "type": "image"
+        },
+        {
+          "key": "title",
+          "label": "Titlu",
+          "type": "text"
+        },
+        {
+          "key": "id",
+          "label": "Id",
+          "type": "hidden"
+        }
+      ]
+    },
+    {
+      "key": "pagesList",
+      "label": "Pagini",
+      "type": "list",
+      "fields": [
+        {
+          "key": "icon",
+          "label": "Iconiță",
+          "type": "image"
+        },
+        {
+          "key": "title",
+          "label": "Nume",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "key": "featuresList",
+      "label": "Funcționalități",
+      "type": "list",
+      "fields": [
+        {
+          "key": "icon",
+          "label": "Iconiță",
+          "type": "image"
+        },
+        {
+          "key": "title",
+          "label": "Nume",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "key": "heroPosition",
+      "label": "Poziție în hero (gol = nu apare)",
+      "type": "number"
+    },
+    {
+      "key": "heroMobile",
+      "label": "Imagine mobil (hero)",
+      "type": "image",
+      "advanced": true
+    },
+    {
+      "key": "heroDark",
+      "label": "Hero: vizibil în tema închisă",
+      "type": "boolean",
+      "advanced": true
+    },
+    {
+      "key": "heroLight",
+      "label": "Hero: vizibil în tema deschisă (ambele goale = mereu)",
+      "type": "boolean",
+      "advanced": true
+    },
+    {
+      "key": "homePosition",
+      "label": "Poziție pe prima pagină (gol = nu apare)",
+      "type": "number"
+    },
+    {
+      "key": "homeImage",
+      "label": "Imagine pentru prima pagină (gol = imaginea cardului)",
+      "type": "image",
+      "advanced": true
+    },
+    {
+      "key": "related",
+      "label": "Proiecte asemănătoare (gol = primele 3)",
+      "type": "refs",
+      "collection": "projects",
+      "advanced": true
+    },
+    {
+      "key": "industryIcon",
+      "label": "Iconiță categorie",
+      "type": "image",
+      "advanced": true
+    },
+    {
+      "key": "metaTitle",
+      "label": "Titlu în browser",
+      "type": "text",
+      "advanced": true
+    },
+    {
+      "key": "id",
+      "label": "Id",
+      "type": "hidden"
+    }
+  ],
+  "defaults": {
+    "metaTitle": "{title} — Website Design Case Study | Visuvate"
+  }
+}

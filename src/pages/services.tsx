@@ -4,6 +4,10 @@ import PageTitle from '@/components/PageTitle';
 import RevealBatch from '@/components/motion/RevealBatch';
 import ServicesBackdrop from '@/components/services/ServicesBackdrop';
 
+import {text} from '@/lib/text';
+
+const $t = text("/services");
+
 // Converted 1:1 from the RSC payload of /services.
 export default function Page_services() {
   return (
@@ -12,9 +16,9 @@ export default function Page_services() {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Services\",\"item\":\"https://visuvate.com/services\"}]}" }} />
         <ServicesBackdrop className="fixed inset-0 -z-10" />
         <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[280px]" style={{ background: "linear-gradient(180deg, transparent 0%, var(--vv-bg) 92%)" }} />
-        <PageTitle lead="Our " trail="Services">
+        <PageTitle lead={$t("our")} trail={$t("services")}>
           <p className="mx-auto mt-8 max-w-[620px] text-center text-lead leading-[1.6] text-fg-muted">
-            Ten disciplines, one studio. Every engagement draws on whichever of these the work actually needs — nothing bolted on to pad an invoice.
+            {$t("ten-disciplines-one-studio-every-engagement")}
           </p>
         </PageTitle>
         <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
@@ -27,25 +31,25 @@ export default function Page_services() {
                   <span className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(90% 80% at 18% 0%, rgba(255,255,255,0.16) 0%, transparent 55%)" }} />
                   <span className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.17) 1px, transparent 1px)", backgroundSize: "13px 13px", maskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)", WebkitMaskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)" }} />
                   <div className="rounded-[9px] bg-white shadow-[0_14px_34px_-14px_rgba(0,20,40,0.6)] vv-anim-float absolute bottom-[8%] left-[5%] z-10 px-2.5 py-1.5 text-[9px] leading-none font-medium" style={{ color: "#0A2A44" }}>
-                    {"Custom ✓"}
+                    {$t("custom")}
                   </div>
                   <div className="absolute top-[16%] right-0 bottom-0 left-[24%] overflow-hidden rounded-tl-[5px] bg-[#0A0D12] shadow-[0_14px_34px_-14px_rgba(0,10,22,0.8)]">
                     <span className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-3 py-2">
                       <span className="flex items-center gap-1.5">
                         <span className="block size-[8px] rounded-[2.5px]" style={{ background: "#0099FF" }} />
                         <span className="text-[8px] leading-none font-medium text-white">
-                          Studio
+                          {$t("studio")}
                         </span>
                       </span>
                       <span className="flex items-center gap-2 text-[7px] leading-none text-white/70">
                         <span>
-                          Work
+                          {$t("work")}
                         </span>
                         <span>
-                          About
+                          {$t("about")}
                         </span>
                         <span className="rounded-full bg-white px-2 py-[4px] font-medium" style={{ color: "#0A2A44" }}>
-                          Contact
+                          {$t("contact")}
                         </span>
                       </span>
                     </span>
@@ -55,14 +59,14 @@ export default function Page_services() {
                         <span className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(6,9,14,0.62) 0%, rgba(6,9,14,0.08) 38%, rgba(6,9,14,0.94) 100%)" }} />
                         <span className="absolute inset-x-0 bottom-0 px-3 pb-2">
                           <span className="block font-display text-[14px] leading-[1.1] font-medium text-white">
-                            Crafted, not assembled.
+                            {$t("crafted-not-assembled")}
                           </span>
                           <span className="mt-1.5 flex items-center gap-2">
                             <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0099FF" }}>
-                              Start a project
+                              {$t("start-a-project")}
                             </span>
                             <span className="text-[7px] leading-none text-white/60">
-                              Design · Build · Launch
+                              {$t("design-build-launch")}
                             </span>
                           </span>
                         </span>
@@ -73,14 +77,14 @@ export default function Page_services() {
                             <span className="font-display text-[10px] font-medium text-white">
                               48
                             </span>
-                            {" sites"}
+                            {$t("sites")}
                           </span>
                           <span>
                             <span className="font-display text-[10px] font-medium text-white">
                               12
                             </span>
                             {" "}
-                            industries
+                            {$t("industries")}
                           </span>
                           <span>
                             <span className="font-display text-[10px] font-medium text-white">
@@ -92,7 +96,7 @@ export default function Page_services() {
                         <span className="mt-2.5 flex gap-2">
                           <span className="min-w-0 flex-1">
                             <span className="block text-[8px] leading-none font-medium text-white">
-                              Built around you
+                              {$t("built-around-you")}
                             </span>
                             <span className="mt-1.5 block h-[5px] w-[92%] rounded-full bg-white/12" />
                             <span className="mt-1 block h-[5px] w-[70%] rounded-full bg-white/12" />
@@ -101,7 +105,7 @@ export default function Page_services() {
                           <img src="/services/brand.jpg" alt="" className="block h-[36px] w-[36%] shrink-0 rounded-[5px] object-cover" loading="lazy" decoding="async" />
                         </span>
                         <span className="mt-2.5 block text-[8px] leading-none font-medium text-white">
-                          Selected work
+                          {$t("selected-work")}
                         </span>
                         <span className="mt-1.5 flex gap-1.5">
                           <img src="/services/vivid.jpg" alt="" className="block h-[32px] min-w-0 flex-1 rounded-[5px] object-cover" loading="lazy" decoding="async" />
@@ -109,10 +113,10 @@ export default function Page_services() {
                         </span>
                         <span className="mt-2.5 flex justify-between border-t border-white/10 pt-1.5 pb-2 text-[6.5px] leading-none text-white/40">
                           <span>
-                            {"© Studio"}
+                            {$t("studio-2")}
                           </span>
                           <span>
-                            Built by hand
+                            {$t("built-by-hand")}
                           </span>
                         </span>
                       </span>
@@ -123,14 +127,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Crafted\nWebsites"}
+                    {$t("crafted-websites")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Custom-built websites designed from the ground up for clarity, structure, and intent. Every site blends tailored design, responsive…
+                    {$t("custom-built-websites-designed-from-the")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -144,7 +148,7 @@ export default function Page_services() {
                   <div className="absolute top-[13%] bottom-0 left-[6%] w-[56%] overflow-hidden rounded-t-[4px] bg-[#DDE1E5]">
                     <span className="flex items-center justify-between bg-[#9AA4AD] px-2.5 py-1.5">
                       <span className="text-[7px] leading-none font-bold tracking-wide text-white/90 uppercase">
-                        Old homepage
+                        {$t("old-homepage")}
                       </span>
                       <span className="flex gap-1">
                         <span className="block h-[4px] w-[14px] rounded-[1px] bg-white/50" />
@@ -154,24 +158,24 @@ export default function Page_services() {
                     </span>
                     <span className="flex border-b" style={{ borderColor: "#C2C9CF" }}>
                       <span className="flex-1 border-r bg-[#CBD1D6] px-1 py-[4px] text-center text-[6px] leading-none font-bold" style={{ borderColor: "#B4BBC1", color: "#4A555E" }}>
-                        HOME
+                        {$t("home")}
                       </span>
                       <span className="flex-1 border-r bg-[#CBD1D6] px-1 py-[4px] text-center text-[6px] leading-none font-bold" style={{ borderColor: "#B4BBC1", color: "#4A555E" }}>
-                        ABOUT
+                        {$t("about-2")}
                       </span>
                       <span className="flex-1 border-r bg-[#CBD1D6] px-1 py-[4px] text-center text-[6px] leading-none font-bold" style={{ borderColor: "#B4BBC1", color: "#4A555E" }}>
-                        GALLERY
+                        {$t("gallery")}
                       </span>
                       <span className="flex-1 border-r bg-[#CBD1D6] px-1 py-[4px] text-center text-[6px] leading-none font-bold" style={{ borderColor: "#B4BBC1", color: "#4A555E" }}>
-                        LINKS
+                        {$t("links")}
                       </span>
                     </span>
                     <span className="block px-2.5 pt-1.5">
                       <span className="block text-[8px] leading-[1.2] font-bold" style={{ color: "#4A555E" }}>
-                        WELCOME TO OUR WEBSITE!!
+                        {$t("welcome-to-our-website")}
                       </span>
                       <span className="mt-1 block text-[6px] leading-[1.3]" style={{ color: "#6B767F" }}>
-                        {"*** Best viewed at 1024×768 ***"}
+                        {$t("best-viewed-at-1024-768")}
                       </span>
                       <span className="mt-1.5 flex gap-1.5">
                         <img src="/services/office.jpg" alt="" className="block h-[34px] w-[44%] rounded-[2px] object-cover [filter:grayscale(1)_contrast(0.85)]" loading="lazy" decoding="async" />
@@ -184,24 +188,24 @@ export default function Page_services() {
                       </span>
                       <span className="mt-1.5 flex items-center gap-1.5">
                         <span className="inline-block border px-2 py-[4px] text-[7px] leading-none font-bold" style={{ borderColor: "#8E979F", color: "#4A555E" }}>
-                          CLICK HERE
+                          {$t("click-here")}
                         </span>
                         <span className="inline-block border px-2 py-[4px] text-[7px] leading-none font-bold" style={{ borderColor: "#8E979F", color: "#4A555E" }}>
-                          {"READ MORE >>>"}
+                          {$t("read-more")}
                         </span>
                       </span>
                       <span className="mt-1.5 block text-[6.5px] leading-[1.35] font-bold" style={{ color: "#4A555E" }}>
-                        NEWS:
+                        {$t("news")}
                       </span>
                       <span className="block h-[4px] w-[92%] rounded-full bg-[#B9C1C8]" />
                       <span className="mt-[3px] block h-[4px] w-[78%] rounded-full bg-[#B9C1C8]" />
                       <span className="mt-[3px] block h-[4px] w-[86%] rounded-full bg-[#B9C1C8]" />
                       <span className="mt-1.5 flex justify-between border-t pt-1 pb-1.5 text-[6px] leading-none" style={{ borderColor: "#C2C9CF", color: "#6B767F" }}>
                         <span>
-                          Visitors: 003847
+                          {$t("visitors-003847")}
                         </span>
                         <span>
-                          Last updated 2011
+                          {$t("last-updated-2011")}
                         </span>
                       </span>
                     </span>
@@ -211,11 +215,11 @@ export default function Page_services() {
                       <span className="flex items-center gap-1.5">
                         <span className="block size-[8px] rounded-[2.5px]" style={{ background: "#0099FF" }} />
                         <span className="text-[8px] leading-none font-medium text-white">
-                          Studio
+                          {$t("studio")}
                         </span>
                       </span>
                       <span className="rounded-full bg-white px-2 py-[4px] text-[7px] leading-none font-medium" style={{ color: "#0A2A44" }}>
-                        Contact
+                        {$t("contact")}
                       </span>
                     </span>
                     <span className="relative block h-full">
@@ -223,14 +227,14 @@ export default function Page_services() {
                       <span className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(6,9,14,0.66) 0%, rgba(6,9,14,0.12) 42%, rgba(6,9,14,0.9) 100%)" }} />
                       <span className="absolute inset-x-0 bottom-0 px-3 pb-2.5">
                         <span className="block font-display text-[13px] leading-[1.1] font-medium text-white">
-                          Same brand, new energy.
+                          {$t("same-brand-new-energy")}
                         </span>
                         <span className="mt-1.5 flex items-center gap-1.5">
                           <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0099FF" }}>
-                            Explore
+                            {$t("explore")}
                           </span>
                           <span className="inline-block rounded-full border border-white/25 px-2.5 py-[5px] text-[8px] leading-none font-medium text-white/85">
-                            2× faster
+                            {$t("2-faster")}
                           </span>
                         </span>
                       </span>
@@ -241,14 +245,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Website\nRedesign"}
+                    {$t("website-redesign")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Transform your existing website into a refined, high-performing experience. We rebuild from the core, improving visuals, usability,…
+                    {$t("transform-your-existing-website-into-a")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -363,14 +367,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"eCommerce\nWebsite Design"}
+                    {$t("ecommerce-website-design")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Ecommerce experiences built for ease and impact. From product display to checkout, every step is optimized for conversion and brand…
+                    {$t("ecommerce-experiences-built-for-ease-and")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -384,13 +388,13 @@ export default function Page_services() {
                   <div className="absolute top-[17%] right-0 bottom-0 left-[7%] flex flex-col overflow-hidden rounded-tl-[5px] bg-[#0A0D12] shadow-[0_14px_34px_-14px_rgba(0,10,22,0.8)]">
                     <span className="flex items-center px-3 pt-2.5 pb-2 text-[7.5px] leading-none text-white/45">
                       <span className="min-w-0 flex-1">
-                        Title
+                        {$t("title")}
                       </span>
                       <span className="w-[27%] shrink-0">
-                        Date
+                        {$t("date")}
                       </span>
                       <span className="w-[15%] shrink-0">
-                        Image
+                        {$t("image")}
                       </span>
                     </span>
                     <span className="flex flex-1 items-center border-t border-white/8 px-3 py-[6px]">
@@ -400,11 +404,11 @@ export default function Page_services() {
                           <path d="M14 3v4h4" />
                         </svg>
                         <span className="truncate text-[8px] leading-none text-white/90">
-                          Designing responsive websites: best practices
+                          {$t("designing-responsive-websites-best-practices")}
                         </span>
                       </span>
                       <span className="w-[27%] shrink-0 text-[7.5px] leading-none text-white/50">
-                        28 June 2024
+                        {$t("28-june-2024")}
                       </span>
                       <span className="w-[15%] shrink-0">
                         <img src="/services/vivid.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
@@ -417,11 +421,11 @@ export default function Page_services() {
                           <path d="M14 3v4h4" />
                         </svg>
                         <span className="truncate text-[8px] leading-none text-white/90">
-                          Elevate your brand. How to design with intent
+                          {$t("elevate-your-brand-how-to-design")}
                         </span>
                       </span>
                       <span className="w-[27%] shrink-0 text-[7.5px] leading-none text-white/50">
-                        8 June 2024
+                        {$t("8-june-2024")}
                       </span>
                       <span className="w-[15%] shrink-0">
                         <img src="/services/brand.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
@@ -434,11 +438,11 @@ export default function Page_services() {
                           <path d="M14 3v4h4" />
                         </svg>
                         <span className="truncate text-[8px] leading-none text-white/90">
-                          The ultimate guide to choosing the platform
+                          {$t("the-ultimate-guide-to-choosing-the")}
                         </span>
                       </span>
                       <span className="w-[27%] shrink-0 text-[7.5px] leading-none text-white/50">
-                        10 May 2024
+                        {$t("10-may-2024")}
                       </span>
                       <span className="w-[15%] shrink-0">
                         <img src="/services/arch.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
@@ -451,11 +455,11 @@ export default function Page_services() {
                           <path d="M14 3v4h4" />
                         </svg>
                         <span className="truncate text-[8px] leading-none text-white/90">
-                          Optimizing your website’s user experience
+                          {$t("optimizing-your-website-s-user-experience")}
                         </span>
                       </span>
                       <span className="w-[27%] shrink-0 text-[7.5px] leading-none text-white/50">
-                        23 April 2024
+                        {$t("23-april-2024")}
                       </span>
                       <span className="w-[15%] shrink-0">
                         <img src="/services/office.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
@@ -468,11 +472,11 @@ export default function Page_services() {
                           <path d="M14 3v4h4" />
                         </svg>
                         <span className="truncate text-[8px] leading-none text-white/90">
-                          Visual storytelling. How to craft compelling pages
+                          {$t("visual-storytelling-how-to-craft-compelling")}
                         </span>
                       </span>
                       <span className="w-[27%] shrink-0 text-[7.5px] leading-none text-white/50">
-                        12 April 2024
+                        {$t("12-april-2024")}
                       </span>
                       <span className="w-[15%] shrink-0">
                         <img src="/services/tee.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
@@ -480,11 +484,11 @@ export default function Page_services() {
                     </span>
                     <span className="mt-auto flex items-center justify-between border-t border-white/8 px-3 py-2 text-[7px] leading-none text-white/40">
                       <span>
-                        5 of 24 entries
+                        {$t("5-of-24-entries")}
                       </span>
                       <span className="flex items-center gap-1">
                         <span className="vv-anim-blink block size-[5px] rounded-full" style={{ background: "#0099FF" }} />
-                        Synced
+                        {$t("synced")}
                       </span>
                     </span>
                   </div>
@@ -493,14 +497,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"CMS &\nDynamic Websites"}
+                    {$t("cms-dynamic-websites")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Dynamic sites powered by an intuitive content management system for effortless updates. Ideal for portfolios, blogs, or…
+                    {$t("dynamic-sites-powered-by-an-intuitive")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -525,14 +529,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Landing Pages\n& Microsites"}
+                    {$t("landing-pages-microsites")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Focused, fast-loading pages created to capture attention and drive conversions. Perfect for campaigns, events, or single service…
+                    {$t("focused-fast-loading-pages-created-to")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -546,7 +550,7 @@ export default function Page_services() {
                   <div className="rounded-[9px] bg-[#18181B] shadow-[0_18px_40px_-14px_rgba(0,4,10,0.9)] absolute top-[4%] -bottom-[6%] left-[3%] w-[43%]">
                     <span className="flex items-center justify-between border-b border-white/8 px-3 py-2.5">
                       <span className="text-[9px] leading-none font-semibold text-white">
-                        Text
+                        {$t("text")}
                       </span>
                       <span className="text-[10px] leading-none text-white/55">
                         {"+"}
@@ -554,92 +558,92 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Styles
+                        {$t("styles")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex items-center gap-1.5 px-2 py-[4px] text-[8px] leading-none">
                         <span className="grid size-[11px] place-items-center rounded-[3.5px] bg-white/20 text-[7px] font-semibold text-white">
-                          T
+                          {$t("t")}
                         </span>
                         <span className="text-white/50">
-                          Select…
+                          {$t("select")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Content
+                        {$t("content")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
-                        Visuvate
+                        {$t("visuvate")}
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Font
+                        {$t("font")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
-                        Onest
+                        {$t("onest")}
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Weight
+                        {$t("weight")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
-                        Medium
+                        {$t("medium")}
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Color
+                        {$t("color")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex items-center gap-1.5 px-2 py-[4px] text-[8px] leading-none">
                         <span className="block size-[11px] rounded-[3.5px] border border-white/25 bg-white" />
-                        {"#FFFFFF"}
+                        {$t("ffffff")}
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Size
+                        {$t("size")}
                       </span>
                       <span className="flex gap-1.5">
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
                           16
                         </span>
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2 py-[4.5px] text-[8px] leading-none text-white/55">
-                          Pixels
+                          {$t("pixels")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Letter
+                        {$t("letter")}
                       </span>
                       <span className="flex gap-1.5">
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
                           {"-2%"}
                         </span>
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2 py-[4.5px] text-[8px] leading-none text-white/55">
-                          Em
+                          {$t("em")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Line
+                        {$t("line")}
                       </span>
                       <span className="flex gap-1.5">
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
                           1.2
                         </span>
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2 py-[4.5px] text-[8px] leading-none text-white/55">
-                          Em
+                          {$t("em")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Align
+                        {$t("align")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex items-center divide-x divide-white/10">
                         <span className="px-2 py-[4.5px] text-white">
@@ -667,20 +671,20 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        OpenType
+                        {$t("opentype")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex items-center gap-1.5 px-2 py-[4px] text-[8px] leading-none">
                         <span className="relative h-[9px] w-[15px] rounded-full" style={{ background: "#0099FF" }}>
                           <span className="absolute top-1/2 right-[1.5px] size-[6px] -translate-y-1/2 rounded-full bg-white" />
                         </span>
-                        Enabled
+                        {$t("enabled")}
                       </span>
                     </span>
                   </div>
                   <div className="rounded-[9px] bg-[#18181B] shadow-[0_18px_40px_-14px_rgba(0,4,10,0.9)] absolute top-[12%] -bottom-[6%] left-[33%] z-10 w-[36%]">
                     <span className="flex items-center justify-between border-b border-white/8 px-3 py-2.5">
                       <span className="text-[9px] leading-none font-semibold text-white">
-                        Fill
+                        {$t("fill")}
                       </span>
                       <span className="text-[10px] leading-none text-white/55">
                         {"×"}
@@ -714,23 +718,23 @@ export default function Page_services() {
                     </span>
                     <span className="mx-3 mt-2.5 flex gap-1.5">
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex-1 px-2 py-[4.5px] text-[8px] leading-none">
-                        {"#0099FF"}
+                        {$t("0099ff")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2 py-[4.5px] text-[8px] leading-none text-white/70">
                         100%
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2 py-[4.5px] text-[8px] leading-none text-white/70">
-                        {"HEX ▾"}
+                        {$t("hex")}
                       </span>
                     </span>
                     <span className="mt-2.5 block border-t border-white/8 px-3 pt-2 text-[8.5px] leading-none font-semibold text-white">
-                      Styles
+                      {$t("styles")}
                     </span>
                   </div>
                   <div className="rounded-[9px] bg-[#18181B] shadow-[0_18px_40px_-14px_rgba(0,4,10,0.9)] absolute top-[20%] right-[2%] -bottom-[6%] z-20 w-[36%]">
                     <span className="flex items-center justify-between border-b border-white/8 px-3 py-2.5">
                       <span className="text-[9px] leading-none font-semibold text-white">
-                        Shadow
+                        {$t("shadow")}
                       </span>
                       <span className="text-[10px] leading-none text-white/55">
                         {"×"}
@@ -738,33 +742,33 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Type
+                        {$t("type")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex p-[2px]">
                         <span className="rounded-[5px] px-2 py-[4px] text-[7.5px] leading-none font-medium text-white/50">
-                          Box
+                          {$t("box")}
                         </span>
                         <span className="rounded-[5px] px-2 py-[4px] text-[7.5px] leading-none font-medium bg-white/18 text-white">
-                          Realistic
+                          {$t("realistic")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Position
+                        {$t("position")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex p-[2px]">
                         <span className="rounded-[5px] px-2 py-[4px] text-[7.5px] leading-none font-medium bg-white/18 text-white">
-                          Outside
+                          {$t("outside")}
                         </span>
                         <span className="rounded-[5px] px-2 py-[4px] text-[7.5px] leading-none font-medium text-white/50">
-                          Inside
+                          {$t("inside")}
                         </span>
                       </span>
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Color
+                        {$t("color")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 flex items-center gap-1.5 px-2 py-[4px] text-[8px] leading-none">
                         <span className="block size-[11px] rounded-[3.5px] border border-white/25 bg-black" />
@@ -773,7 +777,7 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        X
+                        {$t("x")}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
@@ -791,7 +795,7 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Y
+                        {$t("y")}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
@@ -809,7 +813,7 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Diffusion
+                        {$t("diffusion")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
                         0.25
@@ -820,7 +824,7 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center gap-2 px-3 py-[5.5px]">
                       <span className="w-[34%] shrink-0 text-[8px] leading-none text-white/60">
-                        Focus
+                        {$t("focus")}
                       </span>
                       <span className="rounded-[7px] bg-[#1E1E21] text-white/90 px-2.5 py-[4.5px] text-[8px] leading-none">
                         0.5
@@ -835,14 +839,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Consistent\nIdentity"}
+                    {$t("consistent-identity")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Every project follows a unified design language that reflects brand personality across every touchpoint. Consistency enhances trust…
+                    {$t("every-project-follows-a-unified-design")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -856,7 +860,7 @@ export default function Page_services() {
                   <div className="absolute inset-x-[6%] top-[7%] bottom-0 flex flex-col overflow-hidden rounded-t-[5px] bg-[#07090D] shadow-[0_14px_34px_-14px_rgba(0,10,22,0.8)]">
                     <span className="flex items-center justify-between px-3 pt-2.5">
                       <span className="font-display text-[10px] leading-none font-medium text-white">
-                        Hero entrance
+                        {$t("hero-entrance")}
                       </span>
                       <span className="flex items-center gap-1.5 text-[7.5px] leading-none text-white/50">
                         <span className="grid size-[13px] place-items-center rounded-full bg-white/10">
@@ -864,7 +868,7 @@ export default function Page_services() {
                             <path d="M7 4.5l12 7.5-12 7.5z" />
                           </svg>
                         </span>
-                        0.6s
+                        {$t("0-6s")}
                       </span>
                     </span>
                     <span className="relative mx-3 mt-2 block min-h-0 flex-1">
@@ -890,7 +894,7 @@ export default function Page_services() {
                       <span className="flex flex-col gap-1.5">
                         <span className="flex items-center gap-2">
                           <span className="w-[20%] shrink-0 truncate text-[7px] leading-none text-white/55">
-                            Hero
+                            {$t("hero")}
                           </span>
                           <span className="relative h-[9px] min-w-0 flex-1 rounded-full bg-white/6">
                             <span className="absolute top-0 bottom-0 rounded-full" style={{ left: "0%", width: "46%", background: "linear-gradient(90deg, #47B4FF, #0099FF)" }} />
@@ -898,7 +902,7 @@ export default function Page_services() {
                         </span>
                         <span className="flex items-center gap-2">
                           <span className="w-[20%] shrink-0 truncate text-[7px] leading-none text-white/55">
-                            Cards
+                            {$t("cards")}
                           </span>
                           <span className="relative h-[9px] min-w-0 flex-1 rounded-full bg-white/6">
                             <span className="absolute top-0 bottom-0 rounded-full" style={{ left: "15%", width: "40%", background: "linear-gradient(90deg, #47B4FF, #0099FF)" }} />
@@ -906,7 +910,7 @@ export default function Page_services() {
                         </span>
                         <span className="flex items-center gap-2">
                           <span className="w-[20%] shrink-0 truncate text-[7px] leading-none text-white/55">
-                            Nav
+                            {$t("nav")}
                           </span>
                           <span className="relative h-[9px] min-w-0 flex-1 rounded-full bg-white/6">
                             <span className="absolute top-0 bottom-0 rounded-full" style={{ left: "31%", width: "27%", background: "linear-gradient(90deg, #47B4FF, #0099FF)" }} />
@@ -919,10 +923,10 @@ export default function Page_services() {
                     </span>
                     <span className="flex items-center justify-between border-t border-white/8 px-3 py-2 text-[6.5px] leading-none text-white/40">
                       <span>
-                        cubic-bezier(0.22, 0.61, 0.36, 1)
+                        {$t("cubic-bezier-0-22-0-61")}
                       </span>
                       <span>
-                        60 fps
+                        {$t("60-fps")}
                       </span>
                     </span>
                   </div>
@@ -931,14 +935,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Motion &\nInteraction Design"}
+                    {$t("motion-interaction-design")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Purposeful motion that enhances usability and flow. Every animation supports clarity, helping users navigate with ease and delight.…
+                    {$t("purposeful-motion-that-enhances-usability-and")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -957,14 +961,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"UX Centric\nStrategy"}
+                    {$t("ux-centric-strategy")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Design grounded in user behavior and intent. We ensure every page feels intuitive, logical, and conversion-ready. Most websites that…
+                    {$t("design-grounded-in-user-behavior-and")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -979,9 +983,9 @@ export default function Page_services() {
                     <span className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(70% 55% at 50% 108%, rgba(0,120,220,0.32) 0%, rgba(0,80,160,0.1) 55%, transparent 80%)" }} />
                     <span className="relative flex items-center justify-center gap-1.5 pt-3 text-[9px] leading-none font-medium text-white">
                       <span className="font-display text-[11px] leading-none font-bold">
-                        G
+                        {$t("g")}
                       </span>
-                      Google Lighthouse
+                      {$t("google-lighthouse")}
                     </span>
                     <span className="relative flex flex-1 items-center justify-center gap-[6%] px-3 pb-1">
                       <span className="flex flex-col items-center gap-1.5">
@@ -993,7 +997,7 @@ export default function Page_services() {
                           <span className="vv-anim-score font-display leading-none font-medium text-white text-[12px]" />
                         </span>
                         <span className="text-[7.5px] leading-none text-white/65">
-                          SEO
+                          {$t("seo")}
                         </span>
                       </span>
                       <span className="flex flex-col items-center gap-1.5">
@@ -1005,7 +1009,7 @@ export default function Page_services() {
                           <span className="vv-anim-score font-display leading-none font-medium text-white text-[16px]" />
                         </span>
                         <span className="text-[7.5px] leading-none text-white/65">
-                          Performance
+                          {$t("performance")}
                         </span>
                       </span>
                       <span className="flex flex-col items-center gap-1.5">
@@ -1017,7 +1021,7 @@ export default function Page_services() {
                           <span className="vv-anim-score font-display leading-none font-medium text-white text-[12px]" />
                         </span>
                         <span className="text-[7.5px] leading-none text-white/65">
-                          Accessibility
+                          {$t("accessibility")}
                         </span>
                       </span>
                     </span>
@@ -1027,14 +1031,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Performance\nOptimization"}
+                    {$t("performance-optimization")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Beautiful design means little without performance. We fine-tune every site for speed, accessibility, and seamless loading. Speed is…
+                    {$t("beautiful-design-means-little-without")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>
@@ -1047,13 +1051,13 @@ export default function Page_services() {
                   <span className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.17) 1px, transparent 1px)", backgroundSize: "13px 13px", maskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)", WebkitMaskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)" }} />
                   <div className="absolute top-[8%] -bottom-[8%] right-0 left-[13%] flex flex-col overflow-hidden rounded-tl-[6px] bg-[#07090D] shadow-[0_14px_34px_-14px_rgba(0,10,22,0.8)]">
                     <span className="block px-3 pt-2.5 font-display text-[11px] leading-none font-medium text-white">
-                      Overview
+                      {$t("overview")}
                     </span>
                     <span className="mt-2 block border-t border-white/10" />
                     <span className="flex gap-[8%] px-3 pt-2">
                       <span className="flex flex-col gap-1">
                         <span className="flex items-center gap-1 text-[7px] leading-none text-white/50">
-                          Live Visitors
+                          {$t("live-visitors")}
                           <span className="vv-anim-blink block size-[5px] rounded-full" style={{ background: "#0099FF" }} />
                         </span>
                         <span className="font-display text-[13px] leading-none font-medium text-white">
@@ -1062,23 +1066,23 @@ export default function Page_services() {
                       </span>
                       <span className="flex flex-col gap-1">
                         <span className="flex items-center gap-1 text-[7px] leading-none text-white/50">
-                          Unique Visitors
+                          {$t("unique-visitors")}
                         </span>
                         <span className="font-display text-[13px] leading-none font-medium text-white">
-                          1.7M
+                          {$t("1-7m")}
                         </span>
                       </span>
                       <span className="flex flex-col gap-1">
                         <span className="flex items-center gap-1 text-[7px] leading-none text-white/50">
-                          Total Pageviews
+                          {$t("total-pageviews")}
                         </span>
                         <span className="font-display text-[13px] leading-none font-medium text-white">
-                          3.2M
+                          {$t("3-2m")}
                         </span>
                       </span>
                     </span>
                     <span className="mt-1.5 ml-3 block text-[6.5px] leading-none text-white/35">
-                      330k
+                      {$t("330k")}
                     </span>
                     <span className="relative mt-1 block min-h-0 flex-1">
                       <svg viewBox="0 0 100 34" preserveAspectRatio="none" className="absolute inset-0 size-full">
@@ -1101,13 +1105,13 @@ export default function Page_services() {
                   </div>
                   <span className="vv-anim-float absolute top-[57%] left-[4%] z-10 block w-[37%] rounded-[6px] border border-white/12 bg-[#101318]/70 px-2 py-1.5 shadow-[0_10px_26px_-10px_rgba(0,4,10,0.9)] backdrop-blur-[5px]">
                     <span className="block text-[6.5px] leading-none text-white/55">
-                      October 13, 2025
+                      {$t("october-13-2025")}
                     </span>
                     <span className="mt-1.5 block border-t border-white/10 pt-1.5">
                       <span className="flex items-center justify-between text-[7px] leading-none">
                         <span className="flex items-center gap-1 text-white/75">
                           <span className="block size-[4.5px] rounded-full" style={{ background: "#0099FF" }} />
-                          Pageviews
+                          {$t("pageviews")}
                         </span>
                         <span className="font-medium text-white">
                           258,156
@@ -1116,7 +1120,7 @@ export default function Page_services() {
                       <span className="mt-1 flex items-center justify-between text-[7px] leading-none">
                         <span className="flex items-center gap-1 text-white/75">
                           <span className="block size-[4.5px] rounded-full" style={{ background: "#A78BFA" }} />
-                          Visitors
+                          {$t("visitors")}
                         </span>
                         <span className="font-medium text-white">
                           85,458
@@ -1129,14 +1133,14 @@ export default function Page_services() {
               <div className="flex flex-1 items-end justify-between gap-4 pl-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-display text-[16px] leading-[1.25] font-medium tracking-h3 lg:text-[21px]">
-                    {"Maintenance &\nOngoing Support"}
+                    {$t("maintenance-ongoing-support")}
                   </h2>
                   <p className="line-clamp-2 text-[13px] leading-[1.5] text-fg-muted lg:text-[14px]">
-                    Keep your website updated, secure, and performing at its best. We handle ongoing adjustments so you can focus on your business.…
+                    {$t("keep-your-website-updated-secure-and")}
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-[10px] bg-fg/10 px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-fg/20 group-hover:text-fg-strong lg:inline-flex">
-                  Explore
+                  {$t("explore")}
                 </span>
               </div>
             </Link>

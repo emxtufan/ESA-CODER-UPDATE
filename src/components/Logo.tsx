@@ -1,7 +1,10 @@
+import {text} from '@/lib/text';
+
+const $t = text("components/Logo");
 // Visuvate brand marks (module 5783).
 export function VisuvateMark({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 54 54" role="img" aria-label="Visuvate" fill="currentColor">
+    <svg className={className} viewBox="0 0 54 54" role="img" aria-label={$t("visuvate")} fill="currentColor">
       <path d="M54 0L53.2496 1.49965L30.1207 47.7576L27.0136 53.9738L27 54L26.9864 53.9738L23.714 47.4279L19.9214 39.8417C20.8507 34.4376 24.8222 26.8326 25.2471 26.0278C22.6978 29.0847 20.1485 32.1405 17.5981 35.1973L0 0L16.7808 3.32058C16.7808 3.32058 23.5999 16.0263 27.0105 21.8773L36.676 3.33942L54 0Z" />
     </svg>
   );

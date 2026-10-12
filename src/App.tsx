@@ -1,13 +1,13 @@
 import {Suspense, useLayoutEffect} from 'react';
 import SiteLayout from '@/components/layout/SiteLayout';
 import {usePathname} from '@/lib/navigation';
-import {notFound, routes} from '@/routes';
+import {notFound, resolveRoute} from '@/routes';
 
 // Known URLs render inside the (site) layout; anything else gets the root
 // not-found page, which carries its own header and footer.
 export default function App() {
   const pathname = usePathname();
-  const known = pathname in routes;
+  const known = resolveRoute(pathname) !== null;
 
   useLayoutEffect(() => {
     if (!known) document.title = notFound.title;

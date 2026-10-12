@@ -1,0 +1,9 @@
+{
+  "label": "Întrebări frecvente",
+  "itemLabel": "question",
+  "order": 50,
+  "fields": [
+    {"key": "question", "label": "Întrebare", "type": "text", "required": true},
+    {"key": "answer", "label": "Răspuns", "type": "textarea", "required": true}
+  ]
+}

@@ -1,3 +1,6 @@
+import {text} from '@/lib/text';
+
+const $t = text("/terms-and-conditions");
 
 // Converted 1:1 from the RSC payload of /terms-and-conditions.
 export default function Page_terms_and_conditions() {
@@ -6,317 +9,317 @@ export default function Page_terms_and_conditions() {
       <main className="mx-auto max-w-[1425px] px-6 pt-[clamp(80px,9vw,130px)] pb-[clamp(80px,10vw,140px)] md:px-8">
         <article className="max-w-[812px]">
           <h1 className="font-display text-[clamp(36px,4.4vw,56px)] leading-[1] font-medium tracking-[-0.03em]">
-            Terms and conditions
+            {$t("terms-and-conditions")}
           </h1>
           <p className="mt-[26px] text-[16px] leading-[1.6] text-fg">
-            Last Updated: June 2026
+            {$t("last-updated-june-2026")}
           </p>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              1. Acceptance of Terms
+              {$t("1-acceptance-of-terms")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              {"By accessing or using visuvate.com (the \"Website\"), engaging our services, or purchasing any products offered by Visuvate Studio (\"we,\" \"us,\" or \"our\"), you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you should not use our Website, services, or products."}
+              {$t("by-accessing-or-using-visuvate-com")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              2. About Visuvate Studio
+              {$t("2-about-visuvate-studio")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Visuvate Studio is a creative design and development business providing professional services and digital products to individuals, businesses, and organizations worldwide.
+              {$t("visuvate-studio-is-a-creative-design")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              3. Services and Products
+              {$t("3-services-and-products")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Visuvate Studio offers services and products including, but not limited to:
+              {$t("visuvate-studio-offers-services-and-products")}
             </p>
             <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Website design and development
+                {$t("website-design-and-development")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Wix Studio design and development
+                {$t("wix-studio-design-and-development")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Framer design and development
+                {$t("framer-design-and-development")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Graphic design services
+                {$t("graphic-design-services")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Video editing services
+                {$t("video-editing-services")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                3D modeling and visualization services
+                {$t("3d-modeling-and-visualization-services")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Digital products such as templates, components, plugins, design assets, and related resources
+                {$t("digital-products-such-as-templates-components")}
               </li>
             </ul>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Certain projects may be governed by separate proposals, quotations, contracts, statements of work, or service agreements. In the event of any conflict, the specific agreement shall take precedence.
+              {$t("certain-projects-may-be-governed-by")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              4. Orders and Payments
+              {$t("4-orders-and-payments")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              All prices are listed in the applicable currency displayed at the time of purchase.
+              {$t("all-prices-are-listed-in-the")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Payments for services and digital products must be made using approved payment methods.
+              {$t("payments-for-services-and-digital-products")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              We reserve the right to refuse, cancel, or limit any order if we believe fraudulent, unauthorized, or suspicious activity has occurred.
+              {$t("we-reserve-the-right-to-refuse")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Failure to complete payment may result in suspension or termination of services and access to purchased products.
+              {$t("failure-to-complete-payment-may-result")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              5. Digital Product Delivery
+              {$t("5-digital-product-delivery")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Digital products are delivered electronically through download links, remix links, account access, email delivery, or other digital distribution methods.
+              {$t("digital-products-are-delivered-electronically")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Customers are responsible for providing accurate contact information and maintaining access to the email address used during purchase.
+              {$t("customers-are-responsible-for-providing-accurate")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Delivery is considered complete once access has been provided to the customer.
+              {$t("delivery-is-considered-complete-once-access")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              6. Service Delivery
+              {$t("6-service-delivery")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Project timelines are estimates unless otherwise agreed in writing.
+              {$t("project-timelines-are-estimates-unless-otherwise")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Clients are responsible for providing all required content, assets, approvals, and feedback necessary to complete a project.
+              {$t("clients-are-responsible-for-providing-all")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Delays in communication, content submission, approvals, or requested revisions may affect delivery timelines.
+              {$t("delays-in-communication-content-submission")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              7. Refund Policy
+              {$t("7-refund-policy")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              For service-based projects, refunds are subject to the terms outlined in the applicable proposal, invoice, contract, or service agreement.
+              {$t("for-service-based-projects-refunds-are")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              For digital products, including templates, components, plugins, downloadable assets, and digital resources, all sales are generally final due to the nature of digital delivery.
+              {$t("for-digital-products-including-templates")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Refund requests may be reviewed on a case-by-case basis where required by applicable law or where a product was not delivered as described.
+              {$t("refund-requests-may-be-reviewed-on")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Unauthorized chargebacks or payment disputes may result in suspension or termination of access to products and services.
+              {$t("unauthorized-chargebacks-or-payment-disputes-may")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              8. Licensing and Usage Rights
+              {$t("8-licensing-and-usage-rights")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Upon purchase, customers receive a non-exclusive, non-transferable license to use purchased digital products for their intended purpose.
+              {$t("upon-purchase-customers-receive-a-non")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Unless explicitly stated otherwise:
+              {$t("unless-explicitly-stated-otherwise")}
             </p>
             <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Products may be used for personal and commercial projects.
+                {$t("products-may-be-used-for-personal")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Products may not be resold, redistributed, sublicensed, shared, or transferred.
+                {$t("products-may-not-be-resold-redistributed")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Products may not be offered as standalone products for sale.
+                {$t("products-may-not-be-offered-as")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Products may not be claimed as the customer's original work.
+                {$t("products-may-not-be-claimed-as")}
               </li>
               <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Copyright notices and proprietary information must not be removed.
-              </li>
-            </ul>
-          </section>
-          <section className="mt-[42px]">
-            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              9. Intellectual Property
-            </h2>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              All intellectual property rights relating to our Website, services, products, designs, graphics, content, templates, source files, code, branding, and other materials remain the property of Visuvate Studio or its licensors.
-            </p>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Purchasing a product or service does not transfer ownership of intellectual property unless expressly agreed in writing.
-            </p>
-          </section>
-          <section className="mt-[42px]">
-            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              10. Client Content
-            </h2>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Clients retain ownership of content, trademarks, logos, images, and materials they provide.
-            </p>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              By submitting content to us, clients confirm they possess all necessary rights and permissions for its use.
-            </p>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Clients agree to indemnify and hold Visuvate Studio harmless from any claims arising from content supplied by them.
-            </p>
-          </section>
-          <section className="mt-[42px]">
-            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              11. Revisions and Modifications
-            </h2>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Service-based projects may include revisions as specified in the applicable proposal or agreement.
-            </p>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Additional revisions, modifications, or scope changes beyond the agreed scope may incur additional fees.
-            </p>
-          </section>
-          <section className="mt-[42px]">
-            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              12. Third-Party Platforms and Services
-            </h2>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Our services and products may integrate with or be designed for use with third-party platforms and services, including but not limited to:
-            </p>
-            <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Wix Studio
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Framer
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Google
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Stripe
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Lemon Squeezy
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Other software providers and online services
-              </li>
-            </ul>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              We are not responsible for outages, policy changes, pricing changes, account restrictions, or functionality changes imposed by third-party providers.
-            </p>
-          </section>
-          <section className="mt-[42px]">
-            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              13. Prohibited Use
-            </h2>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Users agree not to:
-            </p>
-            <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Violate any applicable laws or regulations.
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Use our products or services for unlawful purposes.
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Copy, reproduce, redistribute, or resell digital products without authorization.
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Circumvent licensing, payment systems, or access controls.
-              </li>
-              <li className="text-[16px] leading-[1.6] text-fg-muted">
-                Reverse engineer, decompile, or attempt to extract proprietary code where prohibited by law.
+                {$t("copyright-notices-and-proprietary-information")}
               </li>
             </ul>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              14. Disclaimer of Warranties
+              {$t("9-intellectual-property")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              {"The Website, products, and services are provided on an \"as is\" and \"as available\" basis."}
+              {$t("all-intellectual-property-rights-relating-to")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              To the fullest extent permitted by law, Visuvate Studio disclaims all warranties, express or implied, including warranties of merchantability, fitness for a particular purpose, and non-infringement.
-            </p>
-            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              We do not guarantee uninterrupted availability, compatibility with all systems, or error-free operation.
+              {$t("purchasing-a-product-or-service-does")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              15. Limitation of Liability
+              {$t("10-client-content")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              To the maximum extent permitted by law, Visuvate Studio shall not be liable for any indirect, incidental, consequential, special, exemplary, or punitive damages arising from the use of our Website, products, or services.
+              {$t("clients-retain-ownership-of-content-trademarks")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Our total liability for any claim shall not exceed the amount paid by the customer for the relevant product or service.
+              {$t("by-submitting-content-to-us-clients")}
+            </p>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("clients-agree-to-indemnify-and-hold")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              16. Indemnification
+              {$t("11-revisions-and-modifications")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Users agree to indemnify and hold harmless Visuvate Studio, its owners, contractors, affiliates, and representatives from any claims, damages, liabilities, costs, and expenses arising from their use of the Website, products, services, or violation of these Terms.
+              {$t("service-based-projects-may-include-revisions")}
+            </p>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("additional-revisions-modifications-or-scope")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              17. Termination
+              {$t("12-third-party-platforms-and-services")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              We reserve the right to suspend, restrict, or terminate access to our Website, products, or services at our discretion if these Terms are violated.
+              {$t("our-services-and-products-may-integrate")}
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("wix-studio")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("framer")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("google")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("stripe")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("lemon-squeezy")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("other-software-providers-and-online-services")}
+              </li>
+            </ul>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("we-are-not-responsible-for-outages")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              18. Changes to These Terms
+              {$t("13-prohibited-use")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              We may update these Terms and Conditions from time to time.
+              {$t("users-agree-not-to")}
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-[26px] marker:text-fg-subtle">
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("violate-any-applicable-laws-or-regulations")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("use-our-products-or-services-for")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("copy-reproduce-redistribute-or-resell-digital")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("circumvent-licensing-payment-systems-or-access")}
+              </li>
+              <li className="text-[16px] leading-[1.6] text-fg-muted">
+                {$t("reverse-engineer-decompile-or-attempt-to")}
+              </li>
+            </ul>
+          </section>
+          <section className="mt-[42px]">
+            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
+              {$t("14-disclaimer-of-warranties")}
+            </h2>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("the-website-products-and-services-are")}
             </p>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              Updated versions will be published on this page and become effective immediately upon posting unless otherwise stated.
+              {$t("to-the-fullest-extent-permitted-by")}
+            </p>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("we-do-not-guarantee-uninterrupted-availability")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              19. Governing Law
+              {$t("15-limitation-of-liability")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              These Terms and Conditions shall be governed by and interpreted in accordance with the laws of India, without regard to conflict of law principles.
+              {$t("to-the-maximum-extent-permitted-by")}
+            </p>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("our-total-liability-for-any-claim")}
             </p>
           </section>
           <section className="mt-[42px]">
             <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
-              20. Contact Information
+              {$t("16-indemnification")}
             </h2>
             <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
-              If you have any questions regarding these Terms and Conditions, please contact:
+              {$t("users-agree-to-indemnify-and-hold")}
+            </p>
+          </section>
+          <section className="mt-[42px]">
+            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
+              {$t("17-termination")}
+            </h2>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("we-reserve-the-right-to-suspend")}
+            </p>
+          </section>
+          <section className="mt-[42px]">
+            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
+              {$t("18-changes-to-these-terms")}
+            </h2>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("we-may-update-these-terms-and")}
+            </p>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("updated-versions-will-be-published-on")}
+            </p>
+          </section>
+          <section className="mt-[42px]">
+            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
+              {$t("19-governing-law")}
+            </h2>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("these-terms-and-conditions-shall-be")}
+            </p>
+          </section>
+          <section className="mt-[42px]">
+            <h2 className="text-[18px] leading-[1.6] font-medium text-fg">
+              {$t("20-contact-information")}
+            </h2>
+            <p className="mt-2 text-[16px] leading-[1.6] text-fg-muted">
+              {$t("if-you-have-any-questions-regarding")}
             </p>
           </section>
           <address className="mt-6 space-y-1 text-[16px] leading-[1.6] text-fg-muted not-italic">
             <p>
-              {"Email: contact@visuvate.com"}
+              {$t("email-contact-visuvate-com")}
             </p>
             <p>
-              Website: https://www.visuvate.com
+              {$t("website-https-www-visuvate-com")}
             </p>
           </address>
         </article>

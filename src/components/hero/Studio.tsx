@@ -38,6 +38,10 @@ import {
 import PreviewPortal from './PreviewPortal';
 import PropertyPanel from './PropertyPanel';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/hero/Studio");
+
 export default function Studio({projects}: {projects: any[]}) {
   const [tab, setTab] = useState('Layers');
   const [langIndex, setLangIndex] = useState(0);
@@ -255,7 +259,7 @@ export default function Studio({projects}: {projects: any[]}) {
             <button
               onClick={() => setPanelsOpen((open) => !(open ?? true))}
               aria-expanded={panelsOpen ?? true}
-              aria-label={(panelsOpen ?? true) ? 'Collapse panels' : 'Expand panels'}
+              aria-label={(panelsOpen ?? true) ? $t("collapse-panels") : $t("expand-panels")}
               className="flex w-fit items-center gap-1 rounded-[6px] bg-tint-weak px-2 py-1.5 transition-colors hover:bg-tint"
             >
               <VisuvateMark className="size-[18px] text-fg" />
@@ -301,10 +305,10 @@ export default function Studio({projects}: {projects: any[]}) {
               </div>
               <div className="hidden h-[30px] w-[170px] items-center gap-1 rounded-[6px] border border-hairline p-1 sm:flex">
                 <span className="flex flex-1 items-center justify-center gap-0.5 text-[12px] leading-none">
-                  <span className="text-fg-subtle">w</span>
+                  <span className="text-fg-subtle">{$t("w")}</span>
                   <span className="text-fg tabular-nums">
                     {winWidth || '0000'}
-                    {'px'}
+                    {$t("px")}
                   </span>
                 </span>
                 <span className="text-[14px] leading-none text-fg-subtle">|</span>
@@ -319,8 +323,8 @@ export default function Studio({projects}: {projects: any[]}) {
             </div>
             <div className="flex justify-self-end">
               {[
-                {src: '/team/avatar-2.58306c73.jpg', alt: 'Visuvate team member'},
-                {src: '/team/avatar-1.0c4e3fc0.jpg', alt: 'Visuvate team member'},
+                {src: '/team/avatar-2.58306c73.jpg', alt: $t("visuvate-team-member")},
+                {src: '/team/avatar-1.0c4e3fc0.jpg', alt: $t("visuvate-team-member")},
               ].map((avatar, i) => (
                 <img
                   key={avatar.src}
@@ -473,7 +477,7 @@ export default function Studio({projects}: {projects: any[]}) {
                           }}
                           className={`pointer-events-none absolute rounded-full bg-blue-700 px-3.5 py-2 text-[12px] leading-none font-medium whitespace-nowrap text-white shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] transition-[opacity,scale] duration-200 ease-brand ${isHovered && !previewTarget ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
                         >
-                          {isSelect ? 'Press & Hold' : 'View Project'}
+                          {isSelect ? $t("press-hold") : $t("view-project")}
                         </span>
                       </div>
                     );
@@ -599,7 +603,7 @@ export default function Studio({projects}: {projects: any[]}) {
         <span aria-hidden className="pointer-events-none absolute top-[18px] bottom-0 right-[5px] w-[2px] bg-bg" />
       </div>
       <div className="hh-editor pointer-events-none absolute inset-x-0 bottom-4 z-30 flex justify-center">
-        <div role="toolbar" aria-label="Canvas tools" className="pointer-events-auto flex gap-1 rounded-[10px] border border-hairline bg-bg p-[5px]">
+        <div role="toolbar" aria-label={$t("canvas-tools")} className="pointer-events-auto flex gap-1 rounded-[10px] border border-hairline bg-bg p-[5px]">
           {TOOLS.map((item) => (
             <Tip key={item.id} text={item.tip}>
               <button
@@ -612,17 +616,17 @@ export default function Studio({projects}: {projects: any[]}) {
               </button>
             </Tip>
           ))}
-          <Tip text="Marquee speed">
+          <Tip text={$t("marquee-speed")}>
             <button
               onClick={() => setSpeedIndex((i) => (i + 1) % SPEEDS.length)}
               aria-label={`Ticker speed, ${speed}x`}
               className="grid size-10 place-items-center rounded-[6px] text-[13px] leading-none font-semibold text-fg transition-colors hover:bg-tint"
             >
               {speed}
-              {'X'}
+              {$t("x")}
             </button>
           </Tip>
-          <Tip text="Canvas theme">
+          <Tip text={$t("canvas-theme")}>
             <button
               onClick={() => changeTheme('dark' === theme ? 'light' : 'dark')}
               aria-label={`Canvas theme, ${theme}`}
@@ -631,7 +635,7 @@ export default function Studio({projects}: {projects: any[]}) {
               {'light' === theme ? sunIcon('size-6') : moonIcon('size-6')}
             </button>
           </Tip>
-          <Tip text={langTipOpen ? (LANGUAGE_NAMES[locale.code] ?? locale.code) : 'Interface language'} open={langTipOpen}>
+          <Tip text={langTipOpen ? (LANGUAGE_NAMES[locale.code] ?? locale.code) : $t("interface-language")} open={langTipOpen}>
             <button
               onClick={() => {
                 setLangIndex((i) => (i + 1) % LOCALES.length);

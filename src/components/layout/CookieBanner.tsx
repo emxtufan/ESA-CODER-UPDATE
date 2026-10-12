@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import Link from '@/components/Link';
 import { consentState } from '@/lib/consent';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/layout/CookieBanner");
+
 const STORAGE_KEY = 'vv-consent';
 
 export default function CookieBanner() {
@@ -50,7 +54,7 @@ export default function CookieBanner() {
 
   return (
     <section
-      aria-label="Cookie consent"
+      aria-label={$t("cookie-consent")}
       className={`fixed bottom-4 left-4 z-[140] w-[calc(100%-32px)] max-w-[380px] transition-[opacity,translate] duration-[380ms] ease-brand motion-reduce:transition-none sm:bottom-6 sm:left-6 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'}`}
     >
       <div
@@ -78,15 +82,15 @@ export default function CookieBanner() {
         />
         <div className="relative">
           <p className="font-display text-[16px] leading-none font-medium tracking-[-0.02em]">
-            Cookies, briefly
+            {$t("cookies-briefly")}
           </p>
           <p className="mt-2.5 text-[13px] leading-[1.6] text-fg-muted">
-            One optional cookie tells us which pages earn attention, and lets us see if our ads led to a contact request. Nothing personal, nothing sold — details in the{' '}
+            {$t("one-optional-cookie-tells-us-which")}{' '}
             <Link
               href="/privacy-policy"
               className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg"
             >
-              privacy policy
+              {$t("privacy-policy")}
             </Link>
             .
           </p>
@@ -96,14 +100,14 @@ export default function CookieBanner() {
               onClick={() => choose(false)}
               className="rounded-full border border-line-strong px-4 py-[9px] text-[13px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
             >
-              Decline
+              {$t("decline")}
             </button>
             <button
               type="button"
               onClick={() => choose(true)}
               className="rounded-full border border-transparent bg-fg px-4 py-[9px] text-[13px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
             >
-              Accept
+              {$t("accept")}
             </button>
           </div>
         </div>

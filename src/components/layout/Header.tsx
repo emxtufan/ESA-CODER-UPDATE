@@ -7,6 +7,10 @@ import { VisuvateWordmark } from '@/components/Logo';
 import { usePathname } from '@/lib/navigation';
 import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/layout/Header");
+
 function ThemeToggle() {
   const [theme, setTheme] = useState(() =>
     typeof document !== 'undefined' &&
@@ -85,12 +89,12 @@ function ThemeToggle() {
 }
 
 const NAV_ITEMS = [
-  { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about-us' },
-  { label: 'Works', href: '/works' },
-  { label: 'Services', href: '/services' },
-  { label: 'Blogs', href: '/blog' },
-  { label: 'Templates', href: '/templates' },
+  { label: $t("home"), href: '/' },
+  { label: $t("about-us"), href: '/about-us' },
+  { label: $t("works"), href: '/works' },
+  { label: $t("services"), href: '/services' },
+  { label: $t("blogs"), href: '/blog' },
+  { label: $t("templates"), href: '/templates' },
 ];
 
 export default function Header() {
@@ -148,12 +152,12 @@ export default function Header() {
         >
           <Link
             href="/"
-            aria-label="Visuvate — home"
+            aria-label={$t("visuvate-home")}
             className={`flex items-center justify-self-start ${compact ? 'min-[981px]:pl-3' : ''}`}
           >
             <VisuvateWordmark className="h-5 w-auto" />
           </Link>
-          <nav aria-label="Primary" className="hidden items-center gap-7 min-[981px]:flex">
+          <nav aria-label={$t("primary")} className="hidden items-center gap-7 min-[981px]:flex">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
@@ -170,13 +174,13 @@ export default function Header() {
               href="/contact"
               className="inline-flex h-[38px] shrink-0 items-center rounded-full border border-transparent bg-fg px-4 text-[13px] font-medium tracking-[-0.01em] whitespace-nowrap text-bg transition-colors hover:bg-fg-strong min-[981px]:h-[36px] min-[981px]:px-[18px]"
             >
-              <RollText text="Connect" className="min-[981px]:hidden" />
-              <RollText text="Let’s Connect" className="hidden min-[981px]:inline" />
+              <RollText text={$t("connect")} className="min-[981px]:hidden" />
+              <RollText text={$t("let-s-connect")} className="hidden min-[981px]:inline" />
             </Link>
             <button
               onClick={() => setMenuOpen((open) => !open)}
               aria-expanded={menuOpen}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-label={menuOpen ? $t("close-menu") : $t("open-menu")}
               className={`grid size-[42px] shrink-0 place-items-center rounded-full border transition-colors duration-300 ease-brand min-[981px]:hidden ${menuOpen ? 'border-fg bg-fg' : 'border-line-strong'}`}
             >
               <span className="relative block h-[10px] w-4">
@@ -195,7 +199,7 @@ export default function Header() {
         inert={!menuOpen}
         className={`fixed inset-0 z-[190] flex flex-col justify-between bg-bg px-6 pt-[104px] pb-10 transition-[clip-path] duration-[600ms] ease-brand min-[981px]:hidden ${menuOpen ? '[clip-path:inset(0)]' : 'pointer-events-none [clip-path:inset(0_0_100%_0)]'}`}
       >
-        <nav aria-label="Mobile" className="flex flex-col">
+        <nav aria-label={$t("mobile")} className="flex flex-col">
           {NAV_ITEMS.map((item, index) => {
             const active = isActive(item.href);
             return (
@@ -236,13 +240,13 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="inline-flex h-[52px] w-full items-center justify-center rounded-full bg-blue-500 text-[15px] font-medium text-white transition-opacity hover:opacity-90"
           >
-            <RollText text="Let’s Connect" />
+            <RollText text={$t("let-s-connect")} />
           </Link>
           <a
             href="mailto:contact@visuvate.com"
             className="text-center text-[13px] text-fg-subtle transition-colors hover:text-fg-muted"
           >
-            contact@visuvate.com
+            {$t("contact-visuvate-com")}
           </a>
         </div>
       </div>

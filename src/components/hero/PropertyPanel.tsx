@@ -1,6 +1,10 @@
 // module 1659 (inspector property panel)
 import type {ReactNode} from 'react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/hero/PropertyPanel");
+
 const chevronDown = (
   <svg viewBox="0 0 24 24" className="size-2.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 9l6 6 6-6" />
@@ -136,7 +140,7 @@ export default function PropertyPanel({t = (e: string) => e}: {t?: (word: string
       <Group title={t('Size')} plus>
         <Row label={t('Width')}>
           <Pair>
-            <Field>1fr</Field>
+            <Field>{$t("1fr")}</Field>
             <Select>{t('Fill')}</Select>
           </Pair>
         </Row>
@@ -146,7 +150,7 @@ export default function PropertyPanel({t = (e: string) => e}: {t?: (word: string
             <Select>{t('Fit')}</Select>
           </Pair>
         </Row>
-        <Row label={t('Max Width')}>
+        <Row label={t($t("max-width"))}>
           <Pair>
             <Field>1200</Field>
             <Select>{t('Fixed')}</Select>
@@ -220,7 +224,7 @@ export default function PropertyPanel({t = (e: string) => e}: {t?: (word: string
                 <path d="M12 2.5l1.9 5.35a3 3 0 0 0 1.8 1.8L21 11.5l-5.3 1.85a3 3 0 0 0-1.8 1.8L12 20.5l-1.9-5.35a3 3 0 0 0-1.8-1.8L3 11.5l5.3-1.85a3 3 0 0 0 1.8-1.8L12 2.5Z" />
               </svg>
             </span>
-            Effect
+            {$t("effect")}
           </span>
         </Row>
       </Group>

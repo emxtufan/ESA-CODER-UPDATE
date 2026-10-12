@@ -1,0 +1,18 @@
+{
+  "label": "Template-uri",
+  "itemLabel": "title",
+  "itemImage": "image",
+  "order": 30,
+  "fields": [
+    {"key": "title", "label": "Nume", "type": "text", "required": true},
+    {"key": "category", "label": "Categorie", "type": "text"},
+    {"key": "image", "label": "Imagine", "type": "image"},
+    {"key": "href", "label": "Link de cumpărare", "type": "url"},
+    {"key": "platformName", "label": "Platformă", "type": "select", "options": ["Framer", "Wix Studio"]},
+    {"key": "price", "label": "Preț", "type": "text"},
+    {"key": "was", "label": "Preț vechi", "type": "text"},
+    {"key": "platformLogo", "label": "Logo platformă", "type": "image", "advanced": true},
+    {"key": "id", "label": "ID", "type": "hidden"}
+  ],
+  "defaults": {"price": "$50", "platformName": "Wix Studio", "platformLogo": "/media/12f174fbe6106094af5b31e0042943c2.png"}
+}

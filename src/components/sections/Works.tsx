@@ -8,6 +8,10 @@ import RollText from '@/components/RollText';
 import { ShaderCanvas } from '@/components/ShaderCanvas';
 import { useRouter } from '@/lib/navigation';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Works");
+
 const CARD_ASPECT = 30 / 14;
 
 // Coil (curved pole of cards) vertex shader
@@ -440,7 +444,7 @@ function Coil({ items, progressRef }: { items: any[]; progressRef: any }) {
   return (
     <>
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
-      <nav aria-label="Featured work" className="sr-only">
+      <nav aria-label={$t("featured-work")} className="sr-only">
         <ul>
           {items.map((item) => (
             <li key={item.slug}>
@@ -566,7 +570,7 @@ export default function Works({ items }: { items: any[] }) {
           <h2
             className={`text-center font-display text-[clamp(56px,10vw,150px)] leading-[1] font-medium tracking-[-0.05em] transition-opacity duration-500 ease-brand ${showAll ? 'opacity-0' : 'opacity-100'}`}
           >
-            Our <span className="vv-accent">Works</span>
+            {$t("our")}<span className="vv-accent">{$t("works")}</span>
           </h2>
         </div>
         <div ref={coilRef} className="absolute inset-0 z-10">
@@ -587,7 +591,7 @@ export default function Works({ items }: { items: any[] }) {
           >
             <span className="inline-flex font-display text-[clamp(44px,7vw,104px)] leading-[1] font-medium tracking-[-0.05em]">
               <span className="vv-accent">
-                <RollText text="View all" />
+                <RollText text={$t("view-all")} />
               </span>
             </span>
           </Link>

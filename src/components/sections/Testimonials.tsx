@@ -5,6 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { createGlobe } from '@/lib/webgl';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Testimonials");
+
 const DARK_GLOBE = {
   dark: 1,
   diffuse: 0.55,
@@ -341,7 +345,7 @@ export default function Testimonials({ items, stats }: { items: any[]; stats: an
           id="testimonials-heading"
           className="text-center font-display text-[clamp(46px,9vw,132px)] leading-[1] font-medium tracking-[-0.05em]"
         >
-          Testimonials
+          {$t("testimonials")}
         </h2>
         <div
           className="vv-quote-stage relative mt-7 md:mt-[clamp(-44px,-3vw,-18px)]"
@@ -386,7 +390,7 @@ export default function Testimonials({ items, stats }: { items: any[]; stats: an
                       {pad(active)}
                     </span>{' '}
                     <span aria-hidden>/ {pad(items.length - 1)}</span>
-                    <span className="sr-only">of {items.length}</span>
+                    <span className="sr-only">{$t("of")}{items.length}</span>
                   </p>
                   <span
                     aria-hidden
@@ -410,7 +414,7 @@ export default function Testimonials({ items, stats }: { items: any[]; stats: an
                       {item.rating ? (
                         <div className="flex items-center gap-2.5">
                           <Stars filled={item.rating} />
-                          <span className="sr-only">{item.rating} out of 5</span>
+                          <span className="sr-only">{item.rating}{$t("out-of-5")}</span>
                         </div>
                       ) : null}
                       <blockquote
@@ -457,7 +461,7 @@ export default function Testimonials({ items, stats }: { items: any[]; stats: an
                   <button
                     type="button"
                     onClick={() => goTo(active - 1)}
-                    aria-label="Previous testimonial"
+                    aria-label={$t("previous-testimonial")}
                     className="grid size-10 place-items-center rounded-full border border-line text-fg-muted transition-colors hover:bg-surface hover:text-fg"
                   >
                     {chevron}
@@ -465,7 +469,7 @@ export default function Testimonials({ items, stats }: { items: any[]; stats: an
                   <button
                     type="button"
                     onClick={() => goTo(active + 1)}
-                    aria-label="Next testimonial"
+                    aria-label={$t("next-testimonial")}
                     className="grid size-10 place-items-center rounded-full border border-line text-fg-muted transition-colors hover:bg-surface hover:text-fg"
                   >
                     <span className="rotate-180">{chevron}</span>

@@ -5,6 +5,10 @@ import RollText from '@/components/RollText';
 import countries from './countries';
 import timeZoneCountries from './timeZoneCountries';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/contact/ContactForm");
+
 const selectClass =
   'h-10 w-full rounded-[10px] border px-3 text-[14px] transition-colors border-[var(--vv-field-border)] bg-[var(--vv-field-bg)] text-fg-strong focus:border-fg/60 focus:outline-none';
 const inputClass =
@@ -12,7 +16,7 @@ const inputClass =
 
 function CountryCombobox({
   name = 'country',
-  placeholder = 'Your Country',
+  placeholder = $t("your-country"),
   value,
   onPick,
 }: {
@@ -134,7 +138,7 @@ function CountryCombobox({
               </li>
             ))
           ) : (
-            <li className="px-3 py-2 text-[14px] text-fg-subtle">No match</li>
+            <li className="px-3 py-2 text-[14px] text-fg-subtle">{$t("no-match")}</li>
           )}
         </ul>
       ) : null}
@@ -143,14 +147,14 @@ function CountryCombobox({
 }
 
 const projectTypes = [
-  'Website Design',
-  'Website Redesign',
+  $t("website-design"),
+  $t("website-redesign"),
   'eCommerce',
-  'Framer Development',
-  'Wix Studio Development',
+  $t("framer-development"),
+  $t("wix-studio-development"),
   'Other',
 ];
-const pageCounts = ['1 – 3', '4 – 6', '7 – 10', '10+', 'Not sure yet'];
+const pageCounts = ['1 – 3', '4 – 6', '7 – 10', '10+', $t("not-sure-yet")];
 const budgetsUsd = ['$350 – $800', '$800 – $1,500', '$1,500 – $3,000', 'Above $3,000'];
 const budgetsInr = [
   '₹20,000 – ₹50,000',
@@ -213,7 +217,7 @@ function RequiredMark() {
       <span aria-hidden className="text-blue-500">
         {' '}*
       </span>
-      <span className="sr-only"> (required)</span>
+      <span className="sr-only">{$t("required")}</span>
     </>
   );
 }
@@ -271,20 +275,20 @@ export default function ContactForm() {
     const data = new FormData(form);
     const get = (key: string) => String(data.get(key) ?? '').trim();
     const found: Record<string, string> = {};
-    get('name') || (found.name = 'Please add your name.');
+    get('name') || (found.name = $t("please-add-your-name"));
     const email = get('email');
     if (email) {
-      /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || (found.email = 'That email address does not look right.');
+      /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || (found.email = $t("that-email-address-does-not-look"));
     } else {
-      found.email = 'Please add your email.';
+      found.email = $t("please-add-your-email");
     }
-    get('country') || (found.country = 'Please choose your country.');
-    get('budget') || (found.budget = 'Please choose a budget range.');
+    get('country') || (found.country = $t("please-choose-your-country"));
+    get('budget') || (found.budget = $t("please-choose-a-budget-range"));
     const preferred = get('preferred_response_method');
-    preferred || (found.preferred_response_method = 'Please choose how we should reply.');
+    preferred || (found.preferred_response_method = $t("please-choose-how-we-should-reply"));
     'WhatsApp' !== preferred ||
       get('phone') ||
-      (found.phone = 'Add a phone number so we can reach you on WhatsApp.');
+      (found.phone = $t("add-a-phone-number-so-we"));
     if (Object.keys(found).length) {
       setErrors(found);
       setFormError(null);
@@ -309,13 +313,13 @@ export default function ContactForm() {
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.ok) {
         setSubmitting(false);
-        setFormError(json?.error ?? 'Your message did not send. Please try again.');
+        setFormError(json?.error ?? $t("your-message-did-not-send-please"));
         return;
       }
       router.push('/contact/thank-you');
     } catch {
       setSubmitting(false);
-      setFormError('Your message did not send — check your connection, or email contact@visuvate.com.');
+      setFormError($t("your-message-did-not-send-check"));
     }
   }
 
@@ -330,30 +334,30 @@ export default function ContactForm() {
         className="pointer-events-none absolute h-0 w-0 opacity-0"
       />
       <div className="grid grid-cols-2 gap-x-3 gap-y-[21px]">
-        <Field label="Name" required name="name" error={errors.name}>
+        <Field label={$t("name")} required name="name" error={errors.name}>
           <input
             name="name"
             autoComplete="name"
-            placeholder="Name"
+            placeholder={$t("name")}
             className={inputClass}
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'name-error' : undefined}
             onChange={() => clearError('name')}
           />
         </Field>
-        <Field label="Email" required name="email" error={errors.email}>
+        <Field label={$t("email")} required name="email" error={errors.email}>
           <input
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="Email"
+            placeholder={$t("email")}
             className={inputClass}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
             onChange={() => clearError('email')}
           />
         </Field>
-        <Field label="Country" required name="country" error={errors.country}>
+        <Field label={$t("country")} required name="country" error={errors.country}>
           <CountryCombobox
             value={country}
             onPick={(picked) => {
@@ -364,28 +368,28 @@ export default function ContactForm() {
             }}
           />
         </Field>
-        <Field label="Phone" required={method === 'WhatsApp'} name="phone" error={errors.phone}>
+        <Field label={$t("phone")} required={method === 'WhatsApp'} name="phone" error={errors.phone}>
           <input
             name="phone"
             type="tel"
             autoComplete="tel"
-            placeholder="Phone number"
+            placeholder={$t("phone-number")}
             className={inputClass}
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? 'phone-error' : undefined}
             onChange={() => clearError('phone')}
           />
         </Field>
-        <Field label="Project Type">
-          <SelectField name="projectType" placeholder="Select...." options={projectTypes} />
+        <Field label={$t("project-type")}>
+          <SelectField name="projectType" placeholder={$t("select")} options={projectTypes} />
         </Field>
-        <Field label="Number of pages">
-          <SelectField name="pages" placeholder="Select...." options={pageCounts} />
+        <Field label={$t("number-of-pages")}>
+          <SelectField name="pages" placeholder={$t("select")} options={pageCounts} />
         </Field>
       </div>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-[14px] leading-[1.4] text-fg-muted">
-          Budget range
+          {$t("budget-range")}
           <RequiredMark />
         </legend>
         <div className="grid grid-cols-2 gap-x-3 gap-y-3">
@@ -411,17 +415,17 @@ export default function ContactForm() {
         </div>
         <FieldError id="budget-error" message={errors.budget} />
       </fieldset>
-      <Field label="What do you need help with?">
+      <Field label={$t("what-do-you-need-help-with")}>
         <textarea
           name="message"
           rows={3}
-          placeholder="Tell us what you’re looking to create and what matters most…"
+          placeholder={$t("tell-us-what-you-re-looking")}
           className="w-full resize-y rounded-[10px] border border-[var(--vv-field-border)] bg-[var(--vv-field-bg)] px-3 py-2.5 text-[14px] leading-[1.6] text-fg-strong transition-colors placeholder:text-fg-subtle focus:border-fg/60 focus:outline-none"
         />
       </Field>
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-1 text-[14px] leading-[1.4] text-fg-muted">
-          Preferred Response Method
+          {$t("preferred-response-method")}
           <RequiredMark />
         </legend>
         <div className="flex gap-[155px]">
@@ -461,7 +465,7 @@ export default function ContactForm() {
         disabled={submitting}
         className="h-[39px] w-[142px] rounded-full bg-fg text-[14px] font-medium text-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <RollText text={submitting ? 'Sending…' : 'Submit'} />
+        <RollText text={submitting ? $t("sending") : $t("submit")} />
       </button>
     </form>
   );

@@ -1,3 +1,6 @@
+import {text} from '@/lib/text';
+
+const $t = text("components/sections/Marquee");
 
 // Server component, converted 1:1 from the RSC payload.
 export default function Marquee() {
@@ -6,51 +9,25 @@ export default function Marquee() {
       <div className="vv-marquee-track flex w-max text-[24px] leading-[1.2] text-fg-strong" style={{ "--vv-marquee-copies": 5 }}>
         <span className="flex shrink-0 items-center whitespace-nowrap">
           <span className="flex items-center">
-            UI/UX Design
+            {$t("ui-ux-design")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Brand Identity
+            {$t("brand-identity")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Code Customization
+            {$t("code-customization")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Website Design & Development
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-        </span>
-        <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
-          <span className="flex items-center">
-            UI/UX Design
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Brand Identity
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Code Customization
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Website Design & Development
+            {$t("website-design-development")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
@@ -58,51 +35,25 @@ export default function Marquee() {
         </span>
         <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
           <span className="flex items-center">
-            UI/UX Design
+            {$t("ui-ux-design")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Brand Identity
+            {$t("brand-identity")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Code Customization
+            {$t("code-customization")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Website Design & Development
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-        </span>
-        <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
-          <span className="flex items-center">
-            UI/UX Design
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Brand Identity
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Code Customization
-            <span aria-hidden className="mx-[18px] text-fg-subtle">
-              {"•"}
-            </span>
-          </span>
-          <span className="flex items-center">
-            Website Design & Development
+            {$t("website-design-development")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
@@ -110,25 +61,77 @@ export default function Marquee() {
         </span>
         <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
           <span className="flex items-center">
-            UI/UX Design
+            {$t("ui-ux-design")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Brand Identity
+            {$t("brand-identity")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Code Customization
+            {$t("code-customization")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>
           </span>
           <span className="flex items-center">
-            Website Design & Development
+            {$t("website-design-development")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+        </span>
+        <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
+          <span className="flex items-center">
+            {$t("ui-ux-design")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("brand-identity")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("code-customization")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("website-design-development")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+        </span>
+        <span aria-hidden className="flex shrink-0 items-center whitespace-nowrap">
+          <span className="flex items-center">
+            {$t("ui-ux-design")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("brand-identity")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("code-customization")}
+            <span aria-hidden className="mx-[18px] text-fg-subtle">
+              {"•"}
+            </span>
+          </span>
+          <span className="flex items-center">
+            {$t("website-design-development")}
             <span aria-hidden className="mx-[18px] text-fg-subtle">
               {"•"}
             </span>

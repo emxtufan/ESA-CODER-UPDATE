@@ -4,36 +4,15 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
-const FAQS = [
-  {
-    q: 'How do I get started with Visuvate?',
-    a: 'Simply fill out the contact form, and we’ll reach out through email or WhatsApp based on your preferred method of communication.',
-  },
-  {
-    q: 'How involved do I need to be during the project?',
-    a: 'You only need to share your content, preferences, and feedback at important stages. We handle the complete design, development, testing, and launch process.',
-  },
-  {
-    q: 'How long does it take to build a website?',
-    a: 'Most websites are completed within 2–6 weeks, depending on the number of pages, design direction, and required features.',
-  },
-  {
-    q: 'Do you provide support after the website is launched?',
-    a: 'Yes. We offer post-launch maintenance, content updates, and technical support to ensure your website continues to perform well.',
-  },
-  {
-    q: 'Do you create responsive and eCommerce websites?',
-    a: 'Absolutely. Every site we build is fully responsive, and we also develop complete eCommerce stores with payment integration and custom product layouts.',
-  },
-  {
-    q: 'Do you work with international clients?',
-    a: 'Yes — most of our work is international. Visuvate serves clients across the United States, United Kingdom, Europe, the Middle East and worldwide, working across time zones with updates over email or WhatsApp.',
-  },
-];
+import {text} from '@/lib/text';
+import {collection} from '@/lib/collections';
+
+const $t = text("components/sections/Faqs");
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function Faqs() {
+  const FAQS: {question: string; answer: string}[] = collection('faqs');
   const sectionRef = useRef<HTMLElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -59,13 +38,13 @@ export default function Faqs() {
     <section ref={sectionRef} id="faqs" className="bg-bg py-[clamp(80px,9vw,120px)]">
       <div className="mx-auto max-w-[1380px] px-6 md:px-8">
         <h2 className="text-center font-display text-[clamp(38px,5vw,72px)] leading-[1] font-medium tracking-[-0.05em]">
-          Frequently Asked <span className="vv-accent">Questions</span>
+          {$t("frequently-asked")}<span className="vv-accent">{$t("questions")}</span>
         </h2>
         <div className="mx-auto mt-[70px] flex max-w-[880px] flex-col gap-3">
           {FAQS.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <div key={faq.q} data-faq-row className="rounded-[12px] border border-line px-4">
+              <div key={index} data-faq-row className="rounded-[12px] border border-line px-4">
                 <h3>
                   <button
                     type="button"
@@ -75,7 +54,7 @@ export default function Faqs() {
                     className="group flex w-full cursor-pointer items-center gap-6 py-[13px] text-left"
                   >
                     <span className="flex-1 font-text text-[16px] leading-[1.8] font-normal text-fg-strong transition-colors group-hover:text-fg">
-                      {index + 1}. {faq.q}
+                      {index + 1}. {faq.question}
                     </span>
                     <svg
                       viewBox="0 0 24 24"
@@ -97,7 +76,7 @@ export default function Faqs() {
                   className={`grid transition-[grid-template-rows,opacity] duration-500 ease-brand ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
                 >
                   <div className="overflow-hidden">
-                    <p className="pr-10 pb-[18px] text-[16px] leading-[1.6] text-fg-muted">{faq.a}</p>
+                    <p className="pr-10 pb-[18px] text-[16px] leading-[1.6] text-fg-muted">{faq.answer}</p>
                   </div>
                 </div>
               </div>

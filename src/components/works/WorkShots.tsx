@@ -3,6 +3,10 @@ import {useEffect, useRef, useState} from 'react';
 import gsap from 'gsap';
 import {useGSAP} from '@gsap/react';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/works/WorkShots");
+
 gsap.registerPlugin(useGSAP);
 
 export default function WorkShots({shots, alt}: any) {
@@ -155,7 +159,7 @@ export default function WorkShots({shots, alt}: any) {
       <button
         type="button"
         onClick={() => go(-1)}
-        aria-label="Previous screenshot"
+        aria-label={$t("previous-screenshot")}
         className="absolute top-1/2 left-4 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-fg/12 bg-bg/60 text-fg backdrop-blur-[10px] transition-colors hover:bg-bg/85"
       >
         <svg
@@ -173,7 +177,7 @@ export default function WorkShots({shots, alt}: any) {
       <button
         type="button"
         onClick={() => go(1)}
-        aria-label="Next screenshot"
+        aria-label={$t("next-screenshot")}
         className="absolute top-1/2 right-4 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-fg/12 bg-bg/60 text-fg backdrop-blur-[10px] transition-colors hover:bg-bg/85"
       >
         <svg

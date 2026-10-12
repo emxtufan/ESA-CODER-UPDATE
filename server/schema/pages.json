@@ -1,0 +1,14 @@
+{
+  "label": "Pagini noi",
+  "itemLabel": "title",
+  "route": "/{slug}",
+  "order": 60,
+  "fields": [
+    {"key": "title", "label": "Titlu", "type": "text", "required": true},
+    {"key": "slug", "label": "Adresă (URL)", "type": "slug", "required": true, "unique": true, "from": "title"},
+    {"key": "intro", "label": "Rând de introducere", "type": "text"},
+    {"key": "body", "label": "Conținut", "type": "html"},
+    {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
+  ],
+  "defaults": {"metaTitle": "{title} | Visuvate"}
+}

@@ -1,0 +1,13 @@
+{
+  "label": "Categorii articole",
+  "itemLabel": "label",
+  "route": "/blog/category/{key}",
+  "order": 25,
+  "fields": [
+    {"key": "label", "label": "Nume", "type": "text", "required": true},
+    {"key": "key", "label": "Adresă (URL)", "type": "slug", "required": true, "unique": true, "from": "label"},
+    {"key": "description", "label": "Descriere", "type": "textarea"},
+    {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
+  ],
+  "defaults": {"metaTitle": "{label} Tutorials & Guides | Visuvate"}
+}

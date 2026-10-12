@@ -6,6 +6,10 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import {CategoryFilter, ALL_CATEGORY, getCategories, getCategoryCounts} from '@/components/works/filters';
 import {CardGrid} from '@/components/works/cards';
 
+import {text} from '@/lib/text';
+
+const $t = text("components/templates/TemplatesGrid");
+
 function TemplateCard({t}: any) {
   return (
     <Link
@@ -41,7 +45,7 @@ function TemplateCard({t}: any) {
           </span>
         ) : null}
         <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
-          <span className="vv-accent text-[32px] leading-none text-white">View Details</span>
+          <span className="vv-accent text-[32px] leading-none text-white">{$t("view-details")}</span>
         </span>
       </div>
       <div className="pl-2">
@@ -80,7 +84,7 @@ export default function TemplatesGrid({items}: any) {
         counts={counts}
         active={active}
         onSelect={setActive}
-        label="Template categories"
+        label={$t("template-categories")}
       />
       <RevealBatch refresh={active}>
         <CardGrid>
