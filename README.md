@@ -1,20 +1,10 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Visuvate — React (Vite)
 
-# Run and deploy your AI Studio app
+Conversie 1:1 a paginii principale visuvate.com în React 19 + Vite + GSAP 3.15 + Lenis.
 
-This contains everything you need to run your app locally.
+- `npm install`
+- `npm run dev` — server local pe portul 3000
+- `npm run build` — build de producție
+- `npm run lint` — verificare TypeScript
 
-View your app in AI Studio: https://ai.studio/apps/cd105a10-05d6-4e82-8c0d-2ef59e59e5fc
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Detalii despre conversie și harta modulelor: `PLAN.md`.
