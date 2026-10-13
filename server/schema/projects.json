@@ -194,12 +194,18 @@
       "advanced": true
     },
     {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    },
+    {
       "key": "id",
       "label": "Id",
       "type": "hidden"
     }
   ],
   "defaults": {
-    "metaTitle": "{title} — Website Design Case Study | Visuvate"
+    "metaTitle": "{title} — Website Design Case Study | Visuvate",
+    "published": true
   }
 }

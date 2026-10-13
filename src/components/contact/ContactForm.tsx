@@ -6,6 +6,7 @@ import countries from './countries';
 import timeZoneCountries from './timeZoneCountries';
 
 import {text} from '@/lib/text';
+import {trackLead} from '@/lib/consent';
 
 const $t = text("components/contact/ContactForm");
 
@@ -149,18 +150,18 @@ function CountryCombobox({
 const projectTypes = [
   $t("website-design"),
   $t("website-redesign"),
-  'eCommerce',
+  'Magazin online',
   $t("framer-development"),
   $t("wix-studio-development"),
-  'Other',
+  'Altceva',
 ];
 const pageCounts = ['1 – 3', '4 – 6', '7 – 10', '10+', $t("not-sure-yet")];
-const budgetsUsd = ['$350 – $800', '$800 – $1,500', '$1,500 – $3,000', 'Above $3,000'];
+const budgetsUsd = ['$350 – $800', '$800 – $1,500', '$1,500 – $3,000', 'Peste $3,000'];
 const budgetsInr = [
   '₹20,000 – ₹50,000',
   '₹50,000 – ₹80,000',
   '₹80,000 – ₹1,50,000',
-  'Above ₹1,50,000',
+  'Peste ₹1,50,000',
 ];
 const INDIA = 'India';
 const subscribeNoop = () => () => {};
@@ -316,6 +317,7 @@ export default function ContactForm() {
         setFormError(json?.error ?? $t("your-message-did-not-send-please"));
         return;
       }
+      trackLead();
       router.push('/contact/thank-you');
     } catch {
       setSubmitting(false);

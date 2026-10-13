@@ -381,7 +381,8 @@ export function ShaderCanvas({
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.max(1, Math.round(rect.width * dpr));
       const h = Math.max(1, Math.round(rect.height * dpr));
-      const scale = Math.min(1, Math.sqrt(2e6 / Math.max(1, w * h)));
+      // a soft gradient: ~0.5 MP is enough (it is often seen through a blur), and much cheaper than full resolution
+      const scale = Math.min(1, Math.sqrt(5e5 / Math.max(1, w * h)));
       const width = Math.max(1, Math.round(w * scale));
       const height = Math.max(1, Math.round(h * scale));
       if (canvas.width !== width || canvas.height !== height) {

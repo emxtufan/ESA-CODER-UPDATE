@@ -8,6 +8,8 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createAdmin} from './admin.mjs';
+import {createAnalytics} from './analytics.mjs';
+import {imageOptimizer} from './images.mjs';
 import {isKnownPath} from './routes.mjs';
 import {createContactStore, createRateLimiter, parseSubmission} from './contacts.mjs';
 
@@ -65,12 +67,29 @@ app.post(
   },
 );
 
+// --- Visit analytics (cookieless, see server/analytics.mjs) ---------------------
+const analytics = createAnalytics(path.resolve(root, process.env.ANALYTICS_FILE || 'data/analytics.json'));
+const allowVisit = createRateLimiter({limit: 120, windowMs: 10 * 60 * 1000});
+app.post('/api/visits', express.text({type: ['text/plain', 'application/json'], limit: '4kb'}), (req, res) => {
+  // always 204: analytics must never surface errors to visitors
+  res.status(204).end();
+  if (!allowVisit(req.ip)) return;
+  try {
+    analytics.record(JSON.parse(String(req.body || '{}')), {headers: req.headers, ip: req.ip});
+  } catch {}
+});
+
 // --- Admin ----------------------------------------------------------------------
 const admin = await createAdmin({root, isProd});
+// behind the admin session check of admin.router
+admin.router.get('/analytics', (req, res) => res.set('Cache-Control', 'no-store').json({ok: true, ...analytics.summary(req.query.days)}));
 app.use('/api/admin', admin.router);
 app.get('/content.js', admin.contentScript);
 
 app.all('/api/{*rest}', (_req, res) => res.status(404).json({ok: false, error: 'Not found'}));
+
+// --- Images: lighter WebP copies of large jpg/png/webp, same URLs (see server/images.mjs) ---------------------
+app.use(imageOptimizer({root: path.join(root, isProd ? 'dist' : 'public'), cacheDir: path.resolve(root, process.env.IMAGE_CACHE_DIR || 'data/image-cache')}));
 
 // --- Pages --------------------------------------------------------------------
 if (isProd) {

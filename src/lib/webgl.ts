@@ -314,7 +314,8 @@ export const createGlobe = (canvas: HTMLCanvasElement, options: any) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, arcBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, arcData, gl.DYNAMIC_DRAW);
     }
-    if (next.width && next.height) {
+    // assigning canvas.width reallocates and clears the drawing buffer even with the same value: only on a real change
+    if (next.width && next.height && (canvas.width !== next.width * dpr || canvas.height !== next.height * dpr)) {
       canvas.width = next.width * dpr;
       canvas.height = next.height * dpr;
     }

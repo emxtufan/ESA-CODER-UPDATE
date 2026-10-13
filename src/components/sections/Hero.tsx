@@ -127,13 +127,13 @@ export default function Hero({projects}: {projects: any[]}) {
         <p className="hh-sub mb-9 text-lead text-fg-muted">{$t("premium-websites-crafted-for-bold-brands")}</p>
         <div className="hh-ctas mb-[60px] flex flex-wrap justify-center gap-2.5">
           <Link
-            href="/contact"
+            href={$t("get-in-touch-link")}
             className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
           >
             <RollText text={$t("get-in-touch")} />
           </Link>
           <Link
-            href="/works"
+            href={$t("see-our-work-link")}
             className="inline-flex items-center rounded-full border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
           >
             <RollText text={$t("see-our-work")} />

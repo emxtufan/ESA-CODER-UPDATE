@@ -1,33 +1,38 @@
 // module 1790
 import { useEffect, useState } from 'react';
 import Link from '@/components/Link';
-import { consentState } from '@/lib/consent';
+import { applyConsent, categories, needsConsent, readConsent, saveConsent, type Consent } from '@/lib/consent';
 
 import {text} from '@/lib/text';
 
 const $t = text("components/layout/CookieBanner");
 
-const STORAGE_KEY = 'vv-consent';
-
+// Asks once, by category (only the categories whose trackers are set in the admin); the footer "Cookies"
+// button reopens it. Without any tracker configured it never shows.
 export default function CookieBanner() {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [custom, setCustom] = useState(false);
+  const [choice, setChoice] = useState<Consent>({statistics: false, marketing: false});
 
   useEffect(() => {
     let raf = 0;
     let timeout = 0;
     const open = () => {
+      setChoice(readConsent() ?? {statistics: false, marketing: false});
       setMounted(true);
       raf = requestAnimationFrame(() => {
         raf = requestAnimationFrame(() => setVisible(true));
       });
     };
-    let stored: string | null = null;
-    try {
-      stored = localStorage.getItem(STORAGE_KEY);
-    } catch {}
-    if (stored === null) timeout = window.setTimeout(open, 2200);
-    const onOpen = () => open();
+    const stored = readConsent();
+    if (stored) applyConsent(stored);
+    else if (needsConsent()) timeout = window.setTimeout(open, 2200);
+    const onOpen = () => {
+      if (!needsConsent()) return;
+      setCustom(true);
+      open();
+    };
     window.addEventListener('vv:consent-open', onOpen);
     return () => {
       window.clearTimeout(timeout);
@@ -38,19 +43,38 @@ export default function CookieBanner() {
 
   if (!mounted) return null;
 
-  const choose = (granted: boolean) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, granted ? 'granted' : 'denied');
-    } catch {}
-    const w = window as any;
-    const dataLayer = (w.dataLayer = w.dataLayer ?? []);
-    // gtag-style push (arguments object), as in the original
-    (function (..._args: any[]) {
-      dataLayer.push(arguments);
-    })('consent', 'update', consentState(granted));
+  const has = categories();
+  const choose = (next: Consent) => {
+    saveConsent(next);
     setVisible(false);
-    window.setTimeout(() => setMounted(false), 400);
+    window.setTimeout(() => {
+      setMounted(false);
+      setCustom(false);
+    }, 400);
   };
+  const row = (key: keyof Consent | 'necessary', title: string, desc: string) => (
+    <label key={key} className={`flex items-start justify-between gap-3 py-2.5${key === 'necessary' ? '' : ' border-t border-line'}`}>
+      <span className="min-w-0">
+        <span className="block text-[13px] leading-[1.4] font-medium">{title}</span>
+        <span className="block text-[12px] leading-[1.5] text-fg-muted">{desc}</span>
+      </span>
+      {key === 'necessary' ? (
+        <span className="shrink-0 pt-1 text-[11px] text-fg-muted">{$t("always-on")}</span>
+      ) : (
+        <input
+          type="checkbox"
+          className="mt-1 size-4 shrink-0"
+          style={{accentColor: 'var(--vv-text-primary)'}}
+          checked={choice[key]}
+          onChange={(e) => setChoice((c) => ({...c, [key]: e.target.checked}))}
+        />
+      )}
+    </label>
+  );
+
+  const button = 'rounded-full border px-4 py-[9px] text-[13px] leading-none font-medium transition-colors';
+  const secondary = `${button} border-line-strong hover:border-fg-subtle hover:bg-surface`;
+  const primary = `${button} border-transparent bg-fg text-bg hover:bg-fg-strong`;
 
   return (
     <section
@@ -94,22 +118,36 @@ export default function CookieBanner() {
             </Link>
             .
           </p>
+          {custom && (
+            <div className="mt-3">
+              {row('necessary', $t("necessary"), $t("necessary-desc"))}
+              {has.statistics && row('statistics', $t("statistics"), $t("statistics-desc"))}
+              {has.marketing && row('marketing', $t("marketing"), $t("marketing-desc"))}
+            </div>
+          )}
           <div className="mt-4 grid grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              onClick={() => choose(false)}
-              className="rounded-full border border-line-strong px-4 py-[9px] text-[13px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
-            >
+            <button type="button" onClick={() => choose({statistics: false, marketing: false})} className={secondary}>
               {$t("decline")}
             </button>
+            {custom ? (
+              <button type="button" onClick={() => choose(choice)} className={primary}>
+                {$t("save-choices")}
+              </button>
+            ) : (
+              <button type="button" onClick={() => choose({statistics: has.statistics, marketing: has.marketing})} className={primary}>
+                {$t("accept")}
+              </button>
+            )}
+          </div>
+          {!custom && (
             <button
               type="button"
-              onClick={() => choose(true)}
-              className="rounded-full border border-transparent bg-fg px-4 py-[9px] text-[13px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
+              onClick={() => setCustom(true)}
+              className="mt-3 w-full text-center text-[12px] text-fg-muted underline decoration-fg/20 underline-offset-4 transition-colors hover:text-fg"
             >
-              {$t("accept")}
+              {$t("customize")}
             </button>
-          </div>
+          )}
         </div>
       </div>
     </section>

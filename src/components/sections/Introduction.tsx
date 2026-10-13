@@ -215,13 +215,13 @@ export default function Introduction() {
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
-                  href="/about-us"
+                  href={$t("about-us-link")}
                   className="inline-flex items-center rounded-[12px] border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
                 >
                   <RollText text={$t("about-us")} />
                 </Link>
                 <Link
-                  href="/works"
+                  href={$t("see-our-work-link")}
                   className="inline-flex items-center rounded-[12px] border border-line-strong px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:border-fg-subtle hover:bg-surface"
                 >
                   <RollText text={$t("see-our-work")} />

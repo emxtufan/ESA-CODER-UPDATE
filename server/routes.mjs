@@ -19,7 +19,8 @@ export function isKnownPath(pathname, staticRoutes, data) {
     } catch {
       return false;
     }
-    if ((collections[name] ?? []).some((item) => item?.[field] === param)) return true;
+    // a record with `published: false` is not a page (same rule as src/lib/collections.ts)
+    if ((collections[name] ?? []).some((item) => item?.published !== false && item?.[field] === param)) return true;
   }
   return false;
 }

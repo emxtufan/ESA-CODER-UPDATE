@@ -1,0 +1,33 @@
+{
+  "label": "Tehnologii (logo-uri)",
+  "itemLabel": "name",
+  "itemImage": "logo",
+  "order": 12,
+  "fields": [
+    {
+      "key": "name",
+      "label": "Denumire",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "logo",
+      "label": "Logo",
+      "type": "image",
+      "required": true
+    },
+    {
+      "key": "w",
+      "label": "Lățime logo",
+      "type": "hidden"
+    },
+    {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    }
+  ],
+  "defaults": {
+    "published": true
+  }
+}

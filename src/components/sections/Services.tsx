@@ -7,9 +7,8 @@ import {useGSAP} from '@gsap/react';
 import Link from '@/components/Link';
 import RollText from '@/components/RollText';
 import ShineBorder from '@/components/ShineBorder';
-import {slugify} from '@/lib/slugify';
 import ShimmerMask from '@/components/services/ShimmerMask';
-import {SERVICES} from '@/components/services/servicesData';
+import {collection} from '@/lib/collections';
 
 import {text} from '@/lib/text';
 
@@ -29,6 +28,7 @@ const PLATFORMS = [
 ];
 
 export default function Services() {
+  const SERVICES: any[] = collection('services');
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -115,13 +115,13 @@ export default function Services() {
           </h2>
           <div className="flex shrink-0 flex-wrap gap-3">
             <Link
-              href="/services"
+              href={$t("view-all-services-link")}
               className="inline-flex items-center rounded-full border border-transparent bg-fg px-[15px] py-[9px] text-[14px] leading-none font-medium text-bg transition-colors hover:bg-fg-strong"
             >
               <RollText text={$t("view-all-services")} />
             </Link>
             <Link
-              href="/contact"
+              href={$t("start-a-project-link")}
               className="inline-flex items-center rounded-full border border-transparent bg-fg/15 px-[15px] py-[9px] text-[14px] leading-none font-medium transition-colors hover:bg-fg/25"
             >
               <RollText text={$t("start-a-project")} />
@@ -129,29 +129,33 @@ export default function Services() {
           </div>
         </div>
         <ul className="svc-grid mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {SERVICES.map((service) => (
-            <li key={service.label.join(' ')}>
+          {SERVICES.map((service, index) => (
+            <li key={`${service.title} ${service.subtitle}-${index}`}>
               <Link
-                href={`/services/${slugify(service.label.join(' '))}`}
+                href={service.href || '/services'}
                 className="svc-card group group/cell relative grid aspect-square place-items-center overflow-hidden rounded-[12px] border border-line px-3 text-center transition-colors duration-300 ease-brand"
               >
                 <ShimmerMask />
                 <ShineBorder />
                 <div className="relative flex flex-col items-center gap-[21px]">
-                  <svg
-                    aria-hidden
-                    viewBox={service.viewBox}
-                    className="size-7 shrink-0 text-fg"
-                    fill="currentColor"
-                  >
-                    {service.paths.map((d) => (
-                      <path key={d} d={d} />
-                    ))}
-                  </svg>
+                  {service.icon ? (
+                    <img aria-hidden alt="" src={service.icon} className="size-7 shrink-0 object-contain" loading="lazy" decoding="async" />
+                  ) : (
+                    <svg
+                      aria-hidden
+                      viewBox={service.viewBox}
+                      className="size-7 shrink-0 text-fg"
+                      fill="currentColor"
+                    >
+                      {(service.paths ?? []).map((d: string) => (
+                        <path key={d} d={d} />
+                      ))}
+                    </svg>
+                  )}
                   <span className="text-[16px] leading-[21px] text-fg-dim transition-colors duration-300 ease-brand group-hover/cell:text-fg">
-                    {service.label[0]}
+                    {service.title}
                     <br />
-                    {service.label[1]}
+                    {service.subtitle}
                   </span>
                 </div>
               </Link>
@@ -183,7 +187,7 @@ export default function Services() {
               <span className="text-white">{$t("consistent-refined-responsive")}</span>{$t("and-built-to-perform")}
             </p>
             <Link
-              href="/works"
+              href={$t("see-our-work-link")}
               className="mt-5 inline-flex items-center rounded-[8px] bg-white/20 px-[15px] py-[10px] text-[14px] leading-none font-medium text-white transition-colors hover:bg-white/30"
             >
               <RollText text={$t("see-our-work")} />

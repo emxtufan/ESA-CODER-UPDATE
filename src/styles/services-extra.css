@@ -1,0 +1,44 @@
+/* /services: pictures of the cards added after the original ten (ExtraServiceCards.tsx). */
+.svx-art { background: linear-gradient(168deg, #0B6BBE 0%, #084F92 46%, #052E58 100%); }
+
+/* app / ERP: the dashboard in a window rising from the bottom */
+.svx-frame { position: absolute; top: 12%; left: 9%; right: 9%; bottom: 0; overflow: hidden; border-radius: 6px 6px 0 0; background: #101318; box-shadow: 0 20px 44px -12px rgb(0 6 14 / 0.9); transition: transform 0.6s cubic-bezier(.22, 1, .36, 1); }
+.svx-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
+.group:hover .svx-frame { transform: translateY(-4%); }
+
+/* SAGA: the video poster */
+.svx-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(.22, 1, .36, 1); }
+.group:hover .svx-cover { transform: scale(1.05); }
+
+/* automation: the home page's data-flow mock-up, scaled down (it keeps its own loop) */
+.svx-mock { position: absolute; left: 50%; top: 50%; width: 118%; transform: translate(-50%, -50%) scale(0.76); }
+.svx-mock .ax-mock { box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.6); }
+
+/* 3D: a cube turning slowly */
+.svx-scene { position: absolute; inset: 0; display: grid; place-items: center; perspective: 700px; }
+.svx-cube { --s: clamp(70px, 9vw, 104px); position: relative; width: var(--s); height: var(--s); transform-style: preserve-3d; transform: rotateX(-24deg) rotateY(35deg); animation: svx-turn 12s linear infinite; }
+.svx-cube i { position: absolute; inset: 0; border: 1px solid rgb(255 255 255 / 0.35); background: linear-gradient(135deg, rgb(122 202 255 / 0.55), rgb(0 153 255 / 0.18)); backface-visibility: visible; }
+.svx-f { transform: translateZ(calc(var(--s) / 2)); }
+.svx-b { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.svx-r { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.svx-l { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.svx-t { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, rgb(255 255 255 / 0.55), rgb(122 202 255 / 0.3)) !important; }
+.svx-d { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+.svx-shadow { position: absolute; left: 50%; bottom: 14%; width: 34%; height: 10%; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(rgb(0 0 0 / 0.45), transparent 70%); }
+@keyframes svx-turn { to { transform: rotateX(-24deg) rotateY(395deg); } }
+
+/* video / reels: three vertical clips, each with a play button and a running progress line */
+.svx-reels { position: absolute; inset: 12% 10% -6%; display: flex; justify-content: center; align-items: flex-end; gap: 4%; }
+.svx-reel { position: relative; flex: none; height: 100%; aspect-ratio: 9 / 16; overflow: hidden; border-radius: 8px; background: #101318; box-shadow: 0 18px 40px -12px rgb(0 6 14 / 0.85); animation: svx-bob 5.4s ease-in-out infinite; }
+.svx-reel:nth-child(2) { height: 108%; }
+.svx-reel img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.svx-play { position: absolute; left: 50%; top: 42%; width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: rgb(255 255 255 / 0.85); }
+.svx-play::after { content: ""; position: absolute; left: 40%; top: 30%; border-style: solid; border-width: 0.45em 0 0.45em 0.75em; border-color: transparent transparent transparent #052E58; font-size: clamp(8px, 1vw, 12px); }
+.svx-progress { position: absolute; left: 8%; right: 8%; bottom: 10%; height: 3px; border-radius: 3px; background: rgb(255 255 255 / 0.3); overflow: hidden; }
+.svx-progress::after { content: ""; position: absolute; inset: 0; background: #fff; transform-origin: left; animation: svx-progress 5.4s linear infinite; animation-delay: inherit; }
+@keyframes svx-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes svx-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .svx-cube, .svx-reel, .svx-progress::after { animation: none; }
+}

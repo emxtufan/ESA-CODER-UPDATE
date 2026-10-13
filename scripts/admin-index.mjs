@@ -10,7 +10,7 @@ import ts from 'typescript';
 const root = path.resolve(import.meta.dirname, '..');
 const src = path.join(root, 'src');
 const HIDDEN_SCOPES = new Set([
-  'components/hero/data', 'components/hero/icons', 'components/hero/Studio', 'components/hero/PropertyPanel',
+  'components/hero/Studio',
   'components/approach/ApproachPanel', 'components/layout/SiteLayout', 'components/Logo',
 ]);
 const A11Y_ATTRS = /^(aria-.*|alt|title)$/;
@@ -43,13 +43,26 @@ const visible = {};
     if (statSync(file).isDirectory()) walk(file);
     else if (/\.tsx?$/.test(name) && !name.endsWith('.d.ts')) {
       const code = readFileSync(file, 'utf8');
-      const scope = code.match(/const \$t = text\((["'])([^"']+)\1\)/)?.[2];
+      // a page made from templates/ServicePage: every text of its scope is shown on it
+      const servicePage = code.match(/<ServicePage scope="([^"]+)"/)?.[1];
+      if (servicePage) (visible[servicePage] ??= new Set()).add(/.*/);
+      // text("scope"), or text(SCOPE) with `const SCOPE = "scope"`
+      const named = code.match(/const \$t = text\((\w+)\)/)?.[1];
+      const scope = code.match(/const \$t = text\((["'])([^"']+)\1\)/)?.[2]
+        ?? (named && code.match(new RegExp(`const ${named} = (["'])([^"']+)\\1`))?.[2]);
       if (!scope || HIDDEN_SCOPES.has(scope)) continue;
       const sf = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, true, name.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
       const keys = (visible[scope] ??= new Set());
       (function visit(node) {
-        if (ts.isCallExpression(node) && node.expression.getText() === '$t' && ts.isStringLiteral(node.arguments[0])) {
-          if (isVisibleUsage(node)) keys.add(node.arguments[0].text);
+        // $t('key'), $t(`item-${n}`) (every key of that shape) and list('key') (a list of texts, see textList)
+        const fn = ts.isCallExpression(node) && node.expression.getText();
+        const arg = (fn === '$t' || fn === 'list') && node.arguments[0];
+        if (arg && isVisibleUsage(node)) {
+          if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) keys.add(arg.text);
+          else if (ts.isTemplateExpression(arg)) {
+            const parts = [arg.head.text, ...arg.templateSpans.map((t) => t.literal.text)];
+            keys.add(new RegExp('^' + parts.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.+') + '$'));
+          }
         }
         ts.forEachChild(node, visit);
       })(sf);
@@ -66,7 +79,7 @@ for (const [scope, entries] of Object.entries(data)) {
 const out = Object.fromEntries(
   Object.entries(visible)
     .filter(([, keys]) => keys.size)
-    .map(([scope, keys]) => [scope, Object.keys(data[scope] ?? {}).filter((k) => keys.has(k))]),
+    .map(([scope, keys]) => [scope, Object.keys(data[scope] ?? {}).filter((k) => [...keys].some((x) => (x instanceof RegExp ? x.test(k) : x === k)))]),
 );
 writeFileSync(path.join(root, 'server', 'admin-visible.json'), JSON.stringify(out, null, 1) + '\n');
 const total = Object.values(data).reduce((n, v) => n + Object.keys(v).length, 0) - Object.keys(data._about).length;

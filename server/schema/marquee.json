@@ -1,0 +1,21 @@
+{
+  "label": "Banda de text",
+  "itemLabel": "text",
+  "order": 16,
+  "fields": [
+    {
+      "key": "text",
+      "label": "Text",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    }
+  ],
+  "defaults": {
+    "published": true
+  }
+}

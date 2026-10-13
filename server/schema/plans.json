@@ -1,0 +1,113 @@
+{
+  "label": "Prețuri (pachete)",
+  "itemLabel": "name",
+  "order": 18,
+  "fields": [
+    {
+      "key": "id",
+      "label": "ID (ex: business)",
+      "type": "text",
+      "required": true,
+      "unique": true
+    },
+    {
+      "key": "name",
+      "label": "Denumire pachet",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "description",
+      "label": "Descriere scurtă",
+      "type": "textarea"
+    },
+    {
+      "key": "price",
+      "label": "Preț dezvoltare, plată unică (ex: 4.990)",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "currency",
+      "label": "Moneda prețului de dezvoltare (ex: lei)",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "priceType",
+      "label": "Tipul prețului",
+      "type": "select",
+      "options": ["one-time"]
+    },
+    {
+      "key": "infraPrice",
+      "label": "Infrastructură (domeniu + hosting) — total pe lună",
+      "type": "number",
+      "required": true
+    },
+    {
+      "key": "domainPrice",
+      "label": "Din care domeniu .ro — echivalent lunar",
+      "type": "number"
+    },
+    {
+      "key": "infraCurrency",
+      "label": "Moneda abonamentului (ex: €)",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "infraFrequency",
+      "label": "Frecvența abonamentului",
+      "type": "select",
+      "options": ["monthly"]
+    },
+    {
+      "key": "features",
+      "label": "Ce include (pe homepage apar primele 6)",
+      "type": "strings"
+    },
+    {
+      "key": "notIncluded",
+      "label": "Ce nu include (doar pe pagina de serviciu)",
+      "type": "strings"
+    },
+    {
+      "key": "recommended",
+      "label": "Evidențiat ca „Recomandat”",
+      "type": "boolean"
+    },
+    {
+      "key": "ctaLabel",
+      "label": "Text buton",
+      "type": "text"
+    },
+    {
+      "key": "ctaLink",
+      "label": "Buton → link",
+      "type": "url",
+      "required": true
+    },
+    {
+      "key": "detailsLink",
+      "label": "Link „Detalii”",
+      "type": "url",
+      "required": true
+    },
+    {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    }
+  ],
+  "defaults": {
+    "published": true,
+    "currency": "lei",
+    "priceType": "one-time",
+    "infraCurrency": "€",
+    "infraFrequency": "monthly",
+    "domainPrice": 1,
+    "ctaLink": "/contact",
+    "detailsLink": "/services/crafted-websites#pachete"
+  }
+}

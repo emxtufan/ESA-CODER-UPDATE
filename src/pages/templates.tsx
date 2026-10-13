@@ -1,4 +1,5 @@
 import Link from '@/components/Link';
+import BlurPanel from '@/components/BlurPanel';
 import PageTitle from '@/components/PageTitle';
 import TemplatesGrid from '@/components/templates/TemplatesGrid';
 
@@ -18,40 +19,42 @@ export default function Page_templates() {
             {$t("every-template-here-began-as-a")}
           </p>
         </PageTitle>
-        <TemplatesGrid items={collection<any>('templates').map((t, i) => ({...t, id: t.id || `template-${i}`}))} />
-        <section aria-labelledby="templates-how" className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
-          <div className="mx-auto max-w-[720px]">
-            <h2 id="templates-how" className="font-display text-[clamp(26px,3vw,40px)] leading-[1.15] font-medium tracking-[-0.03em]">
-              {$t("how-the-templates-work")}
-            </h2>
-            <div className="mt-6 flex flex-col gap-5 text-lead leading-[1.75] text-fg-muted">
-              <p>
-                {$t("each-template-is-a-complete-production")}
-              </p>
-              <p>
-                {$t("buying-one-takes-you-to-the")}
-              </p>
-              <p>
-                {$t("because-each-one-started-life-as")}
-              </p>
-              <p>
-                {$t("framer-and-wix-studio-suit-different")}
-              </p>
-              <p>
-                {$t("if-a-template-is-close-but")}
-                <Link href="/contact" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
-                  {$t("tell-us-what-you-need")}
-                </Link>
-                {$t("and-we-ll-tell-you-honestly")}
-                {" "}
-                <Link href="/services/crafted-websites" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
-                  {$t("custom-build")}
-                </Link>
-                {$t("serves-you-better")}
-              </p>
+        <BlurPanel>
+          <TemplatesGrid items={collection<any>('templates').map((t, i) => ({...t, id: t.id || `template-${i}`}))} />
+          <section aria-labelledby="templates-how" className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
+            <div className="mx-auto max-w-[720px]">
+              <h2 id="templates-how" className="font-display text-[clamp(26px,3vw,40px)] leading-[1.15] font-medium tracking-[-0.03em]">
+                {$t("how-the-templates-work")}
+              </h2>
+              <div className="mt-6 flex flex-col gap-5 text-lead leading-[1.75] text-fg-muted">
+                <p>
+                  {$t("each-template-is-a-complete-production")}
+                </p>
+                <p>
+                  {$t("buying-one-takes-you-to-the")}
+                </p>
+                <p>
+                  {$t("because-each-one-started-life-as")}
+                </p>
+                <p>
+                  {$t("framer-and-wix-studio-suit-different")}
+                </p>
+                <p>
+                  {$t("if-a-template-is-close-but")}
+                  <Link href="/contact" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
+                    {$t("tell-us-what-you-need")}
+                  </Link>
+                  {$t("and-we-ll-tell-you-honestly")}
+                  {" "}
+                  <Link href="/services/crafted-websites" className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg">
+                    {$t("custom-build")}
+                  </Link>
+                  {$t("serves-you-better")}
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </BlurPanel>
       </main>
     </>
   );

@@ -1,11 +1,11 @@
 {
   "404": {
-    "meta-title": "Page Not Found | Visuvate",
-    "this-page-doesn-t-exist": "This page doesn’t exist",
-    "the-link-may-be-out-of": "The link may be out of date, or the address slightly off. Everything the studio has published is still one click away.",
-    "back-to-home": "Back to Home",
-    "see-our-work": "See our work",
-    "get-in-touch": "Get in touch"
+    "meta-title": "Pagina nu există | ESA Coder Solutions",
+    "this-page-doesn-t-exist": "Pagina asta nu există",
+    "the-link-may-be-out-of": "Poate linkul e vechi sau adresa are o greșeală mică. Restul site-ului e în continuare la un click distanță.",
+    "back-to-home": "Înapoi acasă",
+    "see-our-work": "Vezi proiectele",
+    "get-in-touch": "Hai să vorbim"
   },
   "_about": {
     "info": "All user-visible texts of the site. Edit a value and the site updates; do not rename keys.",
@@ -281,28 +281,69 @@
     ],
     "faqs": [
       {
-        "question": "How do I get started with Visuvate?",
-        "answer": "Simply fill out the contact form, and we’ll reach out through email or WhatsApp based on your preferred method of communication."
+        "question": "Pot să modific singur textele și imaginile după lansare?",
+        "answer": "Da, dacă proiectul include un panou de administrare sau un CMS. Stabilim de la început ce vrei să poți modifica singur, ca să nu depinzi de un developer pentru fiecare schimbare.",
+        "published": true
       },
       {
-        "question": "How involved do I need to be during the project?",
-        "answer": "You only need to share your content, preferences, and feedback at important stages. We handle the complete design, development, testing, and launch process."
+        "question": "Cât durează realizarea unui website?",
+        "answer": "Depinde de complexitate și de funcționalitățile de care ai nevoie. Un site de prezentare și o platformă personalizată nu au același timp de dezvoltare. După ce discutăm cerințele, putem estima mai bine durata.",
+        "published": true
       },
       {
-        "question": "How long does it take to build a website?",
-        "answer": "Most websites are completed within 2–6 weeks, depending on the number of pages, design direction, and required features."
+        "question": "Lucrați doar cu website-uri?",
+        "answer": "Nu. Facem și magazine online, aplicații web, dashboard-uri, integrări și automatizări. De multe ori, un proiect include atât interfața, cât și partea de backend.",
+        "published": true
       },
       {
-        "question": "Do you provide support after the website is launched?",
-        "answer": "Yes. We offer post-launch maintenance, content updates, and technical support to ensure your website continues to perform well."
+        "question": "Se poate îmbunătăți un website existent?",
+        "answer": "Sigur. Nu e mereu nevoie să refacem totul. Ne uităm la ce există deja și stabilim ce merită păstrat, schimbat sau optimizat.",
+        "published": true
       },
       {
-        "question": "Do you create responsive and eCommerce websites?",
-        "answer": "Absolutely. Every site we build is fully responsive, and we also develop complete eCommerce stores with payment integration and custom product layouts."
+        "question": "Oferiți suport după lansare?",
+        "answer": "Da. Îl poți administra singur sau poți alege un abonament de mentenanță. ESA Managed Care acoperă hostingul, verificările periodice, backupurile și mentenanța tehnică stabilite prin contract.",
+        "published": true
       },
       {
-        "question": "Do you work with international clients?",
-        "answer": "Yes — most of our work is international. Visuvate serves clients across the United States, United Kingdom, Europe, the Middle East and worldwide, working across time zones with updates over email or WhatsApp."
+        "question": "Cum începem un proiect?",
+        "answer": "Ne trimiți câteva informații despre ce ai nevoie, din formularul de contact. Discutăm obiectivul, funcționalitățile și bugetul, apoi stabilim cum mergem mai departe.",
+        "published": true
+      },
+      {
+        "question": "Hostingul este inclus în prețul website-ului?",
+        "answer": "Nu. Dezvoltarea website-ului se plătește o singură dată. Domeniul și hostingul administrat sunt servicii lunare opționale, cu prețuri afișate separat pentru fiecare pachet.",
+        "published": true
+      },
+      {
+        "question": "Vă puteți ocupa de domeniu și hosting?",
+        "answer": "Da. Ne ocupăm de domeniu, DNS, hosting și certificatul SSL, ca să nu fie nevoie să configurezi tu partea tehnică. Domeniul se înregistrează pe numele tău.",
+        "published": true
+      },
+      {
+        "question": "Oferiți servicii SEO?",
+        "answer": "SEO-ul tehnic face parte din dezvoltare: structură, meta tags, sitemap, viteză. Campaniile SEO continue, articolele și optimizarea avansată le discutăm separat. Nu promitem poziții în Google.",
+        "published": true
+      },
+      {
+        "question": "Website-ul va fi conform GDPR?",
+        "answer": "Implementăm măsurile tehnice potrivite pentru confidențialitate și securitate. Conformitatea completă depinde însă și de procesele afacerii tale și de documentația juridică. Clarificăm responsabilitățile fiecăruia în timpul proiectului.",
+        "published": true
+      },
+      {
+        "question": "Semnăm un contract?",
+        "answer": "Da. Înainte să începem dezvoltarea, stabilim în scris ce construim, ce este inclus, prețul și condițiile de plată.",
+        "published": true
+      },
+      {
+        "question": "Website-ul și domeniul sunt ale mele?",
+        "answer": "Domeniul se înregistrează pe numele tău. Predarea website-ului, drepturile asupra codului, licențele terțe și serviciile lunare sunt definite clar în contractul de dezvoltare.",
+        "published": true
+      },
+      {
+        "question": "Pot renunța la mentenanța lunară?",
+        "answer": "Da, cu respectarea perioadei de preaviz și a condițiilor din contractul de mentenanță. Tot acolo stabilim cum îți predăm website-ul, datele și administrarea domeniului.",
+        "published": true
       }
     ],
     "pages": [],
@@ -363,7 +404,7 @@
         "readMinutes": 4,
         "image": "/media/3990486d63ac121ae76e45c695fb18ca.jpg",
         "excerpt": "Learn how to add smart animated number counters to your Wix Studio site. This step-by-step guide provides a copy-and-paste Velo code snippet that automatically handles complex formats, such as 10k, $500, or 98% satisfaction.",
-        "html": "<h2>How to Add a Smart Counter in Wix Studio (The Animated Way)</h2><p>Nothing grabs attention on a portfolio or landing page quite like animated statistics. Whether it’s <strong>\"10k+ Views\"</strong>&nbsp;or <strong>\"100% Satisfaction,\"</strong>&nbsp;watching numbers count up creates a sense of momentum.</p><p>If you are looking for the perfect <strong>Counter in Wix Studio</strong>, you might have realized that standard text elements don't animate by default. In this tutorial, I’m sharing a robust Velo (JavaScript) snippet that I use on my projects. It’s \"smart\" because it automatically handles suffixes (k, M, B), decimals, and symbols (%) without you needing to write extra code for each text box.</p><figure><img src=\"/media/6a1808ca24070b154f27f19fc3402ced.gif\" width=\"1080\" height=\"196\" alt=\"Preview of the animated number counter \" loading=\"lazy\"><figcaption>Preview</figcaption></figure><hr><h3>The Outcome</h3><p>By the end of this guide, you will have text elements that automatically count up from 0 when the user scrolls them into view, acting as a fully dynamic <strong>Counter in Wix Studio</strong>.</p><h4>Step 1: Open the Code Panel</h4><p>You don't need to install anything complex to get this working.</p><ol><li>In the Wix Studio Editor, look at the left sidebar.</li><li>Click the <strong>{ } (Code)</strong>&nbsp;icon.</li><li>A panel will slide up at the bottom of your screen. This is where we will paste the code.</li></ol><h4>Step 2: Prepare Your Text Elements</h4><p>The code needs to know <em>which</em>&nbsp;text elements to animate. To create a specific <strong>Counter in Wix Studio</strong>, we use a specific ID.</p><ol><li>Add a <strong>Text Element</strong>&nbsp;to your canvas.</li><li><p>Type in your final number (e.g., 1500, 98%, $10k).</p><ul><li><em>Note: You can style the font, size, and color however you like.</em></li></ul></li><li>Select the text element.</li><li>Look at the <strong>bottom right</strong>&nbsp;of your screen (next to the code editor) to find the <strong>Properties &amp; Events</strong>&nbsp;panel.</li><li>Find the <strong>ID</strong>&nbsp;field.</li><li><p>Change the ID to start with num.</p><ul><li>Examples: numCounter1, numStats, numRevenue.</li></ul></li></ol><p>The code specifically looks for IDs starting with \"num\" and ignores everything else.</p><blockquote><p><strong>⚠️ Important Limitation:</strong> This code is designed for <strong>static</strong>&nbsp;text elements only. It will <strong>not</strong>&nbsp;work for text elements inside a <strong>Repeater</strong>&nbsp;(connected to the CMS). Repeaters require a different coding approach using onItemReady.</p></blockquote><h4>Step 3: The Code</h4><p>Copy the code below and paste it directly into the panel at the bottom of your screen. <em>(Note: If you see existing code like $w.onReady..., you can delete it and replace it with this complete snippet.)</em></p><p>JavaScript</p><pre><code>$w.onReady(() =&gt; {\n\n  // CONFIGURATION: Animation Duration in milliseconds\n\n  const DURATION = 1500;\n\n\n\n  // 1. Find and Initialize all \"num\" elements\n\n  $w('Text').forEach(el =&gt; {\n\n    if (!el.id || !el.id.toLowerCase().startsWith('num')) return;\n\n    initCounter(el);\n\n  });\n\n\n\n  // 2. The Core Counter Function\n\n  function initCounter(el) {\n\n    const original = (el.text || '').toString();\n\n    // Regex to find numbers, decimals, commas, and suffixes (k, M, B)\n\n    const matches = [...original.matchAll(/(\\d[\\d,]*(?:\\.\\d+)?(?:\\s*[kKmMbB])?)([%\\+]?)/g)];\n\n    if (!matches.length) return;\n\n\n\n    let template = original;\n\n    matches.forEach((m, i) =&gt; {\n\n      template = template.replace(m[0], `{{n${i}}}`);\n\n    });\n\n\n\n    const tokens = matches.map(m =&gt; {\n\n      const rawNum = m[1].replace(/\\s+/g, '');\n\n      const trail = m[2] || '';\n\n      return parseTokenPreserveShort(rawNum, trail);\n\n    });\n\n\n\n    const zeroState = () =&gt; tokens.map(t =&gt; formatDisplayValue(0, t));\n\n    const finalState = () =&gt; tokens.map(t =&gt; formatDisplayValue(t.isShort ? t.shortValue : t.fullValue, t));\n\n\n\n    // Reset text to 0 initially\n\n    el.text = buildTextFromTemplate(template, zeroState(), tokens.map(t =&gt; t.trail));\n\n\n\n    let started = false;\n\n\n\n    // Animation Loop\n\n    function animate() {\n\n      if (started) return;\n\n      started = true;\n\n      const startTime = performance.now();\n\n\n\n      function step(now) {\n\n        const t = Math.min((now - startTime) / DURATION, 1);\n\n        // Easing function (Cubic Ease Out) for smooth effect\n\n        const eased = 1 - Math.pow(1 - t, 3);\n\n\n\n        const current = tokens.map(tok =&gt; {\n\n          const val = tok.isShort ? tok.shortValue * eased : tok.fullValue * eased;\n\n          return formatDisplayValue(val, tok);\n\n        });\n\n\n\n        el.text = buildTextFromTemplate(template, current, tokens.map(t =&gt; t.trail));\n\n\n\n        if (t &lt; 1) {\n\n          requestAnimationFrame(step);\n\n        } else {\n\n          el.text = buildTextFromTemplate(template, finalState(), tokens.map(t =&gt; t.trail));\n\n        }\n\n      }\n\n      requestAnimationFrame(step);\n\n    }\n\n\n\n    // Trigger animation when element enters viewport\n\n    el.onViewportEnter(animate);\n\n    \n\n    // Optional: Reset when leaving viewport so it plays again\n\n    el.onViewportLeave(() =&gt; {\n\n      started = false;\n\n      el.text = buildTextFromTemplate(template, zeroState(), tokens.map(t =&gt; t.trail));\n\n    });\n\n  }\n\n});\n\n\n\n/* ================= HELPERS (Paste these outside onReady) ================= */\n\n\n\nfunction parseTokenPreserveShort(rawNum, trail) {\n\n  // UPDATED: Do not force lowercase on the whole string immediately\n\n  // Regex now looks for uppercase or lowercase suffixes: [kKmMbB]\n\n  const shortMatch = rawNum.match(/^([\\d.,]+)([kKmMbB])$/);\n\n\n\n  if (shortMatch) {\n\n    const num = parseFloat(shortMatch[1].replace(/,/g, ''));\n\n    const originalSuffix = shortMatch[2]; // \"M\" or \"m\"\n\n    const lowerSuffix = originalSuffix.toLowerCase(); // used for math only\n\n    \n\n    const multiplier = lowerSuffix === 'k' ? 1e3 : lowerSuffix === 'm' ? 1e6 : 1e9;\n\n    const decimals = (shortMatch[1].split('.')[1] || '').length;\n\n\n\n    return {\n\n      isShort: true,\n\n      suffix: originalSuffix, // Preserves the original Case (e.g. \"M\")\n\n      shortValue: num,\n\n      fullValue: num * multiplier,\n\n      decimals,\n\n      hasSeparator: /,/.test(rawNum),\n\n      trail\n\n    };\n\n  }\n\n\n\n  const numeric = parseFloat(rawNum.replace(/,/g, ''));\n\n  const decimals = (rawNum.split('.')[1] || '').length;\n\n\n\n  return {\n\n    isShort: false,\n\n    suffix: '',\n\n    shortValue: null,\n\n    fullValue: isFinite(numeric) ? numeric : 0,\n\n    decimals,\n\n    hasSeparator: /,/.test(rawNum),\n\n    trail\n\n  };\n\n}\n\n\n\nfunction formatDisplayValue(value, tok) {\n\n  const rounded = tok.decimals === 0 ? Math.round(value) : roundToDecimals(value, tok.decimals);\n\n  if (tok.isShort) {\n\n    return tok.decimals === 0 \n\n      ? `${rounded}${tok.suffix}` \n\n      : `${rounded.toFixed(tok.decimals)}${tok.suffix}`;\n\n  }\n\n  if (tok.hasSeparator) {\n\n    return Number(rounded).toLocaleString(undefined, {\n\n      minimumFractionDigits: tok.decimals,\n\n      maximumFractionDigits: tok.decimals\n\n    });\n\n  }\n\n  return String(rounded);\n\n}\n\n\n\nfunction buildTextFromTemplate(template, values, trails) {\n\n  let text = template;\n\n  values.forEach((v, i) =&gt; { text = text.replace(`{{n${i}}}`, v + (trails[i] || '')); });\n\n  return text;\n\n}\n\n\n\nfunction roundToDecimals(num, dec) {\n\n  const m = Math.pow(10, dec);\n\n  return Math.round((num + Number.EPSILON) * m) / m;\n\n}</code></pre><figure><img src=\"/media/8c07adde026fcde3dd7d118942433a30.png\" width=\"1833\" height=\"975\" alt=\"Wix IDE screenshot showing JavaScript code for counter animation, with numbers 1234, 6234+, 264M, and 1.2K. Sidebar displays settings.\" loading=\"lazy\"><figcaption>Wix Studio Editor</figcaption></figure><hr><h3>Understanding the Code (What you can change)</h3><p>You don't need to be a coding expert to tweak this <strong>Counter in Wix Studio</strong>. Here is the one value you might want to adjust:</p><p><strong>The Animation Speed</strong> At the very top of the code, find this line: const DURATION = 1500;</p><p><strong>1500</strong>&nbsp;represents the time in milliseconds (1.5 seconds). <strong>To make it faster:</strong>&nbsp;Change it to 1000&nbsp;(1 second). <strong>To make it slower:</strong>&nbsp;Change it to 3000&nbsp;(3 seconds).</p><hr><h3>Why this code is \"Smart\"</h3><p>Unlike basic scripts you might find online, this approach uses <strong>Regular Expressions (Regex)</strong>&nbsp;to read your text before animating it.</p><p>If you write <strong>10k</strong>, it knows to count from 0 to 10, keeping the 'k'. If you write <strong>$50.00</strong>, it preserves the dollar sign and the decimal points. It uses an <strong>Ease-Out</strong>&nbsp;mathematical function, meaning the numbers spin fast at the start and land gently on the final number. This looks much more professional than a linear count and elevates the quality of your <strong>Counter in Wix Studio</strong>.</p><p>Enjoy adding some motion to your metrics!</p><p>It's one of many small motion details we build into client sites through our <a href=\"/services/motion-and-interaction-design\">Motion &amp; Interaction Design service</a>.</p>",
+        "html": "<h2>How to Add a Smart Counter in Wix Studio (The Animated Way)</h2><p>Nothing grabs attention on a portfolio or landing page quite like animated statistics. Whether it’s <strong>\"10k+ Views\"</strong>&nbsp;or <strong>\"100% Satisfaction,\"</strong>&nbsp;watching numbers count up creates a sense of momentum.</p><p>If you are looking for the perfect <strong>Counter in Wix Studio</strong>, you might have realized that standard text elements don't animate by default. In this tutorial, I’m sharing a robust Velo (JavaScript) snippet that I use on my projects. It’s \"smart\" because it automatically handles suffixes (k, M, B), decimals, and symbols (%) without you needing to write extra code for each text box.</p><figure><img src=\"/media/6a1808ca24070b154f27f19fc3402ced.gif\" width=\"1080\" height=\"196\" alt=\"Preview of the animated number counter \" loading=\"lazy\"><figcaption>Preview</figcaption></figure><hr><h3>The Outcome</h3><p>By the end of this guide, you will have text elements that automatically count up from 0 when the user scrolls them into view, acting as a fully dynamic <strong>Counter in Wix Studio</strong>.</p><h4>Step 1: Open the Code Panel</h4><p>You don't need to install anything complex to get this working.</p><ol><li>In the Wix Studio Editor, look at the left sidebar.</li><li>Click the <strong>{ } (Code)</strong>&nbsp;icon.</li><li>A panel will slide up at the bottom of your screen. This is where we will paste the code.</li></ol><h4>Step 2: Prepare Your Text Elements</h4><p>The code needs to know <em>which</em>&nbsp;text elements to animate. To create a specific <strong>Counter in Wix Studio</strong>, we use a specific ID.</p><ol><li>Add a <strong>Text Element</strong>&nbsp;to your canvas.</li><li><p>Type in your final number (e.g., 1500, 98%, $10k).</p><ul><li><em>Note: You can style the font, size, and color however you like.</em></li></ul></li><li>Select the text element.</li><li>Look at the <strong>bottom right</strong>&nbsp;of your screen (next to the code editor) to find the <strong>Properties &amp; Events</strong>&nbsp;panel.</li><li>Find the <strong>ID</strong>&nbsp;field.</li><li><p>Change the ID to start with num.</p><ul><li>Examples: numCounter1, numStats, numRevenue.</li></ul></li></ol><p>The code specifically looks for IDs starting with \"num\" and ignores everything else.</p><blockquote><p><strong>⚠️ Important Limitation:</strong> This code is designed for <strong>static</strong>&nbsp;text elements only. It will <strong>not</strong>&nbsp;work for text elements inside a <strong>Repeater</strong>&nbsp;(connected to the CMS). Repeaters require a different coding approach using onItemReady.</p></blockquote><h4>Step 3: The Code</h4><p>Copy the code below and paste it directly into the panel at the bottom of your screen. <em>(Note: If you see existing code like $w.onReady..., you can delete it and replace it with this complete snippet.)</em></p><p>JavaScript</p><pre><code>$w.onReady(() =&gt; {\n  // CONFIGURATION: Animation Duration in milliseconds\n  const DURATION = 1500;\n\n  // 1. Find and Initialize all \"num\" elements\n  $w('Text').forEach(el =&gt; {\n    if (!el.id || !el.id.toLowerCase().startsWith('num')) return;\n    initCounter(el);\n  });\n\n  // 2. The Core Counter Function\n  function initCounter(el) {\n    const original = (el.text || '').toString();\n    // Regex to find numbers, decimals, commas, and suffixes (k, M, B)\n    const matches = [...original.matchAll(/(\\d[\\d,]*(?:\\.\\d+)?(?:\\s*[kKmMbB])?)([%\\+]?)/g)];\n    if (!matches.length) return;\n\n    let template = original;\n    matches.forEach((m, i) =&gt; {\n      template = template.replace(m[0], `{{n${i}}}`);\n    });\n\n    const tokens = matches.map(m =&gt; {\n      const rawNum = m[1].replace(/\\s+/g, '');\n      const trail = m[2] || '';\n      return parseTokenPreserveShort(rawNum, trail);\n    });\n\n    const zeroState = () =&gt; tokens.map(t =&gt; formatDisplayValue(0, t));\n    const finalState = () =&gt; tokens.map(t =&gt; formatDisplayValue(t.isShort ? t.shortValue : t.fullValue, t));\n\n    // Reset text to 0 initially\n    el.text = buildTextFromTemplate(template, zeroState(), tokens.map(t =&gt; t.trail));\n\n    let started = false;\n\n    // Animation Loop\n    function animate() {\n      if (started) return;\n      started = true;\n      const startTime = performance.now();\n\n      function step(now) {\n        const t = Math.min((now - startTime) / DURATION, 1);\n        // Easing function (Cubic Ease Out) for smooth effect\n        const eased = 1 - Math.pow(1 - t, 3);\n\n        const current = tokens.map(tok =&gt; {\n          const val = tok.isShort ? tok.shortValue * eased : tok.fullValue * eased;\n          return formatDisplayValue(val, tok);\n        });\n\n        el.text = buildTextFromTemplate(template, current, tokens.map(t =&gt; t.trail));\n\n        if (t &lt; 1) {\n          requestAnimationFrame(step);\n        } else {\n          el.text = buildTextFromTemplate(template, finalState(), tokens.map(t =&gt; t.trail));\n        }\n      }\n      requestAnimationFrame(step);\n    }\n\n    // Trigger animation when element enters viewport\n    el.onViewportEnter(animate);\n    \n    // Optional: Reset when leaving viewport so it plays again\n    el.onViewportLeave(() =&gt; {\n      started = false;\n      el.text = buildTextFromTemplate(template, zeroState(), tokens.map(t =&gt; t.trail));\n    });\n  }\n});\n\n/* ================= HELPERS (Paste these outside onReady) ================= */\n\nfunction parseTokenPreserveShort(rawNum, trail) {\n  // UPDATED: Do not force lowercase on the whole string immediately\n  // Regex now looks for uppercase or lowercase suffixes: [kKmMbB]\n  const shortMatch = rawNum.match(/^([\\d.,]+)([kKmMbB])$/);\n\n  if (shortMatch) {\n    const num = parseFloat(shortMatch[1].replace(/,/g, ''));\n    const originalSuffix = shortMatch[2]; // \"M\" or \"m\"\n    const lowerSuffix = originalSuffix.toLowerCase(); // used for math only\n    \n    const multiplier = lowerSuffix === 'k' ? 1e3 : lowerSuffix === 'm' ? 1e6 : 1e9;\n    const decimals = (shortMatch[1].split('.')[1] || '').length;\n\n    return {\n      isShort: true,\n      suffix: originalSuffix, // Preserves the original Case (e.g. \"M\")\n      shortValue: num,\n      fullValue: num * multiplier,\n      decimals,\n      hasSeparator: /,/.test(rawNum),\n      trail\n    };\n  }\n\n  const numeric = parseFloat(rawNum.replace(/,/g, ''));\n  const decimals = (rawNum.split('.')[1] || '').length;\n\n  return {\n    isShort: false,\n    suffix: '',\n    shortValue: null,\n    fullValue: isFinite(numeric) ? numeric : 0,\n    decimals,\n    hasSeparator: /,/.test(rawNum),\n    trail\n  };\n}\n\nfunction formatDisplayValue(value, tok) {\n  const rounded = tok.decimals === 0 ? Math.round(value) : roundToDecimals(value, tok.decimals);\n  if (tok.isShort) {\n    return tok.decimals === 0 \n      ? `${rounded}${tok.suffix}` \n      : `${rounded.toFixed(tok.decimals)}${tok.suffix}`;\n  }\n  if (tok.hasSeparator) {\n    return Number(rounded).toLocaleString(undefined, {\n      minimumFractionDigits: tok.decimals,\n      maximumFractionDigits: tok.decimals\n    });\n  }\n  return String(rounded);\n}\n\nfunction buildTextFromTemplate(template, values, trails) {\n  let text = template;\n  values.forEach((v, i) =&gt; { text = text.replace(`{{n${i}}}`, v + (trails[i] || '')); });\n  return text;\n}\n\nfunction roundToDecimals(num, dec) {\n  const m = Math.pow(10, dec);\n  return Math.round((num + Number.EPSILON) * m) / m;\n}</code></pre><figure><img src=\"/media/8c07adde026fcde3dd7d118942433a30.png\" width=\"1833\" height=\"975\" alt=\"Wix IDE screenshot showing JavaScript code for counter animation, with numbers 1234, 6234+, 264M, and 1.2K. Sidebar displays settings.\" loading=\"lazy\"><figcaption>Wix Studio Editor</figcaption></figure><hr><h3>Understanding the Code (What you can change)</h3><p>You don't need to be a coding expert to tweak this <strong>Counter in Wix Studio</strong>. Here is the one value you might want to adjust:</p><p><strong>The Animation Speed</strong> At the very top of the code, find this line: const DURATION = 1500;</p><p><strong>1500</strong>&nbsp;represents the time in milliseconds (1.5 seconds). <strong>To make it faster:</strong>&nbsp;Change it to 1000&nbsp;(1 second). <strong>To make it slower:</strong>&nbsp;Change it to 3000&nbsp;(3 seconds).</p><hr><h3>Why this code is \"Smart\"</h3><p>Unlike basic scripts you might find online, this approach uses <strong>Regular Expressions (Regex)</strong>&nbsp;to read your text before animating it.</p><p>If you write <strong>10k</strong>, it knows to count from 0 to 10, keeping the 'k'. If you write <strong>$50.00</strong>, it preserves the dollar sign and the decimal points. It uses an <strong>Ease-Out</strong>&nbsp;mathematical function, meaning the numbers spin fast at the start and land gently on the final number. This looks much more professional than a linear count and elevates the quality of your <strong>Counter in Wix Studio</strong>.</p><p>Enjoy adding some motion to your metrics!</p><p>It's one of many small motion details we build into client sites through our <a href=\"/services/motion-and-interaction-design\">Motion &amp; Interaction Design service</a>.</p>",
         "related": [
           "smooth-scroll-in-a-wix-website",
           "wix-studio-preloader-animation",
@@ -437,7 +478,7 @@
     "projects": [
       {
         "id": "d137ab73-2b7a-4084-a4d1-392d2207134f",
-        "title": "4Dolfins",
+        "title": "TeamStoica.ro",
         "slug": "4dolfins",
         "category": "Creative",
         "image": "/media/54f06e115564feee03cc900ead225dd7.jpg",
@@ -447,7 +488,7 @@
         "industryIcon": "/media/65afe60d0d06f1e93094a674afcfc2c6.svg",
         "created": 2024,
         "pageCount": 6,
-        "platform": "Wix Studio",
+        "platform": "Next.js",
         "shots": [
           {
             "id": 458,
@@ -510,6 +551,10 @@
           {
             "icon": "/media/ccc67fa56f9d5eeac04428f669a789be.svg",
             "title": "Animation"
+          },
+          {
+            "icon": "",
+            "title": "dqwdqwdq"
           }
         ],
         "related": [
@@ -522,7 +567,8 @@
         "heroDark": true,
         "heroLight": false,
         "homePosition": 6,
-        "homeImage": "/media/54f06e115564feee03cc900ead225dd7.tex.webp"
+        "homeImage": "/media/54f06e115564feee03cc900ead225dd7.tex.webp",
+        "published": true
       },
       {
         "id": "20d14695-2cc5-4a9e-b2a2-b979fa1c05c9",
@@ -649,7 +695,8 @@
         "heroDark": false,
         "heroLight": false,
         "homePosition": 7,
-        "homeImage": "/media/eace44ddc70352a3c3d0d1ea71b9fcb9.tex.webp"
+        "homeImage": "/media/eace44ddc70352a3c3d0d1ea71b9fcb9.tex.webp",
+        "published": true
       },
       {
         "id": "1b4c5571-4470-41f4-bd4c-5ea7b73c5011",
@@ -802,7 +849,8 @@
         "heroDark": false,
         "heroLight": true,
         "homePosition": 8,
-        "homeImage": "/media/6c273acf295ebe4fcd8cfcb2a86bda56.tex.webp"
+        "homeImage": "/media/6c273acf295ebe4fcd8cfcb2a86bda56.tex.webp",
+        "published": true
       },
       {
         "id": "c905a5ce-6d73-4cff-be1c-aad271a53d2a",
@@ -918,7 +966,8 @@
         "heroDark": false,
         "heroLight": false,
         "homePosition": 9,
-        "homeImage": "/media/f51bbfe772c3d754c3738d4af8efca44.tex.webp"
+        "homeImage": "/media/f51bbfe772c3d754c3738d4af8efca44.tex.webp",
+        "published": true
       },
       {
         "id": "813e53bd-16c6-4e41-9c10-e8cf59b20445",
@@ -1030,7 +1079,8 @@
         "heroDark": true,
         "heroLight": true,
         "homePosition": 10,
-        "homeImage": "/media/fa6a9d8c4c3126f5ceb10e26d0d16805.tex.webp"
+        "homeImage": "/media/fa6a9d8c4c3126f5ceb10e26d0d16805.tex.webp",
+        "published": true
       },
       {
         "id": "07b6b346-f901-43b2-bb4f-5cf7200f7c83",
@@ -1164,7 +1214,8 @@
         "heroPosition": 11,
         "heroMobile": "/media/cc1d9a1ba4111de86258ca7f7b8ec369.jpg",
         "heroDark": false,
-        "heroLight": false
+        "heroLight": false,
+        "published": true
       },
       {
         "id": "2e5f1f29-56e3-4379-a6eb-37a7a7809629",
@@ -1274,7 +1325,8 @@
         "heroPosition": 12,
         "heroMobile": "/media/96bc51bfa31fa0bd1138e6e8d9c7860d.jpg",
         "heroDark": true,
-        "heroLight": true
+        "heroLight": true,
+        "published": true
       },
       {
         "id": "6af6508c-6fc2-4b15-b129-ffc02a30d3a1",
@@ -1387,7 +1439,8 @@
         "heroPosition": 13,
         "heroMobile": "/media/54ea22ecaeee2c552dbe2e936cba2032.jpg",
         "heroDark": false,
-        "heroLight": false
+        "heroLight": false,
+        "published": true
       },
       {
         "id": "12831aa1-2587-4a8b-ac6b-4af5da6562b3",
@@ -1538,7 +1591,8 @@
         "heroDark": true,
         "heroLight": true,
         "homePosition": 5,
-        "homeImage": "/media/f23aef1579afdfca8471ccc112558b8c.tex.webp"
+        "homeImage": "/media/f23aef1579afdfca8471ccc112558b8c.tex.webp",
+        "published": true
       },
       {
         "id": "21417df3-4eaa-4fff-8045-9d9e88c9b368",
@@ -1652,7 +1706,8 @@
         "heroPosition": 14,
         "heroMobile": "/media/c4a15ac75200035e41ddeaeee2f846c6.jpg",
         "heroDark": false,
-        "heroLight": true
+        "heroLight": true,
+        "published": true
       },
       {
         "id": "d62209d6-1a32-44f6-860d-9ea5a4a069ec",
@@ -1770,7 +1825,10 @@
           "wrenmoor-heath",
           "photofolio",
           "evercraft"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "c3ebff03-f81a-4ad6-8d39-86e7b0a6421a",
@@ -1892,7 +1950,10 @@
           "stillroom",
           "agency",
           "valden"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "6e9c0465-f724-46bd-9cc8-643d29774a33",
@@ -2016,7 +2077,8 @@
         "heroDark": false,
         "heroLight": true,
         "homePosition": 2,
-        "homeImage": "/media/8c1a7114fc1bfec6490aeb80e841b066.tex.webp"
+        "homeImage": "/media/8c1a7114fc1bfec6490aeb80e841b066.tex.webp",
+        "published": true
       },
       {
         "id": "51b9daac-3c70-454b-921e-45bbba6c368c",
@@ -2095,7 +2157,10 @@
           "kingswell-law",
           "photofolio",
           "avara"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "4853eb22-d3e8-4553-af15-e75cc2f21031",
@@ -2220,7 +2285,10 @@
           "evercraft",
           "wrenmoor-heath",
           "lasada-pippen"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "a0745795-c860-487d-92a9-bfa642269a6c",
@@ -2373,7 +2441,8 @@
         "heroDark": true,
         "heroLight": true,
         "homePosition": 3,
-        "homeImage": "/media/ae4d73e3a7d806960f421c98e525ac2a.tex.webp"
+        "homeImage": "/media/ae4d73e3a7d806960f421c98e525ac2a.tex.webp",
+        "published": true
       },
       {
         "id": "a9f2bcc6-0db0-40b7-8297-0e33e3ca04cd",
@@ -2471,7 +2540,10 @@
           "showin",
           "4dolfins",
           "aesthica"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "1f1edd8f-25ac-4cc1-a546-0cef016735bc",
@@ -2616,7 +2688,8 @@
         "heroDark": true,
         "heroLight": true,
         "homePosition": 1,
-        "homeImage": "/media/43a45f30543208de53ade25795bdc673.tex.webp"
+        "homeImage": "/media/43a45f30543208de53ade25795bdc673.tex.webp",
+        "published": true
       },
       {
         "id": "b668db3a-4330-4337-82f4-0812863448a3",
@@ -2738,7 +2811,10 @@
           "showin",
           "evercraft",
           "photofolio"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "4807fdd6-3b98-43e7-affa-a814d4d9daee",
@@ -2847,7 +2923,10 @@
           "wrenmoor-heath",
           "ellery-kowal",
           "avara"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "37a803eb-ebe6-4620-9278-0e4fab950667",
@@ -2961,7 +3040,10 @@
           "guardian-vets",
           "norholm-freight",
           "ines-calder"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "de721d8f-1ba3-4cab-a81a-090fe526e6c6",
@@ -3098,7 +3180,10 @@
           "ellery-kowal",
           "guardian-vets",
           "orvel"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "98de32eb-0484-4bca-9325-c7523c7a09e4",
@@ -3189,7 +3274,10 @@
           "ironwood",
           "stillroom",
           "tigre-tigre"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "00c2ba86-8a8b-4c87-a837-d3d61144d152",
@@ -3295,7 +3383,10 @@
           "valden",
           "alvara-house",
           "devansh-portfolio"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "3f4c57b7-d5c3-47a5-b4ba-5c2dab975dfd",
@@ -3412,7 +3503,10 @@
           "evercraft",
           "upwell",
           "stillroom"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "18b7e31f-8cd2-404f-b5b1-4a7e7da065ca",
@@ -3532,7 +3626,8 @@
         "heroDark": false,
         "heroLight": true,
         "homePosition": 4,
-        "homeImage": "/media/cc006c5370888cd2c9322a58fa0c6c8e.tex.webp"
+        "homeImage": "/media/cc006c5370888cd2c9322a58fa0c6c8e.tex.webp",
+        "published": true
       },
       {
         "id": "0774e04e-af67-4a15-b3ca-ca15838ae7aa",
@@ -3672,7 +3767,10 @@
           "halden-roofing",
           "horizone",
           "meridian-ecom"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "cd9d028b-f861-47f3-b70f-6263ee944c89",
@@ -3792,7 +3890,10 @@
           "future-flow",
           "meridian-ecom",
           "longitude-society"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "e0b8cd9d-aa64-416d-a089-f0984c3ce8a4",
@@ -3894,7 +3995,10 @@
           "ironwood",
           "photofolio",
           "kingswell-law"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "5cc7da92-24f9-4e2a-8aa4-117fdef4fe1b",
@@ -4017,7 +4121,10 @@
           "avara",
           "alvara-house",
           "guardian-vets"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "42a5aed9-f625-43c3-ac98-8c97670286b5",
@@ -4095,7 +4202,10 @@
           "aveline-dental",
           "averleigh",
           "photofolio"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "a1390ea1-4640-4154-b91a-5d901f7bcbe6",
@@ -4168,7 +4278,10 @@
           "forma",
           "kingswell-law",
           "averleigh"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "ddecc3f9-194b-491d-a45f-8f069a79ca5d",
@@ -4294,7 +4407,10 @@
           "green-earth",
           "tigre-tigre",
           "lumora"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "aa9ee00d-0947-48ff-83b7-a1735b877146",
@@ -4381,7 +4497,10 @@
           "orvel",
           "evercraft",
           "averleigh"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "a07ab820-2a4f-453b-838c-a31a069c4d7e",
@@ -4467,7 +4586,10 @@
           "ines-calder",
           "stillroom",
           "tigre-tigre"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "70d72b34-f2c6-4d32-b7a6-5ee87abe2424",
@@ -4554,7 +4676,10 @@
           "aveline-dental",
           "horizone",
           "upwell"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "006c2441-d9a8-4c65-9ad3-a9d1c933dc3f",
@@ -4648,7 +4773,10 @@
           "norholm-freight",
           "orvel",
           "showin"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "64149b23-0ddd-4ced-856f-aceb11d5f330",
@@ -4747,7 +4875,10 @@
           "health-core",
           "future-flow",
           "aveline-dental"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "f0fb6f17-6bca-4da7-ae31-2a63d9c8e339",
@@ -4839,7 +4970,10 @@
           "watches",
           "longitude-society",
           "recapture-life"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       },
       {
         "id": "83a97380-21e3-4273-8dba-e585f18631e3",
@@ -4905,7 +5039,10 @@
           "restra",
           "averleigh",
           "showin"
-        ]
+        ],
+        "published": true,
+        "heroDark": false,
+        "heroLight": false
       }
     ],
     "testimonials": [
@@ -4916,7 +5053,8 @@
         "quote": "I've worked with Visuvate on several different occasions and it's always a pleasure. They go through every detail and deliver according to your desires.",
         "rating": 5,
         "avatar": "/media/5a83f2d8351f2d86ca840e132f49d102.png",
-        "avatarKind": "logo"
+        "avatarKind": "logo",
+        "published": true
       },
       {
         "id": "tst-lucas-m",
@@ -4924,7 +5062,8 @@
         "role": "United States",
         "quote": "Great work overall. The design feels premium, the layout is well structured, and everything is responsive. They made the changes I requested quickly and didn't drag the process. Would definitely work again.",
         "rating": 5,
-        "avatarKind": "photo"
+        "avatarKind": "photo",
+        "published": true
       },
       {
         "id": "tst-saleh-al-zamil",
@@ -4933,7 +5072,385 @@
         "quote": "Talented, creative, and most importantly trustworthy. They completed the revisions even after the project was marked complete on Contra weeks earlier.",
         "rating": 5,
         "avatar": "/media/3f19925f785007cf7b1ae8794b211f04.avif",
-        "avatarKind": "logo"
+        "avatarKind": "logo",
+        "published": true
+      }
+    ],
+    "tools": [
+      {
+        "name": "Wix Studio",
+        "logo": "/tech/wix-studio.webp",
+        "w": 720,
+        "published": true
+      },
+      {
+        "name": "Notion",
+        "logo": "/tech/notion.webp",
+        "w": 348,
+        "published": true
+      },
+      {
+        "name": "Figma",
+        "logo": "/tech/figma.webp",
+        "w": 433,
+        "published": true
+      },
+      {
+        "name": "Adobe",
+        "logo": "/tech/adobe.webp",
+        "w": 455,
+        "published": true
+      },
+      {
+        "name": "Claude",
+        "logo": "/tech/claude.svg",
+        "w": 550,
+        "published": true
+      },
+      {
+        "name": "Framer",
+        "logo": "/tech/framer.svg",
+        "w": 446,
+        "published": true
+      },
+      {
+        "name": "Blender",
+        "logo": "/tech/blender.webp",
+        "w": 447,
+        "published": true
+      },
+      {
+        "name": "Google Analytics",
+        "logo": "/tech/analytics.webp",
+        "w": 489,
+        "published": true
+      }
+    ],
+    "services": [
+      {
+        "title": "Website-uri",
+        "subtitle": "personalizate",
+        "href": "/services/crafted-websites",
+        "icon": "",
+        "viewBox": "4.047 4 39.906 40",
+        "paths": [
+          "M24 4c-.07 0-.15 0-.22.01-2.3.26-4.72 4.56-5.96 10.99h12.36c-1.24-6.43-3.66-10.73-5.96-10.99C24.15 4 24.07 4 24 4m-5.7.83C12.98 6.4 8.59 10.13 6.14 15h8.63c.7-4 1.89-7.62 3.53-10.17m11.4 0C31.34 7.38 32.53 11 33.23 15h8.63c-2.45-4.87-6.84-8.6-12.16-10.17M14.638 18.027a1.25 1.25 0 0 0-1.174 1.077l-.822 5.158-1.497-3.457a1.25 1.25 0 0 0-2.292 0l-1.497 3.457-.822-5.158a1.25 1.25 0 0 0-1.205-1.07 1.25 1.25 0 0 0-1.264 1.462l1.5 9.4a1.25 1.25 0 0 0 2.381.3L10 24.446l2.053 4.748a1.25 1.25 0 0 0 2.38-.299l1.5-9.4a1.25 1.25 0 0 0-1.294-1.469m14 0a1.25 1.25 0 0 0-1.174 1.077l-.822 5.158-1.497-3.457a1.25 1.25 0 0 0-2.292 0l-1.497 3.457-.822-5.158a1.25 1.25 0 0 0-1.205-1.07 1.25 1.25 0 0 0-1.264 1.462l1.5 9.4a1.25 1.25 0 0 0 2.381.3L24 24.446l2.053 4.748a1.25 1.25 0 0 0 2.38-.299l1.5-9.4a1.25 1.25 0 0 0-1.294-1.469m14 0a1.25 1.25 0 0 0-1.174 1.077l-.822 5.158-1.497-3.457a1.25 1.25 0 0 0-2.292 0l-1.497 3.457-.822-5.158a1.25 1.25 0 0 0-1.205-1.07 1.25 1.25 0 0 0-1.264 1.462l1.5 9.4a1.25 1.25 0 0 0 2.381.3L38 24.446l2.053 4.748a1.25 1.25 0 0 0 2.38-.299l1.5-9.4a1.25 1.25 0 0 0-1.294-1.469M6.14 33c2.45 4.87 6.84 8.6 12.16 10.17C16.66 40.62 15.47 37 14.77 33zm11.68 0c1.24 6.43 3.658 10.73 5.958 10.99.07.01.151.01.221.01s.15 0 .22-.01c2.3-.26 4.72-4.56 5.96-10.99zm15.41 0c-.7 4-1.892 7.62-3.532 10.17 5.32-1.57 9.71-5.3 12.16-10.17z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Redesign",
+        "subtitle": "website",
+        "href": "/services/website-redesign",
+        "icon": "",
+        "viewBox": "2.25 2.258 19.502 19.502",
+        "paths": [
+          "M20.94 3.06a2.76 2.76 0 0 0-3.89 0l-.83.83.53.63 2.78 2.78.52.54.9-.9a2.76 2.76 0 0 0 0-3.89Z",
+          "m15.64 5.53-.48-.58-4.88 4.88c-.33.33-.51.77-.51 1.24v2.41c0 .41.34.75.75.75h2.41c.47 0 .91-.18 1.24-.51l4.82-4.82-.53-.56-2.81-2.81Z",
+          "M12.93 15.74h-2.41c-1.24 0-2.25-1.01-2.25-2.25v-2.41c0-.87.34-1.69.95-2.3l3.52-3.52H6c-2.07 0-3.75 1.68-3.75 3.75v9c0 2.07 1.68 3.75 3.75 3.75h9c2.07 0 3.75-1.68 3.75-3.75v-6.74l-3.52 3.52c-.61.61-1.43.95-2.3.95"
+        ],
+        "published": true
+      },
+      {
+        "title": "Magazine",
+        "subtitle": "online",
+        "href": "/services/ecommerce-website-design",
+        "icon": "",
+        "viewBox": "0 31 512 450",
+        "paths": [
+          "M497 391H217c-12.361 0-19.416-14.111-12-24l19.5-26h232.495c7.15 0 13.306-5.047 14.709-12.058l40-200C513.56 119.66 506.46 111 496.995 111H168.161l-12.242-40.805C148.885 46.751 127.715 31 103.238 31H57c-8.284 0-15 6.716-15 15s6.716 15 15 15h46.238c11.126 0 20.749 7.16 23.946 17.816l73.269 244.246L181 349c-22.249 29.666-1.082 72 36 72h10.02a37.3 37.3 0 0 0-7.52 22.5c0 20.677 16.822 37.5 37.5 37.5s37.5-16.823 37.5-37.5a37.3 37.3 0 0 0-7.521-22.5h90.041a37.3 37.3 0 0 0-7.521 22.5c0 20.677 16.822 37.5 37.5 37.5s37.5-16.823 37.5-37.5a37.3 37.3 0 0 0-7.521-22.5H497c8.284 0 15-6.716 15-15s-6.716-15-15-15m-113.917-80h-31.814l-1.833-36.667h36.397zm5-66.667h-40.147l-1.833-36.667h44.73zM425.917 141h52.781l-7.333 36.667h-48.198zm-5 66.667h44.448l-7.333 36.667h-39.865zm-5 66.666h36.115L444.698 311h-31.531zM395.833 141l-2.75 36.667h-48.48L342.769 141zm-74.602 170h-31.628l-6.417-36.667h36.212zm-3.333-66.667h-39.962l-6.417-36.667h44.545zM312.731 141l1.833 36.667H266.27L259.853 141zm-53.584 170h-30.992l-11-36.667h35.575zm-81.992-170h52.242l6.417 36.667h-47.658zm20 66.667h43.908l6.417 36.667h-39.325z",
+          "M135 251H85c-8.284 0-15 6.716-15 15s6.716 15 15 15h50c8.284 0 15-6.716 15-15s-6.716-15-15-15",
+          "M85 311H35c-8.284 0-15 6.716-15 15s6.716 15 15 15h50c8.284 0 15-6.716 15-15s-6.716-15-15-15",
+          "M35 221h50c8.284 0 15-6.716 15-15s-6.716-15-15-15H35c-8.284 0-15 6.716-15 15s6.716 15 15 15",
+          "M50 266c0-8.284-6.716-15-15-15H15c-8.284 0-15 6.716-15 15s6.716 15 15 15h20c8.284 0 15-6.716 15-15"
+        ],
+        "published": true
+      },
+      {
+        "title": "CMS și",
+        "subtitle": "site-uri dinamice",
+        "href": "/services/cms-and-dynamic-websites",
+        "icon": "",
+        "viewBox": "7 9 34 30",
+        "paths": [
+          "M39.5 28h-31A1.5 1.5 0 0 1 7 26.5v-5A1.5 1.5 0 0 1 8.5 20h31a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5m0-11h-31A1.5 1.5 0 0 1 7 15.5v-5A1.5 1.5 0 0 1 8.5 9h31a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5m0 22h-31A1.5 1.5 0 0 1 7 37.5v-5A1.5 1.5 0 0 1 8.5 31h31a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5"
+        ],
+        "published": true
+      },
+      {
+        "title": "Landing pages",
+        "subtitle": "și microsite-uri",
+        "href": "/services/landing-pages-and-microsites",
+        "icon": "",
+        "viewBox": "2.477 3.41 19.047 17.18",
+        "paths": [
+          "M21.524 3.91v14.488a.5.5 0 0 1-.686.464l-9.314-3.725 8.337-10.19c.076-.093-.049-.217-.142-.14l-11.195 9.33-5.685-1.625a.5.5 0 0 1-.068-.936l18.048-8.122a.5.5 0 0 1 .705.456m-11.26 16.318a.5.5 0 0 0 .865.182l2.347-2.815-4.462-1.744z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Identitate",
+        "subtitle": "vizuală coerentă",
+        "href": "/services/consistent-identity",
+        "icon": "",
+        "viewBox": "5 2 20 24",
+        "paths": [
+          "M14.986 2A3 3 0 0 0 12 5c0 .935.432 1.653.893 2.357.426.65-.11 1.503-.881 1.407a83 83 0 0 1-4.586-.72l-.002.003A2 2 0 0 0 7 8a2 2 0 0 0-2 2v4.826c0 .91 1.006 1.476 1.771.983.733-.473 1.496-.888 2.512-.795 1.255.114 2.355 1.049 2.637 2.277A3.006 3.006 0 0 1 9 21c-.87 0-1.553-.375-2.21-.799-.774-.498-1.79.05-1.79.969v2.396C5 25.108 5.895 26 7 26h16a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2 2 2 0 0 0-.422.047l-.004-.002s-2.307.437-4.586.719c-.774.096-1.305-.76-.877-1.412.507-.774.977-1.569.875-2.647-.118-1.25-1.053-2.345-2.277-2.625a3.2 3.2 0 0 0-.723-.08"
+        ],
+        "published": true
+      },
+      {
+        "title": "Animații și",
+        "subtitle": "interacțiuni",
+        "href": "/services/motion-and-interaction-design",
+        "icon": "",
+        "viewBox": "31 0 450 512",
+        "paths": [
+          "M426 199.937H301.37l97.74-177.708C404.607 12.232 397.374 0 385.965 0H205.978a15 15 0 0 0-14.126 9.955L91.874 289.892c-3.489 9.769 3.753 20.045 14.126 20.045h141.738l-36.453 184.086c-3.142 15.867 17.593 24.785 26.95 11.591l200-282c7.045-9.933-.058-23.677-12.235-23.677",
+          "M167.872 479.709c8.124 1.625 16.026-3.644 17.651-11.767l21.998-110.001c1.625-8.123-3.644-16.026-11.767-17.65h-.001c-8.123-1.624-16.025 3.644-17.65 11.767l-21.998 110.001c-1.625 8.123 3.643 16.025 11.767 17.65",
+          "M40.959 298.729c7.802 2.786 16.385-1.279 19.171-9.081l64.285-180c2.786-7.802-1.279-16.385-9.081-19.171s-16.385 1.279-19.171 9.081l-64.285 180c-2.786 7.802 1.279 16.385 9.081 19.171",
+          "m441.332 7.774-55.001 100c-3.992 7.259-1.344 16.379 5.914 20.372 7.259 3.992 16.38 1.345 20.372-5.914l55.001-100c3.992-7.259 1.344-16.379-5.914-20.372-7.259-3.993-16.38-1.345-20.372 5.914",
+          "M291.128 509.285c6.787 4.753 16.14 3.104 20.892-3.682l71.43-102.001c4.752-6.786 3.103-16.139-3.682-20.891l-.001-.001c-6.786-4.752-16.139-3.103-20.891 3.682l-71.43 102.001c-4.753 6.787-3.104 16.14 3.682 20.892",
+          "m453.793 253.509-35.715 50.001c-4.815 6.741-3.254 16.109 3.487 20.924h.001c6.741 4.815 16.109 3.254 20.924-3.487l35.715-50.001c4.815-6.741 3.254-16.109-3.487-20.924h-.001c-6.741-4.816-16.109-3.255-20.924 3.487"
+        ],
+        "published": true
+      },
+      {
+        "title": "Structură",
+        "subtitle": "și UX",
+        "href": "/services/ux-centric-strategy",
+        "icon": "",
+        "viewBox": "20.009 20.009 159.982 159.982",
+        "paths": [
+          "M20.009 91.815l159.982-71.806-71.806 159.982-23.718-66.636-64.458-21.54z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Optimizare",
+        "subtitle": "de viteză",
+        "href": "/services/performance-optimization",
+        "icon": "",
+        "viewBox": "-0.001 0.001 512.001 511.999",
+        "paths": [
+          "M121.966 390.034c-5.858-5.858-15.355-5.858-21.213 0l-39.79 39.79c-5.858 5.858-5.858 15.355 0 21.213s15.355 5.858 21.213 0l39.79-39.79c5.858-5.858 5.858-15.356 0-21.213",
+          "m17.323 473.464-12.93 12.929c-5.858 5.858-5.858 15.355 0 21.213s15.355 5.858 21.213 0l12.929-12.929c5.858-5.858 5.858-15.355 0-21.213s-15.355-5.858-21.212 0",
+          "m122.175 453.464-32.929 32.929c-5.858 5.858-5.858 15.355 0 21.213s15.355 5.858 21.213 0l32.929-32.929c5.858-5.858 5.858-15.355 0-21.213s-15.355-5.858-21.213 0",
+          "m25.607 422.754 32.929-32.929c5.858-5.858 5.858-15.355 0-21.213s-15.355-5.858-21.213 0l-32.93 32.929c-5.858 5.858-5.858 15.355 0 21.213s15.356 5.858 21.214 0",
+          "m337.761 343.945 59.907 59.907c20.092-22.627 32.964-50.247 37.394-80.428 3.532-24.066 1.451-48.113-5.996-70.785z",
+          "m274.121 407.584 49.497 49.497c5.858 5.858 15.355 5.858 21.213 0l31.82-31.82-60.104-60.104z",
+          "M259.361 82.933c-22.672-7.447-46.719-9.527-70.785-5.996-30.182 4.43-57.801 17.302-80.428 37.394l59.907 59.907z",
+          "m104.416 237.879 42.426-42.426-60.104-60.104-31.82 31.82c-5.858 5.858-5.858 15.355 0 21.213z",
+          "M511.851 14.624C511.579 6.745 505.255.421 497.377.15 443.91-1.694 391.709 13.601 348.064 43.121L468.88 163.937c29.519-43.646 44.814-95.847 42.971-149.313",
+          "M115.022 312.125c-5.858 5.858-5.858 15.355 0 21.213l63.64 63.64c5.858 5.858 15.355 5.858 21.213 0l10.607-10.607-84.853-84.853z",
+          "M344.832 188.381c5.849-5.849 5.849-15.364 0-21.213s-15.365-5.849-21.213 0-5.849 15.364 0 21.213 15.364 5.849 21.213 0",
+          "M311.18 73.541 125.629 259.092l127.279 127.279L438.459 200.82a251 251 0 0 0 11.991-12.887L324.067 61.55a251 251 0 0 0-12.887 11.991m54.865 72.414c17.546 17.546 17.545 46.094 0 63.64s-46.094 17.546-63.64 0-17.545-46.094 0-63.64 46.094-17.546 63.64 0"
+        ],
+        "published": true
+      },
+      {
+        "title": "Mentenanță",
+        "subtitle": "și suport",
+        "href": "/services/maintenance-and-ongoing-support",
+        "icon": "",
+        "viewBox": "2 3 25.999 24.002",
+        "paths": [
+          "M4 3 2 5l2 4 3 1 3.5 3.5 2-2L9 8 8 5zm18.066.01a6.15 6.15 0 0 0-4.603 1.799c-1.636 1.636-1.783 3.603-.969 5.455L4.88 21.879a3 3 0 0 0 0 4.242 3 3 0 0 0 4.242 0l11.615-11.615c1.851.813 3.82.666 5.455-.97a6.16 6.16 0 0 0 1.512-6.24l-3.705 3.708-3.201-.8-.8-3.202 3.706-3.705a6.2 6.2 0 0 0-1.637-.287m-1.545 14.627L16.758 21.4l4.818 4.82a2.662 2.662 0 1 0 3.766-3.765zM7 23a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
+        ],
+        "published": true
+      },
+      {
+        "title": "Aplicații",
+        "subtitle": "și ERP-uri",
+        "href": "/services/software-and-erp",
+        "icon": "",
+        "viewBox": "0 0 24 24",
+        "paths": [
+          "M3 3h8v8H3z",
+          "M13 3h8v5h-8z",
+          "M13 10h8v11h-8z",
+          "M3 13h8v8H3z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Automatizare",
+        "subtitle": "SAGA WEB",
+        "href": "/automation",
+        "icon": "",
+        "viewBox": "0 0 24 24",
+        "paths": [
+          "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.97 4.06L14.09 6l1.41 1.41L16.91 6l1.06 1.06-1.41 1.41 1.41 1.41-1.06 1.06-1.41-1.4-1.41 1.41-1.06-1.06 1.41-1.41-1.41-1.42zm-6.78.66h5v1.5h-5v-1.5zM11.5 16h-2v2H8v-2H6v-1.5h2v-2h1.5v2h2V16zm6.5 1.25h-5v-1.5h5v1.5zm0-2.5h-5v-1.5h5v1.5z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Automatizări",
+        "subtitle": "pentru firme",
+        "href": "/services/business-automation",
+        "icon": "",
+        "viewBox": "0 0 24 24",
+        "paths": [
+          "M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Modele 3D",
+        "subtitle": "în Blender",
+        "href": "/services/3d-modeling",
+        "icon": "",
+        "viewBox": "0 0 24 24",
+        "paths": [
+          "M12 2.5 20.5 7 12 11.5 3.5 7z",
+          "M3 8.7l8.2 4.4V22L3 17.5z",
+          "M21 8.7v8.8L12.8 22v-8.9z"
+        ],
+        "published": true
+      },
+      {
+        "title": "Videoclipuri",
+        "subtitle": "și reels",
+        "href": "/services/video-and-reels",
+        "icon": "",
+        "viewBox": "0 0 24 24",
+        "paths": [
+          "M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"
+        ],
+        "published": true
+      }
+    ],
+    "marquee": [
+      {
+        "text": "Website-uri personalizate",
+        "published": true
+      },
+      {
+        "text": "Magazine online",
+        "published": true
+      },
+      {
+        "text": "Aplicații web",
+        "published": true
+      },
+      {
+        "text": "Automatizări",
+        "published": true
+      }
+    ],
+    "plans": [
+      {
+        "currency": "lei",
+        "priceType": "one-time",
+        "infraCurrency": "€",
+        "infraFrequency": "monthly",
+        "domainPrice": 1,
+        "ctaLabel": "Cere o ofertă",
+        "ctaLink": "/contact",
+        "detailsLink": "/services/crafted-websites#pachete",
+        "published": true,
+        "id": "starter",
+        "name": "Starter",
+        "price": "2.490",
+        "infraPrice": 15,
+        "recommended": false,
+        "description": "Pentru afaceri mici, profesioniști și proiecte care au nevoie de o prezență online simplă și bine făcută.",
+        "features": [
+          "Landing page personalizat",
+          "Design responsive, gândit pentru telefon și desktop",
+          "Secțiunile standard pentru prezentarea afacerii",
+          "Formular de contact",
+          "Buton de WhatsApp sau contact direct",
+          "SEO tehnic de bază: meta title și meta description",
+          "Animații discrete",
+          "Optimizarea imaginilor",
+          "Conectarea domeniului și configurarea SSL",
+          "Configurarea inițială a măsurilor tehnice de confidențialitate aplicabile",
+          "Testare înainte de lansare",
+          "O rundă de revizii"
+        ],
+        "notIncluded": [
+          "Mai multe pagini (de la Business)",
+          "Panou de administrare (CMS)",
+          "Google Analytics 4 și Search Console",
+          "Integrări API"
+        ]
+      },
+      {
+        "currency": "lei",
+        "priceType": "one-time",
+        "infraCurrency": "€",
+        "infraFrequency": "monthly",
+        "domainPrice": 1,
+        "ctaLabel": "Cere o ofertă",
+        "ctaLink": "/contact",
+        "detailsLink": "/services/crafted-websites#pachete",
+        "published": true,
+        "id": "business",
+        "name": "Business",
+        "price": "4.990",
+        "infraPrice": 25,
+        "recommended": true,
+        "description": "Pentru firmele care au nevoie de un website complet, ușor de administrat și pregătit pentru ce urmează.",
+        "features": [
+          "Tot ce include Starter, plus:",
+          "Până la 5 pagini",
+          "Design personalizat pe identitatea brandului",
+          "CMS pentru editarea textelor și imaginilor",
+          "Formular de contact cu validare",
+          "Google Analytics 4, cu consimțământ configurat unde e necesar",
+          "Navigare bine organizată",
+          "Animații și tranziții personalizate, în limita complexității pachetului",
+          "Configurare Google Search Console",
+          "Sitemap XML, robots.txt și URL-uri curate",
+          "Canonical tags, unde sunt necesare",
+          "Structured data de bază, dacă se potrivește proiectului",
+          "Optimizare de performanță și verificări responsive",
+          "Configurarea măsurilor tehnice pentru protejarea datelor",
+          "Două runde de revizii"
+        ],
+        "notIncluded": [
+          "Peste 5 pagini",
+          "Animații avansate GSAP / Motion",
+          "Integrări API"
+        ]
+      },
+      {
+        "currency": "lei",
+        "priceType": "one-time",
+        "infraCurrency": "€",
+        "infraFrequency": "monthly",
+        "domainPrice": 1,
+        "ctaLabel": "Cere o ofertă",
+        "ctaLink": "/contact",
+        "detailsLink": "/services/crafted-websites#pachete",
+        "published": true,
+        "id": "premium",
+        "name": "Premium",
+        "price": "9.990",
+        "infraPrice": 35,
+        "recommended": false,
+        "description": "Pentru brandurile care vor un website lucrat în detaliu, cu design avansat, animații și funcționalități în plus.",
+        "features": [
+          "Tot ce include Business, plus:",
+          "Până la 10 pagini",
+          "Design custom avansat, adaptat brandului",
+          "Animații cu GSAP / Motion",
+          "CMS cu administrare extinsă",
+          "O integrare API standard, cu scop bine definit",
+          "Tranziții și interacțiuni personalizate",
+          "Pagini de servicii și portofoliu configurabile",
+          "Optimizări suplimentare de performanță",
+          "SEO tehnic extins și verificarea structurii semantice",
+          "Experiența pe mobil lucrată separat",
+          "Trei runde de revizii"
+        ],
+        "notIncluded": [
+          "Experiențe 3D complexe",
+          "Aplicații personalizate",
+          "Integrări avansate sau multiple",
+          "Toate acestea se ofertează separat, după ce discutăm ce trebuie construit."
+        ]
       }
     ]
   },
@@ -4946,50 +5463,50 @@
     "desktop": "Desktop"
   },
   "components/blog/ArticleCodeBlocks": {
-    "copy-code": "Copy code"
+    "copy-code": "Copiază codul"
   },
   "components/blog/ArticleLightbox": {
     "image": "Image",
     "close": "Close",
     "previous-image": "Previous image",
     "next-image": "Next image",
-    "click-the-image-to-fit": "Click the image to fit",
-    "click-the-image-to-zoom": "Click the image to zoom",
-    "arrow-keys-to-browse": " · Arrow keys to browse",
-    "esc-to-close": " · Esc to close"
+    "click-the-image-to-fit": "Click pe imagine ca să o încadrezi",
+    "click-the-image-to-zoom": "Click pe imagine ca să o mărești",
+    "arrow-keys-to-browse": " · Săgețile pentru navigare",
+    "esc-to-close": " · Esc pentru închidere"
   },
   "components/contact/ContactForm": {
-    "your-country": "Your Country",
-    "no-match": "No match",
-    "website-design": "Website Design",
-    "website-redesign": "Website Redesign",
-    "framer-development": "Framer Development",
-    "wix-studio-development": "Wix Studio Development",
-    "not-sure-yet": "Not sure yet",
-    "required": " (required)",
-    "please-add-your-name": "Please add your name.",
-    "that-email-address-does-not-look": "That email address does not look right.",
-    "please-add-your-email": "Please add your email.",
-    "please-choose-your-country": "Please choose your country.",
-    "please-choose-a-budget-range": "Please choose a budget range.",
-    "please-choose-how-we-should-reply": "Please choose how we should reply.",
-    "add-a-phone-number-so-we": "Add a phone number so we can reach you on WhatsApp.",
-    "your-message-did-not-send-please": "Your message did not send. Please try again.",
-    "your-message-did-not-send-check": "Your message did not send — check your connection, or email contact@visuvate.com.",
-    "name": "Name",
+    "your-country": "Țara ta",
+    "no-match": "Nicio potrivire",
+    "website-design": "Website de prezentare",
+    "website-redesign": "Redesign website",
+    "framer-development": "Aplicație web",
+    "wix-studio-development": "Automatizare",
+    "not-sure-yet": "Nu știu încă",
+    "required": " (obligatoriu)",
+    "please-add-your-name": "Spune-ne cum te numești.",
+    "that-email-address-does-not-look": "Adresa de email nu pare corectă.",
+    "please-add-your-email": "Lasă-ne o adresă de email.",
+    "please-choose-your-country": "Alege țara.",
+    "please-choose-a-budget-range": "Alege un buget orientativ.",
+    "please-choose-how-we-should-reply": "Alege cum vrei să-ți răspundem.",
+    "add-a-phone-number-so-we": "Adaugă un număr de telefon ca să-ți putem scrie pe WhatsApp.",
+    "your-message-did-not-send-please": "Mesajul nu s-a trimis. Încearcă din nou.",
+    "your-message-did-not-send-check": "Mesajul nu s-a trimis. Verifică conexiunea sau scrie-ne la contact@visuvate.com.",
+    "name": "Nume",
     "email": "Email",
-    "country": "Country",
-    "phone": "Phone",
-    "phone-number": "Phone number",
-    "project-type": "Project Type",
-    "select": "Select....",
-    "number-of-pages": "Number of pages",
-    "budget-range": "Budget range",
-    "what-do-you-need-help-with": "What do you need help with?",
-    "tell-us-what-you-re-looking": "Tell us what you’re looking to create and what matters most…",
-    "preferred-response-method": "Preferred Response Method",
-    "sending": "Sending…",
-    "submit": "Submit",
+    "country": "Țară",
+    "phone": "Telefon",
+    "phone-number": "Număr de telefon",
+    "project-type": "Tipul proiectului",
+    "select": "Alege…",
+    "number-of-pages": "Număr de pagini",
+    "budget-range": "Buget orientativ",
+    "what-do-you-need-help-with": "Cu ce te putem ajuta?",
+    "tell-us-what-you-re-looking": "Spune-ne ce vrei să construiești sau ce problemă vrei să rezolvi. Nu trebuie să ai toate detaliile.",
+    "preferred-response-method": "Cum vrei să-ți răspundem",
+    "sending": "Se trimite…",
+    "submit": "Trimite",
     "countries": [
       "Afghanistan",
       "Albania",
@@ -5193,138 +5710,124 @@
       "Zimbabwe"
     ]
   },
-  "components/hero/PropertyPanel": {
-    "1fr": "1fr",
-    "max-width": "Max Width",
-    "effect": "Effect"
-  },
   "components/hero/Studio": {
-    "collapse-panels": "Collapse panels",
-    "expand-panels": "Expand panels",
-    "w": "w",
-    "px": "px",
-    "visuvate-team-member": "Visuvate team member",
-    "press-hold": "Press & Hold",
-    "view-project": "View Project",
-    "canvas-tools": "Canvas tools",
-    "marquee-speed": "Marquee speed",
-    "x": "X",
-    "canvas-theme": "Canvas theme",
-    "interface-language": "Interface language"
-  },
-  "components/hero/data": {
-    "home": "Home",
-    "about-us": "About Us",
-    "works": "Works",
-    "services": "Services",
-    "blogs": "Blogs",
-    "contact": "Contact",
-    "pie-de-pagina": "Pie de página",
-    "lista-de-servicios": "Lista de servicios",
-    "entrada-destacada": "Entrada destacada",
-    "ancho-max": "Ancho máx.",
-    "appel-a-action": "Appel à action",
-    "pied-de-page": "Pied de page",
-    "liste-des-services": "Liste des services",
-    "largeur-max": "Largeur max.",
-    "max-breite": "Max. Breite",
-    "tech-stack": "Tech Stack",
-    "featured-works": "Featured Works",
-    "project-grid": "Project Grid",
-    "service-list": "Service List",
-    "featured-post": "Featured Post",
-    "post-grid": "Post Grid",
-    "enquiry-form": "Enquiry Form"
-  },
-  "components/hero/icons": {
-    "select": "Select",
-    "hold-a-shot-to-preview": "Hold a shot to preview",
-    "zoom": "Zoom",
-    "click-a-shot-to-open-its": "Click a shot to open its project",
-    "pan": "Pan",
-    "drag-the-strip": "Drag the strip"
+    "view-project": "View Project"
   },
   "components/layout/CookieBanner": {
-    "cookie-consent": "Cookie consent",
-    "cookies-briefly": "Cookies, briefly",
-    "one-optional-cookie-tells-us-which": "One optional cookie tells us which pages earn attention, and lets us see if our ads led to a contact request. Nothing personal, nothing sold — details in the",
-    "privacy-policy": "privacy policy",
-    "decline": "Decline",
-    "accept": "Accept"
+    "cookie-consent": "Acord pentru cookie-uri",
+    "cookies-briefly": "Pe scurt, despre cookie-uri",
+    "one-optional-cookie-tells-us-which": "Un cookie opțional ne arată ce pagini sunt citite și dacă reclamele au adus vreo cerere de contact. Nu colectăm date personale și nu vindem nimic. Detalii găsești în",
+    "privacy-policy": "politica de confidențialitate",
+    "decline": "Refuz",
+    "accept": "Accept",
+    "customize": "Personalizează",
+    "save-choices": "Salvează alegerile",
+    "necessary": "Necesare",
+    "necessary-desc": "Țin site-ul funcțional și rețin alegerea ta.",
+    "always-on": "Mereu active",
+    "statistics": "Statistici",
+    "statistics-desc": "Google Analytics: ce pagini sunt vizitate.",
+    "marketing": "Marketing",
+    "marketing-desc": "Google Ads și Meta Pixel: dacă reclamele au adus o cerere de contact."
   },
   "components/layout/CookieSettingsButton": {
-    "cookies": "Cookies"
+    "cookies": "Cookie-uri"
   },
   "components/layout/Footer": {
-    "create-bold": "Create Bold.",
-    "deliver-better": "Deliver Better.",
-    "see-our-work": "See our work",
-    "get-in-touch": "Get in touch",
+    "create-bold": "Ai un proiect",
+    "deliver-better": "în minte?",
+    "see-our-work": "Vezi proiectele",
+    "get-in-touch": "Hai să vorbim",
     "instagram": "Instagram",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
     "whatsapp": "WhatsApp",
-    "company": "Company",
-    "about": "About",
-    "work": "Work",
-    "privacy-policy": "Privacy Policy",
-    "terms-and-conditions": "Terms and conditions",
-    "services": "Services",
-    "crafted-websites": "Crafted Websites",
-    "website-redesign": "Website Redesign",
-    "ecommerce-design": "eCommerce Design",
-    "cms-dynamic-sites": "CMS & Dynamic Sites",
-    "resources": "Resources",
+    "company": "ESA",
+    "about": "Despre",
+    "work": "Proiecte",
+    "privacy-policy": "Politica de confidențialitate",
+    "terms-and-conditions": "Termeni și condiții",
+    "services": "Servicii",
+    "crafted-websites": "Website-uri personalizate",
+    "website-redesign": "Redesign website",
+    "ecommerce-design": "Magazine online",
+    "cms-dynamic-sites": "CMS și site-uri dinamice",
+    "resources": "Resurse",
     "blog": "Blog",
-    "templates": "Templates",
-    "faqs": "FAQs",
+    "templates": "Template-uri",
+    "faqs": "Întrebări frecvente",
     "contact": "Contact",
-    "email-contact-visuvate-com": "Email: contact@visuvate.com",
-    "phone-91-9278388499": "Phone: +91 9278388499",
-    "based-in-india": "Based in India",
-    "serving-the-us-uk-worldwide": "Serving the US, UK & worldwide",
-    "visuvate-all-rights-reserved": " Visuvate. All rights reserved."
+    "phone-91-9278388499": "Telefon: +91 9278388499",
+    "based-in-india": "Website-uri, aplicații web și automatizări",
+    "serving-the-us-uk-worldwide": "Colaborare online, oriunde ai fi",
+    "visuvate-all-rights-reserved": " ESA Coder Solutions. Toate drepturile rezervate.",
+    "instagram-link": "https://www.instagram.com/visuvate",
+    "linkedin-link": "https://linkedin.com/company/visuvate",
+    "twitter-link": "https://x.com/visuvate",
+    "whatsapp-link": "https://api.whatsapp.com/send/?phone=919278388499&text=Hi",
+    "phone-link": "+919278388499",
+    "see-our-work-link": "/works",
+    "get-in-touch-link": "/contact",
+    "about-link": "/about-us",
+    "work-link": "/works",
+    "privacy-policy-link": "/privacy-policy",
+    "terms-and-conditions-link": "/terms-and-conditions",
+    "crafted-websites-link": "/services/crafted-websites",
+    "website-redesign-link": "/services/website-redesign",
+    "ecommerce-design-link": "/services/ecommerce-website-design",
+    "cms-dynamic-sites-link": "/services/cms-and-dynamic-websites",
+    "blog-link": "/blog",
+    "templates-link": "/templates",
+    "faqs-link": "/#faqs",
+    "email-prefix": "Email: "
   },
   "components/layout/Header": {
-    "home": "Home",
-    "about-us": "About Us",
-    "works": "Works",
-    "services": "Services",
-    "blogs": "Blogs",
-    "templates": "Templates",
-    "visuvate-home": "Visuvate — home",
-    "primary": "Primary",
-    "connect": "Connect",
-    "let-s-connect": "Let’s Connect",
-    "close-menu": "Close menu",
-    "open-menu": "Open menu",
+    "home": "Acasă",
+    "about-us": "Despre",
+    "works": "Proiecte",
+    "services": "Servicii",
+    "blogs": "Blog",
+    "templates": "Template-uri",
+    "visuvate-home": "ESA Coder Solutions, pagina principală",
+    "primary": "Principal",
+    "connect": "Contact",
+    "let-s-connect": "Hai să vorbim",
+    "close-menu": "Închide meniul",
+    "open-menu": "Deschide meniul",
     "mobile": "Mobile",
-    "contact-visuvate-com": "contact@visuvate.com"
+    "visuvate-home-link": "/",
+    "home-link": "/",
+    "about-us-link": "/about-us",
+    "works-link": "/works",
+    "services-link": "/services",
+    "blogs-link": "/blog",
+    "templates-link": "/templates",
+    "cta-link": "/contact"
   },
   "components/layout/SiteLayout": {
     "skip-to-content": "Skip to content"
   },
   "components/sections/Approach": {
-    "our-approach": "Our Approach",
-    "discovery-first": "Discovery First",
-    "we-begin-by": "We begin by ",
-    "defining-clear-goals": "defining clear goals,",
-    "understanding-your-audience-and-aligning-with": " understanding your audience, and aligning with your brand voice to set a strong foundation.",
-    "mobile-first-design": "Mobile-First Design",
-    "every-layout-is-designed-for": "Every layout is designed for ",
-    "seamless-mobile-first-experiences": "seamless mobile-first experiences,",
-    "ensuring-performance-across-all-devices": " ensuring performance across all devices.",
-    "conversion-driven": "Conversion-Driven",
-    "websites-built-with-strategy-designed-to": "Websites built with strategy, designed to engage audiences, and crafted to turn ",
-    "visitors-into-customers": "visitors into customers.",
-    "pixel-perfect-development": "Pixel-Perfect Development",
-    "designed-and-developed-with": "Designed and developed with ",
-    "pixel-perfect-precision": "pixel-perfect precision",
-    "delivering-high-performance-and-easy-updates": ", delivering high performance and easy updates.",
-    "seamless-cms-launch": "Seamless CMS Launch",
-    "launched-seamlessly-with-a-powerful-cms": "Launched seamlessly with a powerful CMS, allowing you to ",
-    "update-and-manage-your-website": "update and manage your website",
-    "content-effortlessly-after-going-live": " content effortlessly after going live.",
+    "our-approach": "Cum lucrăm",
+    "discovery-first": "Întâi discutăm",
+    "we-begin-by": "Ne spui ce vrei să faci și ce ai deja, iar împreună stabilim ",
+    "defining-clear-goals": "unde vrei să ajungi.",
+    "understanding-your-audience-and-aligning-with": " Abia după asta are sens să vorbim despre design și tehnologie.",
+    "mobile-first-design": "Gândit întâi pentru telefon",
+    "every-layout-is-designed-for": "Fiecare pagină e construită ",
+    "seamless-mobile-first-experiences": "pornind de la ecranul mic,",
+    "ensuring-performance-across-all-devices": " pentru că de acolo vin cei mai mulți vizitatori. Pe desktop se așază apoi firesc.",
+    "conversion-driven": "Construit cu un scop",
+    "websites-built-with-strategy-designed-to": "Ordinea secțiunilor, textele și butoanele sunt așezate ca vizitatorul să înțeleagă repede ce oferi și ",
+    "visitors-into-customers": "să ajungă ușor la contact sau la comandă.",
+    "pixel-perfect-development": "Pus la punct",
+    "designed-and-developed-with": "Verificăm funcționalitățile și ajustăm detaliile până când ",
+    "pixel-perfect-precision": "totul merge cum trebuie",
+    "delivering-high-performance-and-easy-updates": ", nu doar până arată bine într-un preview.",
+    "seamless-cms-launch": "Conținut pe care îl schimbi singur",
+    "launched-seamlessly-with-a-powerful-cms": "Dacă proiectul are nevoie, primești un panou de administrare prin care ",
+    "update-and-manage-your-website": "îți actualizezi textele și imaginile",
+    "content-effortlessly-after-going-live": " fără să depinzi de un developer pentru fiecare modificare.",
     "title": "Title",
     "date": "Date",
     "image": "Image",
@@ -5342,65 +5845,155 @@
     "31-january-2025": "31 January 2025",
     "smooth-wix-studio-preloader-animation": "Smooth Wix Studio Preloader Animation",
     "29-january-2025": "29 January 2025",
-    "future-ready": "Future-Ready",
-    "websites-designed-to-be": "Websites designed to be ",
-    "scalable-and-future-ready": "scalable and future-ready,",
-    "adapting-as-your-business-grows": " adapting as your business grows."
+    "future-ready": "Gândit să crească",
+    "websites-designed-to-be": "Codul e scris ca proiectul să poată fi ",
+    "scalable-and-future-ready": "extins și îmbunătățit în timp,",
+    "adapting-as-your-business-grows": " fără să o luăm de la zero la fiecare schimbare."
   },
   "components/sections/Faqs": {
-    "frequently-asked": "Frequently Asked ",
-    "questions": "Questions"
+    "frequently-asked": "Întrebări ",
+    "questions": "frecvente"
   },
   "components/sections/Hero": {
-    "design-in-details": "Design In Details",
-    "crafted": "Crafted ",
-    "websites": "Websites",
-    "lasting": "Lasting",
-    "impressions": " Impressions",
-    "premium-websites-crafted-for-bold-brands": "Premium websites crafted for bold brands.",
-    "get-in-touch": "Get in touch",
-    "see-our-work": "See our work"
+    "design-in-details": "Agenție de web design și dezvoltare",
+    "crafted": "Site-uri ",
+    "websites": "bine făcute.",
+    "lasting": "Soluții",
+    "impressions": " care funcționează.",
+    "premium-websites-crafted-for-bold-brands": "Construim website-uri, magazine online și aplicații web, cu grijă la design și la tot ce e în spatele lui.",
+    "get-in-touch": "Hai să discutăm",
+    "see-our-work": "Vezi proiectele",
+    "get-in-touch-link": "/contact",
+    "see-our-work-link": "/works",
+    "strip-all-work": "Toate proiectele",
+    "strip-all-work-link": "/works",
+    "strip-pause": "Oprește banda",
+    "strip-play": "Pornește banda"
   },
   "components/sections/Introduction": {
-    "design-that-speaks": "Design that speaks.",
-    "delivery-that-converts": "Delivery that converts.",
-    "visuvate-crafts-focused-digital-experiences-that": "Visuvate crafts focused digital experiences that captivate audiences and drive growth. Combining bold design with smart strategy, we elevate your brand to win and convert—seamlessly.",
-    "about-us": "About Us",
-    "see-our-work": "See our work"
+    "design-that-speaks": "Ne place să construim",
+    "delivery-that-converts": "lucruri care funcționează.",
+    "visuvate-crafts-focused-digital-experiences-that": "Suntem o echipă de developeri, web designeri și programatori. Înainte să scriem cod, vrem să înțelegem ce îți trebuie de fapt: uneori un site simplu și bine făcut, alteori o aplicație cu administrare și integrări. În ambele cazuri urmărim același lucru, un design îngrijit și o implementare făcută cum trebuie.",
+    "about-us": "Despre noi",
+    "see-our-work": "Vezi proiectele",
+    "about-us-link": "/about-us",
+    "see-our-work-link": "/works"
   },
-  "components/sections/Marquee": {
-    "ui-ux-design": "UI/UX Design",
-    "brand-identity": "Brand Identity",
-    "code-customization": "Code Customization",
-    "website-design-development": "Website Design & Development"
-  },
+  "components/sections/Marquee": {},
   "components/sections/Pricing": {
-    "pricing": "Pricing",
-    "starting-points-in": "Starting points in ",
-    "us-dollars": "US dollars",
-    "indian-rupees": "Indian rupees",
-    "stated-up-front-every-project-is": ", stated up front — every project is quoted on its actual scope before any work begins.",
-    "business-website": "Business Website",
-    "from": "from",
-    "the-full-presence-three-core-pages": "The full presence — three core pages designed from the ground up, on a CMS you run yourself.",
-    "3-core-pages-custom-design": "3 core pages, custom design",
-    "cms-for-your-own-updates": "CMS for your own updates",
-    "animation-and-interactions": "Animation and interactions",
-    "basic-seo-setup": "Basic SEO setup",
-    "start-a-project": "Start a project",
-    "details": "Details",
-    "ecommerce-store": "eCommerce Store",
-    "a-complete-store-catalogue-cart-and": "A complete store — catalogue, cart and checkout, with a dashboard you can actually run.",
-    "product-cart-and-checkout-pages": "Product, cart and checkout pages",
-    "payment-and-shipping-integration": "Payment and shipping integration",
-    "store-management-dashboard": "Store management dashboard",
-    "mobile-first-shopping-experience": "Mobile-first shopping experience",
-    "custom-build": "Custom Build",
-    "larger-platforms-and-long-running-partnerships": "Larger platforms and long-running partnerships — scoped together before anything is quoted.",
-    "discovery-and-scoping-first": "Discovery and scoping first",
-    "multi-collection-cms-architecture": "Multi-collection CMS architecture",
-    "advanced-motion-and-interaction": "Advanced motion and interaction",
-    "maintenance-and-support-plans": "Maintenance and support plans"
+    "pricing": "Prețuri",
+    "pricing-intro": "Dezvoltarea se plătește o singură dată. Domeniul, hostingul și mentenanța sunt opționale și au prețuri lunare separate, afișate mai jos.",
+    "recommended": "Recomandat",
+    "one-time-fee": "Dezvoltare website, plată unică",
+    "per-month": "/lună",
+    "optional-infra": "Opțional: domeniu .ro și hosting administrat de noi",
+    "more-included": "+ încă {n} incluse în pachet",
+    "not-included": "Nu include",
+    "start-a-project": "Cere o ofertă",
+    "details": "Detalii",
+    "care-title": "Ne ocupăm noi ",
+    "care-title-accent": "de website.",
+    "care-text": "După lansare, un website are nevoie de actualizări, verificări și întreținere. Prin ESA Managed Care ne ocupăm de hosting, domeniu, backupuri și partea tehnică, iar tu te poți concentra pe afacerea ta.",
+    "care-price": "100",
+    "care-currency": "€",
+    "care-includes": "Include hosting administrat, domeniu .ro standard, backupuri, verificări de securitate și mentenanță lunară.",
+    "care-instead": "Înlocuiește abonamentul de 15, 25 sau 35 €/lună, nu se adaugă peste el.",
+    "care-cta": "Alege Managed Care",
+    "care-cta-link": "/contact",
+    "care-more": "Ce include",
+    "care-more-link": "/services/crafted-websites#managed-care",
+    "care-more-link-service": "/services/maintenance-and-ongoing-support",
+    "care-note": "Serviciul pornește pe baza unui contract de mentenanță. Limitele și condițiile de suport le stabilim înainte de începerea colaborării. Pentru aplicații complexe, magazine cu trafic mare sau infrastructură specială facem o ofertă separată.",
+    "care-hosting": "Hosting și domeniu",
+    "care-hosting-items": [
+      "Găzduire administrată pentru un website standard",
+      "Reînnoirea unui domeniu .ro standard",
+      "Configurare DNS",
+      "Certificat SSL",
+      "Verificarea funcționării HTTPS"
+    ],
+    "care-backup": "Backup și recuperare",
+    "care-backup-items": [
+      "Backup automat zilnic, dacă infrastructura permite",
+      "Backupurile se păstrează 14 zile",
+      "Backupuri separate de instanța principală, când serviciul contractat o permite",
+      "Asistență la restaurare dacă apare o problemă",
+      "Verificarea periodică a mecanismului de backup"
+    ],
+    "care-security": "Securitate și actualizări",
+    "care-security-items": [
+      "Verificarea certificatului SSL",
+      "Verificări de securitate de bază",
+      "Actualizarea dependențelor compatibile",
+      "Verificarea formularelor",
+      "Măsuri împotriva spamului",
+      "Verificarea accesului administrativ",
+      "Monitorizarea expirării domeniului",
+      "Remedierea problemelor tehnice minore, în limita abonamentului"
+    ],
+    "care-maintenance": "Mentenanță lunară",
+    "care-maintenance-items": [
+      "Verificare tehnică lunară",
+      "Verificarea paginilor importante",
+      "Corectarea erorilor minore",
+      "Actualizări de securitate compatibile",
+      "Până la o oră pe lună de modificări mici: texte, imagini, linkuri, ajustări simple",
+      "Suport pe email, în programul stabilit prin contract"
+    ],
+    "care-seo": "Monitorizare SEO",
+    "care-seo-items": [
+      "Verificări SEO tehnice lunare",
+      "Verificarea erorilor importante de indexare",
+      "Verificarea sitemap-ului",
+      "Probleme evidente de meta tags",
+      "Verificarea linkurilor interne importante",
+      "Recomandări tehnice de îmbunătățire"
+    ],
+    "care-excluded": "Nu este inclus",
+    "care-excluded-items": [
+      "Funcționalități noi, redesign sau pagini noi (se ofertează separat)",
+      "Campanii de link building",
+      "Redactare continuă de articole",
+      "Cercetare SEO avansată",
+      "Campanii Google Ads",
+      "Garanții de poziționare în Google"
+    ],
+    "care-limits": "Orele nefolosite nu se reportează în luna următoare. Nicio măsură tehnică nu oferă securitate absolută; facem verificările de mai sus și intervenim când apare o problemă.",
+    "terms-title": "Termeni clari. ",
+    "terms-title-accent": "Fără surprize.",
+    "terms-text": "Fiecare proiect începe cu o ofertă clară și un contract. Stabilim de la început ce construim, ce este inclus, cât costă și care sunt responsabilitățile fiecărei părți.",
+    "terms-dev": "Contractul de dezvoltare",
+    "terms-dev-items": [
+      "Serviciile contractate",
+      "Funcționalitățile incluse",
+      "Termenele și etapele",
+      "Prețul total",
+      "Condițiile de plată",
+      "Numărul de revizii",
+      "Predarea proiectului",
+      "Drepturile de utilizare și proprietatea intelectuală",
+      "Cum tratăm cererile suplimentare"
+    ],
+    "terms-care": "Contractul de mentenanță",
+    "terms-care-items": [
+      "Serviciile lunare incluse",
+      "Taxa lunară și facturarea",
+      "Programul de suport",
+      "Timpii de răspuns agreați",
+      "Limitele intervențiilor",
+      "Politica de backup",
+      "Reînnoirea și încetarea",
+      "Exportul și predarea la finalul colaborării"
+    ],
+    "terms-data": "Protecția datelor",
+    "terms-data-items": [
+      "Confidențialitatea informațiilor",
+      "Responsabilitățile privind datele",
+      "Acord de prelucrare a datelor (DPA), dacă prelucrăm date personale în numele tău",
+      "Procedurile de acces și de predare"
+    ],
+    "terms-signed": "Proiectele și mentenanța se desfășoară pe baza unor contracte semnate înainte de începerea serviciilor.",
+    "estimate-note": "Prețurile sunt estimări de pornire. Scopul final, costurile și regimul TVA se confirmă în oferta scrisă și în contract."
   },
   "components/sections/Services": {
     "webflow": "Webflow",
@@ -5411,124 +6004,118 @@
     "squarespace": "Squarespace",
     "shopify": "Shopify",
     "figma": "Figma",
-    "elevate-your": "Elevate your",
-    "digital-footprint": "digital footprint.",
-    "view-all-services": "View all services",
-    "start-a-project": "Start a project",
-    "platform-flexibility": "Platform flexibility.",
-    "design-consistency": "Design consistency.",
-    "no-matter-the-platform-our-design": "No matter the platform, our design language stays",
-    "consistent-refined-responsive": "consistent, refined, responsive,",
-    "and-built-to-perform": " and built to perform.",
-    "see-our-work": "See our work",
-    "wix-legend-partner": "Wix Legend Partner"
+    "elevate-your": "Cu ce te",
+    "digital-footprint": "putem ajuta.",
+    "view-all-services": "Toate serviciile",
+    "start-a-project": "Începe un proiect",
+    "platform-flexibility": "Platforma potrivită.",
+    "design-consistency": "Același nivel de detaliu.",
+    "no-matter-the-platform-our-design": "Fie că proiectul e scris de la zero, pe Shopify sau pe un CMS, rezultatul rămâne",
+    "consistent-refined-responsive": "coerent, îngrijit, adaptat pe orice ecran",
+    "and-built-to-perform": " și rapid.",
+    "see-our-work": "Vezi proiectele",
+    "wix-legend-partner": "Wix Legend Partner",
+    "view-all-services-link": "/services",
+    "start-a-project-link": "/contact",
+    "see-our-work-link": "/works"
   },
   "components/sections/TechStack": {
-    "wix-studio": "Wix Studio",
-    "notion": "Notion",
-    "figma": "Figma",
-    "adobe": "Adobe",
-    "claude": "Claude",
-    "framer": "Framer",
-    "blender": "Blender",
-    "google-analytics": "Google Analytics",
-    "tools-and-platforms-we-build-with": "Tools and platforms we build with"
+    "tools-and-platforms-we-build-with": "Unelte și platforme cu care lucrăm"
   },
   "components/sections/Testimonials": {
-    "testimonials": "Testimonials",
-    "of": "of ",
-    "out-of-5": " out of 5",
-    "previous-testimonial": "Previous testimonial",
-    "next-testimonial": "Next testimonial"
+    "testimonials": "Testimoniale",
+    "of": "din ",
+    "out-of-5": " din 5",
+    "previous-testimonial": "Testimonialul anterior",
+    "next-testimonial": "Testimonialul următor",
+    "stat-1-value": "30",
+    "stat-1-suffix": "+",
+    "stat-1-label": "Proiecte livrate",
+    "stat-2-value": "98",
+    "stat-2-suffix": "%",
+    "stat-2-label": "Clienți mulțumiți",
+    "stat-3-value": "4",
+    "stat-3-suffix": "+",
+    "stat-3-label": "Ani de experiență în dezvoltare web"
   },
   "components/sections/Works": {
-    "featured-work": "Featured work",
-    "our": "Our ",
-    "works": "Works",
-    "view-all": "View all"
-  },
-  "components/services/servicesData": {
-    "website-design": "Website Design",
-    "dynamic-websites": "Dynamic Websites",
-    "landing-pages": "Landing Pages",
-    "interaction-design": "Interaction Design",
-    "ux-centric": "UX Centric",
-    "ongoing-support": "Ongoing Support"
+    "featured-work": "Proiecte selectate",
+    "our": "Proiecte ",
+    "works": "selectate",
+    "view-all": "Vezi toate",
+    "view-all-link": "/works"
   },
   "components/templates/TemplatesGrid": {
-    "view-details": "View Details",
-    "template-categories": "Template categories"
+    "view-details": "Vezi detalii",
+    "template-categories": "Categorii de template-uri"
   },
   "components/works/WorkShots": {
     "previous-screenshot": "Previous screenshot",
     "next-screenshot": "Next screenshot"
   },
   "components/works/WorksGrid": {
-    "work-categories": "Work categories"
+    "work-categories": "Categorii de proiecte"
   },
   "components/works/cards": {
-    "view-project": "View Project"
+    "view-project": "Vezi proiectul"
   },
   "/": {
-    "meta-title": "Visuvate | Premium Web Design Studio",
-    "projects-delivered": "Projects delivered",
-    "client-satisfaction": "Client satisfaction",
-    "years-combined-experience": "Years combined experience"
+    "meta-title": "ESA Coder Solutions | Dezvoltare website-uri, magazine online și aplicații web"
   },
   "/about-us": {
-    "meta-title": "About Our Web Design Studio | Visuvate",
-    "about": "About ",
-    "us": "Us",
-    "visuvate": "Visuvate",
-    "is-a-design-studio-that-builds": " is a design studio that builds",
-    "premium-digital-experiences": "premium digital experiences",
-    "with-clarity-and-purpose-we-create": " with clarity and purpose. We create websites that are visually refined, technically sound, and meaningful to the people who use them.",
-    "every-project-begins-with-understanding-and": "Every project begins with understanding and ends with precision. Our goal is to design experiences that feel effortless and intentional while delivering measurable results that help ",
-    "brands-grow": "brands grow",
-    "and": " and ",
-    "perform-better-online": "perform better online.",
+    "meta-title": "Despre noi | ESA Coder Solutions",
+    "about": "Despre ",
+    "us": "noi",
+    "visuvate": "ESA Coder Solutions",
+    "is-a-design-studio-that-builds": " este o agenție care construiește",
+    "premium-digital-experiences": "website-uri, magazine online și aplicații web",
+    "with-clarity-and-purpose-we-create": ". Suntem o echipă de developeri, web designeri și programatori cu experiență, care lucrează împreună de la prima schiță până la ultimul rând de cod.",
+    "every-project-begins-with-understanding-and": "Ne place să înțelegem ce are nevoie fiecare client înainte să începem. Uneori soluția e simplă, alteori implică mai multe sisteme, automatizări sau funcționalități făcute de la zero. Indiferent de proiect, urmărim un rezultat ",
+    "brands-grow": "ușor de folosit",
+    "and": " și ",
+    "perform-better-online": "făcut cum trebuie.",
     "wix-studio-certified-web-designer-2020": "Wix Studio Certified Web Designer, 2020–2025",
     "orpetron-web-design-appreciation": "Orpetron Web Design Appreciation",
     "wix-partner-legend": "Wix Partner Legend",
     "featured-on-wall-of-portfolios-2025": "Featured on Wall of Portfolios, 2025",
-    "our-philosophy": "Our Philosophy",
-    "we-believe-good-design-should-feel": "We believe good design should feel effortless and grounded in purpose. Every detail matters, from the way a page moves to how it makes someone feel. At Visuvate, design is not just about how things look but how clearly they communicate and how seamlessly they perform.",
-    "founded-by": "Founded by",
-    "devansh": "Devansh",
-    "visuvate-was-created-from-a-passion": ", Visuvate was created from a passion for visual innovation and a belief in designing with detail. Every project reflects a commitment to clarity, purpose, and precision, values that define both the work and the process behind it.",
-    "our-values": "Our Values",
-    "clarity": "Clarity",
-    "design-should-simplify-every-decision-we": "Design should simplify. Every decision we make is meant to bring focus and understanding.",
-    "precision": "Precision",
-    "every-detail-matters-from-layout-to": "Every detail matters. From layout to motion, precision defines how we work.",
-    "purpose": "Purpose",
-    "each-project-begins-with-understanding-we": "Each project begins with understanding. We design with intent so every choice supports a goal.",
-    "consistency": "Consistency",
-    "design-should-feel-seamless-across-every": "Design should feel seamless across every touchpoint. We create systems that stay cohesive and dependable.",
-    "performance": "Performance",
-    "a-design-is-complete-only-when": "A design is complete only when it works as beautifully as it looks. We build websites that are fast, fluid, and reliable."
+    "our-philosophy": "Cum vedem lucrurile",
+    "we-believe-good-design-should-feel": "Un website nu trebuie să fie complicat ca să fie bun. Designul ar trebui să te ajute să înțelegi ce vezi, animațiile să aibă un rol, iar o aplicație să rezolve o problemă concretă, nu să adauge încă un proces. Un proiect nu e gata doar pentru că arată bine într-o captură de ecran. Trebuie să meargă și în folosirea de zi cu zi.",
+    "founded-by": "În spatele fiecărui proiect e",
+    "devansh": "o echipă mică și implicată",
+    "visuvate-was-created-from-a-passion": ", nu un departament de vânzări. Designerii, developerii și programatorii lucrează direct pe proiectul tău, iar tu vorbești cu oamenii care îl construiesc. În timp, proiectele noastre au devenit tot mai diferite: site-uri de prezentare, magazine online, aplicații cu administrare și integrări.",
+    "our-values": "La ce ținem",
+    "clarity": "Claritate",
+    "design-should-simplify-every-decision-we": "Explicăm lucrurile tehnice pe înțeles și preferăm soluția simplă atunci când e suficientă.",
+    "precision": "Atenție la detalii",
+    "every-detail-matters-from-layout-to": "O tranziție, un spațiu sau un mesaj de eroare pot schimba felul în care e perceput un site. Le tratăm ca parte din lucru.",
+    "purpose": "Scop",
+    "each-project-begins-with-understanding-we": "Fiecare funcționalitate trebuie să rezolve ceva. Dacă nu are un rost, nu o adăugăm doar ca să umplem o listă.",
+    "consistency": "Coerență",
+    "design-should-feel-seamless-across-every": "Aceleași culori, fonturi și componente pe tot site-ul, ca pagina a douăzecea să arate ca prima.",
+    "performance": "Funcționalitate",
+    "a-design-is-complete-only-when": "Un design e gata abia când funcționează la fel de bine cum arată: rapid, stabil și ușor de întreținut."
   },
   "/blog": {
-    "meta-title": "Web Design Insights & Tutorials | Visuvate",
-    "our": "Our ",
-    "blogs": "Blogs"
+    "meta-title": "Blog: dezvoltare web, design și tutoriale | ESA Coder Solutions",
+    "our": "Din ",
+    "blogs": "blog"
   },
   "/contact": {
-    "meta-title": "Contact — Start Your Web Design Project | Visuvate",
-    "let-s": "Let’s ",
-    "connect": "Connect",
-    "start-your-project": "Start Your Project",
-    "let-us-know-how-we-can": "Let us know how we can help bring your idea to life.",
+    "meta-title": "Contact: hai să discutăm despre proiectul tău | ESA Coder Solutions",
+    "let-s": "Hai să ",
+    "connect": "vorbim",
+    "start-your-project": "Ai un proiect în minte?",
+    "let-us-know-how-we-can": "Nu trebuie să ai toate detaliile pregătite. Spune-ne ce vrei să construiești sau ce problemă încerci să rezolvi și vedem de unde putem începe.",
     "email": "Email",
     "contact-visuvate-com": "contact@visuvate.com",
-    "phone": "Phone",
-    "india-working-globally": "India - Working globally"
+    "phone": "Telefon",
+    "india-working-globally": "Colaborare online, oriunde ai fi"
   },
   "/contact/thank-you": {
-    "meta-title": "Thank You | Visuvate",
-    "thank-you": "Thank You!",
-    "your-submission-has-been-received-we": "Your submission has been received. We will be in touch shortly via your preferred response method.",
-    "back-to-home": "Back to Home"
+    "meta-title": "Mulțumesc | ESA Coder Solutions",
+    "thank-you": "Mulțumesc!",
+    "your-submission-has-been-received-we": "Am primit mesajul tău. Îți răspundem cât de curând, pe calea pe care ai ales-o.",
+    "back-to-home": "Înapoi acasă"
   },
   "/privacy-policy": {
     "meta-title": "Privacy Policy | Visuvate",
@@ -5558,10 +6145,10 @@
     "email-contact-visuvate-com": "Email: contact@visuvate.com"
   },
   "/services": {
-    "meta-title": "Web Design & Development Services | Visuvate",
-    "our": "Our ",
-    "services": "Services",
-    "ten-disciplines-one-studio-every-engagement": "Ten disciplines, one studio. Every engagement draws on whichever of these the work actually needs — nothing bolted on to pad an invoice.",
+    "meta-title": "Servicii: website-uri, magazine online, aplicații web | ESA Coder Solutions",
+    "our": "Servicii ",
+    "services": "și soluții",
+    "ten-disciplines-one-studio-every-engagement": "Nu toate proiectele au nevoie de aceleași lucruri. Mai jos sunt tipurile de proiecte la care lucrăm, de la website-uri la aplicații, automatizări, 3D și video.",
     "custom": "Custom ✓",
     "studio": "Studio",
     "work": "Work",
@@ -5576,9 +6163,9 @@
     "selected-work": "Selected work",
     "studio-2": "© Studio",
     "built-by-hand": "Built by hand",
-    "crafted-websites": "Crafted\nWebsites",
-    "custom-built-websites-designed-from-the": "Custom-built websites designed from the ground up for clarity, structure, and intent. Every site blends tailored design, responsive…",
-    "explore": "Explore",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "custom-built-websites-designed-from-the": "Website-uri construite în jurul brandului tău, cu structură clară, navigare simplă și atenție la viteză. Fiecare pagină…",
+    "explore": "Detalii",
     "old-homepage": "Old homepage",
     "home": "HOME",
     "about-2": "ABOUT",
@@ -5593,10 +6180,10 @@
     "last-updated-2011": "Last updated 2011",
     "same-brand-new-energy": "Same brand, new energy.",
     "2-faster": "2× faster",
-    "website-redesign": "Website\nRedesign",
-    "transform-your-existing-website-into-a": "Transform your existing website into a refined, high-performing experience. We rebuild from the core, improving visuals, usability,…",
-    "ecommerce-website-design": "eCommerce\nWebsite Design",
-    "ecommerce-experiences-built-for-ease-and": "Ecommerce experiences built for ease and impact. From product display to checkout, every step is optimized for conversion and brand…",
+    "website-redesign": "Redesign\nwebsite",
+    "transform-your-existing-website-into-a": "Un site existent, refăcut acolo unde contează: structură, viteză, felul în care ajunge vizitatorul la contact. Păstrăm…",
+    "ecommerce-website-design": "Magazine\nonline",
+    "ecommerce-experiences-built-for-ease-and": "Magazine online în care produsele se găsesc ușor, iar drumul de la produs la comandă e cât mai scurt. Pe Shopify sau…",
     "title": "Title",
     "date": "Date",
     "image": "Image",
@@ -5612,10 +6199,10 @@
     "12-april-2024": "12 April 2024",
     "5-of-24-entries": "5 of 24 entries",
     "synced": "Synced",
-    "cms-dynamic-websites": "CMS &\nDynamic Websites",
-    "dynamic-sites-powered-by-an-intuitive": "Dynamic sites powered by an intuitive content management system for effortless updates. Ideal for portfolios, blogs, or…",
-    "landing-pages-microsites": "Landing Pages\n& Microsites",
-    "focused-fast-loading-pages-created-to": "Focused, fast-loading pages created to capture attention and drive conversions. Perfect for campaigns, events, or single service…",
+    "cms-dynamic-websites": "CMS și\nsite-uri dinamice",
+    "dynamic-sites-powered-by-an-intuitive": "Site-uri cu conținut care crește în timp, administrat dintr-un panou simplu. Potrivite pentru portofolii, bloguri sau…",
+    "landing-pages-microsites": "Landing pages\nși microsite-uri",
+    "focused-fast-loading-pages-created-to": "Pagini rapide, cu un singur mesaj și o singură acțiune. Bune pentru campanii, lansări sau un serviciu anume…",
     "text": "Text",
     "styles": "Styles",
     "t": "T",
@@ -5650,8 +6237,8 @@
     "y": "Y",
     "diffusion": "Diffusion",
     "focus": "Focus",
-    "consistent-identity": "Consistent\nIdentity",
-    "every-project-follows-a-unified-design": "Every project follows a unified design language that reflects brand personality across every touchpoint. Consistency enhances trust…",
+    "consistent-identity": "Identitate\nvizuală coerentă",
+    "every-project-follows-a-unified-design": "Aceleași culori, fonturi și componente pe tot site-ul, ca brandul tău să arate la fel peste tot. Coerența…",
     "hero-entrance": "Hero entrance",
     "0-6s": "0.6s",
     "hero": "Hero",
@@ -5659,17 +6246,17 @@
     "nav": "Nav",
     "cubic-bezier-0-22-0-61": "cubic-bezier(0.22, 0.61, 0.36, 1)",
     "60-fps": "60 fps",
-    "motion-interaction-design": "Motion &\nInteraction Design",
-    "purposeful-motion-that-enhances-usability-and": "Purposeful motion that enhances usability and flow. Every animation supports clarity, helping users navigate with ease and delight.…",
-    "ux-centric-strategy": "UX Centric\nStrategy",
-    "design-grounded-in-user-behavior-and": "Design grounded in user behavior and intent. We ensure every page feels intuitive, logical, and conversion-ready. Most websites that…",
+    "motion-interaction-design": "Animații și\ninteracțiuni",
+    "purposeful-motion-that-enhances-usability-and": "Animații, tranziții și elemente 3D care dau personalitate unui site, fără să-l facă greu de folosit. Fiecare…",
+    "ux-centric-strategy": "Structură\nși UX",
+    "design-grounded-in-user-behavior-and": "Structura paginilor gândită după ce caută vizitatorii, nu după organigrama firmei. Stabilim drumul cel mai…",
     "g": "G",
     "google-lighthouse": "Google Lighthouse",
     "seo": "SEO",
     "performance": "Performance",
     "accessibility": "Accessibility",
-    "performance-optimization": "Performance\nOptimization",
-    "beautiful-design-means-little-without": "Beautiful design means little without performance. We fine-tune every site for speed, accessibility, and seamless loading. Speed is…",
+    "performance-optimization": "Optimizare\nde viteză",
+    "beautiful-design-means-little-without": "Un site frumos care se încarcă greu pierde vizitatori. Măsurăm ce se întâmplă de fapt și reparăm ce încetinește…",
     "overview": "Overview",
     "live-visitors": "Live Visitors",
     "unique-visitors": "Unique Visitors",
@@ -5680,292 +6267,439 @@
     "october-13-2025": "October 13, 2025",
     "pageviews": "Pageviews",
     "visitors": "Visitors",
-    "maintenance-ongoing-support": "Maintenance &\nOngoing Support",
-    "keep-your-website-updated-secure-and": "Keep your website updated, secure, and performing at its best. We handle ongoing adjustments so you can focus on your business.…"
+    "maintenance-ongoing-support": "Mentenanță\nși suport",
+    "keep-your-website-updated-secure-and": "Actualizări, corecturi, funcționalități noi și verificări regulate după lansare, ca site-ul să meargă bine și peste un an…",
+    "software-and-erp": "Aplicații și ERP-uri",
+    "software-and-erp-text": "Aplicații interne făcute după felul în care lucrează firma ta, într-un singur loc.",
+    "saga-automation": "Automatizare SAGA WEB",
+    "saga-automation-text": "Extrase, facturi, diurne și rapoarte lunare, conectate direct la SAGA WEB.",
+    "business-automation": "Automatizări pentru firme",
+    "business-automation-text": "Rapoarte, fișiere Excel, documente și date mutate între aplicații, făcute automat.",
+    "3d-modeling": "Modele 3D în Blender",
+    "3d-modeling-text": "Modele și randări 3D pentru produse, spații și branduri, gata pentru web.",
+    "video-and-reels": "Videoclipuri și reels",
+    "video-and-reels-text": "Videoclipuri scurte pentru social media și website, montate pe formatul fiecărei platforme."
   },
   "/services/cms-and-dynamic-websites": {
-    "meta-title": "CMS & Dynamic Websites — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "cms-dynamic-websites": "CMS &\nDynamic Websites",
-    "dynamic-sites-powered-by-an-intuitive": "Dynamic sites powered by an intuitive content management system for effortless updates. Ideal for portfolios, blogs, or content-driven businesses.",
-    "any-site-with-content-that-grows": "Any site with content that grows should be built on a CMS rather than as a set of hand-made pages. Case studies, articles, properties, products, team members, events, locations — anything you will have more of next year than you do today belongs in a collection, where one template serves every entry and adding the next one takes minutes.",
-    "the-value-is-in-the-modelling": "The value is in the modelling, not the plumbing. Before anything is built we work out what a single item actually is: which fields it needs, which are required, what connects to what, and how it should be ordered and filtered. Collections designed carelessly turn into a maintenance problem within months, because every new entry needs a workaround for something the structure did not anticipate.",
-    "the-editing-side-matters-as-much": "The editing side matters as much as the public side. The people updating the site are usually not the people who built it, so fields are named in plain language, grouped in the order someone would fill them in, and constrained where a wrong value would break a layout. If publishing a post requires a phone call to us, the CMS has failed.",
-    "every-entry-gets-a-real-page": "Every entry gets a real page — its own address, its own title and description, its own structured data — rather than being rendered inside a single URL that search engines cannot separate. That is what allows a library of articles or case studies to accumulate search visibility over time instead of competing with itself.",
-    "the-result-is-a-site-that": "The result is a site that gets more useful the longer you run it, and that you can extend without a developer standing by.",
-    "what-s-included": "What’s included",
-    "cms-structure-and-data-collections-setup": "CMS structure and data collections setup",
-    "dynamic-page-linking-and-layout-design": "Dynamic page linking and layout design",
-    "easy-backend-content-management": "Easy backend content management",
-    "scalable-design-for-future-growth": "Scalable design for future growth",
-    "seo-ready-page-structure": "SEO-ready page structure",
-    "a-distinct-page-title-and-description": "A distinct page, title and description per entry",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-landing-pages-microsites": "Next: Landing Pages\n& Microsites",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "CMS și site-uri dinamice, administrate de tine | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "cms-dynamic-websites": "CMS și\nsite-uri dinamice",
+    "dynamic-sites-powered-by-an-intuitive": "Site-uri cu conținut care crește în timp, administrat dintr-un panou simplu. Potrivite pentru portofolii, bloguri sau orice afacere care publică des.",
+    "any-site-with-content-that-grows": "Orice site al cărui conținut crește ar trebui construit pe un CMS, nu ca un set de pagini făcute de mână. Proiecte, articole, proprietăți, produse, membri ai echipei, evenimente, locații: tot ce vei avea mai mult anul viitor decât acum stă într-o colecție. Un singur șablon servește fiecare intrare, iar adăugarea uneia noi durează câteva minute.",
+    "the-value-is-in-the-modelling": "Partea importantă e structura datelor. Înainte să construim ceva, stabilim ce înseamnă o singură intrare: ce câmpuri are, care sunt obligatorii, ce se leagă de ce și cum se ordonează și se filtrează. O colecție gândită în grabă devine o problemă în câteva luni, pentru că fiecare intrare nouă are nevoie de o improvizație.",
+    "the-editing-side-matters-as-much": "Partea de administrare contează la fel de mult ca site-ul public. Cei care actualizează conținutul nu sunt de obicei cei care l-au construit, așa că câmpurile au nume pe înțeles, sunt ordonate cum le-ai completa și au limite acolo unde o valoare greșită ar strica pagina. Dacă pentru un articol nou trebuie să ne suni, CMS-ul nu și-a făcut treaba.",
+    "every-entry-gets-a-real-page": "Fiecare intrare primește o pagină a ei, cu adresă, titlu, descriere și date structurate proprii. Așa, o colecție de articole sau proiecte poate aduna vizibilitate în Google în timp, în loc să concureze cu ea însăși.",
+    "the-result-is-a-site-that": "Rezultatul e un site care devine mai util cu cât îl folosești mai mult și pe care îl poți extinde fără un developer lângă tine.",
+    "what-s-included": "Ce include",
+    "cms-structure-and-data-collections-setup": "Structura CMS-ului și a colecțiilor",
+    "dynamic-page-linking-and-layout-design": "Pagini dinamice și legături între ele",
+    "easy-backend-content-management": "Administrare simplă a conținutului",
+    "scalable-design-for-future-growth": "Structură pregătită pentru conținut nou",
+    "seo-ready-page-structure": "Structură de pagină bună pentru SEO",
+    "a-distinct-page-title-and-description": "Pagină, titlu și descriere proprii pentru fiecare intrare",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-landing-pages-microsites": "Următorul: Landing pages\nși microsite-uri",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/consistent-identity": {
-    "meta-title": "Consistent Identity — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "consistent-identity": "Consistent\nIdentity",
-    "every-project-follows-a-unified-design": "Every project follows a unified design language that reflects brand personality across every touchpoint. Consistency enhances trust and visual harmony.",
-    "inconsistency-is-the-most-common-reason": "Inconsistency is the most common reason a professionally built site still feels amateur. Four shades of the same blue, three button styles, headings that change size between pages, spacing decided per section — none of it registers individually, but together it reads as carelessness, and carelessness on a website suggests carelessness elsewhere.",
-    "the-fix-is-to-stop-making": "The fix is to stop making those decisions page by page. Colour, type, spacing, radius and elevation are defined once as a system, and every page draws from it. A heading is not eighteen pixels because it looked right that afternoon; it is a step on a scale, and it is the same step everywhere it appears.",
-    "the-same-applies-to-components-buttons": "The same applies to components. Buttons, cards, form fields, navigation and footers are built once and reused, so a change to the button style updates every button on the site rather than the ones somebody remembers. That is what makes a large site stay coherent, and what keeps it coherent a year later when new pages have been added by someone else.",
-    "consistency-also-does-real-accessibility-work": "Consistency also does real accessibility work. A system with defined colour roles can be checked for contrast once rather than argued about per page, and a defined type scale keeps body text at a readable size instead of shrinking wherever space got tight.",
-    "this-is-included-in-every-build": "This is included in every build here rather than sold as an extra. It is listed separately because it is the part clients most often did not know to ask for, and the part they notice most once it is there.",
-    "what-s-included": "What’s included",
-    "uniform-color-and-typography-system": "Uniform color and typography system",
-    "reusable-components-and-layout-standards": "Reusable components and layout standards",
-    "consistent-design-across-all-pages": "Consistent design across all pages",
-    "accessibility-and-visual-balance": "Accessibility and visual balance",
-    "defined-colour-roles-checked-for-contrast": "Defined colour roles checked for contrast",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-motion-interaction-design": "Next: Motion &\nInteraction Design",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Identitate vizuală coerentă pe tot site-ul | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "consistent-identity": "Identitate\nvizuală coerentă",
+    "every-project-follows-a-unified-design": "Aceleași culori, fonturi și componente pe tot site-ul, ca brandul tău să arate la fel peste tot. Coerența construiește încredere și face site-ul mai ușor de citit.",
+    "inconsistency-is-the-most-common-reason": "Lipsa de coerență e cel mai des motivul pentru care un site făcut de profesioniști tot pare amator. Patru nuanțe ale aceluiași albastru, trei stiluri de butoane, titluri care își schimbă mărimea de la o pagină la alta. Niciuna nu se observă separat, dar împreună dau impresia de neglijență.",
+    "the-fix-is-to-stop-making": "Soluția e să nu mai iei deciziile pagină cu pagină. Culorile, fonturile, spațiile, colțurile și umbrele sunt definite o singură dată, ca sistem, iar fiecare pagină le folosește. Un titlu nu are o anumită mărime pentru că așa a părut bine într-o zi, ci pentru că e o treaptă pe o scară, aceeași peste tot.",
+    "the-same-applies-to-components-buttons": "La fel și cu componentele. Butoanele, cardurile, câmpurile din formulare, meniul și footer-ul sunt construite o dată și refolosite. Dacă schimbi stilul unui buton, se schimbă toate butoanele de pe site, nu doar cele de care își amintește cineva. Așa rămâne un site mare coerent și peste un an, după ce au fost adăugate pagini noi.",
+    "consistency-also-does-real-accessibility-work": "Coerența ajută și la accesibilitate. Contrastul culorilor se verifică o dată pentru tot sistemul, nu se discută pe fiecare pagină, iar o scară de fonturi bine definită ține textul la o mărime ușor de citit.",
+    "this-is-included-in-every-build": "Partea asta e inclusă în fiecare proiect, nu se plătește separat. O trec separat pentru că e lucrul pe care clienții nu știu de obicei să-l ceară și pe care îl observă cel mai mult după ce există.",
+    "what-s-included": "Ce include",
+    "uniform-color-and-typography-system": "Sistem unitar de culori și fonturi",
+    "reusable-components-and-layout-standards": "Componente refolosibile",
+    "consistent-design-across-all-pages": "Același design pe toate paginile",
+    "accessibility-and-visual-balance": "Accesibilitate și echilibru vizual",
+    "defined-colour-roles-checked-for-contrast": "Culori cu roluri clare, verificate pentru contrast",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-motion-interaction-design": "Următorul: Animații și\ninteracțiuni",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/crafted-websites": {
-    "meta-title": "Crafted Websites — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "crafted-websites": "Crafted\nWebsites",
-    "custom-built-websites-designed-from-the": "Custom-built websites designed from the ground up for clarity, structure, and intent. Every site blends tailored design, responsive performance, and seamless functionality.",
-    "most-business-websites-are-a-theme": "Most business websites are a theme with the client’s logo dropped into it. That is why so many of them feel interchangeable: the structure was decided by whoever built the template, and the content has been squeezed into slots that were never meant for it. A crafted site reverses that. What you sell, who buys it, and the order they need to understand it in decide the structure — and the design is drawn to fit.",
-    "this-is-the-right-choice-when": "This is the right choice when the website is the first serious impression you make. Studios, consultancies, clinics, firms and product companies all reach the same point: the work has outgrown the site in front of it, and a template refresh will not close the gap. If you are competing on craft, the site has to demonstrate it rather than claim it.",
-    "every-build-runs-on-wix-studio": "Every build runs on Wix Studio or Framer, chosen for what you will need to do after launch rather than what is fastest to assemble. Both give you a real editor, so changing a headline or adding a case study never means coming back to us. The pages are built as components, which is what keeps the fortieth page looking like the first.",
-    "responsive-is-not-a-checkbox-at": "Responsive is not a checkbox at the end. Layouts are drawn at phone width as deliberately as at desktop, because for most businesses that is where the majority of the traffic already is. Type scales, spacing and imagery are all set per breakpoint rather than left to shrink on their own.",
-    "you-share-your-content-your-preferences": "You share your content, your preferences and your feedback at the points where it matters. Design, build, testing and launch are handled here. Most sites are finished in two to six weeks, depending on how many pages there are, how much of the content already exists, and how much custom interaction the design calls for.",
-    "you-finish-with-a-site-you": "You finish with a site you can run yourself, built to be added to rather than replaced in eighteen months.",
-    "what-s-included": "What’s included",
-    "5-core-pages-home-about-services": "5 core pages (Home, About, Services, Work, Contact)",
-    "fully-responsive-layout-across-devices": "Fully responsive layout across devices",
-    "cms-setup-for-dynamic-content": "CMS setup for dynamic content",
-    "animation-and-micro-interactions": "Animation and micro interactions",
-    "basic-seo-setup": "Basic SEO setup",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-website-redesign": "Next: Website\nRedesign",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design",
-    "cms-dynamic-websites": "CMS &\nDynamic Websites"
+    "meta-title": "Website-uri personalizate, construite de la zero | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "custom-built-websites-designed-from-the": "Fiecare afacere e diferită. Construim website-ul în jurul a ce ai nevoie de fapt, de la o pagină de prezentare curată până la o experiență digitală făcută pe comandă.",
+    "most-business-websites-are-a-theme": "Multe site-uri de firmă sunt o temă gata făcută, în care s-a pus logo-ul clientului. De aceea seamănă atât de mult între ele: structura a fost decisă de cine a făcut tema, iar conținutul a fost înghesuit în locuri care nu erau gândite pentru el. Noi pornim invers. Ce vinzi, cui vinzi și în ce ordine trebuie să înțeleagă vizitatorul lucrurile decid structura, iar designul se construiește în jurul ei.",
+    "this-is-the-right-choice-when": "Are sens atunci când site-ul e prima impresie serioasă pe care o faci. Un cabinet, o firmă de servicii, un studio sau un brand cu produse ajung la un moment dat în același punct: activitatea a crescut, dar site-ul a rămas în urmă, iar o temă nouă nu rezolvă problema.",
+    "every-build-runs-on-wix-studio": "Tehnologia o alegem după ce trebuie să facă site-ul după lansare. De cele mai multe ori lucrăm în React sau Next.js, cu un panou de administrare din care îți modifici singur textele, imaginile și paginile. Paginile sunt construite din componente refolosibile, așa că a patruzecea pagină arată la fel de bine ca prima.",
+    "responsive-is-not-a-checkbox-at": "Varianta de telefon nu e un pas bifat la final. Paginile sunt gândite pentru ecranul mic la fel de atent ca pentru desktop, pentru că acolo sunt deja cei mai mulți vizitatori. Fonturile, spațiile și imaginile se ajustează pe fiecare dimensiune de ecran, nu se micșorează pur și simplu.",
+    "you-share-your-content-your-preferences": "Tu ne dai conținutul, preferințele și feedback-ul în momentele care contează. Designul, dezvoltarea, testarea și lansarea le facem noi. Durata depinde de numărul de pagini, de cât conținut există deja și de câte interacțiuni personalizate are designul. După ce discutăm, îți putem spune mai exact.",
+    "you-finish-with-a-site-you": "La final ai un site pe care îl poți administra singur și la care poți adăuga pagini, fără să-l refaci peste un an și jumătate.",
+    "what-s-included": "Ce include",
+    "5-core-pages-home-about-services": "De la un landing page până la 10 pagini, în funcție de pachet",
+    "fully-responsive-layout-across-devices": "Adaptat pentru telefon, tabletă și desktop",
+    "cms-setup-for-dynamic-content": "Panou de administrare pentru conținut (de la Business)",
+    "animation-and-micro-interactions": "Animații și micro-interacțiuni",
+    "basic-seo-setup": "SEO tehnic de la început",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-website-redesign": "Următorul: Redesign\nwebsite",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline",
+    "cms-dynamic-websites": "CMS și\nsite-uri dinamice",
+    "from-price": "De la {price}, plată unică.",
+    "see-packages": "Vezi pachetele",
+    "how-we-work": "Cum construim un website",
+    "discovery-title": "Discuție și planificare",
+    "discovery-text": "Înainte de design sau cod, vorbim despre afacerea ta. Dezvoltarea începe abia după ce cerințele sunt clare și scrise.",
+    "discovery-items": [
+      "Afacerea",
+      "Publicul țintă",
+      "Obiectivele",
+      "Conținutul",
+      "Funcționalitățile",
+      "Bugetul",
+      "Termenul de realizare"
+    ],
+    "design-title": "UI/UX și design responsive",
+    "design-text": "Designul nu e doar decor. Trebuie să ajute vizitatorul să găsească repede ce caută și să aibă încredere în tine.",
+    "design-items": [
+      "Design personalizat",
+      "Pe identitatea brandului",
+      "Mobile-first, când proiectul o cere",
+      "Navigare intuitivă",
+      "Structură clară",
+      "Animații fluide",
+      "Accesibilitate și lizibilitate",
+      "Comportament responsive"
+    ],
+    "development-title": "Frontend și backend",
+    "development-text": "Construim atât partea pe care o vede vizitatorul, cât și ce rulează în spate, cât de simplu sau de complex are nevoie proiectul.",
+    "development-items": [
+      "Pagini interactive",
+      "Formulare",
+      "Sisteme de administrare",
+      "CMS",
+      "Dashboard-uri",
+      "Integrări API",
+      "Baze de date, când e nevoie",
+      "Funcționalități personalizate"
+    ],
+    "seo-title": "Construit ca să fie găsit",
+    "seo-text": "Un website bun e ușor de folosit și ușor de înțeles pentru motoarele de căutare. Ne ocupăm de fundația SEO tehnică de la început, ca site-ul să pornească de pe o bază solidă.",
+    "seo-items": [
+      "HTML semantic",
+      "Titluri H1/H2/H3 organizate",
+      "Meta title și description",
+      "Open Graph",
+      "Sitemap XML",
+      "Robots.txt",
+      "Canonical URLs",
+      "Redirecturi, unde e nevoie",
+      "Imagini optimizate",
+      "Lazy loading",
+      "URL-uri descriptive",
+      "Structured data, când e relevant",
+      "Verificări de performanță",
+      "Search Console"
+    ],
+    "seo-notes": [
+      "<strong>SEO inițial vs. continuu.</strong> Ce e mai sus face parte din dezvoltare, în funcție de pachet. Optimizarea continuă (conținut, campanii, cercetare) e un serviciu separat.",
+      "<strong>Ce nu promitem:</strong> locul 1 în Google, trafic sau vânzări garantate, indexare instantanee."
+    ],
+    "privacy-title": "Dezvoltare atentă la confidențialitate",
+    "privacy-text": "Construim website-uri cu gândul la confidențialitate și securitate, cu măsuri tehnice potrivite pentru protejarea informațiilor și pentru cerințele tale de protecție a datelor.",
+    "privacy-items": [
+      "HTTPS și SSL",
+      "Formulare validate și protejate",
+      "Acces controlat la administrare",
+      "Credențiale protejate",
+      "Comunicare securizată cu API-urile",
+      "Chei și date sensibile neexpuse",
+      "Doar datele strict necesare",
+      "Consimțământ pentru cookies",
+      "Scripturi neesențiale blocate până la consimțământ",
+      "Politici de confidențialitate și cookies, pregătite pentru revizuire",
+      "Gestionarea datelor, în funcție de aplicație"
+    ],
+    "privacy-notes": [
+      "<strong>Despre GDPR:</strong> nu putem garanta singuri conformitatea completă. Ea depinde și de procesele tale, de scopurile prelucrării, de furnizorii folosiți și de documentația juridică, pe care o recomandăm revizuită de un consultant. Dacă prelucrăm date personale în numele tău, semnăm un acord de prelucrare a datelor (DPA)."
+    ],
+    "performance-title": "Performanță și optimizare",
+    "performance-text": "Un site rapid se simte mai bine și pierde mai puțini vizitatori. Lucrăm la viteză pe tot parcursul proiectului, nu doar la final.",
+    "performance-items": [
+      "Imagini optimizate",
+      "Fără resurse inutile",
+      "Lazy loading",
+      "Code splitting, unde se potrivește",
+      "JavaScript optimizat",
+      "Core Web Vitals",
+      "Performanță pe mobil",
+      "Testarea paginilor importante",
+      "Animații care nu încetinesc pagina"
+    ],
+    "performance-notes": [
+      "Nu promitem scor 100 în Lighthouse pentru orice site. Îți arătăm rezultatele măsurate și ce le influențează."
+    ],
+    "hosting-title": "Domeniu, hosting și lansare",
+    "hosting-text": "Nu trebuie să te ocupi singur de partea tehnică. Dacă alegi găzduirea prin ESA, ne ocupăm de domeniu, hosting și certificatul SSL, ca website-ul să fie pregătit de lansare.",
+    "hosting-subtext": "Costurile lunare sunt afișate separat de dezvoltare. Fără taxe ascunse și fără servicii adăugate fără acordul tău.",
+    "hosting-items": [
+      "Înregistrarea și configurarea domeniului",
+      "Configurare DNS",
+      "Configurarea hostingului",
+      "Deployment",
+      "SSL și HTTPS",
+      "Publicarea website-ului",
+      "Verificări după lansare",
+      "Administrarea infrastructurii de către noi, opțional"
+    ],
+    "infra-title": "Cât costă infrastructura pe lună",
+    "infra-col-plan": "Pachet",
+    "infra-col-domain": "Domeniu .ro (echivalent lunar)",
+    "infra-col-hosting": "Hosting administrat",
+    "infra-col-total": "Total",
+    "infra-notes": [
+      "Domeniul .ro se plătește anual, aproximativ 12 € pe an. Cei 1 €/lună sunt suma anuală împărțită la 12, nu o factură lunară de la registru.",
+      "Domeniul se înregistrează pe numele tău, nu pe ESA. La finalul colaborării îl transferăm împreună cu website-ul, după o procedură stabilită în contract.",
+      "Domeniile premium, alte extensii, traficul foarte mare sau serverele dedicate se ofertează separat."
+    ],
+    "packages-title": "Pachete și prețuri",
+    "packages-text": "Prețul de dezvoltare se plătește o singură dată. Infrastructura lunară e opțională: o poți lua de la noi, o poți administra singur sau o poți înlocui cu ESA Managed Care.",
+    "after-launch-title": "Backup, securitate și mentenanță",
+    "after-launch-text": "Un website are nevoie de grijă și după lansare: actualizări, backupuri, verificări. Poți face asta singur sau ne poți lăsa pe noi.",
+    "delivery-title": "Cum decurge un proiect",
+    "step-1-title": "Discuția inițială",
+    "step-1-text": "Ne spui ce ai nevoie, iar noi punem întrebările care contează.",
+    "step-2-title": "Stabilirea cerințelor",
+    "step-2-text": "Scriem ce construim, ce pagini și funcționalități are site-ul.",
+    "step-3-title": "Ofertă și contract",
+    "step-3-text": "Primești prețul, etapele și condițiile în scris, înainte de orice lucru.",
+    "step-4-title": "Dezvoltare",
+    "step-4-text": "Design, cod și conținut, cu acces la versiunea de lucru pe parcurs.",
+    "step-5-title": "Testare și revizii",
+    "step-5-text": "Verificăm pe telefon și desktop, apoi facem rundele de revizii din pachet.",
+    "step-6-title": "Aprobare și lansare",
+    "step-6-text": "După aprobarea ta publicăm site-ul și verificăm totul pe domeniul real.",
+    "step-7-title": "Suport și mentenanță",
+    "step-7-text": "Opțional: ne ocupăm în continuare de site, prin ESA Managed Care.",
+    "per-month": "/lună"
   },
   "/services/ecommerce-website-design": {
-    "meta-title": "eCommerce Website Design — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "ecommerce-website-design": "eCommerce\nWebsite Design",
-    "ecommerce-experiences-built-for-ease-and": "Ecommerce experiences built for ease and impact. From product display to checkout, every step is optimized for conversion and brand consistency.",
-    "an-online-store-is-judged-on": "An online store is judged on a shorter path than a brochure site. Someone arrives on a product, decides whether they trust you, and either reaches checkout or leaves. Almost everything that determines the outcome happens in that stretch — how the product is photographed and described, whether the price and delivery terms are where the eye expects them, how many fields stand between the cart and the confirmation.",
-    "the-catalogue-is-structured-before-anything": "The catalogue is structured before anything is designed. Categories, filters, variants and collections are worked out against how your customers actually shop rather than how the inventory happens to be organised internally. A store with forty products and one with four hundred need genuinely different navigation, and getting that wrong is expensive to undo later.",
-    "product-pages-are-built-to-answer": "Product pages are built to answer the questions that stop a purchase: what it is, what it costs, what arrives, when it arrives, and what happens if it is wrong. Listing pages are built to let someone narrow a large catalogue quickly without losing their place. Checkout is kept as short as the payment and shipping setup allows.",
-    "most-of-your-customers-will-be": "Most of your customers will be on a phone, so that is the layout that gets designed first rather than adapted last. Images are sized and compressed for mobile connections, and the interface is built for thumbs — tap targets, sticky add-to-cart, and forms that use the right keyboard for the field.",
-    "payment-and-shipping-are-integrated-and": "Payment and shipping are integrated and tested with live settings before launch, and you are handed a dashboard you can actually run: adding products, adjusting stock, changing prices and fulfilling orders without needing us. Where the store needs to grow into new categories or markets later, the structure is already built to take them.",
-    "what-s-included": "What’s included",
-    "product-listing-and-detail-pages": "Product listing and detail pages",
-    "cart-and-checkout-setup": "Cart and checkout setup",
-    "payment-and-shipping-integration": "Payment and shipping integration",
-    "store-management-dashboard-setup": "Store management dashboard setup",
-    "mobile-friendly-shopping-experience": "Mobile-friendly shopping experience",
-    "category-filter-and-variant-structure": "Category, filter and variant structure",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-cms-dynamic-websites": "Next: CMS &\nDynamic Websites",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "cms-dynamic-websites": "CMS &\nDynamic Websites"
+    "meta-title": "Creare magazin online | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "ecommerce-website-design": "Magazine\nonline",
+    "ecommerce-experiences-built-for-ease-and": "Magazine online în care produsele se găsesc ușor, iar drumul de la produs la comandă e cât mai scurt. Pe Shopify sau construite de la zero, în funcție de ce ai nevoie.",
+    "an-online-store-is-judged-on": "Un magazin online e judecat pe un drum scurt. Cineva ajunge pe un produs, decide dacă are încredere și fie ajunge la checkout, fie pleacă. Aproape tot ce contează se întâmplă acolo: cum e prezentat produsul, dacă prețul și livrarea sunt unde se uită ochiul, câte câmpuri sunt între coș și confirmare.",
+    "the-catalogue-is-structured-before-anything": "Catalogul îl organizăm înainte de design. Categoriile, filtrele, variantele și colecțiile sunt gândite după cum caută clienții, nu după cum e ținut stocul intern. Un magazin cu patruzeci de produse și unul cu patru sute au nevoie de navigare diferită, iar o greșeală aici costă mult de reparat mai târziu.",
+    "product-pages-are-built-to-answer": "Pagina de produs răspunde la întrebările care opresc o comandă: ce este, cât costă, ce primești, când ajunge și ce faci dacă nu e ce trebuie. Paginile de listă te ajută să restrângi rapid un catalog mare, fără să-ți pierzi locul. Checkout-ul e cât de scurt permit plata și livrarea.",
+    "most-of-your-customers-will-be": "Majoritatea clienților cumpără de pe telefon, așa că de acolo începem. Imaginile sunt dimensionate pentru conexiuni mobile, butoanele sunt ușor de apăsat, iar formularele deschid tastatura potrivită pentru fiecare câmp.",
+    "payment-and-shipping-are-integrated-and": "Plata și livrarea sunt integrate și testate înainte de lansare. Primești un panou din care adaugi produse, modifici stocuri și prețuri și procesezi comenzi fără să ai nevoie de noi. Dacă magazinul are nevoie de mai multe limbi sau de categorii noi mai târziu, structura e pregătită pentru asta.",
+    "what-s-included": "Ce include",
+    "product-listing-and-detail-pages": "Pagini de listă și de produs",
+    "cart-and-checkout-setup": "Coș și checkout",
+    "payment-and-shipping-integration": "Integrare plată și livrare",
+    "store-management-dashboard-setup": "Panou de administrare a magazinului",
+    "mobile-friendly-shopping-experience": "Cumpărare ușoară de pe telefon",
+    "category-filter-and-variant-structure": "Categorii, filtre și variante de produs",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-cms-dynamic-websites": "Următorul: CMS și\nsite-uri dinamice",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "cms-dynamic-websites": "CMS și\nsite-uri dinamice"
   },
   "/services/landing-pages-and-microsites": {
-    "meta-title": "Landing Pages & Microsites — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "landing-pages-microsites": "Landing Pages\n& Microsites",
-    "focused-fast-loading-pages-created-to": "Focused, fast-loading pages created to capture attention and drive conversions. Perfect for campaigns, events, or single service promotions.",
-    "a-landing-page-has-one-job": "A landing page has one job, and every element on it either serves that job or works against it. That is what separates it from a homepage: no navigation to elsewhere, no secondary offers, no invitation to browse. One argument, made in the order someone needs to hear it, ending in one action.",
-    "these-earn-their-place-when-traffic": "These earn their place when traffic is being bought or sent deliberately — an ad campaign, a launch, a conference, a partnership, a single service you want to sell without the rest of the business competing for attention. Sending paid traffic to a general homepage wastes a measurable share of it, because the visitor has to work out for themselves which part of the page is about the thing they clicked.",
-    "speed-is-not-a-nicety-here": "Speed is not a nicety here, it is the economics. Every second of load time on a paid campaign is spend you have already committed and visitors you no longer have. These pages are built lean: minimal scripts, images sized and compressed for the layout, fonts loaded so text is readable immediately rather than after a delay.",
-    "the-structure-follows-the-decision-rather": "The structure follows the decision rather than the org chart. What it is, who it is for, what it costs or what it takes, what proof exists, what objection remains, and then the action — with the call to action repeated at the points where someone is actually ready to take it rather than only at the bottom.",
-    "analytics-and-conversion-tracking-are-configured": "Analytics and conversion tracking are configured before launch, so you can see what the page did rather than guess. Where you want to test a headline, an offer or a layout, the page is built so a variant can be run without rebuilding it.",
-    "what-s-included": "What’s included",
-    "1-custom-landing-page": "1 custom landing page",
-    "optimized-content-structure": "Optimized content structure",
-    "responsive-design": "Responsive design",
-    "conversion-focused-layout": "Conversion-focused layout",
-    "analytics-and-tracking-integration": "Analytics and tracking integration",
-    "built-lean-for-paid-traffic": "Built lean for paid traffic",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-consistent-identity": "Next: Consistent\nIdentity",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Landing pages și microsite-uri | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "landing-pages-microsites": "Landing pages\nși microsite-uri",
+    "focused-fast-loading-pages-created-to": "Pagini rapide, cu un singur mesaj și o singură acțiune. Bune pentru campanii, lansări, evenimente sau un serviciu pe care vrei să-l promovezi separat.",
+    "a-landing-page-has-one-job": "Un landing page are un singur rol, iar fiecare element de pe el fie îl ajută, fie îl încurcă. Asta îl deosebește de prima pagină a unui site: nu are meniu spre alte pagini, nu are oferte secundare și nu te invită să explorezi. Un singur argument, spus în ordinea în care trebuie auzit, care se termină cu o singură acțiune.",
+    "these-earn-their-place-when-traffic": "Merită atunci când trimiți trafic intenționat: o campanie plătită, o lansare, o conferință, un parteneriat sau un serviciu pe care vrei să-l vinzi fără ca restul afacerii să-i fure atenția. Dacă trimiți trafic plătit pe prima pagină, o parte din el se pierde, pentru că vizitatorul trebuie să caute singur ce legătură are pagina cu reclama pe care a apăsat.",
+    "speed-is-not-a-nicety-here": "Aici viteza ține de bani. Fiecare secundă de încărcare într-o campanie plătită înseamnă buget cheltuit pe vizitatori care pleacă. Paginile sunt construite cât mai ușor: puține scripturi, imagini dimensionate corect și fonturi încărcate astfel încât textul să se poată citi imediat.",
+    "the-structure-follows-the-decision-rather": "Structura urmează decizia vizitatorului: ce este, pentru cine, cât costă sau ce presupune, ce dovezi există, ce obiecție mai rămâne și apoi acțiunea. Butonul principal apare în locurile în care omul e gata să apese, nu doar la final.",
+    "analytics-and-conversion-tracking-are-configured": "Statisticile și urmărirea conversiilor sunt configurate înainte de lansare, ca să vezi ce a făcut pagina, nu să ghicești. Dacă vrei să testezi un alt titlu, o altă ofertă sau un alt layout, pagina e construită ca să poți face asta fără s-o refaci.",
+    "what-s-included": "Ce include",
+    "1-custom-landing-page": "1 landing page personalizat",
+    "optimized-content-structure": "Structură de conținut gândită pentru decizie",
+    "responsive-design": "Adaptat pentru orice ecran",
+    "conversion-focused-layout": "Layout orientat spre acțiune",
+    "analytics-and-tracking-integration": "Statistici și urmărirea conversiilor",
+    "built-lean-for-paid-traffic": "Construit ușor, pentru trafic plătit",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-consistent-identity": "Următorul: Identitate\nvizuală coerentă",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/maintenance-and-ongoing-support": {
-    "meta-title": "Maintenance & Ongoing Support | Visuvate",
-    "all-services": "All services",
-    "maintenance-ongoing-support": "Maintenance &\nOngoing Support",
-    "keep-your-website-updated-secure-and": "Keep your website updated, secure, and performing at its best. We handle ongoing adjustments so you can focus on your business.",
-    "websites-decay-quietly-content-goes-out": "Websites decay quietly. Content goes out of date, links break as other sites reorganise, browsers update and change how something renders, images accumulate until pages slow down, and integrations stop working without announcing it. None of this is dramatic on any given week, which is exactly why it is usually discovered by a customer rather than by the business.",
-    "regular-checks-catch-that-before-it": "Regular checks catch that before it costs you anything. Pages are reviewed for errors and broken links, loading is re-measured against where it was at launch, forms are tested end to end so an enquiry route never fails silently, and the site is checked on current browsers rather than assumed to still work.",
-    "content-and-design-updates-are-handled": "Content and design updates are handled as they come up. New case studies, revised service copy, seasonal changes, a new team member, an updated price — the small ongoing edits that are quick for us and a distraction for you. Where a change would be better made structurally than patched, we will say so.",
-    "backups-and-security-monitoring-run-in": "Backups and security monitoring run in the background, so an unwanted change can be reversed rather than reconstructed. That matters most for sites where more than one person can edit content.",
-    "priority-support-means-a-direct-line": "Priority support means a direct line rather than a queue. If something breaks on a live site — a form, a payment, a page — it is looked at as the current job, not scheduled behind other work.",
-    "it-suits-businesses-whose-site-is": "It suits businesses whose site is a working part of how they sell, rather than something built once and left alone.",
-    "what-s-included": "What’s included",
-    "regular-site-checkups": "Regular site checkups",
-    "content-and-design-updates": "Content and design updates",
-    "backup-and-security-monitoring": "Backup and security monitoring",
-    "performance-review-and-optimization": "Performance review and optimization",
-    "priority-technical-support": "Priority technical support",
-    "forms-tested-end-to-end-so": "Forms tested end to end so enquiries never fail silently",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-crafted-websites": "Next: Crafted\nWebsites",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Mentenanță website și suport după lansare | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "maintenance-ongoing-support": "Mentenanță\nși suport",
+    "keep-your-website-updated-secure-and": "Actualizări, corecturi, funcționalități noi și verificări regulate după lansare. Ne ocupăm de partea tehnică, ca tu să te poți ocupa de afacere.",
+    "websites-decay-quietly-content-goes-out": "Site-urile se degradează încet. Conținutul se învechește, linkurile se rup când alte site-uri se reorganizează, browserele se actualizează, imaginile se adună până când paginile devin lente, iar integrările se opresc fără să anunțe. Nimic din toate astea nu pare grav într-o săptămână anume, de aceea de obicei le descoperă un client, nu firma.",
+    "regular-checks-catch-that-before-it": "Verificările regulate prind problemele înainte să te coste ceva. Paginile sunt verificate pentru erori și linkuri rupte, viteza e măsurată din nou față de lansare, formularele sunt testate cap-coadă ca o cerere de contact să nu se piardă, iar site-ul e verificat pe browserele actuale.",
+    "content-and-design-updates-are-handled": "Modificările de conținut și de design le facem pe măsură ce apar: un proiect nou, un text de serviciu refăcut, schimbări de sezon, un preț actualizat. Sunt lucruri mici, rapide pentru noi și o distragere pentru tine. Dacă o schimbare ar fi mai bine făcută structural decât cârpită, îți spunem.",
+    "backups-and-security-monitoring-run-in": "Backupurile automate, acolo unde infrastructura le permite, și verificările de securitate rulează în fundal, așa că o modificare nedorită poate fi anulată, nu refăcută de la zero. Contează mai ales când mai mulți oameni pot edita conținutul.",
+    "priority-support-means-a-direct-line": "Suportul prioritar înseamnă că vorbești direct cu oamenii care au construit site-ul, nu aștepți la coadă. Dacă ceva se strică pe site-ul live, un formular, o plată, o pagină, devine prioritatea noastră.",
+    "it-suits-businesses-whose-site-is": "Se potrivește firmelor pentru care site-ul e o parte din felul în care vând, nu ceva construit o dată și lăsat așa.",
+    "what-s-included": "Ce include",
+    "regular-site-checkups": "Verificări regulate ale site-ului",
+    "content-and-design-updates": "Modificări de conținut și design",
+    "backup-and-security-monitoring": "Backupuri și verificări de securitate",
+    "performance-review-and-optimization": "Verificarea și optimizarea vitezei",
+    "priority-technical-support": "Suport tehnic prioritar",
+    "forms-tested-end-to-end-so": "Formulare testate, ca nicio cerere să nu se piardă",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-crafted-websites": "Următorul: Website-uri\npersonalizate",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/motion-and-interaction-design": {
-    "meta-title": "Motion & Interaction Design — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "motion-interaction-design": "Motion &\nInteraction Design",
-    "purposeful-motion-that-enhances-usability-and": "Purposeful motion that enhances usability and flow. Every animation supports clarity, helping users navigate with ease and delight.",
-    "motion-is-the-fastest-way-to": "Motion is the fastest way to make a site feel considered, and the fastest way to make it feel cheap. The difference is whether each movement is doing a job. Motion that shows where something came from, confirms that a tap registered, or draws the eye to what changed is doing work. Motion that exists because the tool offered it is decoration, and decoration wears out on the second visit.",
-    "so-animation-here-is-applied-where": "So animation here is applied where it explains something. Transitions carry context between states so a change does not have to be re-read. Hover and press feedback confirms that an interface is responding. Scroll-linked reveals introduce a long page in the order it should be understood, rather than presenting everything at once.",
-    "every-effect-is-built-with-its": "Every effect is built with its cost in mind. Animation that runs on the main thread competes with everything else the browser is doing, which is how sites end up stuttering exactly when someone is trying to read them. Transforms and opacity are preferred because the compositor can handle them, heavy work is deferred until the section is actually needed, and the result is measured rather than assumed.",
-    "anyone-who-has-asked-their-device": "Anyone who has asked their device to reduce motion gets a version that respects it. That is not a token fallback — it is a deliberate second composition, where sequences resolve to their finished state and nothing moves without being asked. For a significant number of people motion is a genuine accessibility problem, and ignoring the setting is not an option.",
-    "the-aim-throughout-is-a-site": "The aim throughout is a site that feels alive when you are using it and calm when you are reading it.",
-    "what-s-included": "What’s included",
-    "subtle-hover-and-scroll-effects": "Subtle hover and scroll effects",
-    "section-transitions-and-reveals": "Section transitions and reveals",
-    "interaction-feedback-design": "Interaction feedback design",
-    "performance-optimized-animations": "Performance-optimized animations",
-    "a-reduced-motion-version-for-those": "A reduced-motion version for those who ask for it",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-ux-centric-strategy": "Next: UX Centric\nStrategy",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Animații, interacțiuni și experiențe 3D | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "motion-interaction-design": "Animații și\ninteracțiuni",
+    "purposeful-motion-that-enhances-usability-and": "Animații, tranziții și elemente 3D care dau personalitate unui site, fără să-l facă greu de folosit. Fiecare mișcare are un rol.",
+    "motion-is-the-fastest-way-to": "Ne plac detaliile care fac un site să se simtă diferit. O tranziție bună sau o prezentare interactivă pot schimba complet experiența, dar la fel de ușor o pot strica. Diferența e dacă mișcarea are un rost: arată de unde a venit ceva, confirmă că un click a fost înregistrat sau îți atrage privirea spre ce s-a schimbat. Mișcarea pusă doar pentru că se poate devine obositoare de la a doua vizită.",
+    "so-animation-here-is-applied-where": "Așa că folosim animația acolo unde explică ceva. Tranzițiile păstrează contextul între stări, efectele la hover și la apăsare confirmă că interfața răspunde, iar elementele care apar la scroll prezintă o pagină lungă în ordinea în care trebuie înțeleasă. Pentru produse, o prezentare 3D sau interactivă poate arăta ce o fotografie nu poate.",
+    "every-effect-is-built-with-its": "Fiecare efect e construit ținând cont de cât costă. O animație prost făcută concurează cu tot ce face browserul și face pagina să sacadeze exact când cineva încearcă să citească. Folosim proprietăți pe care browserul le poate anima ușor, încărcăm efectele grele doar când ajungi la ele și verificăm rezultatul, nu îl presupunem.",
+    "anyone-who-has-asked-their-device": "Cine a setat pe dispozitiv „reduce motion” primește o variantă care respectă setarea: animațiile ajung direct la starea finală și nimic nu se mișcă fără să fie cerut. Pentru unii oameni, mișcarea pe ecran e o problemă reală de accesibilitate.",
+    "the-aim-throughout-is-a-site": "Ce urmăresc e un site care pare viu când îl folosești și liniștit când citești.",
+    "what-s-included": "Ce include",
+    "subtle-hover-and-scroll-effects": "Efecte discrete la hover și scroll",
+    "section-transitions-and-reveals": "Tranziții între secțiuni",
+    "interaction-feedback-design": "Feedback vizual la interacțiuni",
+    "performance-optimized-animations": "Animații care nu încetinesc site-ul",
+    "a-reduced-motion-version-for-those": "Variantă fără animații pentru cine o cere",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-ux-centric-strategy": "Următorul: Structură\nși UX",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/performance-optimization": {
-    "meta-title": "Performance Optimization — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "performance-optimization": "Performance\nOptimization",
-    "beautiful-design-means-little-without": "Beautiful design means little without performance. We fine-tune every site for speed, accessibility, and seamless loading.",
-    "speed-is-not-a-technical-preference": "Speed is not a technical preference, it is a commercial one. People abandon slow pages, and they abandon them fastest on the mobile connections most traffic now arrives on. Search engines measure loading behaviour directly and use it in ranking, which means a slow site is penalised twice: once by the visitors who leave, and again by being harder to find in the first place.",
-    "the-work-is-measurement-led-rather": "The work is measurement-led rather than a checklist. We look at what the browser is actually doing on your pages — when the first content appears, how long the main thread is blocked, whether the layout shifts under someone as they start to read — and fix what the numbers point at. Optimising things that were never the bottleneck is a common way to spend effort and change nothing.",
-    "images-are-usually-the-largest-single": "Images are usually the largest single win. Serving a 3000 pixel photograph into a 700 pixel slot wastes most of the file, and it happens on more sites than not. Assets are resized to what the layout actually uses, converted to modern formats, and loaded in an order that puts the visible content first.",
-    "scripts-and-fonts-are-the-other": "Scripts and fonts are the other two. Anything not needed for the first view is deferred so it stops competing with the content, heavy features are loaded only when they are approached, and fonts are configured so text is readable immediately rather than after a pause.",
-    "you-are-given-the-before-and": "You are given the before and after rather than an assurance. Where a trade-off exists between an effect and a measurable slowdown, we will tell you what it costs and let you decide.",
-    "what-s-included": "What’s included",
-    "page-speed-improvements": "Page speed improvements",
-    "image-and-media-optimization": "Image and media optimization",
-    "smart-loading-and-caching-setup": "Smart loading and caching setup",
-    "seo-friendly-structure": "SEO-friendly structure",
-    "analytics-and-tracking": "Analytics and tracking",
-    "before-and-after-measurements": "Before and after measurements",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-maintenance-ongoing-support": "Next: Maintenance &\nOngoing Support",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Optimizarea vitezei unui website | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "performance-optimization": "Optimizare\nde viteză",
+    "beautiful-design-means-little-without": "Un site frumos care se încarcă greu pierde vizitatori. Măsurăm ce se întâmplă de fapt pe pagini și reparăm ce le încetinește.",
+    "speed-is-not-a-technical-preference": "Viteza nu e un moft tehnic. Oamenii închid paginile lente, mai ales pe telefon, de unde vine acum cel mai mult trafic. Google măsoară și el cum se încarcă paginile și ține cont de asta, așa că un site lent pierde de două ori: o dată prin vizitatorii care pleacă și încă o dată pentru că e mai greu de găsit.",
+    "the-work-is-measurement-led-rather": "Pornim de la măsurători, nu de la o listă generală. Ne uităm la ce face browserul pe paginile tale: când apare primul conținut, cât timp e blocat, dacă pagina sare în timp ce începi să citești. Apoi reparăm ce arată cifrele. Să optimizezi lucruri care nu erau problema e un mod comun de a munci mult fără să schimbi nimic.",
+    "images-are-usually-the-largest-single": "Imaginile sunt de obicei cel mai mare câștig. O fotografie de 3000 de pixeli pusă într-un spațiu de 700 înseamnă un fișier mult mai mare decât e nevoie, și se întâmplă pe multe site-uri. Le redimensionăm la cât folosește pagina, le convertim în formate moderne și le încărcăm în ordinea în care apar pe ecran.",
+    "scripts-and-fonts-are-the-other": "Scripturile și fonturile sunt celelalte două surse. Ce nu e necesar la prima afișare se încarcă mai târziu, funcțiile grele doar când ajungi la ele, iar fonturile sunt configurate astfel încât textul să se poată citi imediat.",
+    "you-are-given-the-before-and": "Primești măsurătorile de dinainte și de după, nu doar o asigurare. Dacă un efect vizual încetinește pagina, îți spunem cât costă și decizi tu.",
+    "what-s-included": "Ce include",
+    "page-speed-improvements": "Pagini care se încarcă mai repede",
+    "image-and-media-optimization": "Imagini și video optimizate",
+    "smart-loading-and-caching-setup": "Încărcare inteligentă și cache",
+    "seo-friendly-structure": "Structură bună pentru SEO",
+    "analytics-and-tracking": "Statistici și urmărire",
+    "before-and-after-measurements": "Măsurători înainte și după",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-maintenance-ongoing-support": "Următorul: Mentenanță\nși suport",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/ux-centric-strategy": {
-    "meta-title": "UX Centric Strategy — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "ux-centric-strategy": "UX Centric\nStrategy",
-    "design-grounded-in-user-behavior-and": "Design grounded in user behavior and intent. We ensure every page feels intuitive, logical, and conversion-ready.",
-    "most-websites-that-fail-do-so": "Most websites that fail do so before a single visual decision is made. The navigation is organised around how the company is structured rather than what visitors are looking for, the homepage explains the business instead of the offer, and the route from arriving to enquiring is longer than anyone intended. No amount of design rescues a structure that works against the reader.",
-    "so-structure-comes-first-we-establish": "So structure comes first. We establish who is arriving, what they need to be confident about before they act, and what the shortest honest path to that action is. Navigation, page order and content hierarchy follow from that, and they are agreed before layouts are drawn — changing a sitemap costs an afternoon, changing it after twenty pages are designed costs a great deal more.",
-    "wireframes-are-used-to-settle-those": "Wireframes are used to settle those questions without the distraction of finished visuals. Seeing a page as blocks makes it obvious when a section is doing nothing, when the call to action is below the point most people stop reading, or when three things are competing to be the most important element on screen.",
-    "every-page-is-planned-mobile-first": "Every page is planned mobile-first, because that is where most of the decisions get made and because a layout that survives a narrow screen is almost always the clearer one. What is essential has to be identified in order to fit, and that discipline improves the desktop version too.",
-    "accessibility-is-treated-as-part-of": "Accessibility is treated as part of the structure rather than an audit at the end: a sensible heading order, meaningful link text, real focus states, and a page that can be operated from a keyboard. That work overlaps almost entirely with what search engines reward, so it is rarely a trade-off.",
-    "what-s-included": "What’s included",
-    "content-and-navigation-structure": "Content and navigation structure",
-    "wireframe-and-layout-planning": "Wireframe and layout planning",
-    "cta-and-user-flow-optimization": "CTA and user flow optimization",
-    "accessibility-and-mobile-first-design": "Accessibility and mobile-first design",
-    "sitemap-agreed-before-any-layouts-are": "Sitemap agreed before any layouts are drawn",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-performance-optimization": "Next: Performance\nOptimization",
-    "crafted-websites": "Crafted\nWebsites",
-    "website-redesign": "Website\nRedesign",
-    "ecommerce-website-design": "eCommerce\nWebsite Design"
+    "meta-title": "Structură și UX: site-uri ușor de folosit | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "ux-centric-strategy": "Structură\nși UX",
+    "design-grounded-in-user-behavior-and": "Structura paginilor gândită după ce caută vizitatorii, nu după organigrama firmei. Fiecare pagină trebuie să fie ușor de înțeles și de folosit.",
+    "most-websites-that-fail-do-so": "Multe site-uri care nu funcționează au o problemă înainte de orice decizie vizuală. Meniul e organizat după cum e împărțită firma, nu după ce caută vizitatorii, prima pagină explică afacerea în loc de ofertă, iar drumul până la contact e mai lung decât și-ar fi dorit cineva. Niciun design nu salvează o structură care lucrează împotriva cititorului.",
+    "so-structure-comes-first-we-establish": "De aceea structura vine prima. Stabilim cine ajunge pe site, de ce are nevoie ca să aibă încredere și care e cel mai scurt drum cinstit până la acțiune. Meniul, ordinea paginilor și ierarhia conținutului decurg de aici și le stabilim înainte de design. Să schimbi harta site-ului durează o după-amiază. Să o schimbi după ce ai desenat douăzeci de pagini costă mult mai mult.",
+    "wireframes-are-used-to-settle-those": "Pentru asta folosim wireframe-uri, schițe fără culori și imagini. Când vezi pagina ca blocuri, e evident când o secțiune nu face nimic, când butonul principal e sub locul unde majoritatea se opresc din citit sau când trei lucruri se bat pentru atenție.",
+    "every-page-is-planned-mobile-first": "Fiecare pagină e gândită întâi pentru telefon, pentru că acolo se iau multe decizii și pentru că un layout care încape pe un ecran îngust e aproape mereu mai clar. Trebuie să alegi ce e esențial ca să încapă, iar asta îmbunătățește și varianta de desktop.",
+    "accessibility-is-treated-as-part-of": "Accesibilitatea face parte din structură, nu e o verificare la final: titluri în ordinea corectă, linkuri cu text care spune unde duc, stări de focus vizibile și o pagină care se poate folosi și de la tastatură. În mare parte, e exact ce apreciază și motoarele de căutare.",
+    "what-s-included": "Ce include",
+    "content-and-navigation-structure": "Structura conținutului și a meniului",
+    "wireframe-and-layout-planning": "Wireframe-uri și plan de pagină",
+    "cta-and-user-flow-optimization": "Drumul vizitatorului până la acțiune",
+    "accessibility-and-mobile-first-design": "Accesibilitate, gândit întâi pentru telefon",
+    "sitemap-agreed-before-any-layouts-are": "Harta site-ului stabilită înainte de design",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-performance-optimization": "Următorul: Optimizare\nde viteză",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "website-redesign": "Redesign\nwebsite",
+    "ecommerce-website-design": "Magazine\nonline"
   },
   "/services/website-redesign": {
-    "meta-title": "Website Redesign — Web Design Service | Visuvate",
-    "all-services": "All services",
-    "website-redesign": "Website\nRedesign",
-    "transform-your-existing-website-into-a": "Transform your existing website into a refined, high-performing experience. We rebuild from the core, improving visuals, usability, and conversion flow while keeping your brand identity intact.",
-    "a-redesign-is-not-a-repaint": "A redesign is not a repaint. Sites usually underperform for reasons that have nothing to do with how they look: the navigation buries what people came for, the homepage explains the company instead of the offer, the pages load slowly on a phone, or the path from interest to enquiry has three unnecessary steps in it. New visuals on top of those problems produce a better-looking site that converts exactly as badly.",
-    "so-the-work-starts-with-an": "So the work starts with an audit rather than a moodboard. We go through the current structure, the analytics if you have them, and the journeys that actually matter to the business, and identify what is costing you enquiries. That review is shared with you before any design begins, so you can see the reasoning rather than just the result.",
-    "your-brand-comes-through-the-process": "Your brand comes through the process intact. Where you have an established identity — a logo, a palette, a typeface, a way of speaking — it is kept and applied more consistently than before. Redesigns that discard recognisable brand assets tend to confuse returning visitors for no gain.",
-    "the-part-most-redesigns-get-wrong": "The part most redesigns get wrong is the handover. Changing your URLs without mapping the old ones to the new can erase search rankings you spent years earning. Existing addresses are preserved where they can be and redirected where they cannot, page titles and descriptions are carried across, and the structured data is rebuilt so the new site inherits what the old one had rather than starting from zero.",
-    "most-redesigns-run-two-to-six": "Most redesigns run two to six weeks depending on page count and how much of the content is being rewritten. If the existing site is large, we will usually suggest phasing it — the pages that earn the most attention first — rather than holding everything back for one launch.",
-    "what-s-included": "What’s included",
-    "ux-review-and-design-audit": "UX review and design audit",
-    "redesigned-key-pages-up-to-5": "Redesigned key pages (up to 5)",
-    "updated-structure-for-clarity-and-engagement": "Updated structure for clarity and engagement",
-    "responsive-layout-for-all-devices": "Responsive layout for all devices",
-    "optimized-loading-and-accessibility": "Optimized loading and accessibility",
-    "url-mapping-and-redirects-so-search": "URL mapping and redirects so search rankings carry over",
-    "start-a-project": "Start a project",
-    "recent-work": "Recent work",
-    "need-this-for-your-project": "Need this for your project?",
-    "tell-us-where-you-are-and": "Tell us where you are and we will tell you what it takes.",
-    "get-in-touch": "Get in touch",
-    "next-ecommerce-website-design": "Next: eCommerce\nWebsite Design",
-    "crafted-websites": "Crafted\nWebsites",
-    "ecommerce-website-design": "eCommerce\nWebsite Design",
-    "cms-dynamic-websites": "CMS &\nDynamic Websites"
+    "meta-title": "Redesign website: refac ce nu funcționează | ESA Coder Solutions",
+    "all-services": "Toate serviciile",
+    "website-redesign": "Redesign\nwebsite",
+    "transform-your-existing-website-into-a": "Un site existent, refăcut acolo unde contează: structură, viteză, claritate și drumul până la contact. Păstrăm identitatea brandului și schimbăm ce te încurcă.",
+    "a-redesign-is-not-a-repaint": "Un redesign nu înseamnă doar o vopsea nouă. De obicei un site merge prost din motive care n-au legătură cu aspectul: meniul ascunde ce caută oamenii, prima pagină vorbește despre firmă în loc de ofertă, paginile se încarcă greu pe telefon sau drumul până la formularul de contact are pași în plus. Un design nou peste aceleași probleme dă un site mai frumos, care aduce la fel de puține cereri.",
+    "so-the-work-starts-with-an": "De aceea începem cu o analiză, nu cu un moodboard. Ne uităm la structura actuală, la statistici dacă ai și la drumurile care contează pentru afacere, apoi îți arătăm ce credem că te costă. Vezi raționamentul înainte să înceapă designul, nu doar rezultatul.",
+    "your-brand-comes-through-the-process": "Identitatea brandului rămâne. Dacă ai deja logo, culori, fonturi și un fel anume de a vorbi, le păstrăm și le aplicăm mai consecvent decât până acum. Un redesign care aruncă elementele recognoscibile îi derutează pe cei care te cunosc deja.",
+    "the-part-most-redesigns-get-wrong": "Partea la care multe redesign-uri greșesc e trecerea de la site-ul vechi la cel nou. Dacă schimbi adresele paginilor fără redirecționări, poți pierde pozițiile din Google pe care le-ai câștigat în ani. Adresele existente le păstrăm unde se poate și le redirecționăm unde nu, iar titlurile și descrierile paginilor sunt preluate.",
+    "most-redesigns-run-two-to-six": "Durata depinde de numărul de pagini și de cât conținut rescriem. Dacă site-ul e mare, de obicei propunem să-l facem pe etape, începând cu paginile cele mai vizitate, în loc să ținem totul pentru o singură lansare.",
+    "what-s-included": "Ce include",
+    "ux-review-and-design-audit": "Analiza site-ului actual",
+    "redesigned-key-pages-up-to-5": "Paginile principale refăcute (până la 5)",
+    "updated-structure-for-clarity-and-engagement": "Structură mai clară",
+    "responsive-layout-for-all-devices": "Adaptat pentru orice ecran",
+    "optimized-loading-and-accessibility": "Încărcare mai rapidă și accesibilitate",
+    "url-mapping-and-redirects-so-search": "Redirecționări, ca să nu pierzi pozițiile din Google",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "next-ecommerce-website-design": "Următorul: Magazine\nonline",
+    "crafted-websites": "Website-uri\npersonalizate",
+    "ecommerce-website-design": "Magazine\nonline",
+    "cms-dynamic-websites": "CMS și\nsite-uri dinamice"
   },
   "/templates": {
-    "meta-title": "Premium Website Templates | Visuvate",
+    "meta-title": "Template-uri de website | ESA Coder Solutions",
     "tem": "Tem",
-    "plates": "plates",
-    "every-template-here-began-as-a": "Every template here began as a client project. These are the builds we liked enough to keep — rebuilt as clean starting points, priced at a fraction of the commission.",
-    "how-the-templates-work": "How the templates work",
-    "each-template-is-a-complete-production": "Each template is a complete, production-ready site — pages, components, CMS collections where the design calls for them, and the animations you see in the preview. Nothing is a mockup: what you buy is the working build, running on Framer or Wix Studio, ready for your own content.",
-    "buying-one-takes-you-to-the": "Buying one takes you to the platform’s own marketplace, where payment and delivery are handled by Framer or Wix directly. You get the template into your own account immediately, edit everything in the platform’s visual editor, and publish under your own domain. No code is required to change text, images, colours or pages.",
-    "because-each-one-started-life-as": "Because each one started life as a commissioned project, the design decisions have already survived contact with a real business — the structure, the hierarchy and the responsive behaviour were built for a paying client, not assembled for a thumbnail.",
-    "framer-and-wix-studio-suit-different": "Framer and Wix Studio suit different situations, and each template names its platform on the card. Framer’s editor is the more design-led of the two — fast, canvas-first, and strong on animation. Wix Studio carries a broader business toolkit behind the site: ecommerce, bookings, members and payments are native rather than bolted on. If you already work in one of them, staying with it outweighs most other considerations; if you are starting fresh, pick by what the site has to do rather than by the editor.",
-    "if-a-template-is-close-but": "If a template is close but not quite right, we adapt them. Rebranding one around your identity, adding pages, or reworking sections costs far less than a from-scratch commission — ",
-    "tell-us-what-you-need": "tell us what you need",
-    "and-we-ll-tell-you-honestly": " and we’ll tell you honestly whether the template or a",
-    "custom-build": "custom build",
-    "serves-you-better": " serves you better."
+    "plates": "plate-uri",
+    "every-template-here-began-as-a": "Template-uri gata făcute, de la care poți porni când ai nevoie de un site rapid și nu de unul construit de la zero.",
+    "how-the-templates-work": "Cum funcționează template-urile",
+    "each-template-is-a-complete-production": "Fiecare template e un site complet: pagini, componente, colecții CMS acolo unde designul are nevoie de ele și animațiile pe care le vezi în preview. Ce primești e site-ul funcțional, pe Framer sau Wix Studio, gata pentru conținutul tău.",
+    "buying-one-takes-you-to-the": "Cumpărarea se face pe marketplace-ul platformei, unde plata și livrarea sunt gestionate direct de Framer sau Wix. Template-ul ajunge imediat în contul tău, îl editezi din editorul vizual și îl publici pe domeniul tău. Pentru texte, imagini, culori sau pagini noi nu ai nevoie de cod.",
+    "because-each-one-started-life-as": "Structura, ierarhia și comportamentul pe telefon sunt gândite pentru un site real, nu doar pentru o imagine de prezentare frumoasă.",
+    "framer-and-wix-studio-suit-different": "Framer și Wix Studio se potrivesc în situații diferite, iar fiecare template își are platforma trecută pe card. Framer e mai orientat spre design și animații. Wix Studio vine cu mai multe unelte de business incluse: magazin, programări, membri și plăți. Dacă lucrezi deja pe una dintre ele, de obicei merită să rămâi acolo. Dacă pornești de la zero, alege după ce trebuie să facă site-ul, nu după editor.",
+    "if-a-template-is-close-but": "Dacă un template e aproape de ce vrei, îl putem adapta: identitatea ta, pagini noi, secțiuni refăcute. Costă mult mai puțin decât un site construit de la zero. ",
+    "tell-us-what-you-need": "Spune-ne ce ai nevoie",
+    "and-we-ll-tell-you-honestly": " și îți spunem sincer dacă te ajută mai mult template-ul sau un",
+    "custom-build": "proiect personalizat",
+    "serves-you-better": "."
   },
   "/terms-and-conditions": {
     "meta-title": "Terms and conditions | Visuvate",
@@ -6059,41 +6793,301 @@
     "website-https-www-visuvate-com": "Website: https://www.visuvate.com"
   },
   "/works": {
-    "meta-title": "Web Design Portfolio & Case Studies | Visuvate",
-    "our": "Our ",
-    "works": "Works"
+    "meta-title": "Proiecte | ESA Coder Solutions",
+    "our": "Proiecte ",
+    "works": "selectate"
   },
   "templates/post": {
-    "filed-under": "Filed under",
-    "more-blogs": "More Blogs",
-    "all-blogs": "All Blogs",
-    "read-post": "Read post"
+    "filed-under": "Categorie",
+    "more-blogs": "Alte articole",
+    "all-blogs": "Toate articolele",
+    "read-post": "Citește articolul"
   },
   "components/blog/PostList": {
-    "blog-categories": "Blog categories",
-    "all": "All",
-    "view-project": "View Project",
-    "read-post": "Read post",
-    "min-read": " · {n} min read"
+    "blog-categories": "Categorii",
+    "all": "Toate",
+    "view-project": "Vezi proiectul",
+    "read-post": "Citește articolul",
+    "min-read": " · {n} min de citit"
   },
   "templates/project": {
-    "project-overview": "Project Overview",
-    "see-all-work": "See all work",
-    "preview-site": "Preview site",
-    "industry": "Industry",
-    "created": "Created",
-    "pages": "Pages",
-    "platform": "Platform",
-    "the-brief": "The Brief",
-    "the-approach": "The Approach",
-    "the-outcome": "The Outcome",
-    "about-the-project": "About the Project",
-    "features": "Features",
-    "more-projects": "More Projects",
-    "all-projects": "All Projects",
-    "view-project": "View Project"
+    "project-overview": "Despre proiect, pe scurt",
+    "see-all-work": "Toate proiectele",
+    "preview-site": "Vezi site-ul",
+    "industry": "Domeniu",
+    "created": "Realizat",
+    "pages": "Pagini",
+    "platform": "Platformă",
+    "the-brief": "Cerința",
+    "the-approach": "Abordarea",
+    "the-outcome": "Rezultatul",
+    "about-the-project": "Despre proiect",
+    "features": "Funcționalități",
+    "more-projects": "Alte proiecte",
+    "all-projects": "Toate proiectele",
+    "view-project": "Vezi proiectul"
   },
   "components/works/RecentWork": {
-    "view-project": "View Project"
+    "view-project": "Vezi proiectul"
+  },
+  "global/Site": {
+    "email": "contact@visuvate.com"
+  },
+  "settings/tracking": {
+    "google-analytics-id": "",
+    "google-ads-id": "",
+    "google-ads-lead-label": "",
+    "meta-pixel-id": ""
+  },
+  "components/sections/Software": {
+    "title": "Software făcut ",
+    "title-accent": "pe măsura ta.",
+    "app-title": "Firma ta, într-o singură aplicație",
+    "app-text-1": "ERP-uri pentru firme și unelte interne prin care ",
+    "app-text-2": "îți urmărești toată activitatea dintr-un singur loc",
+    "app-text-3": ", construite după felul în care lucrează echipa ta.",
+    "build-title": "Ce putem construi",
+    "feature-1-title": "ERP pentru firme",
+    "feature-1-text": "Clienți, oferte, stocuri și comenzi într-un singur sistem.",
+    "feature-2-title": "Fluxuri automatizate",
+    "feature-2-text": "Aprobări, notificări și documente care merg mai departe fără să le împingi tu.",
+    "feature-3-title": "Facturi și chitanțe",
+    "feature-3-text": "Scanate, atașate proiectului potrivit și ușor de găsit.",
+    "feature-4-title": "Contabilitate",
+    "feature-4-text": "Costuri și plăți pe proiect, pregătite pentru contabil.",
+    "feature-5-title": "Flotă",
+    "feature-5-text": "Vehicule, șoferi, combustibil, ITP și revizii.",
+    "feature-6-title": "Șantiere și echipamente",
+    "feature-6-text": "Echipe, scule și cine le are în grijă.",
+    "cta": "Hai să discutăm aplicația",
+    "cta-link": "/contact"
+  },
+  "components/sections/Automation": {
+    "flow-1": "Extrase bancare",
+    "flow-2": "Facturi",
+    "flow-3": "Diurne",
+    "flow-4": "Verificarea datelor",
+    "cta": "Solicită o demonstrație",
+    "cta-link": "/contact",
+    "more": "Descoperă platforma",
+    "more-link": "/automation",
+    "video-label": "Prezentare: automatizări contabile în SAGA WEB",
+    "card-title": "Totul conectat la SAGA WEB",
+    "card-text-1": "Transformă procesele contabile repetitive în ",
+    "card-text-2": "fluxuri de lucru inteligente",
+    "card-text-3": ": de la extrase bancare și facturi până la diurne și verificarea datelor, totul centralizat.",
+    "list-title": "Ce automatizăm",
+    "flow-1-text": "Import, potrivire cu facturile și înregistrări propuse.",
+    "flow-2-text": "Preluate din e-Factura și e-mail, fără tastare manuală.",
+    "flow-3-text": "Calculate automat, cu ordine de deplasare și deconturi.",
+    "flow-4-text": "CUI, sume, TVA și dubluri, verificate înainte de balanță.",
+    "flow-5": "Deconturi",
+    "flow-5-text": "Bonuri și chitanțe fotografiate, citite automat și atașate operațiunii.",
+    "flow-6": "Rapoarte lunare",
+    "flow-6-text": "Balanțe, cash-flow și situații pentru management, mereu la zi.",
+    "play": "Pornește video-ul",
+    "pause": "Pune pauză",
+    "seek": "Derulează video-ul",
+    "expand": "Mărește video-ul",
+    "close": "Închide"
+  },
+  "components/sections/AutomationMore": {
+    "title": "Dacă faci același lucru în fiecare zi, ",
+    "title-muted": "probabil îl putem automatiza.",
+    "subtitle": "Rapoarte, fișiere Excel, documente sau date mutate dintr-o aplicație în alta. Construim automatizări care fac munca repetitivă în locul tău.",
+    "approach": "Pornim de la cum lucrezi tu, nu de la o soluție standard.",
+    "item-1": "Rapoarte și treburi repetitive",
+    "item-1-text": "Rapoarte din Excel sau din aplicații, pontaje calculate automat, facturi scanate și sortate, imagini copiate și redenumite. Ce faci la fel în fiecare zi poate rula singur.",
+    "item-2": "Sarcini programate",
+    "item-2-text": "Pornesc singure la o anumită oră sau când apare ceva nou: un fișier într-un folder, un email, o comandă. Tu doar verifici rezultatul.",
+    "item-3": "Excel, CSV și documente",
+    "item-3-text": "Citirea, organizarea, transformarea și exportul datelor din fișiere. Fără să mai copiezi manual aceleași informații de fiecare dată.",
+    "item-4": "Integrarea aplicațiilor",
+    "item-4-text": "Conectăm aplicații, API-uri și baze de date, astfel încât informațiile să circule între sisteme fără introduceri manuale repetate.",
+    "item-5": "Analiza și verificarea datelor",
+    "item-5-text": "Comparăm informații din surse diferite, identificăm diferențe, valori lipsă sau înregistrări duplicate și pregătim rezultatele pentru verificare.",
+    "item-6": "Facturi și documente administrative",
+    "item-6-text": "Putem extrage, organiza și verifica informații din facturi, bonuri și alte documente, apoi le pregătim pentru sistemele în care trebuie folosite.",
+    "item-7": "Notificări și monitorizare",
+    "item-7-text": "Configurăm verificări automate și notificări atunci când apar modificări, erori, termene importante sau situații care necesită atenție.",
+    "item-8": "Procesarea comenzilor și solicitărilor",
+    "item-8-text": "Automatizăm etape precum preluarea solicitărilor, verificarea informațiilor, actualizarea statusurilor și transmiterea notificărilor.",
+    "cta-title": "Spune-ne ce faci manual. ",
+    "cta-title-muted": "Vedem cum putem automatiza.",
+    "cta-text": "Un raport pe care îl faci în fiecare dimineață sau date pe care le copiezi dintr-o aplicație în alta. Explică-ne procesul și îți spunem ce se poate automatiza.",
+    "cta": "Hai să automatizăm",
+    "cta-link": "/contact",
+    "offer": "Solicită o ofertă",
+    "offer-link": "/contact"
+  },
+  "/automation": {
+    "meta-title": "Automatizare financiar-contabilă cu SAGA WEB | Visuvate",
+    "title": "Automatizare",
+    "eyebrow": "Automatizare financiar-contabilă",
+    "overview-title": "Contabilitate fără muncă repetitivă",
+    "overview": "Construim fluxuri de lucru care preiau extrasele bancare, facturile, diurnele și verificările de date și le duc direct în SAGA WEB. Echipa ta nu mai copiază cifre dintr-un loc în altul: documentele sunt citite, verificate și înregistrate automat, iar oamenii intervin doar acolo unde contează.",
+    "works": "Vezi lucrările",
+    "works-link": "/works",
+    "cta": "Solicită o demonstrație",
+    "cta-link": "/contact",
+    "stat-1-label": "Pentru",
+    "stat-1": "Contabili și firme",
+    "stat-2-label": "Platformă",
+    "stat-2": "SAGA WEB",
+    "stat-3-label": "Implementare",
+    "stat-3": "Stabilită după analiză",
+    "stat-4-label": "Fluxuri",
+    "stat-4": "Configurate pe firmă",
+    "problem-title": "Problema",
+    "problem": "La fiecare închidere de lună, aceleași documente trec prin mâinile a trei oameni: extrase descărcate manual, facturi tastate rând cu rând, diurne calculate în Excel. Durează, se strecoară erori, iar verificările se fac în grabă.",
+    "approach-title": "Abordarea",
+    "approach": "Pornim de la cum lucrați azi. Cartografiem fiecare flux, alegem ce merită automatizat și construim conectori care citesc documentele, aplică regulile voastre contabile și propun înregistrările în SAGA WEB, gata de validat.",
+    "outcome-title": "Rezultatul",
+    "outcome": "Mai puține operațiuni făcute de mână, date verificate înainte să ajungă în contabilitate și un istoric clar pentru fiecare document. Echipa se ocupă de excepții, nu de copiat cifre, iar închiderea de lună devine mai previzibilă.",
+    "features-title": "Ce automatizăm",
+    "feature-1-title": "Extrase bancare",
+    "feature-1": "Importul extraselor, potrivirea plăților cu facturile și propunerea înregistrărilor, pentru toate conturile firmei.",
+    "feature-2-title": "Facturi primite și emise",
+    "feature-2": "Preluare din e-Factura și e-mail, citirea datelor, încadrarea pe conturi și furnizori, fără tastare manuală.",
+    "feature-3-title": "Diurne și deplasări",
+    "feature-3": "Calculul diurnelor după regulile legale și interne, cu ordine de deplasare și deconturi generate automat.",
+    "feature-4-title": "Verificarea datelor",
+    "feature-4": "Controale automate pentru CUI, sume, TVA și dubluri, cu alerte înainte ca o eroare să ajungă în balanță.",
+    "feature-5-title": "Documente scanate",
+    "feature-5": "Bonuri, chitanțe și deconturi fotografiate sau scanate, citite automat și atașate operațiunii corecte.",
+    "feature-6-title": "Rapoarte și situații",
+    "feature-6": "Situații periodice pentru management și clienți, generate din aceleași date, mereu la zi.",
+    "steps-title": "Cum lucrăm",
+    "step-1-title": "Analiză",
+    "step-1": "Vedem cum circulă documentele azi și unde se pierde timpul.",
+    "step-2-title": "Configurare",
+    "step-2": "Construim fluxurile și regulile, conectate la SAGA WEB.",
+    "step-3-title": "Testare pe date reale",
+    "step-3": "Rulăm automatizările pe o lună reală și le ajustăm împreună cu echipa.",
+    "step-4-title": "Lansare și suport",
+    "step-4": "Pornim în producție și rămânem alături pentru ajustări și fluxuri noi.",
+    "final-title": "Hai să vedem",
+    "final-accent": "ce poți automatiza.",
+    "final-text": "Îți arătăm într-o demonstrație scurtă cum ar arăta fluxurile tale în SAGA WEB."
+  },
+  "/services/software-and-erp": {
+    "all-services": "Toate serviciile",
+    "what-s-included": "Ce include",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "meta-title": "Aplicații web și ERP pentru firme | ESA Coder Solutions",
+    "title": "Aplicații\nși ERP-uri",
+    "lead": "Aplicații interne făcute după felul în care lucrează firma ta: clienți, oferte, stocuri, comenzi, flotă sau proiecte, într-un singur loc.",
+    "body": [
+      "Multe firme ajung să lucreze cu zece fișiere Excel, trei aplicații și un grup de WhatsApp. Informația există, dar e împrăștiată, și cineva pierde zilnic timp să o adune. Noi construim aplicația care le pune la un loc.",
+      "Nu pornim de la un ERP gata făcut în care încercăm să-ți înghesuim firma. Ne uităm cum lucrați acum, ce date folosiți și cine are nevoie de ce, apoi construim doar modulele de care aveți nevoie.",
+      "Aplicația rulează în browser, pe calculator și pe telefon. Fiecare om vede ce îl privește, iar accesul se stabilește pe roluri.",
+      "Putem porni mic, cu un singur modul, și adăuga restul pe parcurs. Datele existente le importăm din fișierele sau aplicațiile pe care le folosiți deja."
+    ],
+    "included": [
+      "Analiza felului în care lucrați acum",
+      "Module făcute pe nevoile firmei",
+      "Acces pe roluri pentru echipă",
+      "Import din Excel și aplicațiile existente",
+      "Rapoarte și tablouri de bord",
+      "Funcționează pe calculator și pe telefon"
+    ],
+    "next": "Următorul: Automatizări\npentru firme",
+    "related-1": "Automatizare\nSAGA WEB",
+    "related-2": "Automatizări\npentru firme",
+    "related-3": "CMS și\nsite-uri dinamice"
+  },
+  "/services/business-automation": {
+    "all-services": "Toate serviciile",
+    "what-s-included": "Ce include",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "meta-title": "Automatizări pentru firme: rapoarte, Excel, documente | ESA Coder Solutions",
+    "title": "Automatizări\npentru firme",
+    "lead": "Dacă faci același lucru în fiecare zi, probabil îl putem automatiza: rapoarte, fișiere Excel, documente, pontaje sau date mutate dintr-o aplicație în alta.",
+    "body": [
+      "Cele mai multe automatizări pornesc de la o sarcină mică, repetată zilnic: un raport făcut dimineața, facturi scanate și redenumite, imagini copiate în folderul potrivit, un pontaj adunat din trei locuri.",
+      "Ne arăți cum faci acum, pas cu pas. Stabilim împreună ce poate rula singur și unde e nevoie în continuare de un om care verifică. Nu promitem că orice se poate automatiza: depinde de reguli clare și de acces la datele sau sistemele necesare.",
+      "Scriem automatizările în Python sau Node.js, în funcție de ce trebuie să facă. Pot rula la o anumită oră, când apare un fișier nou sau când primești un email.",
+      "Le testăm pe date reale înainte să le folosești și îți arătăm ce se întâmplă dacă ceva nu merge, ca să nu afli de la un client."
+    ],
+    "included": [
+      "Analiza procesului actual",
+      "Rapoarte generate automat",
+      "Procesarea fișierelor Excel, CSV și documentelor",
+      "Integrări între aplicații și API-uri",
+      "Notificări când ceva cere atenție",
+      "Testare pe date reale"
+    ],
+    "next": "Următorul: Modele 3D\nîn Blender",
+    "related-1": "Automatizare\nSAGA WEB",
+    "related-2": "Aplicații\nși ERP-uri",
+    "related-3": "Mentenanță\nși suport"
+  },
+  "/services/3d-modeling": {
+    "all-services": "Toate serviciile",
+    "what-s-included": "Ce include",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "meta-title": "Modele 3D în Blender pentru produse și website-uri | ESA Coder Solutions",
+    "title": "Modele 3D\nîn Blender",
+    "lead": "Modele și randări 3D pentru produse, spații și branduri, gata de folosit pe website, în prezentări sau pe social media.",
+    "body": [
+      "Un produs randat în 3D poate fi arătat din orice unghi, în orice culoare și în orice decor, fără o ședință foto pentru fiecare variantă.",
+      "Lucrăm în Blender, de la modelare și materiale până la lumini și randare. Pornim de la fotografii, schițe sau fișiere tehnice, în funcție de ce ai.",
+      "Modelele pot ajunge pe site ca imagini statice, ca animații scurte sau ca obiecte pe care vizitatorul le poate roti. Le pregătim astfel încât să nu încetinească pagina.",
+      "Proiectele mai complexe, cum ar fi scenele mari sau configuratoarele interactive, le discutăm și le ofertăm separat."
+    ],
+    "included": [
+      "Modelare 3D în Blender",
+      "Materiale și texturi",
+      "Lumini și randare",
+      "Imagini pentru site și social media",
+      "Animații scurte de prezentare",
+      "Fișiere optimizate pentru web"
+    ],
+    "next": "Următorul: Videoclipuri\nși reels",
+    "related-1": "Animații și\ninteracțiuni",
+    "related-2": "Videoclipuri\nși reels",
+    "related-3": "Identitate\nvizuală coerentă"
+  },
+  "/services/video-and-reels": {
+    "all-services": "Toate serviciile",
+    "what-s-included": "Ce include",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "meta-title": "Videoclipuri și reels pentru branduri | ESA Coder Solutions",
+    "title": "Videoclipuri\nși reels",
+    "lead": "Videoclipuri scurte pentru Instagram, TikTok, Facebook și website: prezentări de produs, demonstrații și materiale pentru campanii.",
+    "body": [
+      "Pe social media ai câteva secunde ca cineva să se oprească din scroll. Un video scurt, clar și bine montat face mai mult decât trei postări cu text.",
+      "Montăm din materialele pe care le ai, adăugăm text, muzică și animații, și livrăm în formatele potrivite pentru fiecare platformă, vertical sau orizontal.",
+      "Putem folosi și randări 3D sau capturi din aplicații, când trebuie arătat un produs sau un serviciu digital.",
+      "Stabilim de la început câte clipuri faci, ce durată au și câte runde de modificări sunt incluse."
+    ],
+    "included": [
+      "Reels și videoclipuri scurte",
+      "Montaj, text și muzică",
+      "Animații și titluri",
+      "Formate pentru fiecare platformă",
+      "Videoclipuri de prezentare pentru site",
+      "Runde de modificări stabilite dinainte"
+    ],
+    "next": "Următorul: Website-uri\npersonalizate",
+    "related-1": "Modele 3D\nîn Blender",
+    "related-2": "Animații și\ninteracțiuni",
+    "related-3": "Landing pages\nși microsite-uri"
   }
 }

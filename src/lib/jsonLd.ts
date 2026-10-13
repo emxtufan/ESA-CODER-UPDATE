@@ -36,3 +36,23 @@ export function reviewsJsonLd() {
     })),
   });
 }
+
+/** Offer catalogue of the home page, built from the pricing plans (admin → Pricing). */
+export function offersJsonLd() {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': 'https://visuvate.com/#organization',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Servicii de dezvoltare web',
+      itemListElement: collection<{name: string; description: string; price: string}>('plans').map((plan) => ({
+        '@type': 'Offer',
+        name: plan.name,
+        description: plan.description,
+        // "4.990" lei: the dot is a thousands separator
+        priceSpecification: {'@type': 'PriceSpecification', minPrice: Number(String(plan.price).replace(/\D/g, '')) || 0, priceCurrency: 'RON'},
+      })),
+    },
+  });
+}

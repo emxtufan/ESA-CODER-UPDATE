@@ -39,7 +39,7 @@ const stripHtml = (html: string) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g
 
 type IconItem = {icon?: string; title?: string};
 
-function Stat({label, value, icon, className = ''}: {label: string; value: ReactNode; icon: ReactNode; className?: string}) {
+export function Stat({label, value, icon, className = ''}: {label: string; value: ReactNode; icon: ReactNode; className?: string}) {
   return (
     <div className={`flex flex-col items-center text-center ${className}`}>
       <dt className="order-3 mt-1.5 text-[14px] leading-[1.2] text-fg-subtle">
@@ -55,7 +55,7 @@ function Stat({label, value, icon, className = ''}: {label: string; value: React
   );
 }
 
-function BriefCard({title, body}: {title: string; body: string}) {
+export function BriefCard({title, body}: {title: string; body: string}) {
   return (
     <div data-act className="group relative flex flex-col overflow-hidden rounded-[12px] border border-fg/12 backdrop-blur-[12px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 42%, transparent)" }}>
       <span aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-px w-[180px] max-w-[70%] -translate-x-1/2" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-card-line) 52%, transparent) 50%, transparent 100%)" }} />

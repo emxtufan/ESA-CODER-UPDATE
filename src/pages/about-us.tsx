@@ -61,11 +61,8 @@ export default function Page_about_us() {
               <p data-reveal className="mt-[120px]">
                 {$t("founded-by")}
                 {" "}
-                <span className="inline-flex translate-y-[9px] items-center gap-2">
-                  <img src="/about/devansh.ef311e02.avif" alt="" className="size-8 rounded-full object-cover" loading="lazy" decoding="async" />
-                  <a href="https://www.devanshprakash.com/" target="_blank" rel="noreferrer noopener" className="text-fg">
-                    {$t("devansh")}
-                  </a>
+                <span className="text-fg">
+                  {$t("devansh")}
                 </span>
                 {$t("visuvate-was-created-from-a-passion")}
               </p>

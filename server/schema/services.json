@@ -1,0 +1,49 @@
+{
+  "label": "Servicii (carduri)",
+  "itemLabel": "{title} {subtitle}",
+  "itemImage": "icon",
+  "order": 14,
+  "fields": [
+    {
+      "key": "title",
+      "label": "Denumire — rândul 1",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "subtitle",
+      "label": "Denumire — rândul 2",
+      "type": "text"
+    },
+    {
+      "key": "icon",
+      "label": "Iconiță (imagine; la serviciile existente rămâne iconița curentă dacă lipsește)",
+      "type": "image"
+    },
+    {
+      "key": "href",
+      "label": "Link către pagina serviciului",
+      "type": "url",
+      "required": true
+    },
+    {
+      "key": "viewBox",
+      "label": "viewBox",
+      "type": "hidden"
+    },
+    {
+      "key": "paths",
+      "label": "paths",
+      "type": "hidden"
+    },
+    {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    }
+  ],
+  "defaults": {
+    "published": true,
+    "href": "/services"
+  }
+}

@@ -4,14 +4,61 @@
   "itemImage": "avatar",
   "order": 40,
   "fields": [
-    {"key": "name", "label": "Nume", "type": "text", "required": true},
-    {"key": "role", "label": "Funcție / țară", "type": "text"},
-    {"key": "company", "label": "Companie", "type": "text"},
-    {"key": "quote", "label": "Recenzie", "type": "textarea", "required": true},
-    {"key": "rating", "label": "Stele (1-5)", "type": "number"},
-    {"key": "avatar", "label": "Poză / logo", "type": "image"},
-    {"key": "avatarKind", "label": "Tip imagine", "type": "select", "options": ["logo", "photo"]},
-    {"key": "id", "label": "Id", "type": "hidden"}
+    {
+      "key": "name",
+      "label": "Nume",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "role",
+      "label": "Funcție / țară",
+      "type": "text"
+    },
+    {
+      "key": "company",
+      "label": "Companie",
+      "type": "text"
+    },
+    {
+      "key": "quote",
+      "label": "Recenzie",
+      "type": "textarea",
+      "required": true
+    },
+    {
+      "key": "rating",
+      "label": "Stele (1-5)",
+      "type": "number"
+    },
+    {
+      "key": "avatar",
+      "label": "Poză / logo",
+      "type": "image"
+    },
+    {
+      "key": "avatarKind",
+      "label": "Tip imagine",
+      "type": "select",
+      "options": [
+        "logo",
+        "photo"
+      ]
+    },
+    {
+      "key": "published",
+      "label": "Publicat (dezactivat = ascuns pe site)",
+      "type": "boolean"
+    },
+    {
+      "key": "id",
+      "label": "Id",
+      "type": "hidden"
+    }
   ],
-  "defaults": {"rating": 5, "avatarKind": "photo"}
+  "defaults": {
+    "rating": 5,
+    "avatarKind": "photo",
+    "published": true
+  }
 }

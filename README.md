@@ -28,6 +28,16 @@ titlurile din tab, articolele de blog, lista de țări) sunt în `source_data.js
 Modifici valoarea, iar site-ul se actualizează (în `npm run dev` imediat, în producție după `npm run build`).
 Nu redenumi cheile — codul le citește cu `$t('cheie')`. Valorile articolelor de blog conțin HTML.
 
+## Admin pe secțiuni (`/admin`)
+Meniul urmează secțiunile vizibile ale site-ului: **Setări globale** (Header, Footer) și **Homepage** (Hero, Tools & Platforms, Intro, Works, Services, Marquee, Pricing, Approach, Testimonials, FAQs). Fiecare secțiune arată strict câmpurile ei.
+- Lista câmpurilor editabile e în `server/sections.json` (singura „listă albă”: nu se editează clase CSS, id-uri, ARIA sau animații). Cheile secțiunilor sunt stabile.
+- Salvare pe secțiune (`PUT /api/admin/sections/<cheie>`), cu verificare de conflict (`rev`) și validare; o secțiune nu suprascrie alta.
+- Emailul de contact e o singură valoare (`global/Site`), folosită în Header și Footer. Butonul „Let's connect” are un singur link (`cta-link`).
+- Colecții noi: `tools`, `services`, `marquee`, `plans`; `projects`, `testimonials`, `faqs` au câmpul `published` (ascunde fără a șterge).
+- Editorul vechi complet rămâne la `/admin/advanced` (pentru texte rare).
+- Migrarea datelor: `node scripts/migrate-sections.mjs [--dry]` (idempotentă, backup în `data/`).
+- Teste în browser: `npm i` apoi `ADMIN_PASSWORD=… npm run test:e2e` (cu serverul pornit).
+
 ## Admin (`/admin`)
 Editor pentru texte și imagini, pe secțiuni: alegi secțiunea din stânga, înlocuiești imaginile (click pe imagine)
 și modifici textele, apoi **Salvează** (sau ⌘S / Ctrl+S).

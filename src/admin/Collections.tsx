@@ -50,7 +50,11 @@ export function fillDefaults(item: Item): Item {
   return out;
 }
 
-export const labelOf = (schema: Schema, item: Item) => String(item[schema.itemLabel] ?? '') || 'Fără titlu';
+// `itemLabel` is a field name, or a template such as "{title} {subtitle}".
+export const labelOf = (schema: Schema, item: Item) =>
+  (schema.itemLabel.includes('{')
+    ? schema.itemLabel.replace(/\{(\w+)\}/g, (_m, k) => String(item[k] ?? '')).replace(/\s+/g, ' ').trim()
+    : String(item[schema.itemLabel] ?? '')) || 'Fără titlu';
 
 export const publicUrl = (schema: Schema, item: Item) =>
   schema.route?.replace(/\{(\w+)\}/g, (_m, k) => String(item[k] ?? ''));
@@ -77,16 +81,19 @@ export type Ctx = {
   schemas: Record<string, Schema>;
   collections: Collections;
   upload: (file: File) => Promise<string | null>;
+  /** next free position for a `rank` field (the order in which records appear in a site section) */
+  nextRank?: (key: string) => number;
 };
 
 // ---------------------------------------------------------------------------
 // Collection list
 // ---------------------------------------------------------------------------
 export function CollectionList({
-  name, schema, items, saved, onOpen, onAdd, onMove, onDelete,
+  name, schema, items, saved, onOpen, onAdd, onMove, onDelete, onTogglePublished, itemName, title,
 }: {
   name: string; schema: Schema; items: Item[]; saved: Item[];
   onOpen: (i: number) => void; onAdd: () => void; onMove: (i: number, dir: -1 | 1) => void; onDelete: (i: number) => void;
+  onTogglePublished?: (i: number) => void; itemName?: string; title?: string;
 }) {
   const [query, setQuery] = useState('');
   const idKey = idFieldOf(schema);
@@ -98,7 +105,7 @@ export function CollectionList({
   return (
     <section className="a-block" data-collection={name}>
       <div className="a-block-head">
-        <h2>{schema.label} <span>{items.length}</span></h2>
+        <h2>{title ?? schema.label} <span>{items.length}</span></h2>
         <div className="a-row-actions">
           {items.length > 8 && (
             <div className="a-search a-search-sm">
@@ -109,7 +116,7 @@ export function CollectionList({
               <input placeholder="Caută" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
           )}
-          <button className="a-btn a-btn-primary" onClick={onAdd}>+ Adaugă</button>
+          <button className="a-btn a-btn-primary" onClick={onAdd}>+ Adaugă{itemName ? ` ${itemName}` : ''}</button>
         </div>
       </div>
       <div className="a-card a-list">
@@ -125,16 +132,27 @@ export function CollectionList({
                   <strong>{labelOf(schema, item)}</strong>
                   {idKey && <small>{String(item[idKey] ?? '')}</small>}
                 </span>
+                {item.published === false && <em className="a-badge is-muted">ascuns</em>}
                 {status && <em className="a-badge">{status}</em>}
               </button>
               <div className="a-row-ctl">
+                {onTogglePublished && (
+                  <button
+                    className={`a-icon a-eye${item.published === false ? ' is-off' : ''}`}
+                    title={item.published === false ? 'Ascuns — click pentru a publica' : 'Publicat — click pentru a ascunde'}
+                    aria-pressed={item.published !== false}
+                    onClick={() => onTogglePublished(i)}
+                  >
+                    {item.published === false ? '◌' : '●'}
+                  </button>
+                )}
                 <button className="a-icon" title="Mai sus" disabled={!!q || i === 0} onClick={() => onMove(i, -1)}>↑</button>
                 <button className="a-icon" title="Mai jos" disabled={!!q || i === items.length - 1} onClick={() => onMove(i, 1)}>↓</button>
                 <button
                   className="a-icon is-danger"
                   title="Șterge"
                   onClick={() => {
-                    if (window.confirm(`Ștergi „${labelOf(schema, item)}”? Se aplică la salvare.`)) onDelete(i);
+                    if (window.confirm(`Ștergi „${labelOf(schema, item)}”? Ștergerea se aplică la Salvare.`)) onDelete(i);
                   }}
                 >
                   ✕
@@ -199,7 +217,7 @@ export function ItemEditor({
   );
 }
 
-function FieldInput({
+export function FieldInput({
   field, value, path, errors, ctx, onChange,
 }: {
   field: Field; value: unknown; path: string; errors: Record<string, string>; ctx: Ctx; onChange: (v: unknown) => void;
@@ -226,6 +244,19 @@ function FieldInput({
           value={String(value ?? '')}
           onChange={(e) => onChange(e.target.value)}
         />
+      );
+      break;
+    case 'rank':
+      input = (
+        <button
+          type="button"
+          role="switch"
+          aria-checked={Number(value) > 0}
+          className={`a-switch${Number(value) > 0 ? ' is-on' : ''}`}
+          onClick={() => onChange(Number(value) > 0 ? '' : ctx.nextRank?.(field.key) ?? 1)}
+        >
+          <i />
+        </button>
       );
       break;
     case 'boolean':
@@ -284,9 +315,9 @@ function FieldInput({
         />
       );
   }
-  const Tag = wide || field.type === 'refs' || field.type === 'image' || field.type === 'boolean' ? 'div' : 'label';
+  const Tag = wide || field.type === 'refs' || field.type === 'image' || field.type === 'boolean' || field.type === 'rank' ? 'div' : 'label';
   return (
-    <Tag className={`a-field${error ? ' has-error' : ''}${field.type === 'boolean' ? ' is-inline' : ''}`}>
+    <Tag className={`a-field${error ? ' has-error' : ''}${field.type === 'boolean' || field.type === 'rank' ? ' is-inline' : ''}`}>
       {head}
       {input}
       {error && <p className="a-error">{error}</p>}

@@ -1,0 +1,871 @@
+{
+  "_about": "The admin is built from this file: one entry per visible section of the site. Only what is listed here can be edited from a section; everything else (classes, ids, aria, animation, layout) stays in the code. Field types: text, textarea, link, email, phone, pair {text+link}, rich {keys with *highlight*}. A (scope,key) text may appear in one section only (checked at startup, see scripts/check-sections.mjs).",
+  "groups": [
+    {"key": "global", "label": "Setări globale"},
+    {"key": "home", "label": "Homepage"}, {"key": "automation-page", "label": "Pagina Automatizare"}
+  ],
+  "sections": [
+    {
+      "key": "header",
+      "group": "global",
+      "label": "Header",
+      "description": "Meniul de sus, vizibil pe toate paginile. O singură sursă de date: o modificare aici apare peste tot.",
+      "view": "/",
+      "blocks": [
+        {
+          "title": "Meniu principal",
+          "note": "Același meniu apare și în varianta mobilă.",
+          "fields": [
+            {"type": "pair", "scope": "components/layout/Header", "title": "1. Pagina de start", "text": "home", "link": "home-link"},
+            {"type": "pair", "scope": "components/layout/Header", "title": "2. Despre noi", "text": "about-us", "link": "about-us-link"},
+            {"type": "pair", "scope": "components/layout/Header", "title": "3. Proiecte", "text": "works", "link": "works-link"},
+            {"type": "pair", "scope": "components/layout/Header", "title": "4. Servicii", "text": "services", "link": "services-link"},
+            {"type": "pair", "scope": "components/layout/Header", "title": "5. Blog", "text": "blogs", "link": "blogs-link"},
+            {"type": "pair", "scope": "components/layout/Header", "title": "6. Template-uri", "text": "templates", "link": "templates-link"}
+          ]
+        },
+        {
+          "title": "Buton de contact",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Header", "key": "let-s-connect", "label": "Text buton (ecran mare)"},
+            {"type": "text", "scope": "components/layout/Header", "key": "connect", "label": "Text buton (ecran mic)"},
+            {"type": "link", "scope": "components/layout/Header", "key": "cta-link", "label": "Link buton (și în meniul mobil)"}
+          ]
+        }
+      ],
+      "footnote": "Adresa de e-mail din meniul mobil provine din Footer › Contact (o singură sursă). Logo-ul este un element de design din cod și nu se editează de aici."
+    },
+    {
+      "key": "footer",
+      "group": "global",
+      "label": "Footer",
+      "description": "Subsolul site-ului, vizibil pe toate paginile. O singură sursă de date.",
+      "view": "/",
+      "blocks": [
+        {
+          "title": "Apel la acțiune",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "create-bold", "label": "Titlu — rândul 1"},
+            {"type": "text", "scope": "components/layout/Footer", "key": "deliver-better", "label": "Titlu — rândul 2"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Buton 1", "text": "see-our-work", "link": "see-our-work-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Buton 2", "text": "get-in-touch", "link": "get-in-touch-link"}
+          ]
+        },
+        {
+          "title": "Rețele sociale",
+          "fields": [
+            {"type": "link", "scope": "components/layout/Footer", "key": "instagram-link", "label": "Instagram"},
+            {"type": "link", "scope": "components/layout/Footer", "key": "linkedin-link", "label": "LinkedIn"},
+            {"type": "link", "scope": "components/layout/Footer", "key": "twitter-link", "label": "Twitter / X"},
+            {"type": "link", "scope": "components/layout/Footer", "key": "whatsapp-link", "label": "WhatsApp"}
+          ]
+        },
+        {
+          "title": "Coloana „Company”",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "company", "label": "Titlu coloană"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 1", "text": "about", "link": "about-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 2", "text": "work", "link": "work-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 3", "text": "privacy-policy", "link": "privacy-policy-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 4", "text": "terms-and-conditions", "link": "terms-and-conditions-link"}
+          ]
+        },
+        {
+          "title": "Coloana „Services”",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "services", "label": "Titlu coloană"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 1", "text": "crafted-websites", "link": "crafted-websites-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 2", "text": "website-redesign", "link": "website-redesign-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 3", "text": "ecommerce-design", "link": "ecommerce-design-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 4", "text": "cms-dynamic-sites", "link": "cms-dynamic-sites-link"}
+          ]
+        },
+        {
+          "title": "Coloana „Resources”",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "resources", "label": "Titlu coloană"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 1", "text": "blog", "link": "blog-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 2", "text": "templates", "link": "templates-link"},
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 3", "text": "faqs", "link": "faqs-link"}
+          ]
+        },
+        {
+          "title": "Contact",
+          "note": "Adresa de e-mail se folosește și în Header (meniul mobil).",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "contact", "label": "Titlu coloană"},
+            {"type": "email", "scope": "global/Site", "key": "email", "label": "E-mail"},
+            {"type": "text", "scope": "components/layout/Footer", "key": "phone-91-9278388499", "label": "Telefon (text afișat, ex: Phone: +91 …)"},
+            {"type": "phone", "scope": "components/layout/Footer", "key": "phone-link", "label": "Telefon (număr pentru apel, ex: +919278388499)"},
+            {"type": "text", "scope": "components/layout/Footer", "key": "based-in-india", "label": "Locație"},
+            {"type": "text", "scope": "components/layout/Footer", "key": "serving-the-us-uk-worldwide", "label": "Zonă deservită"}
+          ]
+        },
+        {
+          "title": "Drepturi de autor",
+          "note": "Anul curent este adăugat automat înaintea textului.",
+          "fields": [
+            {"type": "text", "scope": "components/layout/Footer", "key": "visuvate-all-rights-reserved", "label": "Text"}
+          ]
+        }
+      ],
+      "footnote": "Logo-ul și butonul de cookie-uri sunt elemente din cod și nu se editează de aici."
+    },
+    {
+      "key": "cookies",
+      "group": "global",
+      "label": "Cookies & tracking",
+      "description": "Google Analytics, Google Ads și Meta Pixel. Un câmp gol înseamnă dezactivat. Dacă e completat măcar unul, site-ul cere acordul vizitatorului (pe categorii, ca la Cookiebot) și încarcă scripturile doar după ce acceptă. Fără niciun ID, bannerul nu mai apare.",
+      "view": "/",
+      "blocks": [
+        {
+          "title": "Google",
+          "fields": [
+            {"type": "code", "scope": "settings/tracking", "key": "google-analytics-id", "label": "Google Analytics 4 · Measurement ID", "optional": true, "pattern": "^G-[A-Z0-9]{4,14}$", "placeholder": "G-XXXXXXXXXX", "hint": "Din Google Analytics › Admin › Data streams. Categoria „Statistics”."},
+            {"type": "code", "scope": "settings/tracking", "key": "google-ads-id", "label": "Google Ads · Conversion ID", "optional": true, "pattern": "^AW-[0-9]{6,14}$", "placeholder": "AW-123456789", "hint": "Din Google Ads › Goals › Conversions › Tag setup. Categoria „Marketing”."},
+            {"type": "code", "scope": "settings/tracking", "key": "google-ads-lead-label", "label": "Google Ads · eticheta conversiei „Lead”", "optional": true, "pattern": "^[A-Za-z0-9_-]{4,40}$", "placeholder": "AbC1dEfGhIjK", "hint": "Partea de după „/” din send_to (AW-…/eticheta). Se trimite când cineva trimite formularul de contact."}
+          ]
+        },
+        {
+          "title": "Meta (Facebook / Instagram)",
+          "fields": [
+            {"type": "code", "scope": "settings/tracking", "key": "meta-pixel-id", "label": "Meta Pixel ID", "optional": true, "pattern": "^[0-9]{10,20}$", "placeholder": "123456789012345", "hint": "Din Meta Events Manager › Data sources. Trimite PageView pe fiecare pagină și Lead la formularul de contact. Categoria „Marketing”."}
+          ]
+        },
+        {
+          "title": "Bannerul de cookies",
+          "note": "Apare doar dacă e setat un ID de mai sus. Butonul „Cookies” din footer îl redeschide.",
+          "fields": [
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "cookies-briefly", "label": "Titlu"},
+            {"type": "textarea", "scope": "components/layout/CookieBanner", "key": "one-optional-cookie-tells-us-which", "label": "Text (urmat de linkul spre politica de confidențialitate)"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "privacy-policy", "label": "Text link politică"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "accept", "label": "Buton accept"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "decline", "label": "Buton refuz"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "customize", "label": "Buton personalizare"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "save-choices", "label": "Buton salvare alegeri"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "necessary", "label": "Categoria „Necesare”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "necessary-desc", "label": "Descriere „Necesare”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "always-on", "label": "Eticheta „mereu activ”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "statistics", "label": "Categoria „Statistici”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "statistics-desc", "label": "Descriere „Statistici”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "marketing", "label": "Categoria „Marketing”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "marketing-desc", "label": "Descriere „Marketing”"},
+            {"type": "text", "scope": "components/layout/CookieBanner", "key": "cookie-consent", "label": "Nume pentru cititoare de ecran"},
+            {"type": "text", "scope": "components/layout/CookieSettingsButton", "key": "cookies", "label": "Butonul din footer"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "hero",
+      "group": "home",
+      "label": "Hero",
+      "description": "Prima secțiune a paginii de start.",
+      "view": "/#hero",
+      "blocks": [
+        {
+          "title": "Texte principale",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Hero", "key": "design-in-details", "label": "Insignă"},
+            {"type": "rich", "title": "Titlu — rândul 1", "scope": "components/sections/Hero", "parts": [{"key": "crafted"}, {"key": "websites", "accent": true}]},
+            {"type": "rich", "title": "Titlu — rândul 2", "scope": "components/sections/Hero", "parts": [{"key": "lasting", "accent": true}, {"key": "impressions"}]},
+            {"type": "textarea", "scope": "components/sections/Hero", "key": "premium-websites-crafted-for-bold-brands", "label": "Descriere"}
+          ]
+        },
+        {
+          "title": "Butoane",
+          "fields": [
+            {"type": "pair", "scope": "components/sections/Hero", "title": "Buton 1", "text": "get-in-touch", "link": "get-in-touch-link"},
+            {"type": "pair", "scope": "components/sections/Hero", "title": "Buton 2", "text": "see-our-work", "link": "see-our-work-link"}
+          ]
+        },
+        {
+          "title": "Banda de proiecte",
+          "note": "Bara de sub panoul cu proiecte: buton pauză/pornire și buton spre toate proiectele. Proiectele din bandă se aleg din Works (câmpul „Hero position”).",
+          "fields": [
+            {"type": "pair", "scope": "components/sections/Hero", "title": "Buton", "text": "strip-all-work", "link": "strip-all-work-link"},
+            {"type": "text", "scope": "components/sections/Hero", "key": "strip-pause", "label": "Buton pauză (pentru cititoare de ecran)"},
+            {"type": "text", "scope": "components/sections/Hero", "key": "strip-play", "label": "Buton pornire (pentru cititoare de ecran)"}
+          ]
+        },
+        {
+          "title": "Titlul paginii (tab-ul din browser și Google)",
+          "fields": [
+            {"type": "text", "scope": "/", "key": "meta-title", "label": "Titlu pagină de start"}
+          ]
+        },
+        {
+          "collection": "projects",
+          "mode": "ranked",
+          "fixed": true,
+          "position": "heroPosition",
+          "title": "Proiecte afișate în Hero",
+          "note": "Ordinea de aici este ordinea din Hero. Proiectele se adaugă și se creează în secțiunea Works.",
+          "fields": ["title", "slug", "image", "heroPosition"]
+        }
+      ]
+    },
+    {
+      "key": "tools",
+      "group": "home",
+      "label": "Tools & Platforms",
+      "description": "Banda cu logo-urile tehnologiilor folosite.",
+      "view": "/#top",
+      "blocks": [
+        {
+          "collection": "tools",
+          "mode": "list",
+          "title": "Logo-uri",
+          "note": "Logo-urile apar în ordinea din listă. Un logo ascuns nu mai apare pe site.",
+          "fields": ["name", "logo", "published"]
+        }
+      ]
+    },
+    {
+      "key": "intro",
+      "group": "home",
+      "label": "Intro",
+      "description": "Secțiunea de prezentare de sub logo-uri.",
+      "view": "/",
+      "blocks": [
+        {
+          "title": "Texte",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Introduction", "key": "design-that-speaks", "label": "Titlu — rândul 1"},
+            {"type": "text", "scope": "components/sections/Introduction", "key": "delivery-that-converts", "label": "Titlu — rândul 2"},
+            {"type": "textarea", "scope": "components/sections/Introduction", "key": "visuvate-crafts-focused-digital-experiences-that", "label": "Descriere"}
+          ]
+        },
+        {
+          "title": "Butoane",
+          "fields": [
+            {"type": "pair", "scope": "components/sections/Introduction", "title": "Buton 1", "text": "about-us", "link": "about-us-link"},
+            {"type": "pair", "scope": "components/sections/Introduction", "title": "Buton 2", "text": "see-our-work", "link": "see-our-work-link"}
+          ]
+        },
+        {
+          "title": "Imagini",
+          "note": "Click pe o imagine pentru a o înlocui (același format de fișier).",
+          "images": {"scope": "components/sections/Introduction", "prefix": "/intro/"}
+        }
+      ]
+    },
+    {
+      "key": "works",
+      "group": "home",
+      "label": "Works",
+      "description": "Proiectele din portofoliu. Aceleași proiecte alimentează pagina /works și paginile fiecărui proiect.",
+      "view": "/#works",
+      "blocks": [
+        {
+          "title": "Texte",
+          "fields": [
+            {"type": "rich", "title": "Titlu", "scope": "components/sections/Works", "parts": [{"key": "our"}, {"key": "works", "accent": true}]},
+            {"type": "pair", "scope": "components/sections/Works", "title": "Buton „vezi tot”", "text": "view-all", "link": "view-all-link"}
+          ]
+        },
+        {
+          "collection": "projects",
+          "mode": "list",
+          "ranked": "homePosition",
+          "title": "Proiecte",
+          "itemName": "proiect",
+          "note": "Ordinea listei este ordinea din /works. Un proiect ascuns dispare de pe tot site-ul. Imaginile suplimentare, capturile și restul paginii proiectului se editează din Avansat › Liste › Proiecte.",
+          "fields": [
+            "title",
+            "category",
+            "image",
+            {"key": "overview", "label": "Descriere scurtă"},
+            "url",
+            "slug",
+            {"key": "homePosition", "as": "rank", "label": "Afișat în secțiunea Works de pe prima pagină"},
+            "published"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "services",
+      "group": "home",
+      "label": "Services",
+      "description": "Cardurile de servicii și blocul cu platforme.",
+      "view": "/#services",
+      "blocks": [
+        {
+          "title": "Titlu și butoane",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Services", "key": "elevate-your", "label": "Titlu — rândul 1"},
+            {"type": "text", "scope": "components/sections/Services", "key": "digital-footprint", "label": "Titlu — rândul 2"},
+            {"type": "pair", "scope": "components/sections/Services", "title": "Buton 1", "text": "view-all-services", "link": "view-all-services-link"},
+            {"type": "pair", "scope": "components/sections/Services", "title": "Buton 2", "text": "start-a-project", "link": "start-a-project-link"}
+          ]
+        },
+        {
+          "collection": "services",
+          "mode": "list",
+          "title": "Servicii",
+          "itemName": "serviciu",
+          "note": "Cardurile apar în ordinea din listă, în grila existentă. Un serviciu ascuns nu mai apare pe site.",
+          "fields": ["title", "subtitle", "icon", "href", "published"]
+        },
+        {
+          "title": "Bloc „Platform flexibility”",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Services", "key": "platform-flexibility", "label": "Titlu — rândul 1"},
+            {"type": "text", "scope": "components/sections/Services", "key": "design-consistency", "label": "Titlu — rândul 2"},
+            {
+              "type": "rich",
+              "title": "Descriere",
+              "scope": "components/sections/Services",
+              "parts": [{"key": "no-matter-the-platform-our-design"}, {"key": "consistent-refined-responsive", "accent": true, "gapBefore": " "}, {"key": "and-built-to-perform"}]
+            },
+            {"type": "pair", "scope": "components/sections/Services", "title": "Buton", "text": "see-our-work", "link": "see-our-work-link"}
+          ]
+        },
+        {
+          "title": "Logo-uri platforme",
+          "note": "Click pe un logo pentru a-l înlocui (același format de fișier).",
+          "images": {"scope": "components/sections/Services", "prefix": "/platforms/"}
+        }
+      ]
+    },
+    {
+      "key": "software",
+      "group": "home",
+      "label": "Custom software",
+      "description": "Aplicațiile la comandă (ERP pentru firme, automatizări, facturi, contabilitate, flotă, șantiere, scule): un rând de două carduri, ca primul rând din Approach. Dashboard-ul din cardul din stânga este o ilustrație.",
+      "view": "/#software",
+      "blocks": [
+        {
+          "title": "Titlu secțiune",
+          "fields": [
+            {"type": "rich", "title": "Titlu", "scope": "components/sections/Software", "parts": [{"key": "title"},{"key": "title-accent", "accent": true}]}
+          ]
+        },
+        {
+          "title": "Cardul din stânga (cu dashboard)",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Software", "key": "app-title", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Software", "parts": [{"key": "app-text-1"},{"key": "app-text-2", "accent": true},{"key": "app-text-3"}]}
+          ]
+        },
+        {
+          "title": "Cardul din dreapta (ce creăm)",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Software", "key": "build-title", "label": "Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-1-title", "label": "1. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-1-text", "label": "1. Descriere (o linie)"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-2-title", "label": "2. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-2-text", "label": "2. Descriere (o linie)"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-3-title", "label": "3. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-3-text", "label": "3. Descriere (o linie)"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-4-title", "label": "4. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-4-text", "label": "4. Descriere (o linie)"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-5-title", "label": "5. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-5-text", "label": "5. Descriere (o linie)"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-6-title", "label": "6. Titlu"},
+            {"type": "text", "scope": "components/sections/Software", "key": "feature-6-text", "label": "6. Descriere (o linie)"},
+            {"type": "pair", "scope": "components/sections/Software", "title": "Buton", "text": "cta", "link": "cta-link"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation",
+      "group": "home",
+      "label": "Automatizare",
+      "description": "Automatizarea financiar-contabilă (SAGA WEB): al doilea rând sub Custom software, fără titlu propriu, cu cardurile inversate (lista în stânga, video-ul în dreapta). Video-ul este /automation/saga-preview.mp4; detaliile sunt pe pagina /automation.",
+      "view": "/#automation",
+      "blocks": [
+        {
+          "title": "Cardul din stânga (cu video)",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Automation", "key": "card-title", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Automation", "parts": [{"key": "card-text-1"}, {"key": "card-text-2", "accent": true}, {"key": "card-text-3"}]}
+          ]
+        },
+        {
+          "title": "Cardul din dreapta (ce automatizăm)",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Automation", "key": "list-title", "label": "Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-1", "label": "1. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-1-text", "label": "1. Descriere"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-2", "label": "2. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-2-text", "label": "2. Descriere"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-3", "label": "3. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-3-text", "label": "3. Descriere"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-4", "label": "4. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-4-text", "label": "4. Descriere"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-5", "label": "5. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-5-text", "label": "5. Descriere"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-6", "label": "6. Titlu"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "flow-6-text", "label": "6. Descriere"},
+            {"type": "pair", "scope": "components/sections/Automation", "title": "Buton principal", "text": "cta", "link": "cta-link"},
+            {"type": "pair", "scope": "components/sections/Automation", "title": "Buton secundar", "text": "more", "link": "more-link"}
+          ]
+        },
+        {
+          "title": "Video",
+          "note": "Click pe video sau pe imagine pentru a le înlocui (același format: .mp4, respectiv .jpg). Imaginea apare cât timp video-ul se încarcă. Video-ul e folosit și pe pagina /automation.",
+          "images": {"files": ["/automation/saga-preview.mp4", "/automation/saga-preview.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Automation", "key": "video-label", "label": "Descriere video (pentru cititoare de ecran)"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "play", "label": "Buton „pornește” (text ascuns, pentru accesibilitate)"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "pause", "label": "Buton „pauză”"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "seek", "label": "Bara de progres"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "expand", "label": "Buton „mărește”"},
+            {"type": "text", "scope": "components/sections/Automation", "key": "close", "label": "Buton „închide” (în vizualizarea mare)"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-more",
+      "group": "home",
+      "label": "Automatizare — ce mai putem automatiza",
+      "description": "Secțiunea de sub „Ce automatizăm”: automatizări generale (rapoarte, Excel, facturi, integrări, notificări), tehnologii, pașii de lucru și blocul final cu butoane.",
+      "view": "/#automation-more",
+      "blocks": [
+        {
+          "title": "Titlu și introducere",
+          "fields": [
+            {"type": "rich", "title": "Titlu (a doua parte e accentuată)", "scope": "components/sections/AutomationMore", "parts": [{"key": "title"}, {"key": "title-muted", "accent": true}]},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "subtitle", "label": "Subtitlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "approach", "label": "Mesaj secundar"}
+          ]
+        },
+        {
+          "title": "Ce putem automatiza (8 exemple)", "note": "Machetele de aplicație de deasupra exemplelor sunt ilustrații și nu se editează de aici.",
+          "fields": [
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-1", "label": "01. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-1-text", "label": "01. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-2", "label": "02. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-2-text", "label": "02. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-3", "label": "03. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-3-text", "label": "03. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-4", "label": "04. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-4-text", "label": "04. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-5", "label": "05. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-5-text", "label": "05. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-6", "label": "06. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-6-text", "label": "06. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-7", "label": "07. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-7-text", "label": "07. Descriere"},
+            {"type": "text", "scope": "components/sections/AutomationMore", "key": "item-8", "label": "08. Titlu"},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "item-8-text", "label": "08. Descriere"}
+          ]
+        },
+        {
+          "title": "Blocul final",
+          "fields": [
+            {"type": "rich", "title": "Titlu (a doua parte e accentuată)", "scope": "components/sections/AutomationMore", "parts": [{"key": "cta-title"}, {"key": "cta-title-muted", "accent": true}]},
+            {"type": "textarea", "scope": "components/sections/AutomationMore", "key": "cta-text", "label": "Descriere"},
+            {"type": "pair", "scope": "components/sections/AutomationMore", "title": "Buton principal", "text": "cta", "link": "cta-link"},
+            {"type": "pair", "scope": "components/sections/AutomationMore", "title": "Buton secundar", "text": "offer", "link": "offer-link"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "marquee",
+      "group": "home",
+      "label": "Banda de text",
+      "description": "Banda care derulează între Services și Pricing (UI/UX Design • Brand Identity • …).",
+      "view": "/",
+      "blocks": [
+        {
+          "collection": "marquee",
+          "mode": "list",
+          "title": "Texte",
+          "itemName": "text",
+          "note": "Textele se repetă automat pe bandă, în ordinea din listă.",
+          "fields": ["text", "published"]
+        }
+      ]
+    },
+    {
+      "key": "pricing",
+      "group": "home",
+      "label": "Pricing",
+      "description": "Pachetele de preț.",
+      "view": "/#pricing",
+      "blocks": [
+        {
+          "title": "Texte comune",
+          "fields": [
+            {"type": "text", "scope": "components/sections/Pricing", "key": "pricing", "label": "Titlu"},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "pricing-intro", "label": "Text sub titlu"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "recommended", "label": "Etichetă pachet recomandat"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "one-time-fee", "label": "Text sub prețul de dezvoltare"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "per-month", "label": "Sufix lunar (ex: /lună)"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "optional-infra", "label": "Text sub prețul lunar de infrastructură"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "more-included", "label": "Link „+ încă N incluse” ({n} = număr)"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "not-included", "label": "Titlu „Nu include”"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "start-a-project", "label": "Text buton implicit (dacă pachetul nu are unul)"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "details", "label": "Text link „Detalii”"}
+          ]
+        },
+        {
+          "title": "ESA Managed Care", "note": "Lista detaliată a serviciilor incluse (Hosting, Backup, Securitate, Mentenanță, SEO) se editează din Avansat › components/sections/Pricing.",
+          "fields": [
+            {"type": "rich", "title": "Titlu", "scope": "components/sections/Pricing", "parts": [{"key": "care-title"}, {"key": "care-title-accent", "accent": true}]},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "care-text", "label": "Descriere"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "care-price", "label": "Preț pe lună (ex: 100)"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "care-currency", "label": "Moneda (ex: €)"},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "care-includes", "label": "Text sub preț"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "care-instead", "label": "Notă: înlocuiește abonamentul de infrastructură"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "care-cta", "label": "Text buton"},
+            {"type": "link", "scope": "components/sections/Pricing", "key": "care-cta-link", "label": "Buton → link"},
+            {"type": "text", "scope": "components/sections/Pricing", "key": "care-more", "label": "Text link detalii"},
+            {"type": "link", "scope": "components/sections/Pricing", "key": "care-more-link", "label": "Link detalii (pe homepage)"},
+            {"type": "link", "scope": "components/sections/Pricing", "key": "care-more-link-service", "label": "Link detalii (pe pagina de serviciu)"},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "care-note", "label": "Notă contract"}
+          ]
+        },
+        {
+          "title": "Termeni și contract",
+          "fields": [
+            {"type": "rich", "title": "Titlu", "scope": "components/sections/Pricing", "parts": [{"key": "terms-title"}, {"key": "terms-title-accent", "accent": true}]},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "terms-text", "label": "Text"},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "terms-signed", "label": "Notă contract semnat"},
+            {"type": "textarea", "scope": "components/sections/Pricing", "key": "estimate-note", "label": "Notă prețuri estimative și TVA"}
+          ]
+        },
+        {
+          "collection": "plans",
+          "mode": "list",
+          "title": "Pachete",
+          "itemName": "pachet",
+          "note": "Singura sursă a prețurilor: homepage, pagina Website-uri personalizate și datele structurate (Google) citesc de aici. Prețul de dezvoltare e în lei, plată unică; infrastructura e în €/lună.",
+          "fields": ["id", "name", "description", "price", "currency", "priceType", "infraPrice", "domainPrice", "infraCurrency", "infraFrequency", "features", "notIncluded", "recommended", "ctaLabel", "ctaLink", "detailsLink", "published"]
+        }
+      ]
+    },
+    {
+      "key": "approach",
+      "group": "home",
+      "label": "Approach",
+      "description": "Cele șase etape. Fiecare etapă are propria ilustrație și poziție în grilă, deci etapele se editează, dar nu se adaugă sau șterg.",
+      "view": "/#approach",
+      "blocks": [
+        {
+          "title": "Titlu",
+          "fields": [{"type": "text", "scope": "components/sections/Approach", "key": "our-approach", "label": "Titlu secțiune"}]
+        },
+        {
+          "title": "Etapa 1",
+          "images": {"files": ["/approach/agency.jpg", "/approach/lumora.jpg", "/approach/watches.jpg", "/approach/greenearth.jpg", "/approach/guardianvets.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "discovery-first", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "we-begin-by"}, {"key": "defining-clear-goals", "accent": true}, {"key": "understanding-your-audience-and-aligning-with"}]}
+          ]
+        },
+        {
+          "title": "Etapa 2",
+          "images": {"files": ["/approach/phone-a.webp", "/approach/phone-b.webp", "/approach/sphere.jpg", "/approach/sphere-light.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "mobile-first-design", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "every-layout-is-designed-for"}, {"key": "seamless-mobile-first-experiences", "accent": true}, {"key": "ensuring-performance-across-all-devices"}]}
+          ]
+        },
+        {
+          "title": "Etapa 3",
+          "images": {"files": ["/approach/dashboard.webp", "/approach/rail.webp", "/approach/laptop-lid.webp", "/approach/laptop-base.webp", "/approach/bluelines.jpg", "/approach/bluelines-light.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "conversion-driven", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "websites-built-with-strategy-designed-to"}, {"key": "visitors-into-customers", "accent": true}]}
+          ]
+        },
+        {
+          "title": "Etapa 4",
+          "images": {"files": ["/approach/panel.webp", "/approach/site-a.webp", "/approach/site-b.webp", "/approach/site-c.webp", "/approach/site-d.webp", "/approach/stars.jpg", "/approach/stars-light.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "pixel-perfect-development", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "designed-and-developed-with"}, {"key": "pixel-perfect-precision", "accent": true}, {"key": "delivering-high-performance-and-easy-updates"}]}
+          ]
+        },
+        {
+          "title": "Etapa 5",
+          "images": {"files": ["/media/fa82d0ba7b07aeb6f52d002c58a4b803.png", "/media/24256474797948598af6e055ef03431e.jpg", "/media/9eef896b4ea5097e3d83cc8d531e4056.jpg", "/media/3990486d63ac121ae76e45c695fb18ca.jpg", "/media/78ab2a87ac838db6bd9c1b6d891a8b6e.jpg", "/media/35d20a23587f3741da4aae49f4993cc0.jpg", "/media/152053cbd17ef12217ebd90970bdeeab.jpg", "/approach/gradient.jpg", "/approach/gradient-light.jpg"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "seamless-cms-launch", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "launched-seamlessly-with-a-powerful-cms"}, {"key": "update-and-manage-your-website", "accent": true}, {"key": "content-effortlessly-after-going-live"}]}
+          ]
+        },
+        {
+          "title": "Etapa 6",
+          "images": {"files": ["/approach/dial.webp", "/approach/dial-light.webp", "/approach/hand-hour.webp", "/approach/hand-minute.webp", "/approach/hand-second.webp"]},
+          "fields": [
+            {"type": "text", "scope": "components/sections/Approach", "key": "future-ready", "label": "Titlu"},
+            {"type": "rich", "title": "Descriere", "scope": "components/sections/Approach", "parts": [{"key": "websites-designed-to-be"}, {"key": "scalable-and-future-ready", "accent": true}, {"key": "adapting-as-your-business-grows"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "testimonials",
+      "group": "home",
+      "label": "Testimonials",
+      "description": "Recenziile clienților și cifrele de lângă ele.",
+      "view": "/#testimonials",
+      "blocks": [
+        {
+          "title": "Titlu",
+          "fields": [{"type": "text", "scope": "components/sections/Testimonials", "key": "testimonials", "label": "Titlu secțiune"}]
+        },
+        {
+          "title": "Cifre",
+          "fields": [
+            {"type": "stat", "scope": "components/sections/Testimonials", "title": "Cifra 1", "value": "stat-1-value", "suffix": "stat-1-suffix", "label": "stat-1-label"},
+            {"type": "stat", "scope": "components/sections/Testimonials", "title": "Cifra 2", "value": "stat-2-value", "suffix": "stat-2-suffix", "label": "stat-2-label"},
+            {"type": "stat", "scope": "components/sections/Testimonials", "title": "Cifra 3", "value": "stat-3-value", "suffix": "stat-3-suffix", "label": "stat-3-label"}
+          ]
+        },
+        {
+          "collection": "testimonials",
+          "mode": "list",
+          "title": "Recenzii",
+          "itemName": "recenzie",
+          "note": "Recenziile apar în ordinea din listă. Media stelelor din datele structurate (Google) se calculează automat.",
+          "fields": ["name", "role", "company", "quote", "rating", "avatar", "avatarKind", "published"]
+        }
+      ]
+    },
+    {
+      "key": "faqs",
+      "group": "home",
+      "label": "FAQs",
+      "description": "Întrebările frecvente (se folosesc și în datele structurate pentru Google).",
+      "view": "/#faqs",
+      "blocks": [
+        {
+          "title": "Titlu",
+          "fields": [
+            {"type": "rich", "title": "Titlu secțiune", "scope": "components/sections/Faqs", "parts": [{"key": "frequently-asked"}, {"key": "questions", "accent": true}]}
+          ]
+        },
+        {
+          "collection": "faqs",
+          "mode": "list",
+          "title": "Întrebări",
+          "itemName": "întrebare",
+          "fields": ["question", "answer", "published"]
+        }
+      ]
+    },
+    {
+      "key": "automation-header",
+      "group": "automation-page",
+      "label": "Antet",
+      "description": "Titlul mare, descrierea și butoanele de sus. Butonul principal (demonstrație) este folosit și în finalul paginii.",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Titlu și SEO",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "title", "label": "Titlu mare"},
+            {"type": "text", "scope": "/automation", "key": "meta-title", "label": "Titlu în tab-ul browserului (SEO)"}
+          ]
+        },
+        {
+          "title": "Descriere",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "eyebrow", "label": "Supra-titlu"},
+            {"type": "text", "scope": "/automation", "key": "overview-title", "label": "Titlu descriere"},
+            {"type": "textarea", "scope": "/automation", "key": "overview", "label": "Descriere"}
+          ]
+        },
+        {
+          "title": "Butoane",
+          "fields": [
+            {"type": "pair", "scope": "/automation", "title": "Buton principal (și cel din final)", "text": "cta", "link": "cta-link"},
+            {"type": "pair", "scope": "/automation", "title": "Buton secundar", "text": "works", "link": "works-link"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-stats",
+      "group": "automation-page",
+      "label": "Informații rapide",
+      "description": "Cele patru informații de sub descriere (valoare + etichetă). Video-ul de dedesubt se schimbă din Homepage › Automatizare.",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Informația 1",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "stat-1", "label": "Valoare"},
+            {"type": "text", "scope": "/automation", "key": "stat-1-label", "label": "Etichetă"}
+          ]
+        },
+        {
+          "title": "Informația 2",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "stat-2", "label": "Valoare"},
+            {"type": "text", "scope": "/automation", "key": "stat-2-label", "label": "Etichetă"}
+          ]
+        },
+        {
+          "title": "Informația 3",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "stat-3", "label": "Valoare"},
+            {"type": "text", "scope": "/automation", "key": "stat-3-label", "label": "Etichetă"}
+          ]
+        },
+        {
+          "title": "Informația 4",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "stat-4", "label": "Valoare"},
+            {"type": "text", "scope": "/automation", "key": "stat-4-label", "label": "Etichetă"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-brief",
+      "group": "automation-page",
+      "label": "Problema, abordarea, rezultatul",
+      "description": "Cele trei carduri de sub video.",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Problema",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "problem-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "problem", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Abordarea",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "approach-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "approach", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Rezultatul",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "outcome-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "outcome", "label": "Text"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-features",
+      "group": "automation-page",
+      "label": "Ce automatizăm",
+      "description": "Cele șase carduri cu iconiță. Iconițele sunt fixe, în ordine: bancă, factură, deplasare, bifă, scanare, grafic.",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Titlu",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "features-title", "label": "Titlu secțiune"}
+          ]
+        },
+        {
+          "title": "Cardul 1",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-1-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-1", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Cardul 2",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-2-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-2", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Cardul 3",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-3-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-3", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Cardul 4",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-4-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-4", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Cardul 5",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-5-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-5", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Cardul 6",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "feature-6-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "feature-6", "label": "Text"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-steps",
+      "group": "automation-page",
+      "label": "Cum lucrăm",
+      "description": "Cei patru pași (numerotarea 01–04 e automată).",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Titlu",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "steps-title", "label": "Titlu secțiune"}
+          ]
+        },
+        {
+          "title": "Pasul 1",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "step-1-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "step-1", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Pasul 2",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "step-2-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "step-2", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Pasul 3",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "step-3-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "step-3", "label": "Text"}
+          ]
+        },
+        {
+          "title": "Pasul 4",
+          "fields": [
+            {"type": "text", "scope": "/automation", "key": "step-4-title", "label": "Titlu"},
+            {"type": "textarea", "scope": "/automation", "key": "step-4", "label": "Text"}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "automation-final",
+      "group": "automation-page",
+      "label": "Final",
+      "description": "Îndemnul de la finalul paginii. Butonul folosește textul și linkul butonului principal din Antet.",
+      "view": "/automation",
+      "blocks": [
+        {
+          "title": "Text",
+          "fields": [
+            {"type": "rich", "title": "Titlu", "scope": "/automation", "parts": [{"key": "final-title"}, {"key": "final-accent", "accent": true}]},
+            {"type": "textarea", "scope": "/automation", "key": "final-text", "label": "Text"}
+          ]
+        }
+      ]
+    }
+  ]
+}

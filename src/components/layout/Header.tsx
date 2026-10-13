@@ -3,13 +3,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import Link from '@/components/Link';
 import RollText from '@/components/RollText';
-import { VisuvateWordmark } from '@/components/Logo';
 import { usePathname } from '@/lib/navigation';
 import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
 import {text} from '@/lib/text';
 
 const $t = text("components/layout/Header");
+const site = text("global/Site");
+// Replaceable from the admin (Global → Header). Drawn as a mask so it follows the theme colour.
+const LOGO = '/brand/logo.webp';
+const LOGO_MASK = `url(${LOGO}) left center / contain no-repeat`;
 
 function ThemeToggle() {
   const [theme, setTheme] = useState(() =>
@@ -89,12 +92,12 @@ function ThemeToggle() {
 }
 
 const NAV_ITEMS = [
-  { label: $t("home"), href: '/' },
-  { label: $t("about-us"), href: '/about-us' },
-  { label: $t("works"), href: '/works' },
-  { label: $t("services"), href: '/services' },
-  { label: $t("blogs"), href: '/blog' },
-  { label: $t("templates"), href: '/templates' },
+  { label: $t("home"), href: $t("home-link") },
+  { label: $t("about-us"), href: $t("about-us-link") },
+  { label: $t("works"), href: $t("works-link") },
+  { label: $t("services"), href: $t("services-link") },
+  { label: $t("blogs"), href: $t("blogs-link") },
+  { label: $t("templates"), href: $t("templates-link") },
 ];
 
 export default function Header() {
@@ -151,11 +154,11 @@ export default function Header() {
           className={`mx-auto grid max-w-[1380px] grid-cols-[auto_1fr] items-center gap-5 px-6 py-4 transition-[max-width,padding,background-color,border-radius,box-shadow,backdrop-filter] duration-500 ease-brand motion-reduce:transition-none min-[981px]:grid-cols-[1fr_auto_1fr] ${compact ? 'min-[981px]:max-w-[920px] min-[981px]:rounded-[8px] min-[981px]:bg-[var(--vv-nav-bg)] min-[981px]:px-3 min-[981px]:py-3 min-[981px]:ring-1 min-[981px]:ring-white/10 min-[981px]:backdrop-blur-xl min-[981px]:backdrop-saturate-150' : 'md:px-8'}`}
         >
           <Link
-            href="/"
+            href={$t("visuvate-home-link")}
             aria-label={$t("visuvate-home")}
             className={`flex items-center justify-self-start ${compact ? 'min-[981px]:pl-3' : ''}`}
           >
-            <VisuvateWordmark className="h-5 w-auto" />
+            <span className="block h-5" style={{ width: 72, backgroundColor: 'currentColor', mask: LOGO_MASK, WebkitMask: LOGO_MASK }} />
           </Link>
           <nav aria-label={$t("primary")} className="hidden items-center gap-7 min-[981px]:flex">
             {NAV_ITEMS.map((item) => (
@@ -171,7 +174,7 @@ export default function Header() {
           <div className="flex items-center gap-2 justify-self-end min-[981px]:gap-3.5">
             <ThemeToggle />
             <Link
-              href="/contact"
+              href={$t("cta-link")}
               className="inline-flex h-[38px] shrink-0 items-center rounded-full border border-transparent bg-fg px-4 text-[13px] font-medium tracking-[-0.01em] whitespace-nowrap text-bg transition-colors hover:bg-fg-strong min-[981px]:h-[36px] min-[981px]:px-[18px]"
             >
               <RollText text={$t("connect")} className="min-[981px]:hidden" />
@@ -236,17 +239,17 @@ export default function Header() {
           className={`flex flex-col gap-4 transition-[opacity,translate] duration-[550ms] ease-brand motion-reduce:transition-none ${menuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
         >
           <Link
-            href="/contact"
+            href={$t("cta-link")}
             onClick={() => setMenuOpen(false)}
             className="inline-flex h-[52px] w-full items-center justify-center rounded-full bg-blue-500 text-[15px] font-medium text-white transition-opacity hover:opacity-90"
           >
             <RollText text={$t("let-s-connect")} />
           </Link>
           <a
-            href="mailto:contact@visuvate.com"
+            href={`mailto:${site("email")}`}
             className="text-center text-[13px] text-fg-subtle transition-colors hover:text-fg-muted"
           >
-            {$t("contact-visuvate-com")}
+            {site("email")}
           </a>
         </div>
       </div>

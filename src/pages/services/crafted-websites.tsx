@@ -4,10 +4,18 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import RollText from '@/components/RollText';
 import ServicesBackdrop from '@/components/services/ServicesBackdrop';
 
-import {text} from '@/lib/text';
+import {text, textList} from '@/lib/text';
+import {ManagedCare, PlanCards, Terms, plans} from '@/components/sections/Pricing';
+import '@/styles/pricing.css';
 import RecentWork from '@/components/works/RecentWork';
 
-const $t = text("/services/crafted-websites");
+const SCOPE = "/services/crafted-websites";
+const $t = text(SCOPE);
+const list = (key: string) => textList(SCOPE, key);
+
+// How we work, B–G of the brief: one card each, the details as short chips
+const TOPICS = ['discovery', 'design', 'development', 'seo', 'privacy', 'performance'];
+const STEPS = ['1', '2', '3', '4', '5', '6', '7'];
 
 // Converted 1:1 from the RSC payload of /services/crafted-websites.
 export default function Page_services__crafted_websites() {
@@ -100,12 +108,103 @@ export default function Page_services__crafted_websites() {
                   {$t("basic-seo-setup")}
                 </li>
               </ul>
+              <p className="mt-6 border-t pt-5 text-body-s text-fg-muted" style={{ borderColor: "var(--vv-card-rule)" }}>
+                {$t("from-price").replace('{price}', `${plans()[0]?.price} ${plans()[0]?.currency}`)}{' '}
+                <a href="#pachete" className="text-fg underline decoration-fg/30 underline-offset-4 hover:decoration-fg">{$t("see-packages")}</a>
+              </p>
               <Link href="/contact" className="mt-7 flex h-11 items-center justify-center rounded-full bg-fg text-[14px] font-medium text-bg transition-opacity hover:opacity-90">
                 <RollText text={$t("start-a-project")} />
               </Link>
             </div>
           </div>
         </section>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
+            {$t("how-we-work")}
+          </h2>
+          <div className="cw-grid cw-grid-3">
+            {TOPICS.map((topic, i) => (
+              <article key={topic} data-reveal className="cw-card">
+                <span className="cw-num">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{$t(`${topic}-title`)}</h3>
+                <p>{$t(`${topic}-text`)}</p>
+                <ul className="cw-chips">
+                  {list(`${topic}-items`).map((item) => <li key={item}>{item}</li>)}
+                </ul>
+                {list(`${topic}-notes`).map((note, n) => <p key={n} className="cw-note" dangerouslySetInnerHTML={{ __html: note }} />)}
+              </article>
+            ))}
+          </div>
+        </RevealBatch>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <div className="cw-grid">
+            <article data-reveal className="cw-card">
+              <span className="cw-num">07</span>
+              <h3>{$t("hosting-title")}</h3>
+              <p>{$t("hosting-text")}</p>
+              <p>{$t("hosting-subtext")}</p>
+              <ul className="cw-chips">
+                {list("hosting-items").map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
+            <article data-reveal className="cw-card">
+              <h3 className="cw-flush">{$t("infra-title")}</h3>
+              <div className="cw-table-wrap">
+                <table className="cw-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{$t("infra-col-plan")}</th>
+                      <th scope="col">{$t("infra-col-domain")}</th>
+                      <th scope="col">{$t("infra-col-hosting")}</th>
+                      <th scope="col">{$t("infra-col-total")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {plans().map((plan) => (
+                      <tr key={plan.id}>
+                        <td>{plan.name}</td>
+                        <td>{plan.domainPrice} {plan.infraCurrency}</td>
+                        <td>{plan.infraPrice - plan.domainPrice} {plan.infraCurrency}</td>
+                        <td>{plan.infraPrice} {plan.infraCurrency}{$t("per-month")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {list("infra-notes").map((note, n) => <p key={n} className="cw-note">{note}</p>)}
+            </article>
+          </div>
+        </RevealBatch>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <h2 id="pachete" className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
+            {$t("packages-title")}
+          </h2>
+          <p data-reveal className="cw-lead max-w-[660px] text-body-s leading-[1.7] text-fg-muted">{$t("packages-text")}</p>
+          <PlanCards detailed />
+        </RevealBatch>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
+            {$t("after-launch-title")}
+          </h2>
+          <p data-reveal className="cw-lead max-w-[660px] text-body-s leading-[1.7] text-fg-muted">{$t("after-launch-text")}</p>
+          <ManagedCare detailed />
+        </RevealBatch>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
+            {$t("delivery-title")}
+          </h2>
+          <ol className="cw-steps">
+            {STEPS.map((n) => (
+              <li key={n} data-reveal>
+                <strong>{$t(`step-${n}-title`)}</strong>
+                <span>{$t(`step-${n}-text`)}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-5">
+            <Terms detailed />
+          </div>
+        </RevealBatch>
         <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
           <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
             {$t("recent-work")}

@@ -9,6 +9,7 @@ import RollText from '@/components/RollText';
 
 import {findInCollection} from '@/lib/collections';
 import {text} from '@/lib/text';
+import '@/styles/article.css';
 
 const $t = text('templates/post');
 

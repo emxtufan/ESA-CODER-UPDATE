@@ -5,6 +5,7 @@ import RollText from '@/components/RollText';
 import ServicesBackdrop from '@/components/services/ServicesBackdrop';
 
 import {text} from '@/lib/text';
+import {ManagedCare} from '@/components/sections/Pricing';
 import RecentWork from '@/components/works/RecentWork';
 
 const $t = text("/services/maintenance-and-ongoing-support");
@@ -112,6 +113,9 @@ export default function Page_services__maintenance_and_ongoing_support() {
             </div>
           </div>
         </section>
+        <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
+          <ManagedCare detailed more={false} />
+        </RevealBatch>
         <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(56px,7vw,96px)] md:px-8">
           <h2 className="mb-8 font-display text-[clamp(28px,3.4vw,44px)] leading-[1] font-medium tracking-h2">
             {$t("recent-work")}

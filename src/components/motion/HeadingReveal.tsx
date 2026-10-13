@@ -1,12 +1,14 @@
 // module 2603
 import { useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(SplitText, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
-export default function HeadingReveal({ children, className }: { children?: any; className?: string }) {
+// `scroll`: play when the heading scrolls into view instead of on load (for headings further down a page).
+export default function HeadingReveal({ children, className, scroll = false }: { children?: any; className?: string; scroll?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   useGSAP(
     () => {
@@ -35,6 +37,7 @@ export default function HeadingReveal({ children, className }: { children?: any;
               stagger: 0.017,
               delay: 0.1,
               ease: 'power2.out',
+              scrollTrigger: scroll ? { trigger: heading, start: 'top 85%' } : undefined,
               onComplete: () => split?.revert(),
             }));
         });

@@ -584,7 +584,7 @@ export default function Works({ items }: { items: any[] }) {
           className={`absolute inset-0 z-20 grid place-items-center px-6 md:px-8 ${showAll ? '' : 'pointer-events-none'}`}
         >
           <Link
-            href="/works"
+            href={$t("view-all-link")}
             aria-hidden={!showAll}
             tabIndex={showAll ? undefined : -1}
             className={`transition-opacity duration-500 ease-brand ${showAll ? 'opacity-100' : 'pointer-events-none opacity-0'}`}

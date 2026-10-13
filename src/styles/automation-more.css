@@ -1,0 +1,132 @@
+/* "Dacă faci același lucru în fiecare zi…" (AutomationMore.tsx), after Qronos' "Durable autonomy" block.
+   site.css is a precompiled Tailwind build, so anything it lacks lives here. */
+.ax-section { padding: 0 0 clamp(80px, 9vw, 135px); --ax-line: color-mix(in srgb, var(--vv-text-primary) 12%, transparent); --ax-soft: color-mix(in srgb, var(--vv-text-primary) 6%, transparent); }
+.ax-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--vv-text-subtle); }
+/* hatched strip between the SAGA row and this section */
+.ax-divider { height: 34px; border-block: 1px solid var(--ax-line); background: repeating-linear-gradient(-45deg, var(--ax-line) 0 1px, transparent 1px 9px); }
+
+.ax-intro { display: grid; gap: 24px; padding: clamp(56px, 7vw, 96px) 0 clamp(32px, 4vw, 48px); }
+@media (min-width: 1024px) { .ax-intro { grid-template-columns: 1.35fr 1fr; gap: 64px; align-items: end; } }
+.ax-intro-text { max-width: 520px; }
+
+/* the panel: one border, four cells split by lines */
+.ax-panel { display: grid; border: 1px solid var(--ax-line); border-radius: 12px; overflow: hidden; background: color-mix(in srgb, var(--vv-surface) 55%, transparent); }
+@media (min-width: 900px) { .ax-panel { grid-template-columns: 1fr 1fr; } }
+.ax-cell { display: flex; flex-direction: column; padding: clamp(20px, 3vw, 40px); border-top: 1px solid var(--ax-line); }
+.ax-cell:first-child { border-top: 0; }
+@media (min-width: 900px) {
+  .ax-cell:nth-child(2) { border-top: 0; }
+  .ax-cell:nth-child(odd) { border-right: 1px solid var(--ax-line); }
+}
+.ax-stage { position: relative; min-height: 330px; display: flex; align-items: center; }
+.ax-items { display: grid; gap: 22px; margin-top: 28px; }
+@media (min-width: 640px) { .ax-items { grid-template-columns: 1fr 1fr; gap: 28px; } }
+.ax-num { display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #0099ff; }
+.ax-items h3 { margin-top: 8px; font-size: clamp(20px, 1.9vw, 26px); line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; }
+.ax-items p { margin-top: 8px; font-size: 14.5px; line-height: 1.6; color: var(--vv-text-muted); }
+
+/* the app mock-ups */
+.ax-mock { position: relative; width: 100%; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--ax-line); background: var(--vv-bg); font-size: 12.5px; line-height: 1.35; color: var(--vv-text-primary);
+  box-shadow: 0 1px 0 0 color-mix(in srgb, var(--vv-text-primary) 18%, transparent) inset, 0 30px 60px -30px rgb(0 0 0 / 0.45); }
+.ax-mock b { font-weight: 500; }
+.ax-mock small { display: block; color: var(--vv-text-subtle); font-size: 11.5px; }
+.ax-mock-head { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--ax-line); }
+.ax-mock-head b { font-size: 15px; }
+
+.ax-runs { display: grid; gap: 18px; margin-top: 16px; }
+.ax-run p { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ax-track { position: relative; height: 6px; margin-top: 7px; border-radius: 99px; background: var(--ax-soft); }
+.ax-bar { position: absolute; top: 0; bottom: 0; border-radius: inherit; transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.22, 1, .36, 1); }
+.is-in .ax-bar { transform: scaleX(1); }
+/* while on screen: a light sweeps along each bar and a "now" line walks across the week */
+.ax-runs { position: relative; }
+.ax-bar { overflow: hidden; }
+.ax-bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.65), transparent); transform: translateX(-100%); }
+.is-live .ax-bar::after { animation: ax-shine 2.6s ease-in-out 1.4s infinite; }
+.ax-run:nth-child(3) .ax-bar::after { animation-delay: 2s; }
+.ax-run:nth-child(4) .ax-bar::after { animation-delay: 2.6s; }
+@keyframes ax-shine { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+.ax-playhead { position: absolute; z-index: 1; top: -6px; bottom: -4px; left: 0; width: 1px; background: #0099ff; opacity: 0; pointer-events: none; }
+.ax-playhead::before { content: ""; position: absolute; top: -3px; left: -3px; width: 7px; height: 7px; border-radius: 50%; background: #0099ff; box-shadow: 0 0 0 3px rgb(0 153 255 / 0.2); }
+.is-live .ax-playhead { animation: ax-now 7s linear 1.2s infinite; }
+@keyframes ax-now { 0% { left: 0; opacity: 0; } 6%, 92% { opacity: 0.85; } 100% { left: 100%; opacity: 0; } }
+.ax-cyan { background: linear-gradient(90deg, #0891b2, #67e8f9); }
+.ax-green { background: linear-gradient(90deg, #059669, #6ee7b7); }
+.ax-violet { background: linear-gradient(90deg, #7c3aed, #c4b5fd); }
+
+.ax-flow { --ax-loop: 4.8s; display: grid; grid-template-columns: 1fr 28px 1.1fr 28px auto; align-items: center; gap: 6px; padding: 30px 0 14px; }
+.ax-node { padding: 12px 10px; border-radius: 8px; border: 1px solid var(--ax-line); text-align: center; transition: border-color 0.3s, box-shadow 0.3s; }
+.ax-node small { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ax-node b { display: block; margin-top: 3px; font-size: 13px; }
+.ax-node.is-main { border-color: color-mix(in srgb, var(--vv-text-primary) 70%, transparent); }
+.ax-node.is-main small { color: #0099ff; }
+.ax-link { position: relative; height: 1px; background: repeating-linear-gradient(90deg, var(--vv-text-subtle) 0 3px, transparent 3px 6px); }
+.ax-link::after { content: ""; position: absolute; top: -3px; left: 0; width: 7px; height: 7px; border-radius: 50%; background: #0099ff; box-shadow: 0 0 8px rgb(0 153 255 / 0.7); opacity: 0; }
+.ax-outs { display: grid; gap: 6px; }
+.ax-outs span { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px; border-radius: 7px; border: 1px solid var(--ax-line); font-size: 11.5px; }
+.ax-outs i { width: 7px; height: 7px; border-radius: 50%; background: var(--ax-line); }
+/* the loop, all on one clock */
+.is-live .ax-src { animation: ax-src var(--ax-loop) ease-in-out infinite; }
+.is-live .ax-link-1::after { animation: ax-run1 var(--ax-loop) linear infinite; }
+.is-live .ax-node.is-main { animation: ax-work var(--ax-loop) ease-in-out infinite; }
+.is-live .ax-link-2::after { animation: ax-run2 var(--ax-loop) linear infinite; }
+.is-live .ax-outs span { animation: ax-out var(--ax-loop) ease-out infinite; }
+.is-live .ax-outs i { animation: ax-done var(--ax-loop) ease-out infinite; }
+.is-live .ax-outs span:nth-child(2), .is-live .ax-outs span:nth-child(2) i { animation-delay: 0.25s; }
+.is-live .ax-outs span:nth-child(3), .is-live .ax-outs span:nth-child(3) i { animation-delay: 0.5s; }
+@keyframes ax-src { 0%, 18%, 100% { border-color: var(--ax-line); box-shadow: none; } 6%, 12% { border-color: #0099ff; box-shadow: 0 0 0 3px rgb(0 153 255 / 0.15); } }
+@keyframes ax-run1 { 0%, 12% { left: 0; opacity: 0; } 14% { opacity: 1; } 28% { left: calc(100% - 7px); opacity: 1; } 30%, 100% { left: calc(100% - 7px); opacity: 0; } }
+@keyframes ax-work { 0%, 28%, 56%, 100% { box-shadow: none; } 34%, 50% { box-shadow: 0 0 0 4px rgb(0 153 255 / 0.18), 0 0 24px -4px rgb(0 153 255 / 0.5); } }
+@keyframes ax-run2 { 0%, 52% { left: 0; opacity: 0; } 54% { opacity: 1; } 66% { left: calc(100% - 7px); opacity: 1; } 68%, 100% { left: calc(100% - 7px); opacity: 0; } }
+@keyframes ax-out { 0%, 66% { border-color: var(--ax-line); } 70%, 90% { border-color: rgb(34 197 94 / 0.6); } 100% { border-color: var(--ax-line); } }
+@keyframes ax-done { 0%, 66% { background: var(--ax-line); transform: scale(1); } 70% { background: #22c55e; transform: scale(1.5); } 74%, 92% { background: #22c55e; transform: scale(1); } 100% { background: var(--ax-line); } }
+
+.ax-rules { --ax-loop: 5.6s; display: grid; margin-top: 6px; }
+.ax-rules li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 8px; border-top: 1px solid var(--ax-soft); border-radius: 6px; }
+.ax-rules li:first-child { border-top: 0; }
+.ax-rules b { font-size: 13px; }
+.ax-result { flex: none; padding: 4px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 500; }
+.ax-result.ax-green { color: #16a34a; background: rgb(34 197 94 / 0.14); }
+.ax-result.ax-amber { color: #d97706; background: rgb(245 158 11 / 0.15); }
+.ax-result.ax-blue { color: #0099ff; background: rgb(0 153 255 / 0.13); }
+/* the scan: each row lights up in turn, then its result pops in; all reset together at the end of the loop */
+.is-live .ax-rules li { animation: ax-scan var(--ax-loop) ease-in-out infinite; }
+.is-live .ax-result { animation: ax-result var(--ax-loop) ease-out infinite both; }
+@keyframes ax-scan { 0%, 12%, 100% { background: transparent; } 3%, 9% { background: rgb(0 153 255 / 0.08); } }
+@keyframes ax-result { 0% { opacity: 0; transform: scale(0.8); } 4%, 100% { opacity: 1; transform: none; } }
+
+.ax-inbox { --ax-loop: 6s; display: grid; gap: 4px; margin-top: 8px; }
+.ax-inbox li { display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-radius: 8px; }
+.ax-inbox b { font-size: 13px; }
+.is-live .ax-inbox li { animation: ax-notify var(--ax-loop) ease-out infinite both; }
+.is-live .ax-inbox .ax-ico { animation: ax-ping var(--ax-loop) ease-out infinite both; animation-delay: inherit; }
+@keyframes ax-notify { 0% { opacity: 0; transform: translateY(-10px); background: transparent; } 5% { opacity: 1; transform: none; background: var(--ax-soft); } 20% { background: transparent; } 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: none; } }
+@keyframes ax-ping { 0% { transform: scale(0.6); } 6% { transform: scale(1.12); } 11%, 100% { transform: scale(1); } }
+.ax-ico { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; }
+.ax-ico svg { width: 16px; height: 16px; }
+.ax-ico.ax-green { color: #16a34a; background: rgb(34 197 94 / 0.14); }
+.ax-ico.ax-amber { color: #d97706; background: rgb(245 158 11 / 0.15); }
+.ax-ico.ax-blue { color: #0099ff; background: rgb(0 153 255 / 0.13); }
+.ax-ico.ax-red { color: #dc2626; background: rgb(239 68 68 / 0.13); }
+
+/* closing call to action */
+.ax-cta { position: relative; isolation: isolate; overflow: hidden; margin-top: 20px; padding: clamp(32px, 5vw, 64px); border-radius: 12px; color: #fff; }
+.ax-cta > p { max-width: 640px; margin-top: 18px; font-size: clamp(15px, 1.3vw, 18px); line-height: 1.7; color: rgb(255 255 255 / 0.72); }
+.ax-primary { background: #fff; color: #000; transition: opacity 0.2s; }
+.ax-primary:hover { opacity: 0.9; }
+.ax-ghost { border: 1px solid rgb(255 255 255 / 0.35); color: #fff; transition: background-color 0.2s; }
+.ax-ghost:hover { background: rgb(255 255 255 / 0.12); }
+
+@media (max-width: 560px) {
+  .ax-stage { min-height: 0; }
+  .ax-mock { padding: 14px; }
+  .ax-flow { grid-template-columns: 1fr; padding: 18px 0; }
+  .ax-link { width: 1px; height: 14px; margin: 0 auto; background: repeating-linear-gradient(180deg, var(--vv-text-subtle) 0 3px, transparent 3px 6px); }
+  .ax-link::after { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ax-bar { transition: none; }
+  .is-live .ax-bar::after, .is-live .ax-playhead { animation: none; }
+  .is-live .ax-link::after, .is-live .ax-src, .is-live .ax-node.is-main, .is-live .ax-outs span, .is-live .ax-outs i, .is-live .ax-rules li, .is-live .ax-result, .is-live .ax-inbox li, .is-live .ax-inbox .ax-ico { animation: none; }
+  .ax-outs i { background: #22c55e; }
+}

@@ -1,0 +1,68 @@
+/* Pricing (home section + /services/crafted-websites). site.css is a precompiled Tailwind build, so anything it lacks lives here. */
+.pr-currency { font-family: var(--font-geist), "Inter", system-ui, sans-serif; font-size: 0.36em; letter-spacing: 0; color: var(--vv-text-muted); }
+.pr-badge { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 99px; font-size: 11px; line-height: 1; font-weight: 500; letter-spacing: 0.06em;
+  color: #0a84d6; background: rgb(0 153 255 / 0.12); box-shadow: inset 0 0 0 1px rgb(0 153 255 / 0.35); }
+.pr-recommended { border-color: rgb(0 153 255 / 0.45) !important; }
+
+/* the optional monthly infrastructure line under the one-time price */
+.pr-infra { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--vv-card-rule); font-size: 13px; line-height: 1.45; color: var(--vv-text-muted); }
+.pr-infra strong { font-size: 15px; font-weight: 500; color: var(--vv-text-primary); }
+
+.pr-excluded { display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.5; color: var(--vv-text-muted); }
+.pr-excluded li { position: relative; padding-left: 18px; }
+.pr-excluded li::before { content: '–'; position: absolute; left: 2px; }
+
+.pr-care-price { min-width: 0; }
+@media (min-width: 1024px) { .pr-care-price { width: 440px; padding-left: 48px; border-left: 1px solid var(--vv-card-rule); } }
+.pr-care-price .text-body-s { font-size: 16px; }
+.pr-care-price .text-\[13px\] { font-size: 14px; }
+
+/* expandable groups (native <details>), so long lists stay closed until asked for */
+.pr-groups { display: grid; gap: 8px; }
+@media (min-width: 640px) { .pr-groups { grid-template-columns: 1fr 1fr; align-items: start; } }
+@media (min-width: 1024px) { .pr-groups-3 { grid-template-columns: repeat(3, 1fr); } }
+.pr-details { border: 1px solid var(--vv-card-rule); border-radius: 10px; }
+.pr-details summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; cursor: pointer; list-style: none;
+  font-size: 14px; font-weight: 500; color: var(--vv-text-primary); }
+.pr-details summary::-webkit-details-marker { display: none; }
+.pr-details summary::after { content: '+'; font-size: 18px; line-height: 1; color: var(--vv-text-muted); transition: transform 0.25s; }
+.pr-details[open] summary::after { transform: rotate(45deg); }
+.pr-details summary:focus-visible { outline: 2px solid #7acaff; outline-offset: 2px; border-radius: 10px; }
+.pr-details > ul { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 7px; font-size: 13px; line-height: 1.5; color: var(--vv-text-muted); }
+.pr-details > ul:not(.pr-excluded) li { position: relative; padding-left: 16px; }
+.pr-details > ul:not(.pr-excluded) li::before { content: ''; position: absolute; left: 2px; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: #0099ff; }
+
+.pr-terms { padding: clamp(24px, 3vw, 40px); border-radius: 12px; border: 1px solid var(--vv-card-border); background: color-mix(in srgb, var(--vv-bg) 42%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+
+/* /services/crafted-websites: the long-form blocks */
+.cw-grid { display: grid; gap: 20px; }
+@media (min-width: 768px) { .cw-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1200px) { .cw-grid-3 { grid-template-columns: repeat(3, 1fr); } }
+.cw-card { position: relative; display: flex; flex-direction: column; padding: clamp(22px, 2.4vw, 32px); border-radius: 12px; border: 1px solid color-mix(in srgb, var(--vv-text-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--vv-bg) 30%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.cw-num { font-size: 12px; line-height: 1; font-weight: 500; letter-spacing: 0.14em; color: var(--vv-text-muted); }
+.cw-card h3 { margin-top: 16px; font-size: clamp(20px, 1.8vw, 24px); line-height: 1.2; font-weight: 500; letter-spacing: -0.02em; }
+.cw-card > p { margin-top: 10px; font-size: 15px; line-height: 1.65; color: var(--vv-text-muted); }
+.cw-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.cw-chips li { padding: 5px 10px; border-radius: 99px; border: 1px solid var(--vv-card-rule); font-size: 12.5px; line-height: 1.3; color: var(--vv-text-primary); }
+.cw-note { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--vv-card-rule); font-size: 13px; line-height: 1.6; color: var(--vv-text-muted); }
+.cw-note strong { color: var(--vv-text-primary); font-weight: 500; }
+
+.cw-table-wrap { margin-top: 20px; overflow-x: auto; }
+.cw-table { width: 100%; min-width: 320px; border-collapse: collapse; font-size: 14px; }
+.cw-table th, .cw-table td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--vv-card-rule); white-space: nowrap; }
+.cw-table th:first-child, .cw-table td:first-child { text-align: left; padding-left: 0; }
+.cw-table th { font-size: 12px; font-weight: 500; color: var(--vv-text-muted); white-space: normal; }
+.cw-table td:last-child { font-weight: 500; }
+
+.cw-steps { display: grid; gap: 12px; counter-reset: step; }
+@media (min-width: 768px) { .cw-steps { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1200px) { .cw-steps { grid-template-columns: repeat(4, 1fr); } }
+.cw-steps li { counter-increment: step; padding: 18px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--vv-text-primary) 12%, transparent); background: color-mix(in srgb, var(--vv-bg) 30%, transparent); }
+.cw-steps li::before { content: counter(step, decimal-leading-zero); display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #0099ff; }
+.cw-steps strong { display: block; margin-top: 10px; font-size: 16px; font-weight: 500; }
+.cw-steps span { display: block; margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: var(--vv-text-muted); }
+.cw-card h3.cw-flush { margin-top: 0; }
+@media (min-width: 1024px) { .pr-care { grid-template-columns: 1fr auto; align-items: start; column-gap: 40px; } }
+.cw-lead { margin: -16px 0 32px; }
+#pachete, #managed-care { scroll-margin-top: 110px; }

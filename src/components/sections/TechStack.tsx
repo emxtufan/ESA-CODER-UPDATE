@@ -5,25 +5,19 @@ import {ScrollTrigger} from 'gsap/ScrollTrigger';
 import {useGSAP} from '@gsap/react';
 
 import {text} from '@/lib/text';
+import {collection} from '@/lib/collections';
 
 const $t = text("components/sections/TechStack");
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const LOGOS = [
-  {name: $t("wix-studio"), src: '/tech/wix-studio.webp', w: 720},
-  {name: $t("notion"), src: '/tech/notion.webp', w: 348},
-  {name: $t("figma"), src: '/tech/figma.webp', w: 433},
-  {name: $t("adobe"), src: '/tech/adobe.webp', w: 455},
-  {name: $t("claude"), src: '/tech/claude.svg', w: 550},
-  {name: $t("framer"), src: '/tech/framer.svg', w: 446},
-  {name: $t("blender"), src: '/tech/blender.webp', w: 447},
-  {name: $t("google-analytics"), src: '/tech/analytics.webp', w: 489},
-];
+type Logo = {name: string; src: string; w: number};
+
 
 const MASK = 'linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)';
 
 export default function TechStack() {
+  const LOGOS: Logo[] = collection('tools').map((tool: any) => ({name: tool.name, src: tool.logo, w: Number(tool.w) || 120}));
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -62,9 +56,9 @@ export default function TechStack() {
               className="flex shrink-0 items-center gap-[52px]"
               aria-hidden={1 === copy}
             >
-              {LOGOS.map((logo) => (
+              {LOGOS.map((logo, i) => (
                 <img
-                  key={logo.name}
+                  key={`${logo.name}-${i}`}
                   src={logo.src}
                   alt={0 === copy ? logo.name : ''}
                   width={Math.round((22 * logo.w) / 120)}
@@ -84,7 +78,7 @@ export default function TechStack() {
           const col = index % 4;
           return (
             <img
-              key={logo.name}
+              key={`${logo.name}-${index}`}
               src={logo.src}
               alt={logo.name}
               width={Math.round((22 * logo.w) / 120)}

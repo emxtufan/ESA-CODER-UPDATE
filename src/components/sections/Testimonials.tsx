@@ -65,15 +65,15 @@ function Globe({ className = '' }: { className?: string }) {
       setShouldRender(true);
       return;
     }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        visibleRef.current = entry.isIntersecting;
-        if (entry.isIntersecting) setShouldRender(true);
-      },
-      { rootMargin: '100% 0px' },
-    );
-    observer.observe(wrapper);
-    return () => observer.disconnect();
+    // set up a screen ahead (no pop-in), but only animate while actually on screen
+    const ahead = new IntersectionObserver(([entry]) => entry.isIntersecting && setShouldRender(true), { rootMargin: '100% 0px' });
+    const onScreen = new IntersectionObserver(([entry]) => (visibleRef.current = entry.isIntersecting));
+    ahead.observe(wrapper);
+    onScreen.observe(wrapper);
+    return () => {
+      ahead.disconnect();
+      onScreen.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -84,11 +84,18 @@ function Globe({ className = '' }: { className?: string }) {
       if (canvasRef.current) width = canvasRef.current.offsetWidth;
     };
     window.addEventListener('resize', onResize);
+    // the globe stands still while the page scrolls, so scrolling never competes with it for the GPU
+    let scrollingUntil = 0;
+    const onScroll = () => (scrollingUntil = performance.now() + 150);
+    window.addEventListener('scroll', onScroll, { passive: true });
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // createGlobe multiplies width/height by devicePixelRatio itself: pass CSS pixels, at most 2x density
+    // (it used to get 2x the width *and* a ratio of 2: a 4x canvas, ~15 million pixels shaded per frame)
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const globe = createGlobe(canvas, {
-      devicePixelRatio: 2,
-      width: 2 * width,
-      height: 2 * width,
+      devicePixelRatio: dpr,
+      width,
+      height: width,
       phi: 0,
       theta: 0.28,
       mapSamples: 16e3,
@@ -96,20 +103,18 @@ function Globe({ className = '' }: { className?: string }) {
     });
     let phi = 0;
     let rafId = 0;
-    const tick = () => {
+    let last = 0;
+    const FRAME = 1000 / 30; // a slow spin reads the same at 30 fps, for half the GPU work
+    const tick = (now: number) => {
       rafId = requestAnimationFrame(tick);
-      if (visibleRef.current) {
-        if (pointerStartRef.current === null && !reducedMotion) phi += 0.0032;
-        globe.update({
-          phi: phi + dragPhiRef.current,
-          width: 2 * width,
-          height: 2 * width,
-          ...themeRef.current,
-        });
-      }
+      if (!visibleRef.current || now < scrollingUntil || now - last < FRAME) return;
+      const dt = last ? Math.min(now - last, 100) : FRAME;
+      last = now;
+      if (pointerStartRef.current === null && !reducedMotion) phi += 0.0032 * (dt / (1000 / 60));
+      globe.update({ phi: phi + dragPhiRef.current, width, height: width, ...themeRef.current });
     };
     if (reducedMotion) {
-      globe.update({ phi, width: 2 * width, height: 2 * width, ...themeRef.current });
+      globe.update({ phi, width, height: width, ...themeRef.current });
     }
     rafId = requestAnimationFrame(tick);
     const fadeId = requestAnimationFrame(() => {
@@ -119,6 +124,7 @@ function Globe({ className = '' }: { className?: string }) {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(fadeId);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onScroll);
       globe.destroy();
       try {
         const gl: any = canvas.getContext('webgl2') ?? canvas.getContext('webgl');
@@ -252,7 +258,17 @@ function useIdleReady() {
   return ready;
 }
 
-export default function Testimonials({ items, stats }: { items: any[]; stats: any[] }) {
+// Up to three counters; one with an empty value is left out.
+const STATS = [
+  { value: $t("stat-1-value"), suffix: $t("stat-1-suffix"), label: $t("stat-1-label") },
+  { value: $t("stat-2-value"), suffix: $t("stat-2-suffix"), label: $t("stat-2-label") },
+  { value: $t("stat-3-value"), suffix: $t("stat-3-suffix"), label: $t("stat-3-label") },
+]
+  .map((stat) => ({ ...stat, value: Number(stat.value) || 0 }))
+  .filter((stat) => stat.value);
+
+export default function Testimonials({ items }: { items: any[] }) {
+  const stats = STATS;
   const sectionRef = useRef<HTMLElement>(null);
   const ready = useIdleReady();
   const [active, setActive] = useState(0);
