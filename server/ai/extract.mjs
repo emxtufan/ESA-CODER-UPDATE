@@ -86,14 +86,28 @@ export function titleOf(html) {
   return match ? htmlToText(match[1]) : '';
 }
 
-/** Search terms of a text: lowercase, no diacritics, no punctuation, no stopwords, min 2 chars. */
+// Longest suffix first, so "planurilor" loses "urilor" and not "ilor".
+const SUFFIXES = ['urilor', 'ilor', 'elor', 'ului', 'uri', 'ele', 'ile', 'ul', 'ii', 'ei', 'le', 'a', 'e', 'i', 'u'];
+
+// ponytail: naive Romanian suffix stemmer; swap for a real stemmer if recall suffers
+function stem(term) {
+  for (const suffix of SUFFIXES) {
+    if (!term.endsWith(suffix)) continue;
+    const root = term.slice(0, -suffix.length);
+    return root.length >= 3 ? root : term;
+  }
+  return term;
+}
+
+/** Search terms of a text: lowercase, no diacritics, no punctuation, no stopwords, min 2 chars, stemmed. */
 export function tokenize(s) {
   return String(s ?? '')
     .toLowerCase()
     .normalize('NFD')
     .replace(/\p{M}+/gu, '')
     .split(/[^\p{L}\p{N}]+/u)
-    .filter((term) => term.length >= 2 && !STOPWORDS.has(term));
+    .filter((term) => term.length >= 2 && !STOPWORDS.has(term))
+    .map(stem);
 }
 
 /** Splits a text into chunks of ~`size` chars, each starting with the tail of the previous one. */
@@ -144,9 +158,11 @@ const STOPWORDS = new Set([
   'a', 'al', 'ai', 'ale', 'lui', 'lor', 'se', 'sa', 'nu', 'mai', 'ca', 'fie', 'fost', 'prin', 'intre',
   'despre', 'dupa', 'pana', 'cel', 'cea', 'cei', 'cele', 'dar', 'iar', 'deci', 'ori', 'sub', 'peste',
   'langa', 'fara', 'spre', 'catre', 'acest', 'aceasta', 'aceste', 'cand', 'cum', 'unde', 'asa',
+  'cat', 'cata', 'cate', 'cati', 'va', 'pot', 'poate', 'puteti', 'aveti', 'imi', 'mi', 'ma', 'noi',
+  'voi', 'eu', 'tu', 'vreau', 'ati', 'foarte',
   'the', 'and', 'or', 'of', 'to', 'is', 'are', 'for', 'with', 'on', 'it', 'this', 'that', 'be', 'as',
   'at', 'by', 'an', 'from', 'we', 'you', 'your', 'our', 'can', 'will', 'not', 'have', 'has', 'was',
-  'but', 'they', 'their', 'its', 'if', 'so', 'do', 'does', 'more', 'than',
+  'but', 'they', 'their', 'its', 'if', 'so', 'do', 'does', 'more', 'than', 'my', 'how', 'what', 'i',
 ]);
 
 // One line per paragraph, never more than two blank-free newlines in a row.

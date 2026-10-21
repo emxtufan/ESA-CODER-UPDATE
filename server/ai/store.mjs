@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS = {
   citations: 'always',
   suggestions: ['Ce servicii oferiți?', 'Cum vă pot contacta?'],
   topK: 6,
-  minScore: 0.2,
+  minScore: 0.3,
   retentionDays: 30,
 };
 

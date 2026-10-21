@@ -18,6 +18,8 @@ const MAX_ERRORS = 50;
 const MAX_PER_SOURCE = 2;
 const K1 = 1.2;
 const B = 0.75;
+// Bumped whenever tokenize() changes: an older index is re-tokenized on load.
+const TOKENIZER_VERSION = 2;
 
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isoNow = () => new Date().toISOString();
@@ -53,18 +55,30 @@ export async function createKnowledge({dir, store}) {
     return run;
   };
 
-  const emptyKb = () => ({sources: [], chunks: [], embedKey: null, lastSync: null, errors: []});
+  const emptyKb = () => ({sources: [], chunks: [], embedKey: null, lastSync: null, errors: [], tokenizer: TOKENIZER_VERSION});
 
   async function loadKb() {
     const saved = await readJSON(kbFile, null);
     if (!isObject(saved)) return emptyKb();
-    return {
+    const kb = {
       sources: Array.isArray(saved.sources) ? saved.sources.filter(isObject) : [],
       chunks: Array.isArray(saved.chunks) ? saved.chunks.filter(isObject) : [],
       embedKey: typeof saved.embedKey === 'string' && saved.embedKey ? saved.embedKey : null,
       lastSync: typeof saved.lastSync === 'string' && saved.lastSync ? saved.lastSync : null,
       errors: Array.isArray(saved.errors) ? saved.errors.filter(isObject).slice(-MAX_ERRORS) : [],
+      tokenizer: saved.tokenizer === TOKENIZER_VERSION ? TOKENIZER_VERSION : 0,
     };
+    // Tokens written by an older tokenizer would never match a new query, so every chunk is
+    // re-tokenized once and the file is rewritten.
+    if (kb.tokenizer !== TOKENIZER_VERSION) {
+      for (const chunk of kb.chunks) {
+        const source = kb.sources.find((item) => item.id === chunk.sourceId) ?? null;
+        chunk.tokens = tokenize(`${source?.title ?? ''} ${chunk.text}`);
+      }
+      kb.tokenizer = TOKENIZER_VERSION;
+      await atomic(kbFile, kb);
+    }
+    return kb;
   }
 
   // A source record: the hash covers what a reader sees, so a CMS edit is detected
@@ -427,6 +441,7 @@ export async function createKnowledge({dir, store}) {
       const sources = new Map(kb.sources.map((source) => [source.id, source]));
       const candidates = kb.chunks.filter((chunk) => sources.get(chunk.sourceId)?.status === 'approved');
       const terms = new Set(tokenize(query));
+      const q = [...terms];
 
       // BM25 over the candidate chunks.
       const lengths = candidates.map((chunk) => count(chunk.tokens));
@@ -441,7 +456,7 @@ export async function createKnowledge({dir, store}) {
       const df = new Map();
       for (const counts of frequencies) for (const term of counts.keys()) df.set(term, (df.get(term) ?? 0) + 1);
       const total = candidates.length;
-      const lexical = frequencies.map((counts, index) => {
+      const bm25 = frequencies.map((counts, index) => {
         if (!average) return 0;
         let score = 0;
         for (const [term, tf] of counts) {
@@ -451,8 +466,18 @@ export async function createKnowledge({dir, store}) {
         }
         return score;
       });
-      const maxLexical = lexical.reduce((max, value) => (value > max ? value : max), 0);
-      const bm25n = lexical.map((value) => (maxLexical > 0 ? value / maxLexical : 0));
+      const maxLexical = bm25.reduce((max, value) => (value > max ? value : max), 0);
+      const bm25n = bm25.map((value) => (maxLexical > 0 ? value / maxLexical : 0));
+      // Coverage: how many query terms the chunk contains at all. BM25 normalised to the best
+      // chunk is always 1.0 at the top, so coverage is what tells a match from noise.
+      const coverage = candidates.map((chunk) => {
+        if (!q.length) return 0;
+        const tokens = new Set(Array.isArray(chunk.tokens) ? chunk.tokens : []);
+        let found = 0;
+        for (const term of q) if (tokens.has(term)) found++;
+        return found / q.length;
+      });
+      const lexical = coverage.map((value, index) => (value < 0.5 ? 0 : value * (0.5 + 0.5 * bm25n[index])));
 
       // Semantic part: only with the same embedder the chunks were indexed with.
       const embedder = await resolveEmbedder();
@@ -485,8 +510,9 @@ export async function createKnowledge({dir, store}) {
             url: source.url ?? '',
             kind: source.kind ?? '',
             text: chunk.text,
-            score: hybrid ? 0.6 * (cos ?? 0) + 0.4 * bm25n[index] : bm25n[index],
-            lexical: bm25n[index],
+            score: cos !== null ? 0.6 * cos + 0.4 * lexical[index] : lexical[index],
+            lexical: lexical[index],
+            coverage: coverage[index],
             semantic: cos,
             updatedAt: source.updatedAt ?? null,
           };
