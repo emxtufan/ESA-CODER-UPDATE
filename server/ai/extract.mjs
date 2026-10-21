@@ -12,6 +12,17 @@ const MIN_TEXT = 20;
 const PROJECT_FIELDS = ['title', 'category', 'platform', 'overview', 'brief', 'approach', 'outcome', 'about', 'pagesList', 'featuresList'];
 const TOOLS_TITLE = 'Tehnologii folosite';
 
+// Text that reads like an instruction for the model, not like knowledge. Chunks that match are
+// flagged at indexing time and never retrieved, so a source can't steer the assistant.
+export const INJECTION_RE = /\b(ignor(ă|a|e)\w*\s+(toate\s+)?(instruc[tț]iunile|regulile|indica[tț]iile)|ignore\s+(all\s+|any\s+|the\s+)?(previous\s+|prior\s+|above\s+)?(instructions|rules)|disregard\s+(the\s+)?(previous|above|system)|system\s+prompt|prompt(ul)?\s+de\s+sistem|you\s+are\s+now|e[sș]ti\s+acum|act\s+as|jailbreak|developer\s+mode)/i;
+
+/** True when a text carries an instruction aimed at the model, with or without diacritics. */
+export function looksLikeInjection(text) {
+  const raw = String(text ?? '');
+  if (INJECTION_RE.test(raw)) return true;
+  return INJECTION_RE.test(raw.normalize('NFD').replace(/\p{M}+/gu, ''));
+}
+
 /** Every public document of the site: collections plus the admin text scopes. */
 export function siteDocuments(data) {
   const collections = data?._collections ?? {};

@@ -59,7 +59,6 @@ const ACTIVE_KEYS = ['activeChat', 'fallbackChat', 'activeEmbedding'];
 const FORBIDDEN_HEADERS = new Set(['authorization', 'x-api-key', 'x-goog-api-key', 'cookie', 'host']);
 const HEADER_NAME = /^[a-z0-9-]{1,40}$/i;
 const MAX_HEADERS = 10;
-const PROVIDER_TYPES = new Set(Object.keys(TYPES));
 const MAX_MESSAGES = 200;
 const MAX_CONVERSATIONS = 5000;
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -126,7 +125,7 @@ function integerIn(value, min, max, label, fallback) {
 function cleanProvider(input, prev = null) {
   const data = isObject(input) ? input : {};
   const type = text(data.type, 40);
-  if (!PROVIDER_TYPES.has(type)) throw problem('Tip de provider necunoscut.');
+  if (!Object.hasOwn(TYPES, type)) throw problem('Tip de provider necunoscut.');
   const label = text(data.name, 80) || 'Provider';
   const name = typeof data.name === 'string' ? data.name.trim() : '';
   if (!name || name.length > 80) throw problem('Numele trebuie să aibă între 1 și 80 de caractere.');

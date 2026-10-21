@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {atomic, problem, readJSON} from '../gdpr-storage.mjs';
-import {chunkText, hashOf, htmlToText, siteDocuments, titleOf, tokenize} from './extract.mjs';
+import {chunkText, hashOf, htmlToText, looksLikeInjection, siteDocuments, titleOf, tokenize} from './extract.mjs';
 import {provider} from './providers.mjs';
 import {fetchPublic} from './security.mjs';
 
@@ -96,6 +96,7 @@ export async function createKnowledge({dir, store}) {
       version,
       updatedAt: isoNow(),
       error: null,
+      warning: null,
     };
   }
 
@@ -134,15 +135,24 @@ export async function createKnowledge({dir, store}) {
   // A failed embedding never loses the chunks: they stay lexical and the error is logged.
   async function indexSource(kb, source, embedder) {
     kb.chunks = kb.chunks.filter((chunk) => chunk.sourceId !== source.id);
-    const chunks = chunkText(source.text).map((text, index) => ({
-      id: `${source.id}#${index}`,
-      sourceId: source.id,
-      text,
-      tokens: tokenize(`${source.title} ${text}`),
-      vector: null,
-    }));
+    let blocked = 0;
+    const chunks = chunkText(source.text).map((text, index) => {
+      const flagged = looksLikeInjection(text);
+      if (flagged) blocked++;
+      return {
+        id: `${source.id}#${index}`,
+        sourceId: source.id,
+        text,
+        tokens: tokenize(`${source.title} ${text}`),
+        vector: null,
+        blocked: flagged,
+      };
+    });
     kb.chunks.push(...chunks);
     source.error = null;
+    source.warning = blocked
+      ? 'Conține text care arată ca instrucțiuni pentru AI; fragmentele respective sunt excluse.'
+      : null;
     if (!embedder || !chunks.length) return {chunks: chunks.length, ok: true};
     if (kb.embedKey === null) kb.embedKey = embedder.key;
     if (kb.embedKey !== embedder.key) return {chunks: chunks.length, ok: true};
@@ -370,6 +380,7 @@ export async function createKnowledge({dir, store}) {
         version: source.version,
         updatedAt: source.updatedAt,
         error: source.error ?? null,
+        warning: source.warning ?? null,
         chars: String(source.text ?? '').length,
         chunks: perSource.get(source.id) ?? 0,
       }));
@@ -419,6 +430,7 @@ export async function createKnowledge({dir, store}) {
         approved: kb.sources.filter((source) => source.status === 'approved').length,
         drafts: kb.sources.filter((source) => source.status === 'draft').length,
         chunks: kb.chunks.length,
+        blocked: kb.chunks.filter((chunk) => chunk.blocked === true || looksLikeInjection(chunk.text)).length,
         embedded: current ? kb.chunks.filter((chunk) => Array.isArray(chunk.vector) && chunk.vector.length > 0).length : 0,
         failed: kb.sources.filter((source) => !!source.error).length,
         needsReindex: !!embedder && kb.embedKey !== embedder.key,
@@ -437,9 +449,12 @@ export async function createKnowledge({dir, store}) {
       const signal = settings.signal;
       const kb = await loadKb();
       // Candidates are recomputed on every call: a source deleted or re-drafted since the
-      // last index must not answer anymore.
+      // last index must not answer anymore. Chunks that carry model instructions are skipped
+      // both by their stored flag and by a live check (an older index has no flags).
       const sources = new Map(kb.sources.map((source) => [source.id, source]));
-      const candidates = kb.chunks.filter((chunk) => sources.get(chunk.sourceId)?.status === 'approved');
+      const candidates = kb.chunks.filter((chunk) => sources.get(chunk.sourceId)?.status === 'approved'
+        && chunk.blocked !== true
+        && !looksLikeInjection(chunk.text));
       const terms = new Set(tokenize(query));
       const q = [...terms];
 
