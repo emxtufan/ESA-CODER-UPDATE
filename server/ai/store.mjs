@@ -575,6 +575,24 @@ export async function createStore(dir) {
       return conversation ? structuredClone(conversation) : null;
     },
 
+    // Whole conversations (not the list projection) inside a date range, newest first:
+    // reporting needs the messages, and the range is filtered on startedAt like listConversations.
+    async conversationsBetween(from, to, limit = 2000) {
+      const data = await loadConversations();
+      const start = dateBound(from, false);
+      const end = dateBound(to, true);
+      const raw = toNumber(limit);
+      const max = Math.min(Number.isInteger(raw) && raw >= 0 ? raw : 2000, 2000);
+      const items = data.conversations.filter((conversation) => {
+        const started = Date.parse(conversation.startedAt ?? conversation.updatedAt ?? '');
+        if (start !== null && !(started >= start)) return false;
+        if (end !== null && !(started <= end)) return false;
+        return true;
+      });
+      items.sort((a, b) => String(b.updatedAt ?? '').localeCompare(String(a.updatedAt ?? '')));
+      return structuredClone(items.slice(0, max));
+    },
+
     deleteConversation(id) {
       return serial(async () => {
         const data = await loadConversations();

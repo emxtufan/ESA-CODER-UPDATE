@@ -1,10 +1,11 @@
 // Admin API: password login, editing source_data.json and replacing images in place.
 import express from 'express';
-import {createHash, createHmac, randomBytes, randomUUID, timingSafeEqual} from 'node:crypto';
+import {createHash, randomBytes, randomUUID, timingSafeEqual} from 'node:crypto';
 import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs';
 import {mkdir, readFile, rename, unlink, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {createRateLimiter} from './contacts.mjs';
+import {liteData} from './content.mjs';
 import {blockFields, checkRegistry, checkText, hash, loadRegistry, projectItems, recordId, refId, textRefs} from './sections.mjs';
 
 const COOKIE = 'vv_admin';
@@ -132,8 +133,8 @@ const isObj = (v) => v && typeof v === 'object' && !Array.isArray(v);
 // Field that identifies a record (unique, else slug); null = records are matched by position.
 const idFieldOf = (schema) => (schema.fields.find((f) => f.unique) || schema.fields.find((f) => f.type === 'slug'))?.key ?? null;
 
-export async function createAdmin({root, isProd}) {
-  const dataFile = path.join(root, 'source_data.json');
+export async function createAdmin({root, isProd, onChange}) {
+  const dataFile = path.resolve(root, process.env.CONTENT_FILE || 'source_data.json');
   const srcDir = path.join(root, 'src');
   const publicDir = path.join(root, 'public');
   const distDir = path.join(root, 'dist');
@@ -142,7 +143,7 @@ export async function createAdmin({root, isProd}) {
 
   const {password, generated} = loadPassword(root);
   if (generated) await writeAtomic(generated, password + '\n');
-  const secret = createHash('sha256').update('vv-admin:' + password).digest();
+  const sessions = new Map();
 
   let content = await readFile(dataFile, 'utf8');
   let parsed = JSON.parse(content);
@@ -201,13 +202,10 @@ export async function createAdmin({root, isProd}) {
     console.warn('[admin] sections.json not usable:', err.message);
   }
 
-  const sign = (exp) => `${exp}.${createHmac('sha256', secret).update(String(exp)).digest('base64url')}`;
   const valid = (token) => {
-    const [exp, sig] = String(token || '').split('.');
-    if (!exp || !sig || Number(exp) < Date.now()) return false;
-    const expected = Buffer.from(sign(exp).split('.')[1]);
-    const given = Buffer.from(sig);
-    return expected.length === given.length && timingSafeEqual(expected, given);
+    const expires = sessions.get(token);
+    if (!expires || expires < Date.now()) { sessions.delete(token); return false; }
+    return true;
   };
   const cookieOf = (req) => (req.headers.cookie || '').split(/;\s*/).find((c) => c.startsWith(COOKIE + '='))?.slice(COOKIE.length + 1);
   const setCookie = (res, value, maxAge) =>
@@ -223,12 +221,18 @@ export async function createAdmin({root, isProd}) {
     if (given.length !== expected.length || !timingSafeEqual(given, expected)) {
       return res.status(401).json({ok: false, error: 'Parolă greșită.'});
     }
-    setCookie(res, sign(Date.now() + SESSION_MS), SESSION_MS / 1000);
+    for (const [token, expires] of sessions) if (expires < Date.now()) sessions.delete(token);
+    const token = randomBytes(32).toString('base64url');
+    sessions.set(token, Date.now() + SESSION_MS);
+    setCookie(res, token, SESSION_MS / 1000);
     res.json({ok: true});
   });
 
-  router.post('/logout', (_req, res) => {
+  router.post('/logout', (req, res) => {
+    if (req.get('x-admin') !== '1') return res.status(403).json({ok: false, error: 'Cerere respinsă.'});
+    sessions.delete(cookieOf(req));
     setCookie(res, '', 0);
+    res.append('Set-Cookie', `esa_gdpr=; Path=/api/admin; HttpOnly; SameSite=Strict; Max-Age=0${isProd ? '; Secure' : ''}`);
     res.json({ok: true});
   });
 
@@ -276,6 +280,8 @@ export async function createAdmin({root, isProd}) {
       content = next;
       parsed = data;
       etag = '"' + createHash('sha1').update(content).digest('hex') + '"';
+      // Let the AI assistant refresh its knowledge base; a failing hook never breaks the save.
+      try { Promise.resolve(onChange?.()).catch(() => {}); } catch {}
     });
     queue = run.catch(() => {});
     run.then(() => res.json({ok: true}), (err) => res.status(400).json({ok: false, error: err.message}));
@@ -484,6 +490,8 @@ export async function createAdmin({root, isProd}) {
     content = next;
     parsed = data;
     etag = '"' + createHash('sha1').update(content).digest('hex') + '"';
+    // Let the AI assistant refresh its knowledge base; a failing hook never breaks the save.
+    try { Promise.resolve(onChange?.()).catch(() => {}); } catch {}
   };
 
   router.put('/collections/:name', express.json({limit: '8mb'}), (req, res) => {
@@ -624,10 +632,16 @@ export async function createAdmin({root, isProd}) {
   });
 
   // Texts for the production site, always current (the bundle does not embed them).
+  let script = '';
+  let scriptFor = '';
   const contentScript = (req, res) => {
     res.set({'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-cache', ETag: etag});
     if (req.headers['if-none-match'] === etag) return res.status(304).end();
-    res.send(`window.__SOURCE_DATA__=${content.replace(/</g, '\\u003c')};`);
+    if (scriptFor !== etag) {
+      script = `window.__SOURCE_DATA__=${JSON.stringify(liteData(parsed)).replace(/</g, '\\u003c')};`;
+      scriptFor = etag;
+    }
+    res.send(script);
   };
 
   // Re-read the file if it was changed outside the admin (e.g. by hand or a script).
@@ -648,5 +662,5 @@ export async function createAdmin({root, isProd}) {
     return parsed;
   };
 
-  return {router, contentScript: (req, res) => (current(), contentScript(req, res)), current, password, generated};
+  return {router, contentScript: (req, res) => (current(), contentScript(req, res)), current, password, generated, hasSession: req => valid(cookieOf(req))};
 }
