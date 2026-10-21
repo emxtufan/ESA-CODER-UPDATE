@@ -497,7 +497,7 @@ export async function createStore(dir) {
         purgeData(data, settings);
         const incoming = (Array.isArray(msgs) ? msgs : []).map(normalizeMessage);
         const wanted = idOrNull(conversationId);
-        if (!incoming.length) return {conversationId: wanted};
+        if (!incoming.length) return {conversationId: wanted, messageIds: []};
         const now = isoNow();
         let conversation = wanted ? data.conversations.find((item) => item.id === wanted) : null;
         if (!conversation) {
@@ -510,7 +510,8 @@ export async function createStore(dir) {
         conversation.updatedAt = now;
         trimConversations(data);
         await atomic(conversationsFile, data);
-        return {conversationId: conversation.id};
+        // The ids of the messages just written, in order: the caller needs the last one.
+        return {conversationId: conversation.id, messageIds: incoming.map((message) => message.id)};
       });
     },
 
