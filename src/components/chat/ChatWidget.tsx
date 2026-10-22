@@ -109,6 +109,37 @@ export default function ChatWidget() {
     setMounted(true);
     sessionIdRef.current = getSessionId();
 
+    try {
+      const rawLog = window.sessionStorage.getItem(LOG_KEY);
+      if (rawLog) {
+        const parsed: unknown = JSON.parse(rawLog);
+        if (Array.isArray(parsed)) {
+          const restored: ChatMessage[] = [];
+          for (const item of parsed) {
+            if (!item || typeof item !== 'object') continue;
+            const record = item as Record<string, unknown>;
+            const role = record.role;
+            const text = record.text;
+            if (role !== 'user' && role !== 'assistant') continue;
+            if (typeof text !== 'string') continue;
+            const id = typeof record.id === 'string' && record.id ? record.id : createId();
+            restored.push({ id, role, text, failed: false });
+          }
+          setMessages(restored.slice(-MAX_LOGGED_MESSAGES));
+        }
+      }
+    } catch {
+      // jurnalul salvat poate fi corupt sau stocarea indisponibilă
+    }
+
+    try {
+      const savedConversation = window.sessionStorage.getItem(CONV_KEY);
+      conversationIdRef.current =
+        typeof savedConversation === 'string' && savedConversation ? savedConversation : null;
+    } catch {
+      conversationIdRef.current = null;
+    }
+
     const syncConsent = () => {
       setConsentBlocked(needsConsent() && !readConsent());
     };
