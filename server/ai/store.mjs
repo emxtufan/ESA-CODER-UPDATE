@@ -21,6 +21,7 @@ export const DEFAULT_SETTINGS = {
   suggestions: ['Ce servicii oferiți?', 'Cum vă pot contacta?'],
   topK: 6,
   minScore: 0.3,
+  memoryWindow: 6,
   retentionDays: 30,
   leadAfter: 2,
   leadRequired: true,
@@ -51,6 +52,7 @@ const SETTINGS_RULES = {
   maxAnswerChars: {kind: 'number', min: 200, max: 4000},
   topK: {kind: 'number', min: 1, max: 12},
   minScore: {kind: 'number', min: 0, max: 1},
+  memoryWindow: {kind: 'int', min: 1, max: 20},
   retentionDays: {kind: 'number', min: 1, max: 365},
   leadAfter: {kind: 'int', min: 0, max: 20},
   leadRequired: {kind: 'bool'},
@@ -81,6 +83,12 @@ const DEFAULT_MAX_TOKENS = 6000;
 const TEXT_MAX = 2000;
 const SUGGESTIONS_MAX = 6;
 const SUGGESTION_MAX = 120;
+// A conversation's memory: the compact recap the model keeps between turns.
+const MEMORY_SUMMARY_MAX = 800;
+const MEMORY_LIST_MAX = 8;
+const MEMORY_ITEM_MAX = 80;
+const MEMORY_JSON_MAX = 2000;
+const MEMORY_LISTS = ['plans', 'preferences', 'comparisons', 'open'];
 const DAY_MS = 86_400_000;
 
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -265,6 +273,76 @@ function normalizeMessage(input) {
     reason: text(msg.reason, 300),
     rewritten: msg.rewritten === true,
   };
+}
+
+// The memory of a conversation: what the model needs to resolve a follow-up ("dar pentru 12?").
+function emptyMemory() {
+  return {summary: '', state: {topic: '', plans: [], users: null, budget: '', preferences: [], comparisons: [], open: []}};
+}
+
+const memoryText = (value, max) => (typeof value === 'string' ? text(value, max) : '');
+
+function memoryUsers(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  const raw = memoryText(value, MEMORY_ITEM_MAX);
+  return raw || null;
+}
+
+// A list of short strings: no duplicates, at most MEMORY_LIST_MAX items.
+function memoryList(value) {
+  const out = [];
+  for (const item of Array.isArray(value) ? value : []) {
+    if (typeof item !== 'string') continue;
+    const entry = text(item, MEMORY_ITEM_MAX);
+    if (!entry || out.includes(entry)) continue;
+    out.push(entry);
+    if (out.length >= MEMORY_LIST_MAX) break;
+  }
+  return out;
+}
+
+// Shrinks a memory that is still too large: the summary first, then the lists, then the topic.
+function fitMemory(memory) {
+  const size = () => JSON.stringify(memory).length;
+  while (size() > MEMORY_JSON_MAX && memory.summary) {
+    memory.summary = memory.summary.slice(0, Math.floor(memory.summary.length / 2)).trim();
+  }
+  for (const key of MEMORY_LISTS) {
+    while (size() > MEMORY_JSON_MAX && memory.state[key].length) memory.state[key].pop();
+  }
+  while (size() > MEMORY_JSON_MAX && (memory.state.topic || memory.state.budget)) {
+    memory.state.topic = '';
+    memory.state.budget = '';
+  }
+  return memory;
+}
+
+/**
+ * The memory a model proposed, as stored: only the known fields, each one clipped, the whole
+ * object under MEMORY_JSON_MAX. Returns null when the value is not an object.
+ */
+function cleanMemory(value) {
+  if (!isObject(value)) return null;
+  const state = isObject(value.state) ? value.state : {};
+  const memory = {
+    summary: memoryText(value.summary, MEMORY_SUMMARY_MAX),
+    state: {
+      topic: memoryText(state.topic, MEMORY_ITEM_MAX),
+      plans: memoryList(state.plans),
+      users: memoryUsers(state.users),
+      budget: memoryText(state.budget, MEMORY_ITEM_MAX),
+      preferences: memoryList(state.preferences),
+      comparisons: memoryList(state.comparisons),
+      open: memoryList(state.open),
+    },
+  };
+  return fitMemory(memory);
+}
+
+// A stored memory with nothing in it is no memory at all.
+function memoryEmpty(memory) {
+  return !memory.summary && !memory.state.topic && !memory.state.budget && memory.state.users === null
+    && MEMORY_LISTS.every((key) => !memory.state[key].length);
 }
 
 function addTally(map, key, {input, output, cost}) {
@@ -522,7 +600,7 @@ export async function createStore(dir) {
         const now = isoNow();
         let conversation = wanted ? data.conversations.find((item) => item.id === wanted) : null;
         if (!conversation) {
-          conversation = {id: wanted ?? randomUUID(), startedAt: now, updatedAt: now, messages: []};
+          conversation = {id: wanted ?? randomUUID(), startedAt: now, updatedAt: now, messages: [], memory: emptyMemory()};
           data.conversations.push(conversation);
         }
         if (!Array.isArray(conversation.messages)) conversation.messages = [];
@@ -593,6 +671,30 @@ export async function createStore(dir) {
       const conversation = data.conversations.find((item) => item.id === conversationId);
       const messages = Array.isArray(conversation?.messages) ? conversation.messages : [];
       return messages.filter((message) => message.role === 'user').length;
+    },
+
+    // The memory lives inside the conversation, so retention (purgeData) and deleteConversation
+    // remove it together with it. A conversation with no memory, or with an empty one, has none.
+    async getMemory(conversationId) {
+      const data = await loadConversations();
+      const conversation = data.conversations.find((item) => item.id === conversationId);
+      if (!conversation) return null;
+      const memory = cleanMemory(conversation.memory);
+      return memory && !memoryEmpty(memory) ? memory : null;
+    },
+
+    // Only a well-formed object is stored; anything else is refused, so the previous memory stands.
+    setMemory(conversationId, memory) {
+      const next = cleanMemory(memory);
+      if (!next) return Promise.resolve(false);
+      return serial(async () => {
+        const data = await loadConversations();
+        const conversation = data.conversations.find((item) => item.id === conversationId);
+        if (!conversation) return false;
+        conversation.memory = next;
+        await atomic(conversationsFile, data);
+        return true;
+      });
     },
 
     async listConversations(query) {

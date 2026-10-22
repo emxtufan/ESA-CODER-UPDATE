@@ -54,6 +54,10 @@ const EXPANSIONS = [
   [/\b(servicii|ce\s+face[tț]i|ce\s+oferi[tț]i)\b/i, 'servicii oferite'],
   [/\b(tehnolog\w*|platform\w*|framework\w*|limbaj\w*)\b/i, 'tehnologii folosite platforme'],
 ];
+// A follow-up that only points back at what was already said ("dar pentru 12?", "cel anterior").
+const REFERENCE_RE = /\b(dar|si|cel|cea|anterior|asta|acela|acelasi)\b/;
+// Under this many search terms a message carries no topic of its own.
+const MEMORY_QUERY_TOKENS = 5;
 
 const TEXTS = {
   invalid: 'Mesajul este gol sau prea lung.',
@@ -100,9 +104,15 @@ function cleanMessage(value) {
   return typeof value === 'string' ? cleanText(value) : '';
 }
 
-// The last few turns, roles whitelisted and every text clipped.
-function cleanHistory(value) {
-  const items = Array.isArray(value) ? value.slice(-MAX_HISTORY) : [];
+// The last few turns, roles whitelisted and every text clipped. The window comes from the
+// settings (memoryWindow); anything else falls back to the default.
+function historyWindow(value) {
+  const raw = Number(value);
+  return Number.isInteger(raw) && raw >= 1 && raw <= 20 ? raw : MAX_HISTORY;
+}
+
+function cleanHistory(value, limit = MAX_HISTORY) {
+  const items = Array.isArray(value) ? value.slice(-limit) : [];
   const out = [];
   for (const item of items) {
     if (!isObject(item)) continue;
@@ -112,6 +122,18 @@ function cleanHistory(value) {
     out.push({role, text});
   }
   return out;
+}
+
+// The words memory adds to a search: a very short message or one that points back ("dar pentru
+// 12?", "cel anterior") has no topic of its own, so the topic and the plans already discussed are
+// searched with it. Deterministic, no model call.
+function memoryQuery(message, memory) {
+  if (!memory) return '';
+  const short = tokenize(message).length < MEMORY_QUERY_TOKENS;
+  if (!short && !REFERENCE_RE.test(plain(message))) return '';
+  const state = isObject(memory.state) ? memory.state : {};
+  const parts = [state.topic, ...(Array.isArray(state.plans) ? state.plans : [])];
+  return parts.filter((item) => typeof item === 'string' && item.trim()).join(' ');
 }
 
 // The form in which values are compared: lowercase, no diacritics, no quotes.
