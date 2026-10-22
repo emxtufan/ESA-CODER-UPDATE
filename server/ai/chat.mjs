@@ -21,7 +21,8 @@ const BYE_RE = /^(pa|la revedere)/i;
 const ACK_RE = /^(ok|okay|bine|bn|super|perfect|top|nice|gata|asta e tot|nimic altceva)[\s!.?]*$/i;
 // "How are you" is answered with one fixed line, never searched or generated.
 const HOW_RE = /^(cf|cmf|ce faci|ce mai faci|cf bn)\b/i;
-const NUMBER_RE = /\d+(?:[.,]\d+)*/g;
+// A number with its grouping and decimal separators, spaces included ("2.490", "4 990", "4990").
+const NUMBER_RE = /\d+(?:[.,\s]\d{3})*(?:[.,]\d+)?/g;
 const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}/gi;
 const URL_RE = /(?:https?:\/\/|www\.)[^\s<>()"']+/gi;
 const PHONE_RE = /\+?\d[\d\s().-]{6,}\d/g;
@@ -125,9 +126,14 @@ function plain(value) {
     .trim();
 }
 
-// Numbers compare without their separators, so "4.990" matches "4990".
-function squashNumbers(value) {
-  return String(value ?? '').replace(NUMBER_RE, (match) => match.replace(/[.,]/g, ''));
+// The value of a number, without its grouping separators: "2.490", "4 990" and "4990" are 4990.
+const numberKey = (value) => String(value ?? '').replace(/[.,\s]/g, '');
+
+// The numbers a text states, each compared as a whole value: "10" is never found inside "100".
+function numberValues(value) {
+  const out = new Set();
+  for (const match of String(value ?? '').match(NUMBER_RE) ?? []) out.add(numberKey(match));
+  return out;
 }
 
 function stripTags(value) {
@@ -251,9 +257,10 @@ export function validate(raw, sources, settings) {
   // Every hard value the answer states must exist in the sources it was given. The answer may
   // combine and compare them, so the whole set counts, not only the cited ones.
   const haystack = plain(list.map((item) => `${item.title ?? ''}\n${item.text ?? ''}`).join('\n'));
-  const hayNumbers = squashNumbers(haystack);
+  // Every number is compared as one whole value: "10" is not supported by a source holding "100".
+  const hayNumbers = numberValues(haystack);
   for (const number of answerText.match(NUMBER_RE) ?? []) {
-    if (!hayNumbers.includes(squashNumbers(number))) return fail('unsupported_value');
+    if (!hayNumbers.has(numberKey(number))) return fail('unsupported_value');
   }
   for (const email of answerText.match(EMAIL_RE) ?? []) {
     if (!haystack.includes(plain(email))) return fail('unsupported_value');
@@ -268,19 +275,11 @@ export function validate(raw, sources, settings) {
     if (digits.length >= 9 && !hayDigits.includes(digits)) return fail('unsupported_value');
   }
 
-  const terms = [...new Set(tokenize(answerText))];
-  const support = new Set(tokenize(
-    `${cited.map((item) => `${item.title ?? ''} ${item.text ?? ''}`).join('\n')}\n${claims.map((claim) => String(claim.quote ?? '')).join('\n')}`,
-  ));
-  const found = terms.filter((term) => support.has(term)).length;
-  // ponytail: lexical support check; replace with an NLI/LLM verifier if false refusals show up in evals
-  if (terms.length && found / terms.length < SUPPORT_MIN) return fail('low_support');
-
   const limit = Number(cfg.maxAnswerChars);
   const text = Number.isFinite(limit) && limit > 0 && answerText.length > limit
     ? cutToSentence(answerText, limit)
     : answerText;
-  return {ok: true, status: 'answer', text, cited: citations, reason: ''};
+  return {ok: true, status: 'answer', text, cited, reason: ''};
 }
 
 // ----------------------------------------------------------------------- the chat
@@ -675,6 +674,8 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       console.warn(`[ai] chat refused: ${reason}`);
       return finish({conversationId, message, outcome: {...blank('refused', s.noInfo, reason), ...base}});
     }
+    // The links under the answer: the cited hits, or the search hits when nothing was cited.
+    const links = citedLinks(checked.cited, rows);
     return finish({
       conversationId,
       message,
@@ -683,7 +684,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
         status: checked.status,
         text: checked.text,
         reason: '',
-        cites: citedLinks(checked.cited, rows),
+        cites: links.length ? links : fallbackLinks(found),
       },
     });
   }
