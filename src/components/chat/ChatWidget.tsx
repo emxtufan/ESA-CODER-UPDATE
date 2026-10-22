@@ -156,6 +156,9 @@ export default function ChatWidget() {
   useEffect(() => {
     setMounted(true);
     sessionIdRef.current = getSessionId();
+    setSeen(readFlag(SEEN_KEY));
+    setLeadDone(readFlag(LEAD_KEY));
+    setRatedDone(readFlag(RATED_KEY));
 
     try {
       const rawLog = window.sessionStorage.getItem(LOG_KEY);
@@ -217,6 +220,28 @@ export default function ChatWidget() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    if (!config?.enabled || open || seen || consentBlocked) return;
+    const delay = typeof config.teaserDelay === 'number' ? config.teaserDelay : 0;
+    if (!(delay > 0)) return;
+
+    const timer = window.setTimeout(() => setTeaserOn(true), delay * 1000);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [config, open, seen, consentBlocked]);
+
+  const openChat = useCallback(() => {
+    setOpen(true);
+    setSeen(true);
+    setTeaserOn(false);
+    writeFlag(SEEN_KEY);
+  }, []);
+
+  const dismissTeaser = useCallback(() => {
+    setTeaserOn(false);
   }, []);
 
   useEffect(() => {
@@ -358,6 +383,8 @@ export default function ChatWidget() {
           patchAssistant((message) => ({
             messageId: typeof data.messageId === 'string' ? data.messageId : message.messageId,
             status: typeof data.status === 'string' ? data.status : message.status,
+            askLead: !!data.askLead || data.status === 'lead_required',
+            askRating: !!data.askRating,
           }));
           return;
         }
@@ -409,6 +436,8 @@ export default function ChatWidget() {
             status: typeof data.status === 'string' ? data.status : message.status,
             messageId: typeof data.messageId === 'string' ? data.messageId : message.messageId,
             sources: sources ?? message.sources,
+            askLead: !!data.askLead || data.status === 'lead_required',
+            askRating: !!data.askRating,
           }));
           if (typeof data.conversationId === 'string' && data.conversationId) {
             rememberConversation(data.conversationId);
@@ -517,10 +546,89 @@ export default function ChatWidget() {
     void runRequest(lastUser.text, false);
   };
 
+  const handleLeadSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const email = leadEmail.trim();
+    if (!email || !leadConsent) return;
+
+    setLeadError('');
+    setLeadSending(true);
+
+    try {
+      const response = await fetch('/api/ai/lead', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-ai': '1',
+        },
+        body: JSON.stringify({
+          conversationId: conversationIdRef.current,
+          email,
+          consent: true,
+        }),
+      });
+
+      let result: { ok?: boolean; error?: string } | null = null;
+      try {
+        result = (await response.json()) as { ok?: boolean; error?: string };
+      } catch {
+        result = null;
+      }
+
+      if (!response.ok || !result?.ok) {
+        setLeadError(result?.error || 'Nu am putut salva adresa. Încearcă din nou.');
+        return;
+      }
+
+      setLeadDone(true);
+      writeFlag(LEAD_KEY);
+      setMessages((previous) => [
+        ...previous,
+        {
+          id: createId(),
+          role: 'assistant',
+          text: `Mulțumim! Te putem contacta la ${email}. Cu ce te mai pot ajuta?`,
+        },
+      ]);
+    } catch {
+      setLeadError('Nu am putut salva adresa. Încearcă din nou.');
+    } finally {
+      setLeadSending(false);
+    }
+  };
+
+  const handleRating = (value: RatingValue) => {
+    const conversationId = conversationIdRef.current;
+    if (conversationId) {
+      void fetch('/api/ai/rating', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-ai': '1',
+        },
+        body: JSON.stringify({ conversationId, value }),
+      }).catch(() => {
+        // evaluarea e best-effort
+      });
+    }
+
+    setRatedDone(true);
+    writeFlag(RATED_KEY);
+    setMessages((previous) => [
+      ...previous,
+      { id: createId(), role: 'assistant', text: RATING_THANKS },
+    ]);
+  };
+
   if (!mounted || !config || !config.enabled || consentBlocked) return null;
 
   const hasUserMessage = messages.some((message) => message.role === 'user');
   const suggestions = Array.isArray(config.suggestions) ? config.suggestions : [];
+  const lastAssistant = [...messages].reverse().find((message) => message.role === 'assistant');
+  const showLead =
+    !leadDone && !!conversationIdRef.current && messages.some((message) => message.askLead);
+  const showRating = !ratedDone && !!lastAssistant?.askRating && !streaming;
+  const leadBlocking = showLead && !!config.leadRequired;
 
   return (
     <>
