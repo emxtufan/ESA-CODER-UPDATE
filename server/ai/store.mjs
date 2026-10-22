@@ -243,6 +243,7 @@ function normalizeMessage(input) {
     citations,
     feedback: null,
     reason: text(msg.reason, 300),
+    rewritten: msg.rewritten === true,
   };
 }
 
