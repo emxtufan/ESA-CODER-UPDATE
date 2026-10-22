@@ -89,8 +89,10 @@ async function adminOk(method, url, body) {
 let lastReply = null;
 
 // The visitor widget: same shape the page posts, with the custom header a cross-site form cannot set.
-async function ask(message) {
-  const response = await call('POST', '/api/ai/chat', {message, sessionId: randomUUID()}, {'x-ai': '1'});
+// A conversationId continues an existing conversation instead of opening a new one.
+async function ask(message, conversationId = null) {
+  const body = conversationId ? {message, sessionId: randomUUID(), conversationId} : {message, sessionId: randomUUID()};
+  const response = await call('POST', '/api/ai/chat', body, {'x-ai': '1'});
   lastReply = {status: response.status, text: response.value?.text ?? response.raw, reason: response.value?.reason};
   assert.equal(response.status, 200, `chat "${message}": ${response.raw}`);
   assert.equal(response.value?.ok, true, response.raw);
@@ -404,6 +406,53 @@ const scenarios = [
       const answer = await ask('Cât timp acoperiți codul după predare?');
       assert.equal(answer.status, 'answer');
       assert.equal(rewrites.length, 1);
+    },
+  },
+  {
+    name: 'lead-and-rating',
+    async run() {
+      await activate(await ensureProvider('A'));
+      behaviors.A = honest;
+      await adminOk('PUT', '/settings', {leadAfter: 2, leadRequired: true});
+      calls.length = 0;
+      const first = await ask(PLAN_QUESTION);
+      assert.equal(first.status, 'answer');
+      const conversationId = first.conversationId;
+      assert.ok(typeof conversationId === 'string' && conversationId, first.status);
+      assert.equal(first.askLead, false);
+      // The second turn reaches the threshold: the widget is asked for an address.
+      const second = await ask(PLAN_QUESTION, conversationId);
+      assert.equal(second.status, 'answer');
+      assert.equal(second.askLead, true);
+      // A required address stops the conversation before the model: nothing is called or logged.
+      const before = calls.length;
+      const third = await ask(PLAN_QUESTION, conversationId);
+      assert.equal(third.status, 'lead_required');
+      assert.equal(calls.length, before, 'a required lead must not reach the provider');
+      // The address is personal data: neither without consent nor without a valid address.
+      const noConsent = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro'}, {'x-ai': '1'});
+      assert.equal(noConsent.status, 422, noConsent.raw);
+      const invalid = await call('POST', '/api/ai/lead', {conversationId, email: 'client@exemplu', consent: true}, {'x-ai': '1'});
+      assert.equal(invalid.status, 422, invalid.raw);
+      const savedLead = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro', consent: true}, {'x-ai': '1'});
+      assert.equal(savedLead.status, 200, savedLead.raw);
+      assert.equal(savedLead.value?.saved, true, savedLead.raw);
+      // With the address stored the same conversation goes on.
+      const resumed = await ask(PLAN_QUESTION, conversationId);
+      assert.equal(resumed.status, 'answer');
+      const thanks = await ask('mersi', conversationId);
+      assert.equal(thanks.status, 'smalltalk');
+      assert.equal(thanks.askRating, true);
+      const rated = await call('POST', '/api/ai/rating', {conversationId, value: 'good'}, {'x-ai': '1'});
+      assert.equal(rated.status, 200, rated.raw);
+      assert.equal(rated.value?.saved, true, rated.raw);
+      const listed = await adminOk('GET', '/conversations');
+      const row = listed.items.find((item) => item.id === conversationId);
+      assert.ok(row, 'the conversation must be listed');
+      assert.equal(row.email, 'client@exemplu.ro');
+      assert.equal(row.rating, 'good');
+      // Back to a state where the later scenarios never hit the lead gate.
+      await adminOk('PUT', '/settings', {leadAfter: 0});
     },
   },
 ];
