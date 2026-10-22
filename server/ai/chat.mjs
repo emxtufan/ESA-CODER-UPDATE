@@ -251,12 +251,16 @@ export function validate(raw, sources, settings) {
   for (const claim of claims) {
     const quote = typeof claim.quote === 'string' ? claim.quote : '';
     if (quote.length < QUOTE_MIN) return fail('unverified_quote');
-    // The quote is checked verbatim first, exactly as before: plain(quote) inside plain(source.text).
+    // The quote is checked verbatim first, exactly as before: plain(quote) inside plain(title + text), since the title is sent to the model in SOURCES and can be quoted.
     // ponytail: token-overlap fallback for lightly rephrased quotes, on the raw texts (tokenize normalises them itself); numbers are still checked exactly below
     const source = typeof claim.source === 'string' ? cited.find((item) => item.id === claim.source) : null;
-    if (source && (plain(source.text).includes(plain(quote)) || rephrasedQuote(quote, source.text))) continue;
+    const sourceText = source ? `${source.title ?? ''}\n${source.text ?? ''}` : '';
+    if (source && (plain(sourceText).includes(plain(quote)) || rephrasedQuote(quote, sourceText))) continue;
     // Models often attribute a real quote to the neighbouring chunk; the quote must exist verbatim in the retrieved context, wherever it is.
-    const holder = list.find((item) => plain(item.text).includes(plain(quote)) || rephrasedQuote(quote, item.text));
+    const holder = list.find((item) => {
+      const text = `${item.title ?? ''}\n${item.text ?? ''}`;
+      return plain(text).includes(plain(quote)) || rephrasedQuote(quote, text);
+    });
     if (!holder) return fail('unverified_quote');
     if (!citations.includes(holder.id)) citations.push(holder.id);
     if (!cited.includes(holder)) cited.push(holder);
