@@ -36,13 +36,15 @@ type Conversation = {
   lead: {email: string; at: string} | null; rating: {value: RatingValue; at: string} | null;
 };
 type AiStats = {
-  conversations: number; messages: number; avgLatencyMs: number;
+  conversations: number; messages: number; avgLatencyMs: number; avgRetrievalMs: number;
   byStatus: {answered: number; refused: number; error: number; limited: number};
-  insufficient: number; apiErrors: number;
+  insufficient: number; unsupported: number; apiErrors: number;
   tokens: {input: number; output: number};
   cost: {reported: number; estimated: number};
   byProvider: Record<string, {messages: number; input: number; output: number}>;
   byModel: Record<string, {messages: number; input: number; output: number}>;
+  routes: Record<string, number>;
+  cacheHitRate: number; fallbackRate: number; handoffRate: number;
   topQuestions: {q: string; count: number}[];
   negativeFeedback: number;
   leads: number;
@@ -56,6 +58,7 @@ const when = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleString('ro-RO', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'niciodată';
 const cut = (text: string, max: number) => (text.length > max ? `${text.slice(0, max)}…` : text);
 const money = (value?: number) => (typeof value === 'number' && Number.isFinite(value) ? value.toFixed(4) : '0.0000');
+const percent = (value?: number) => `${Math.round((typeof value === 'number' && Number.isFinite(value) ? value : 0) * 100)}%`;
 const qs = (params: Record<string, string | number | undefined>) => {
   const parts = Object.entries(params)
     .filter(([, value]) => value !== undefined && value !== '')

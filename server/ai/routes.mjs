@@ -71,14 +71,21 @@ function analyticsOf(conversations) {
   const byStatus = {answered: 0, refused: 0, error: 0, limited: 0};
   const byProvider = {};
   const byModel = {};
+  const byRoute = {};
   const questions = new Map();
   let messages = 0;
   let latencyTotal = 0;
   let latencyCount = 0;
+  let retrievalTotal = 0;
+  let retrievalCount = 0;
   let insufficient = 0;
+  let unsupported = 0;
   let negativeFeedback = 0;
   let leads = 0;
   const ratings = {good: 0, ok: 0, bad: 0};
+
+  // A rate is returned as a fraction of the whole, 0 when the whole is empty.
+  const rate = (part, whole) => (whole > 0 ? Math.round((part / whole) * 1000) / 1000 : 0);
 
   const tally = (map, key, message) => {
     const row = map[key] ?? {messages: 0, input: 0, output: 0};
@@ -103,8 +110,13 @@ function analyticsOf(conversations) {
       messages++;
       if (Object.hasOwn(byStatus, message.status)) byStatus[message.status]++;
       if (message.status === 'refused' && INSUFFICIENT_REASONS.has(String(message.reason ?? ''))) insufficient++;
+      if (String(message.reason ?? '') === 'unsupported_value') unsupported++;
+      const route = String(message.route ?? '').trim();
+      if (route) byRoute[route] = (byRoute[route] ?? 0) + 1;
       const latency = safeNumber(message.latencyMs);
       if (latency > 0) { latencyTotal += latency; latencyCount++; }
+      const retrieval = safeNumber(message.retrievalMs);
+      if (retrieval > 0) { retrievalTotal += retrieval; retrievalCount++; }
       tally(byProvider, String(message.provider ?? '').trim() || 'unknown', message);
       tally(byModel, String(message.model ?? '').trim() || 'unknown', message);
     }
@@ -113,11 +125,19 @@ function analyticsOf(conversations) {
   return {
     messages,
     avgLatencyMs: latencyCount ? Math.round(latencyTotal / latencyCount) : 0,
+    avgRetrievalMs: retrievalCount ? Math.round(retrievalTotal / retrievalCount) : 0,
     byStatus,
     insufficient,
+    unsupported,
     apiErrors: byStatus.error,
     byProvider,
     byModel,
+    routes: byRoute,
+    // The route mix of the interval: the answers served from the public cache, the searches that
+    // needed a rewrite, and the visitors sent to the team.
+    cacheHitRate: rate(byRoute.cache ?? 0, messages),
+    fallbackRate: rate(byRoute.expanded ?? 0, (byRoute.hybrid ?? 0) + (byRoute.expanded ?? 0)),
+    handoffRate: rate(byRoute.handoff ?? 0, messages),
     topQuestions: [...questions]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .slice(0, TOP_QUESTIONS)
@@ -458,14 +478,20 @@ export async function createAi({dir, admin, getContent}) {
       conversations: total,
       messages: stats.messages,
       avgLatencyMs: stats.avgLatencyMs,
+      avgRetrievalMs: stats.avgRetrievalMs,
       byStatus: stats.byStatus,
       insufficient: stats.insufficient,
+      unsupported: stats.unsupported,
       apiErrors: stats.apiErrors,
       tokens: {input: safeNumber(totals.input), output: safeNumber(totals.output)},
       // What the provider reported and what we estimated stay apart: one is a bill, one is a guess.
       cost: {reported: safeNumber(totals.costReported), estimated: safeNumber(totals.costEstimated)},
       byProvider: stats.byProvider,
       byModel: stats.byModel,
+      routes: stats.routes,
+      cacheHitRate: stats.cacheHitRate,
+      fallbackRate: stats.fallbackRate,
+      handoffRate: stats.handoffRate,
       topQuestions: stats.topQuestions,
       negativeFeedback: stats.negativeFeedback,
       leads: stats.leads,
