@@ -29,15 +29,25 @@ const content = {
   },
 };
 
-// Every model call of the run, and the per-provider behaviour the current scenario expects.
+// Every model call of the run, the per-provider behaviour the current scenario expects, and the
+// query-rewrite calls (chat.mjs asks the active provider for keywords when retrieval is weak).
 const calls = [];
+const rewrites = [];
 const behaviors = {};
+// The keywords the mock hands back to a query rewrite: none unless a scenario asks for them.
+let rewriteWords = [];
 
 registerAdapter('mock', {
   models: async () => ['m1', 'm2'],
   // The adapter contract, exactly as the real ones (providers.mjs): the reply text together
   // with its usage, never the bare text, because chat.mjs reads result.text.
   generate: async (cfg, key, req) => {
+    // A weak retrieval makes chat.mjs ask for keywords before answering: that call is not an
+    // answer, so it is logged apart and never reaches the scenario behaviour.
+    if (req?.system?.startsWith('You turn a website visitor')) {
+      rewrites.push({name: cfg.name, req});
+      return {text: JSON.stringify({keywords: rewriteWords}), usage: {input: 0, output: 0}, costReported: null, model: cfg.model};
+    }
     calls.push({name: cfg.name, req});
     const text = await behaviors[cfg.name](cfg, key, req);
     return {text, usage: {input: 0, output: 0}, costReported: null, model: cfg.model};
@@ -379,6 +389,21 @@ const scenarios = [
       // The session cookie is valid here: only the custom header is missing.
       const adminBare = await call('PUT', '/api/admin/ai/settings', {enabled: true});
       assert.equal(adminBare.status, 403, adminBare.raw);
+    },
+  },
+  {
+    name: 'query-rewrite',
+    async run() {
+      await activate(await ensureProvider('A'));
+      behaviors.A = honest;
+      // A question that shares almost nothing with the source, so the first search is weak.
+      rewriteWords = ['garanție', 'luni'];
+      await addSource('Garanție', 'Garanție: Oferim garanție de 24 de luni pentru cod.');
+      calls.length = 0;
+      rewrites.length = 0;
+      const answer = await ask('Cât timp acoperiți codul după predare?');
+      assert.equal(answer.status, 'answer');
+      assert.equal(rewrites.length, 1);
     },
   },
 ];
