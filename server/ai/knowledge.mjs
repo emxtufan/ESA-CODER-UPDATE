@@ -686,5 +686,11 @@ export async function createKnowledge({dir, store}) {
       }
       return hits;
     },
+
+    // The counter that every write moves: the answer cache is keyed on it, so a changed
+    // knowledge base is a different answer.
+    revision() {
+      return revision;
+    },
   };
 }

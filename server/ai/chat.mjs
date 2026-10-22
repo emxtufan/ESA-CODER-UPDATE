@@ -513,9 +513,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     latencyMs: 0,
   });
 
-  // The public answers already given, oldest first: key -> {text, cites, hits, at}. A hit is
-  // moved to the end, the oldest entry goes when the map is full, and an entry older than a day
-  // is dropped instead of served.
+  // The public answers already given, oldest first: key -> {text, cites, hits, retrievalMs, at}. A
+  // hit is moved to the end, the oldest entry goes when the map is full, and an entry older than a
+  // day is dropped instead of served.
   function cacheGet(key) {
     const entry = cache.get(key);
     if (!entry) return null;
@@ -910,7 +910,17 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
 
     const usage = billedUsage(billed);
     const costReported = billedCost(billedCostReported);
-    const base = {called: true, cfg: used, usage, costReported, latencyMs: now() - started, rewritten};
+    // The retrieval cost rides with every outcome that searched the sources, the refusal included.
+    const base = {
+      called: true,
+      cfg: used,
+      usage,
+      costReported,
+      latencyMs: now() - started,
+      rewritten,
+      hits: rows.length,
+      retrievalMs,
+    };
 
     if (!checked.ok) {
       // A reply cut off at the token limit is a truncated answer, not a malformed one.
@@ -920,6 +930,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     }
     // The links under the answer: the cited hits, or the search hits when nothing was cited.
     const links = citedLinks(checked.cited, rows);
+    const answerCites = links.length ? links : fallbackLinks(found);
     const done = await finish({
       conversationId,
       message,
@@ -928,13 +939,18 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
         status: checked.status,
         text: checked.text,
         reason: '',
-        cites: links.length ? links : fallbackLinks(found),
+        cites: answerCites,
       },
     });
     // The memory proposed with a successful turn (an answer or a clarifying question) replaces
     // the stored one; a refusal or an error leaves the memory untouched.
     if (isObject(checked.memory) && done.conversationId) {
       await store.setMemory(done.conversationId, checked.memory);
+    }
+    // Only a full answer is kept for the next identical first message; a clarify still waits
+    // for the visitor's detail.
+    if (key && checked.status === 'answer') {
+      cacheSet(key, {text: checked.text, cites: answerCites, hits: rows.length, retrievalMs, at: now()});
     }
     return done;
   }

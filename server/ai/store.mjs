@@ -28,6 +28,7 @@ export const DEFAULT_SETTINGS = {
   leadPrompt: 'Ca să putem continua și să te contactăm dacă e nevoie, lasă-ne adresa ta de email.',
   ratingPrompt: 'Cum a fost conversația?',
   teaserDelay: 5,
+  cacheEnabled: true,
 };
 
 export const DEFAULT_LIMITS = {
@@ -59,6 +60,7 @@ const SETTINGS_RULES = {
   leadPrompt: {kind: 'string'},
   ratingPrompt: {kind: 'string'},
   teaserDelay: {kind: 'int', min: 0, max: 120},
+  cacheEnabled: {kind: 'bool'},
 };
 
 const INT_LIMITS = new Set(['maxMessageChars', 'perSessionPerDay', 'perIpPerMinute', 'perIpPerDay', 'globalPerDay']);
@@ -272,6 +274,9 @@ function normalizeMessage(input) {
     feedback: null,
     reason: text(msg.reason, 300),
     rewritten: msg.rewritten === true,
+    route: text(msg.route, 20),
+    retrievalMs: nonNegative(msg.retrievalMs),
+    hits: nonNegative(msg.hits),
   };
 }
 
