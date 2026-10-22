@@ -636,9 +636,9 @@ export default function ChatWidget() {
         ref={fabRef}
         type="button"
         className="esa-chat-fab"
-        aria-label="Deschide asistentul"
+        aria-label={!open && !seen ? 'Deschide asistentul – un mesaj nou' : 'Deschide asistentul'}
         aria-expanded={open}
-        onClick={() => setOpen((previous) => !previous)}
+        onClick={() => (open ? setOpen(false) : openChat())}
       >
         <svg
           viewBox="0 0 24 24"
@@ -652,7 +652,28 @@ export default function ChatWidget() {
         >
           <path d="M4 5h16v11H9l-5 4V5Z" />
         </svg>
+        {!open && !seen ? (
+          <span className="esa-chat-badge" aria-hidden="true">
+            1
+          </span>
+        ) : null}
       </button>
+
+      {!open && teaserOn ? (
+        <div className="esa-chat-teaser" role="status">
+          <button type="button" className="esa-chat-teaser-body" onClick={openChat}>
+            {teaserText(config.welcome)}
+          </button>
+          <button
+            type="button"
+            className="esa-chat-teaser-close"
+            aria-label="Închide mesajul"
+            onClick={dismissTeaser}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
 
       {open ? (
         <div className="esa-chat-panel" role="dialog" aria-label="Asistent ESA">
@@ -767,9 +788,85 @@ export default function ChatWidget() {
                 </div>
               );
             })}
+
+            {showLead ? (
+              <form
+                className="esa-chat-lead"
+                onSubmit={handleLeadSubmit}
+                aria-labelledby={leadId}
+              >
+                <p id={leadId}>{config.leadPrompt}</p>
+                <label htmlFor={leadEmailId} className="esa-chat-sr">
+                  Adresa de email
+                </label>
+                <input
+                  id={leadEmailId}
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="nume@exemplu.ro"
+                  value={leadEmail}
+                  onChange={(event) => setLeadEmail(event.target.value)}
+                  className="esa-chat-lead-input"
+                />
+                <label className="esa-chat-lead-consent" htmlFor={leadConsentId}>
+                  <input
+                    id={leadConsentId}
+                    type="checkbox"
+                    required
+                    checked={leadConsent}
+                    onChange={(event) => setLeadConsent(event.target.checked)}
+                  />
+                  <span>
+                    Sunt de acord ca ESA Coder Solutions să folosească adresa mea de email
+                    pentru a-mi răspunde, conform{' '}
+                    <Link href="/politica-de-confidentialitate">Politicii de confidențialitate</Link>
+                    .
+                  </span>
+                </label>
+                {leadError ? (
+                  <p className="esa-chat-lead-error" role="alert">
+                    {leadError}
+                  </p>
+                ) : null}
+                <button type="submit" className="esa-chat-send" disabled={leadSending}>
+                  {leadSending ? 'Se trimite…' : 'Trimite'}
+                </button>
+                {config.leadRequired ? (
+                  <Link href={config.contactUrl} className="esa-chat-lead-alt">
+                    sau scrie-ne din pagina de contact
+                  </Link>
+                ) : null}
+              </form>
+            ) : null}
+
+            {showRating ? (
+              <div
+                className="esa-chat-rating"
+                role="group"
+                aria-label={config.ratingPrompt}
+              >
+                <p>{config.ratingPrompt}</p>
+                <div>
+                  {[
+                    ['good', '👍 Bună'],
+                    ['ok', '😐 Ok'],
+                    ['bad', '👎 Slabă'],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleRating(value as RatingValue)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
 
-          {!hasUserMessage && suggestions.length > 0 ? (
+          {!hasUserMessage && suggestions.length > 0 && !leadBlocking ? (
             <div className="esa-chat-suggestions">
               {suggestions.map((suggestion, index) => (
                 <button
@@ -792,7 +889,10 @@ export default function ChatWidget() {
               onKeyDown={handleInputKeyDown}
               maxLength={maxChars}
               rows={2}
-              placeholder="Scrie un mesaj…"
+              disabled={leadBlocking}
+              placeholder={
+                leadBlocking ? 'Lasă adresa de email ca să continuăm' : 'Scrie un mesaj…'
+              }
             />
             <span className="esa-chat-count">
               {input.length}/{maxChars}
@@ -802,7 +902,7 @@ export default function ChatWidget() {
                 Oprește
               </button>
             ) : (
-              <button type="submit" className="esa-chat-send">
+              <button type="submit" className="esa-chat-send" disabled={leadBlocking}>
                 Trimite
               </button>
             )}
