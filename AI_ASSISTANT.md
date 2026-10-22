@@ -12,27 +12,41 @@ Modul disponibil în **`/admin` → AI Assistant**, cu panouri pentru furnizori,
 6. Verifică răspunsurile în **Conversations** și în widgetul public; feedback-ul vizitatorilor ajunge în același jurnal (`server/ai/routes.mjs:245-254`, `:386`).
 
 ## Fluxul unei întrebări
+`chat.answer()` (server/ai/chat.mjs), în ordine:
+1. Validare mesaj, asistent activ, **proprietarul conversației** (`store.ownsConversation`: un `conversationId` al altei sesiuni e ignorat și se deschide o conversație nouă).
+2. Limite (IP/minut, IP/zi, sesiune/zi, global/zi, buget lunar) → ruta `limited`; poarta de email (`leadAfter`).
+3. **Cache** (`cacheEnabled`): doar pentru primul mesaj (fără istoric și fără memorie). Cheia: tokenii mesajului + revizia KB + providerul activ + setările de stil. Max 300 intrări, 24 h. Orice modificare a bazei de cunoștințe schimbă revizia și invalidează cache-ul → ruta `cache`.
+4. Small talk → `smalltalk`; cerere pură de contact → răspuns determinist din `site:contact:main` → `contact`.
+5. Căutare: query = mesaj + (pentru mesaje scurte/cu referință: „dar”, „cel anterior”…) subiectul și planurile din memorie + întrebarea anterioară + sinonime (EXPANSIONS). Dacă acoperirea e < 0.75, rescriere LLM a query-ului și a doua căutare → `expanded`.
+6. **Profilul firmei** (`knowledge.profileHits()`, max 16 000 caractere) intră mereu în surse, înaintea rezultatelor căutării: contact, toate planurile, listele de servicii/proiecte/articole, FAQ și surse manuale aprobate. Modelul poate astfel combina informațiile și recomanda planuri.
+7. `clarify` doar când mesajul nu are niciun cuvânt util.
+8. Apel model (un fallback pe erori tranzitorii), răspuns JSON: `status`, `answer`, `citations`, opțional `calcs` și `memory`. JSON invalid → o reîncercare cu „Răspunde DOAR cu JSON valid”.
+9. Validare (grounding), apoi salvare, memorie, cache. Refuz → ruta `handoff` (mesajul standard + link de contact). Răspuns normal → `hybrid`.
 
-```
-vizitator → ChatWidget (src/components/chat/ChatWidget.tsx:84)
-   │  POST /api/ai/chat, SSE, antet x-ai: 1   → server/ai/routes.mjs:189
-   ▼
-chat.answer  → server/ai/chat.mjs:321
-   ├─ limită IP/minut, sesiune/zi, buget global   → chat.mjs:340
-   ├─ small talk („salut”, „mulțumesc”) → text fix   → chat.mjs:346
-   ├─ întrebare < 6 cuvinte → se caută împreună cu întrebarea anterioară → chat.mjs:352
-   ├─ knowledge.search: lexical (BM25) + semantic, dacă există embeddings → chat.mjs:360
-   ├─ < 2 termeni utili → status clarify (too_vague), dar numai după căutare și numai dacă niciun fragment găsit nu conține un termen rar (df ≤ 5% din fragmente) → chat.mjs:357, :361
-   ├─ 0 rezultate → status refused (no_sources) → chat.mjs:361
-   ├─ prompt de sistem + sursele S1..Sn → chat.mjs:365-371
-   ├─ furnizor activ; un singur fallback la eroare tranzitorie → chat.mjs:377-400
-   ▼
-validate(JSON-ul modelului) → answer | clarify | refused | insufficient | conflict → chat.mjs:152
-   ▼
-persistare conversație (conversations.json) → server/ai/store.mjs:267
-   ▼
-SSE: meta → delta → sources → done → routes.mjs:225-236
-```
+## Memoria conversației
+- Se trimit doar ultimele `memoryWindow` mesaje (implicit 6, 1–20) + un bloc `CONVERSATION MEMORY` cu memoria compactă: `summary` (≤800 caractere) și `state` {topic, plans, users, budget, preferences, comparisons, open} (liste ≤8, JSON ≤2000).
+- Memoria o actualizează modelul în același apel (fără cost suplimentar) și se salvează per conversație, doar după răspunsuri valide. Se șterge odată cu conversația (retenție).
+- Memoria nu e sursă de fapte despre firmă; rezolvă referințe („dar pentru 12?”, „cel anterior”).
+
+## Grounding (zero valori inventate)
+- Orice număr din răspuns trebuie să existe ca valoare întreagă în surse („10” nu e găsit în „100”; „2.490” = „2490”), într-un calcul verificat sau în mesajele vizitatorului.
+- Sumele de bani (lei, RON, €, EUR, $) doar din surse sau calcule — nu din ce a scris vizitatorul.
+- Email, URL, telefon: doar din surse.
+- `calcs`: `{expr, result}`; serverul evaluează expresia (doar cifre și + − × ÷ ()), operanzii trebuie să vină din surse/mesajele vizitatorului, rezultatul trebuie să coincidă (±0.01).
+- Citările sunt opționale (decid doar linkurile afișate). Încălcare → refuz `unsupported_value`.
+
+## Securitate conversații
+Conversația păstrează `ownerHash` = sha256(sessionId). `/api/ai/feedback`, `/lead`, `/rating` cer `sessionId` și răspund 404 dacă sesiunea nu deține conversația.
+
+## Admin
+- Settings: „Mesaje păstrate în context” (`memoryWindow`), „Cache răspunsuri publice” (`cacheEnabled`).
+- „Testează asistentul” (Settings): conversație pe mai multe mesaje; sub fiecare răspuns status · rută · model · tokeni in/out · ms · surse · motiv; secțiunea „Memorie” arată JSON-ul memoriei. Buton „Conversație nouă”.
+- Analytics: rute, cache hit, căutare extinsă (fallback), predat echipei (handoff), retrieval mediu, valori respinse.
+
+## Limitări
+- Stocare în fișiere JSON (`data/ai`), nu Postgres/pgvector.
+- Cache-ul și revizia KB sunt în memorie: se golesc la restart.
+- Embeddings opționale: necesită un provider cu embeddings (DeepSeek nu are); fără ele căutarea e lexicală (BM25 + sinonime + rescriere), completată de profilul firmei.
 
 ## Funcții reale
 
@@ -40,9 +54,9 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - Chei API criptate AES-256-GCM și mascate în API; `AI_SECRET_KEY` invalid oprește modulul cu 503 (`server/ai/security.mjs:1-27`).
 - Import de surse cu protecție SSRF: rezolvare DNS, blocare a intervalelor private și a redirecționărilor către rețeaua internă (`server/ai/security.mjs:1-2`).
 - Bază de cunoștințe construită determinist din `source_data.json`, tăiată în bucăți, tokenizată și — opțional — vectorizată; un singur `kb.json`, scris atomic (`server/ai/extract.mjs:1-3`, `server/ai/knowledge.mjs:1-2`).
-- Căutare hibridă: lexical BM25 plus cosinus pe embeddings, cu degradare la lexical dacă furnizorul de embeddings nu răspunde; un fragment trece filtrul lexical dacă acoperă ≥ 50% din termenii întrebării **sau** conține un termen rar (df ≤ 5% din fragmente, ex. „SAGA”) (`server/ai/knowledge.mjs:486-506`, `:500-548`).
+- Căutare hibridă: lexical BM25 plus cosinus pe embeddings, cu degradare la lexical dacă furnizorul de embeddings nu răspunde (`server/ai/knowledge.mjs:486-506`, `:500-548`).
 - Respingerea textelor care conțin instrucțiuni pentru model (prompt injection) la indexare, nu la afișare (`server/ai/extract.mjs:17-24`).
-- Răspunsuri validate: citate obligatorii, citate verificate în surse, valori numerice susținute de text, prag de suport; stări explicite `answer`/`clarify`/`refused`/`insufficient`/`conflict` (`server/ai/chat.mjs:45-48`, `:152-223`).
+- Răspunsuri validate: citate verificate în surse, valori numerice susținute de text; stări explicite `answer`/`clarify`/`refused`/`insufficient`/`conflict` (`server/ai/chat.mjs:45-48`, `:152-223`).
 - Streaming SSE pentru vizitator, cu text tăiat în fragmente scurte și oprire când clientul pleacă (`server/ai/routes.mjs:16-17`, `:212-242`).
 - Widget public ascuns fără consimțământul pentru statistici, cu antet `x-ai` cerut de server pentru orice scriere (`src/components/chat/ChatWidget.tsx:7`, `:341-342`, `:472`, `server/ai/routes.mjs:174`).
 - Persistență atomară în `AI_DIR`: `config.json`, `conversations.json`, `usage.json`, cu scrieri serializate (`server/ai/store.mjs:266-268`, `:1-3`).
@@ -53,10 +67,8 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 ## Răspunsuri deterministe
 
 - Date de contact (telefon, email, adresă) servite direct din documentul `site:contact:main`, fără model, când întrebarea e scurtă și despre contact (`server/ai/chat.mjs`, `CONTACT_ANY_RE`).
-- Întrebările de preț primesc mereu planurile (`knowledge.hitsOfKind('plan')`); validatorul verifică exact fiecare sumă.
 - Sinonime deterministe pe teme (timp, hosting, portofoliu, servicii, tehnologii) adăugate la căutare (`EXPANSIONS`), abrevieri în `tokenize` (tel, nr, mail) și formule de politețe (ms, cf bn, ok, gata).
 - Documente de ansamblu generate din CMS: contact, servicii, proiecte, blog (`server/ai/extract.mjs`).
-- Citatul e acceptat dacă apare exact (sau ≥85% din termeni) în oricare sursă trimisă modelului, inclusiv în titlu; sursa e adăugată la citări.
 - Rescrierea întrebării în cuvinte-cheie de către model când căutarea e slabă (un apel scurt în plus).
 
 ## Captare email și rating
@@ -89,13 +101,9 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - Teste: `tests/ai-check.mjs`, `tests/ai-eval.mjs`, `tests/ai-eval.json`.
 
 ## Teste
-
-- `npm run test:ai` — suite cu HTTP real pe routere și furnizor `mock` înregistrat în locul vânzătorilor, fără rețea și fără datele reale din `data/` (`package.json:23`, `tests/ai-check.mjs:1-2`, `:36-54`).
-- `npm run test:ai-eval` — evaluare de retrieval și validare pe conținutul real al site-ului, cu model mock (`package.json:23`, `tests/ai-eval.mjs:1`, `:22-27`).
-- Raportul de evaluare numără separat întrebările `answerable`, `unanswerable` și `ambiguous` (`tests/ai-eval.mjs:39-47`).
-- Ambiguous: cele 4 întrebări din `tests/ai-eval.json:22-25` trebuie să primească cerere de clarificare, nu un răspuns afirmativ — metrica `refusedOrClarify` = 4/4 (`tests/ai-eval.mjs:46`), conform regulii din prompt ca întrebarea ambiguă să primească o singură întrebare scurtă de clarificare (`server/ai/chat.mjs:48`, `:357-359`).
-- După relaxarea filtrului lexical, cu modelul mock „ascultător” (răspunde mereu) refuzul la întrebările fără răspuns a scăzut la 13% (`tests/ai-eval.mjs:10-15`, `:45`), iar testul live cu DeepSeek a refuzat corect întrebarea despre „reduceri Black Friday”. Limitare: filtrul mai permisiv trimite mai multe întrebări la model (cost), iar refuzul depinde de statusul `insufficient` al modelului plus validare (`server/ai/chat.mjs:152-223`).
-- Test live (manual, facturabil): 101 întrebări reale pe DeepSeek — prescurtări, greșeli de scriere, capcane, prompt injection — 97–99/101; eșecurile rămase sunt răspunsuri oneste încadrate strict de test.
+- `npm run test:ai` — 24 scenarii cu provider mock (fără apeluri facturabile): schimbare provider, consultanță, întrebare necunoscută, prețuri lipsă, surse contradictorii, prompt injection (vizitator și document), cheie invalidă, provider căzut, conținut șters, citări lipsă, număr inventat, retry JSON, limite de cost, secretul cheilor, SSRF, CSRF, rescriere query, email și rating, calcul anual, numere ale vizitatorului, cache + actualizare preț, izolarea sesiunilor, conversație de 50 de mesaje + buget de tokeni.
+- `npm run test:ai-eval` — setul de evaluare de retrieval.
+- `npm run test:ai-live` — conversații reale din `tests/ai-live.json` pe providerul configurat (consumă tokeni), pe o copie temporară a `data/ai`. `AI_DEBUG=1` afișează valoarea respinsă sau răspunsul brut la JSON invalid.
 
 ## Limitări
 
