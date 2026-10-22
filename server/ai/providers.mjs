@@ -273,7 +273,8 @@ export function provider(cfg, key) {
       try {
         const result = await adapter.generate(cfg, apiKey, {
           messages: [{role: 'user', content: 'ping'}],
-          maxTokens: 8,
+          // reasoning models spend the first tokens thinking; 8 returns empty text
+          maxTokens: 256,
         });
         return {ok: true, latencyMs: Date.now() - started, model: result?.model || cfg.model};
       } catch (error) {
