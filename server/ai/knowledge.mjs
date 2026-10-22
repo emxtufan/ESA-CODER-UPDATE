@@ -21,6 +21,9 @@ const B = 0.75;
 // Bumped whenever tokenize() changes: an older index is re-tokenized on load.
 const TOKENIZER_VERSION = 3;
 
+// A [COMPLETEAZĂ: …] placeholder means the operator still owes content: it may never go live.
+const PLACEHOLDER = /\[COMPLETEAZ/i;
+
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isoNow = () => new Date().toISOString();
 const count = (value) => (Array.isArray(value) ? value.length : 0);
@@ -98,6 +101,13 @@ export async function createKnowledge({dir, store}) {
       error: null,
       warning: null,
     };
+  }
+
+  // Approval is refused while a placeholder is left in the text or the title.
+  function assertNoPlaceholder(status, title, text) {
+    if (status !== 'approved') return;
+    if (!PLACEHOLDER.test(String(title ?? '')) && !PLACEHOLDER.test(String(text ?? ''))) return;
+    throw problem('Textul conține câmpuri [COMPLETEAZĂ: …] necompletate. Completează-le înainte de aprobare.', 422);
   }
 
   // What the admin list shows: no text, no chunks, just what the row needs.
@@ -305,6 +315,7 @@ export async function createKnowledge({dir, store}) {
         }
         const status = typeof data.status === 'string' && data.status ? data.status : 'draft';
         if (!STATUSES.has(status)) throw problem('Statusul trebuie să fie approved sau draft.');
+        assertNoPlaceholder(status, title, text);
         const kind = (typeof data.kind === 'string' ? data.kind.trim().slice(0, 40) : '') || prev?.kind || 'text';
         const source = buildSource({
           id: prev?.id ?? randomUUID(),
@@ -347,6 +358,7 @@ export async function createKnowledge({dir, store}) {
         const kb = await loadKb();
         const source = kb.sources.find((item) => item.id === id);
         if (!source) throw problem('Sursa nu există.', 404);
+        assertNoPlaceholder(status, source.title, source.text);
         source.status = status;
         source.updatedAt = isoNow();
         await atomic(kbFile, kb);
@@ -454,6 +466,7 @@ export async function createKnowledge({dir, store}) {
       const sources = new Map(kb.sources.map((source) => [source.id, source]));
       const candidates = kb.chunks.filter((chunk) => sources.get(chunk.sourceId)?.status === 'approved'
         && chunk.blocked !== true
+        && !PLACEHOLDER.test(String(chunk.text ?? ''))
         && !looksLikeInjection(chunk.text));
       const terms = new Set(tokenize(query));
       const q = [...terms];
