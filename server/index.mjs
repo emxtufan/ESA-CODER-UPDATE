@@ -22,6 +22,8 @@ import {fullItem} from './content.mjs';
 import {createGdpr} from './gdpr.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// Optional .env next to package.json; real environment variables win.
+try { process.loadEnvFile(path.resolve(root, '.env')); } catch {}
 const isProd = process.env.NODE_ENV === 'production' || process.argv.includes('--prod');
 const port = Number(process.env.PORT) || 5000;
 const host = process.env.HOST || '0.0.0.0';
