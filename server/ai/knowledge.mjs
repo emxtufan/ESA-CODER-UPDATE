@@ -572,5 +572,38 @@ export async function createKnowledge({dir, store}) {
       }
       return {mode: hybrid ? 'hybrid' : 'lexical', hits};
     },
+
+    // Every chunk of the approved sources of one kind, unranked: when a whole category is
+    // the answer (all the plans for a price question), the model needs all of it at once.
+    // The filters are the ones candidate selection uses in search().
+    async hitsOfKind(kind) {
+      const wanted = typeof kind === 'string' ? kind : '';
+      if (!wanted) return [];
+      const kb = await loadKb();
+      const sources = new Map(kb.sources.map((source) => [source.id, source]));
+      const hits = [];
+      for (const chunk of kb.chunks) {
+        const source = sources.get(chunk.sourceId);
+        if (!source || source.status !== 'approved' || source.kind !== wanted) continue;
+        if (chunk.blocked === true) continue;
+        if (PLACEHOLDER.test(String(chunk.text ?? ''))) continue;
+        if (looksLikeInjection(chunk.text)) continue;
+        hits.push({
+          chunkId: chunk.id,
+          sourceId: chunk.sourceId,
+          title: source.title ?? '',
+          url: source.url ?? '',
+          kind: source.kind ?? '',
+          text: chunk.text,
+          score: 1,
+          lexical: 1,
+          coverage: 1,
+          rare: false,
+          semantic: null,
+          updatedAt: source.updatedAt ?? null,
+        });
+      }
+      return hits;
+    },
   };
 }
