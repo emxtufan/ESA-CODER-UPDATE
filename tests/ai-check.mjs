@@ -263,7 +263,8 @@ const scenarios = [
       const conversation = await conversationOf(answer.conversationId);
       const reasons = conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
       assert.ok(reasons.includes('unsupported_value'), JSON.stringify(reasons));
-      assert.equal(calls.length, 1);
+      // a stated value outside the sources is retried once
+      assert.equal(calls.length, 2);
       assert.ok(String(calls[0].req.system).includes('Hard rules'));
       const last = calls[0].req.messages.at(-1);
       assert.equal(last.role, 'user');
