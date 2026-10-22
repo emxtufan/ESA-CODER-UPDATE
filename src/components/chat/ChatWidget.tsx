@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 import Link from '@/components/Link';
@@ -25,6 +25,8 @@ type ChatMessage = {
   messageId?: string;
   feedback?: 'up' | 'down' | null;
   failed?: boolean;
+  askLead?: boolean;
+  askRating?: boolean;
 };
 
 type AiConfig = {
@@ -34,15 +36,27 @@ type AiConfig = {
   suggestions?: string[];
   contactUrl?: string;
   maxMessageChars?: number;
+  leadAfter?: number;
+  leadRequired?: boolean;
+  leadPrompt?: string;
+  ratingPrompt?: string;
+  teaserDelay?: number;
 };
+
+type RatingValue = 'good' | 'ok' | 'bad';
 
 const SESSION_KEY = 'esa-chat-session';
 const LOG_KEY = 'esa-chat-log';
 const CONV_KEY = 'esa-chat-conv';
+const SEEN_KEY = 'esa-chat-seen';
+const LEAD_KEY = 'esa-chat-lead';
+const RATED_KEY = 'esa-chat-rated';
 const MAX_LOGGED_MESSAGES = 30;
 const DEFAULT_MAX_CHARS = 1000;
+const TEASER_MAX_CHARS = 120;
 const MOBILE_QUERY = '(max-width: 639px)';
 const ERROR_TEXT = 'Nu am putut trimite mesajul. Încearcă din nou.';
+const RATING_THANKS = 'Mulțumim pentru feedback!';
 
 function createId(): string {
   try {
@@ -65,6 +79,28 @@ function getSessionId(): string {
   } catch {
     return createId();
   }
+}
+
+function readFlag(key: string): boolean {
+  try {
+    return window.sessionStorage.getItem(key) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeFlag(key: string): void {
+  try {
+    window.sessionStorage.setItem(key, '1');
+  } catch {
+    // stocarea poate fi indisponibilă
+  }
+}
+
+function teaserText(welcome: string | undefined): string {
+  const text = typeof welcome === 'string' ? welcome.trim() : '';
+  if (text.length <= TEASER_MAX_CHARS) return text;
+  return `${text.slice(0, TEASER_MAX_CHARS - 1).trimEnd()}…`;
 }
 
 function normalizeSources(value: unknown): ChatSource[] | null {
@@ -90,6 +126,18 @@ export default function ChatWidget() {
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [seen, setSeen] = useState(false);
+  const [teaserOn, setTeaserOn] = useState(false);
+  const [leadEmail, setLeadEmail] = useState('');
+  const [leadConsent, setLeadConsent] = useState(false);
+  const [leadSending, setLeadSending] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const [leadDone, setLeadDone] = useState(false);
+  const [ratedDone, setRatedDone] = useState(false);
+
+  const leadId = useId();
+  const leadEmailId = `${leadId}-email`;
+  const leadConsentId = `${leadId}-consent`;
 
   const fabRef = useRef<HTMLButtonElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
