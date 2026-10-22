@@ -39,6 +39,7 @@ type AiProviders = {
   types: Record<string, {label: string; base: string; key: boolean}>;
 };
 type ChatTest = {status: number | string; text: string; sources: {title: string; url: string}[]};
+type ChatTurn = {role: 'user' | 'assistant'; text: string; sources: {title: string; url: string}[]};
 
 const when = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleString('ro-RO', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'niciodată';
@@ -855,6 +856,9 @@ export function Settings() {
   const [busy, setBusy] = useState<'' | 'settings' | 'limits' | 'test'>('');
   const [message, setMessage] = useState('');
   const [reply, setReply] = useState<ChatTest | null>(null);
+  const [thread, setThread] = useState<ChatTurn[]>([]);
+  const [conversation, setConversation] = useState<string | null>(null);
+  const [memory, setMemory] = useState<unknown>(null);
 
   const load = useCallback(async () => {
     const r = await api.aiGet('/overview');
@@ -961,15 +965,31 @@ export function Settings() {
     if (!question || busy) return;
     setBusy('test');
     setReply(null);
-    const r = await api.aiSend('POST', '/test-chat', {message: question});
+    const r = await api.aiSend('POST', '/test-chat', {message: question, conversationId: conversation});
     setBusy('');
     if (!r.ok) {
       setError(r.error || 'Testul nu a putut fi rulat.');
       return;
     }
     const answer: ChatTest = r.reply || {status: '', text: '', sources: []};
+    if (typeof r.reply?.conversationId === 'string') setConversation(r.reply.conversationId);
     setReply({status: answer.status, text: answer.text || '', sources: answer.sources || []});
+    setMemory(r.memory ?? null);
+    setThread([
+      ...thread,
+      {role: 'user', text: question, sources: []},
+      {role: 'assistant', text: answer.text || '', sources: answer.sources || []},
+    ]);
+    setMessage('');
     setError('');
+  };
+
+  // Starts over: the next question opens a fresh conversation, with no thread and no memory.
+  const reset = () => {
+    setThread([]);
+    setConversation(null);
+    setReply(null);
+    setMemory(null);
   };
 
   return (
@@ -1104,21 +1124,39 @@ export function Settings() {
             <button className="a-btn a-btn-primary" style={{flex: 'none'}} disabled={busy === 'test' || !message.trim()}>
               {busy === 'test' ? 'Se testează…' : 'Trimite'}
             </button>
+            <button
+              type="button"
+              className="a-btn a-btn-ghost"
+              style={{flex: 'none'}}
+              disabled={!thread.length && !conversation && !reply}
+              onClick={reset}
+            >
+              Conversație nouă
+            </button>
           </div>
         </form>
-        {reply && (
-          <>
-            <p className="a-hint">Status: {reply.status}</p>
-            <p style={{whiteSpace: 'pre-wrap'}}>{reply.text}</p>
-            {reply.sources.length > 0 && (
-              <ul className="a-hint">
-                {reply.sources.map((s, i) => (
-                  <li key={`${s.url}-${i}`}>{s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.title || s.url}</a> : s.title}</li>
-                ))}
-              </ul>
-            )}
-          </>
+        {thread.length > 0 && (
+          <div className="a-list">
+            {thread.map((turn, i) => (
+              <div className="a-field" key={`${turn.role}-${i}`}>
+                <span className="a-field-label">{turn.role === 'user' ? 'Întrebare' : 'Răspuns'}</span>
+                <p style={{whiteSpace: 'pre-wrap', margin: 0}}>{turn.text}</p>
+                {turn.sources.length > 0 && (
+                  <ul className="a-hint">
+                    {turn.sources.map((s, j) => (
+                      <li key={`${s.url}-${j}`}>{s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.title || s.url}</a> : s.title}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
         )}
+        {reply && <p className="a-hint">Status: {reply.status}</p>}
+        <details className="a-card a-advanced">
+          <summary>Memorie</summary>
+          <pre>{JSON.stringify(memory, null, 2)}</pre>
+        </details>
       </section>
     </>
   );

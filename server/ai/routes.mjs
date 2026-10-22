@@ -439,8 +439,21 @@ export async function createAi({dir, admin, getContent}) {
     return knowledge.search(bodyOf(req).q, {topK: settings.topK, minScore: settings.minScore});
   }));
 
-  adminRouter.post('/test-chat', express.json({limit: BODY_LIMIT}), (req, res) =>
-    send(res, async () => ({reply: await chat.answer({message: bodyOf(req).message, sessionId: 'admin-test', ip: 'admin'})})));
+  // The test chat continues one conversation between calls (when the panel sends its id), so the
+  // operator can see the memory the assistant builds for it.
+  adminRouter.post('/test-chat', express.json({limit: BODY_LIMIT}), (req, res) => {
+    const body = bodyOf(req);
+    const conversationId = typeof body.conversationId === 'string' && UUID_RE.test(body.conversationId)
+      ? body.conversationId
+      : null;
+    return send(res, async () => {
+      const result = await chat.answer({message: body.message, conversationId, sessionId: 'admin-test', ip: 'admin'});
+      return {
+        reply: result,
+        memory: result.conversationId ? await store.getMemory(result.conversationId) : null,
+      };
+    });
+  });
 
   // ----------------------------------------------------------------- conversations
   adminRouter.get('/conversations', (req, res) => send(res, async () => store.listConversations(req.query)));
