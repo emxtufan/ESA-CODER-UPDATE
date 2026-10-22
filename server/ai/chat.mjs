@@ -252,10 +252,9 @@ export function validate(raw, sources, settings) {
     const quote = typeof claim.quote === 'string' ? claim.quote : '';
     const source = typeof claim.source === 'string' ? cited.find((item) => item.id === claim.source) : null;
     if (!source || quote.length < QUOTE_MIN) return fail('unverified_quote');
-    const quoteText = plain(quote);
-    const sourceText = plain(source.text);
-    // ponytail: token-overlap fallback for lightly rephrased quotes; numbers are still checked exactly below
-    if (!sourceText.includes(quoteText) && !rephrasedQuote(quoteText, sourceText)) return fail('unverified_quote');
+    // The quote is checked verbatim first, exactly as before: plain(quote) inside plain(source.text).
+    // ponytail: token-overlap fallback for lightly rephrased quotes, on the raw texts (tokenize normalises them itself); numbers are still checked exactly below
+    if (!plain(source.text).includes(plain(quote)) && !rephrasedQuote(quote, source.text)) return fail('unverified_quote');
   }
 
   // Every hard value the answer states must already exist in the cited sources.

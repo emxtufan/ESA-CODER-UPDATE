@@ -403,7 +403,7 @@ const scenarios = [
       await addSource('Garanție', 'Garanție: Oferim garanție de 24 de luni pentru cod.');
       calls.length = 0;
       rewrites.length = 0;
-      const answer = await ask('Cât timp acoperiți codul după predare?');
+      const answer = await ask('Ce acoperiți pentru cod după predare?');
       assert.equal(answer.status, 'answer');
       assert.equal(rewrites.length, 1);
     },
