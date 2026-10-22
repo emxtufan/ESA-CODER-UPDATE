@@ -171,6 +171,7 @@ const STOPWORDS = new Set([
   'langa', 'fara', 'spre', 'catre', 'acest', 'aceasta', 'aceste', 'cand', 'cum', 'unde', 'asa',
   'cat', 'cata', 'cate', 'cati', 'va', 'pot', 'poate', 'puteti', 'aveti', 'imi', 'mi', 'ma', 'noi',
   'voi', 'eu', 'tu', 'vreau', 'ati', 'foarte',
+  'acel', 'acea', 'aceea', 'acela', 'aia', 'ala', 'asta', 'ast', 'am', 'avem', 'da', 'inseamna',
   'the', 'and', 'or', 'of', 'to', 'is', 'are', 'for', 'with', 'on', 'it', 'this', 'that', 'be', 'as',
   'at', 'by', 'an', 'from', 'we', 'you', 'your', 'our', 'can', 'will', 'not', 'have', 'has', 'was',
   'but', 'they', 'their', 'its', 'if', 'so', 'do', 'does', 'more', 'than', 'my', 'how', 'what', 'i',

@@ -19,7 +19,7 @@ const MAX_PER_SOURCE = 2;
 const K1 = 1.2;
 const B = 0.75;
 // Bumped whenever tokenize() changes: an older index is re-tokenized on load.
-const TOKENIZER_VERSION = 2;
+const TOKENIZER_VERSION = 3;
 
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isoNow = () => new Date().toISOString();
@@ -483,6 +483,13 @@ export async function createKnowledge({dir, store}) {
       });
       const maxLexical = bm25.reduce((max, value) => (value > max ? value : max), 0);
       const bm25n = bm25.map((value) => (maxLexical > 0 ? value / maxLexical : 0));
+      // Rare matches: a query term the chunk shares with at most 5% of the candidates is
+      // specific (a product name like "SAGA"), so it stands on its own even at low coverage.
+      const rare = frequencies.map((counts) => {
+        if (!total) return false;
+        for (const term of counts.keys()) if (term.length >= 3 && df.get(term) / total <= 0.05) return true;
+        return false;
+      });
       // Coverage: how many query terms the chunk contains at all. BM25 normalised to the best
       // chunk is always 1.0 at the top, so coverage is what tells a match from noise.
       const coverage = candidates.map((chunk) => {
@@ -492,7 +499,11 @@ export async function createKnowledge({dir, store}) {
         for (const term of q) if (tokens.has(term)) found++;
         return found / q.length;
       });
-      const lexical = coverage.map((value, index) => (value < 0.5 ? 0 : value * (0.5 + 0.5 * bm25n[index])));
+      const lexical = coverage.map((value, index) => {
+        if (value < 0.5 && !rare[index]) return 0;
+        // A rare, specific term (a product name like "SAGA") is enough on its own; the answer validator still guards grounding.
+        return Math.max(value, rare[index] ? 0.5 : 0) * (0.5 + 0.5 * bm25n[index]);
+      });
 
       // Semantic part: only with the same embedder the chunks were indexed with.
       const embedder = await resolveEmbedder();
