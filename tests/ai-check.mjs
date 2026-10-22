@@ -149,9 +149,10 @@ const setSourceStatus = (id, status) => adminOk('PUT', `/kb/sources/${id}/status
 
 const conversationOf = async (id) => (await adminOk('GET', `/conversations/${id}`)).conversation;
 
-// Fixture admin state: the widget is on, and the per-IP minute limiter is wide enough for a run
-// where every request comes from 127.0.0.1 (scenario 11 lowers it on purpose).
-const noInfo = (await adminOk('PUT', '/settings', {enabled: true})).settings.noInfo;
+// Fixture admin state: the widget is on, the answer cache is off (only the answer-cache scenario
+// turns it on, so no other scenario is served a remembered reply), and the per-IP minute limiter is
+// wide enough for a run where every request comes from 127.0.0.1 (scenario 11 lowers it on purpose).
+const noInfo = (await adminOk('PUT', '/settings', {enabled: true, cacheEnabled: false})).settings.noInfo;
 await adminOk('PUT', '/limits', {perIpPerMinute: 1000});
 
 // ----------------------------------------------------------------------- scenarios
@@ -622,6 +623,32 @@ const scenarios = [
       const conversation = await conversationOf(refused.conversationId);
       const reasons = conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
       assert.ok(reasons.includes('unsupported_value'), JSON.stringify(reasons));
+    },
+  },
+  {
+    name: 'answer-cache',
+    async run() {
+      await activate(await ensureProvider('A'));
+      behaviors.A = honest;
+      await adminOk('PUT', '/settings', {cacheEnabled: true});
+      calls.length = 0;
+      const first = await ask(PLAN_QUESTION);
+      assert.equal(first.status, 'answer');
+      // The same first message asked again: the remembered answer is served, no second model call.
+      const second = await ask(PLAN_QUESTION);
+      assert.equal(second.status, 'answer');
+      assert.equal(calls.length, 1, 'a repeated first message must not reach the model twice');
+      const conversation = await conversationOf(second.conversationId);
+      const turns = conversation.messages.filter((message) => message.role === 'assistant');
+      assert.equal(turns.at(-1).route, 'cache', JSON.stringify(turns.map((message) => message.route)));
+      // A new approved source moves the knowledge revision: the price is now another one, so the
+      // remembered answer is stale and the question reaches the model again.
+      await addSource('Ofertă', 'Planul Starter costă acum 1.990 lei.');
+      const revised = await ask(PLAN_QUESTION);
+      assert.equal(revised.status, 'answer');
+      assert.equal(calls.length, 2, 'a knowledge revision must invalidate the cached answer');
+      // Back to the fixture state the rest of the run starts from.
+      await adminOk('PUT', '/settings', {cacheEnabled: false});
     },
   },
 ];
