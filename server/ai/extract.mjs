@@ -11,16 +11,25 @@ const MIN_TEXT = 20;
 // The project fields that describe the work (icons, images, refs and URLs are left out).
 const PROJECT_FIELDS = ['title', 'category', 'platform', 'overview', 'brief', 'approach', 'outcome', 'about', 'pagesList', 'featuresList'];
 const TOOLS_TITLE = 'Tehnologii folosite';
+const SERVICES_TITLE = 'Servicii oferite de ESA Coder Solutions';
+const PROJECTS_TITLE = 'Proiecte realizate (portofoliu)';
 // Interface scopes (forms, cookie banners, header, 404): labels a visitor clicks, not knowledge.
 const UI_SCOPE_RE = /ContactForm|CookieBanner|CookieSettings|Header|NotFound|^404$|PageTransition/;
 // The contact document: one place with phone, email and the company line.
-const CONTACT_TITLE = 'Date de contact ESA Coder Solutions (telefon, email, firmă)';
+const CONTACT_TITLE = 'Date de contact ESA Coder Solutions (telefon, email, adresă, firmă)';
 const CONTACT_SCOPES = ['components/layout/Footer', '/contact'];
 const COMPANY_KEYS = ['company-phone', 'company-email'];
 const PHONE_LABEL_RE = /^telefon\s*:\s*/i;
 const PHONE_FORM_RE = /(\+?40|0)7\d{2}[\s.]?\d{3}[\s.]?\d{3}/;
 const PHONE_FULL_RE = /^\+?\d{9,13}$/;
 const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
+// The address of the office: a street type followed by the number, told apart from the sentence
+// around it by "sediul" / the street token on the left and a new sentence on the right.
+const ADDRESS_STREET_RE = /\b(Bd\.|Bulevardul|Str\.|Strada|Calea|Șos\.)\s/;
+const ADDRESS_NUMBER_RE = /\bnr\b/i;
+const ADDRESS_SEAT_RE = /sediul/i;
+const ADDRESS_END_RE = /\.\s+(?=\p{Lu})/u;
+const ADDRESS_MAX = 160;
 
 // Text that reads like an instruction for the model, not like knowledge. Chunks that match are
 // flagged at indexing time and never retrieved, so a source can't steer the assistant.
