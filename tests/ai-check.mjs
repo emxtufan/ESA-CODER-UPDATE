@@ -149,12 +149,12 @@ const scenarios = [
       await activate(idA);
       calls.length = 0;
       const first = await ask(PLAN_QUESTION);
-      assert.equal(first.status, 'answered');
+      assert.equal(first.status, 'answer');
       assert.deepEqual(calls.map((entry) => entry.name), ['A']);
       await activate(idB);
       calls.length = 0;
       const second = await ask(PLAN_QUESTION);
-      assert.equal(second.status, 'answered');
+      assert.equal(second.status, 'answer');
       assert.deepEqual(calls.map((entry) => entry.name), ['B']);
     },
   },
@@ -262,7 +262,7 @@ const scenarios = [
       await activate(idA, idB);
       calls.length = 0;
       const recovered = await ask(PLAN_QUESTION);
-      assert.equal(recovered.status, 'answered');
+      assert.equal(recovered.status, 'answer');
       assert.deepEqual(calls.map((entry) => entry.name), ['A', 'B']);
       await activate(idA, null);
       calls.length = 0;
@@ -286,7 +286,7 @@ const scenarios = [
       const id = await addSource('Garanție', 'Garanție: Oferim garanție de 24 de luni pentru cod.');
       calls.length = 0;
       const answered = await ask(question);
-      assert.equal(answered.status, 'answered');
+      assert.equal(answered.status, 'answer');
       assert.equal(calls.length, 1);
       await setSourceStatus(id, 'draft');
       calls.length = 0;
@@ -340,8 +340,8 @@ const scenarios = [
       await adminOk('PUT', '/limits', {monthlyBudget: 20});
       // The limiter lives in memory: the count starts again when its limit changes.
       await adminOk('PUT', '/limits', {perIpPerMinute: 2});
-      assert.equal((await ask(PLAN_QUESTION)).status, 'answered');
-      assert.equal((await ask(PLAN_QUESTION)).status, 'answered');
+      assert.equal((await ask(PLAN_QUESTION)).status, 'answer');
+      assert.equal((await ask(PLAN_QUESTION)).status, 'answer');
       assert.equal((await ask(PLAN_QUESTION)).status, 'limited');
       await adminOk('PUT', '/limits', {perIpPerMinute: 1000});
     },
