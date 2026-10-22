@@ -675,6 +675,46 @@ const scenarios = [
       assert.equal(own.status, 200, own.raw);
     },
   },
+  {
+    name: 'long-conversation',
+    async run() {
+      await activate(await ensureProvider('A'));
+      await adminOk('PUT', '/limits', {perIpPerDay: 0, perSessionPerDay: 0, globalPerDay: 0});
+      const memory = {summary: 'Discuție despre planuri și magazin.', state: {topic: 'planuri', plans: ['Starter'], users: 12, budget: '', preferences: [], comparisons: [], open: []}};
+      behaviors.A = (req) => {
+        const first = sourcesOf(req)[0];
+        return reply(String(first?.text ?? ''), String(first?.text ?? ''), first?.id ?? 'S1', 'answer', {memory});
+      };
+      const questions = ['Faceți și magazine online pentru produse?', 'Ce garanție oferiți pentru cod?', 'Cât costă planul Starter pe lună cu infrastructura?', 'Și planul anterior ce includea?', 'Ce include planul Starter?'];
+      const sessionId = randomUUID();
+      const full = [];
+      let conversationId = null;
+      calls.length = 0;
+      for (let turn = 0; turn < 50; turn++) {
+        const q = questions[turn % questions.length];
+        const r = await ask(q, conversationId, sessionId, full.slice(-12).map(({role, text}) => ({role, text})));
+        conversationId = r.conversationId ?? conversationId;
+        full.push({role: 'user', text: q}, {role: 'assistant', text: String(r.text ?? '')});
+      }
+      const size = (req) => String(req.system ?? '').length + (req.messages ?? []).reduce((sum, m) => sum + String(m.content ?? '').length, 0);
+      const sizes = calls.map((c) => size(c.req));
+      assert.ok(sizes.length >= 45, `calls ${sizes.length}`);
+      const first5 = sizes.slice(0, 5).reduce((a, b) => a + b, 0) / 5;
+      const max = Math.max(...sizes);
+      console.log(`long-conversation: ${sizes.length} calls, first5 avg ${Math.round(first5)}, max ${max}`);
+      assert.ok(max <= first5 * 1.5, `prompt grew: ${max} vs ${first5}`);
+      const last = calls[calls.length - 1].req;
+      assert.ok(String(last.system).includes('CONVERSATION MEMORY'));
+      assert.ok(String(last.system).includes('"users":12'));
+      const kb = await adminOk('GET', '/kb/sources');
+      const list = kb.sources ?? kb.items ?? [];
+      const naive = list.filter((s) => s.status === 'approved').reduce((sum, s) => sum + (s.chars || 0), 0)
+        + full.reduce((sum, m) => sum + m.text.length, 0);
+      const actual = size(last);
+      console.log(`token-budget: actual ${actual} / naive ${naive} (${Math.round((actual / naive) * 100)}%)`);
+      assert.ok(actual < naive, 'prompt is not smaller than the naive one');
+    },
+  },
 ];
 
 // ------------------------------------------------------------------------ the runner
