@@ -443,6 +443,13 @@ export async function createStore(dir) {
   // The owner of a conversation as it lands on disk: a hash of the session id, never the id itself.
   const sessionHash = (value) => (typeof value === 'string' && value.trim() ? hashOf(value.trim()) : '');
 
+  // A conversation belongs to the session that first reached it: the stored hash is the claim. A
+  // conversation saved before owners existed has none, so the first session that arrives claims it.
+  const ownedBy = (conversation, hash) => {
+    const claim = typeof conversation?.ownerHash === 'string' ? conversation.ownerHash : '';
+    return !claim || claim === hash;
+  };
+
   async function loadConversations() {
     const saved = await readJSON(conversationsFile, null);
     return {conversations: Array.isArray(saved?.conversations) ? saved.conversations.filter(isObject) : []};
@@ -598,7 +605,28 @@ export async function createStore(dir) {
     },
 
     // -------------------------------------------------------------- conversations
-    addMessages(conversationId, msgs) {
+
+    // Whether this session may use the conversation, claiming it when it carries no owner yet.
+    // The read and the write happen inside the write queue and land atomically, so two sessions
+    // arriving at once can never both take the same conversation.
+    ownsConversation(conversationId, owner) {
+      const id = idOrNull(conversationId);
+      const hash = sessionHash(owner);
+      if (!id || !hash) return Promise.resolve(false);
+      return serial(async () => {
+        const data = await loadConversations();
+        const conversation = data.conversations.find((item) => item.id === id);
+        if (!conversation) return false;
+        if (!ownedBy(conversation, hash)) return false;
+        if (!conversation.ownerHash) {
+          conversation.ownerHash = hash;
+          await atomic(conversationsFile, data);
+        }
+        return true;
+      });
+    },
+
+    addMessages(conversationId, msgs, options) {
       return serial(async () => {
         const data = await loadConversations();
         const {settings} = await loadConfig();
@@ -606,11 +634,24 @@ export async function createStore(dir) {
         const incoming = (Array.isArray(msgs) ? msgs : []).map(normalizeMessage);
         const wanted = idOrNull(conversationId);
         if (!incoming.length) return {conversationId: wanted, messageIds: []};
+        const hash = sessionHash(isObject(options) ? options.owner : '');
         const now = isoNow();
         let conversation = wanted ? data.conversations.find((item) => item.id === wanted) : null;
+        // Another session's conversation is never written to: nothing lands on disk and the caller
+        // gets a null id, so it can never read back a conversation that is not its own.
+        if (conversation && !ownedBy(conversation, hash)) return {conversationId: null, messageIds: []};
         if (!conversation) {
-          conversation = {id: wanted ?? randomUUID(), startedAt: now, updatedAt: now, messages: [], memory: emptyMemory()};
+          conversation = {
+            id: wanted ?? randomUUID(),
+            startedAt: now,
+            updatedAt: now,
+            messages: [],
+            memory: emptyMemory(),
+            ownerHash: hash,
+          };
           data.conversations.push(conversation);
+        } else if (!conversation.ownerHash) {
+          conversation.ownerHash = hash;
         }
         if (!Array.isArray(conversation.messages)) conversation.messages = [];
         conversation.messages.push(...incoming);

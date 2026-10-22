@@ -535,9 +535,10 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     }
   }
 
-  // Stores the exchange and returns what the route sends back to the page.
-  async function finish(args) {
-    const {conversationId, message, outcome} = args;
+  // Stores the exchange and returns what the route sends back to the page. The owner is the
+  // session that asked: the store hashes it and claims the conversation with it.
+  async function finishTurn(args) {
+    const {conversationId, message, outcome, owner} = args;
     const settings = args.settings ?? (await store.config()).settings;
     if (outcome.called) {
       await store.record({
@@ -567,9 +568,11 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
         retrievalMs: outcome.retrievalMs ?? 0,
         hits: outcome.hits ?? 0,
       },
-    ]);
+    ], {owner});
     const ids = Array.isArray(saved?.messageIds) ? saved.messageIds : [];
-    const stored = saved?.conversationId ?? conversationId;
+    // The conversation the turn landed in: a null id means the store refused the write (the id
+    // belongs to another session), so nothing is read back from it.
+    const stored = saved?.conversationId ?? null;
     // Two prompts ride with the answer: the lead once the conversation is long enough (and
     // still has no address), the rating only after a closing remark, never twice.
     const leadAfter = Number(settings?.leadAfter) || 0;
@@ -605,7 +608,8 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
 
   async function answer(input) {
     const args = isObject(input) ? input : {};
-    const conversationId = typeof args.conversationId === 'string' && args.conversationId ? args.conversationId : null;
+    let conversationId = typeof args.conversationId === 'string' && args.conversationId ? args.conversationId : null;
+    const sessionId = typeof args.sessionId === 'string' ? args.sessionId : '';
     const message = cleanMessage(args.message);
     const config = await store.config();
     const s = config.settings;
@@ -618,6 +622,15 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     if (!s.enabled) {
       return {conversationId, messageId: null, status: 'disabled', text: TEXTS.disabled, sources: []};
     }
+
+    // A conversation id is only a claim the session can prove: another session's id is dropped and
+    // the turn starts a conversation of its own, so no visitor can continue someone else's chat.
+    if (conversationId && !(await store.ownsConversation(conversationId, sessionId))) {
+      console.warn('[ai] chat conversation belongs to another session');
+      conversationId = null;
+    }
+    // Every stored turn carries its owner: the store hashes the session id, never storing the id.
+    const finish = (turn) => finishTurn({...turn, owner: sessionId});
 
     const history = cleanHistory(args.history, historyWindow(s.memoryWindow));
     // The visitor's own words: a number written there (a team size, a budget) may be repeated in
