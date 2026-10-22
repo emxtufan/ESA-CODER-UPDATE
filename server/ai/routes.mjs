@@ -89,6 +89,9 @@ function analyticsOf(conversations) {
   };
 
   for (const conversation of conversations) {
+    if (conversation?.lead?.email) leads++;
+    const rated = conversation?.rating?.value;
+    if (rated in ratings) ratings[rated]++;
     for (const message of Array.isArray(conversation?.messages) ? conversation.messages : []) {
       if (message?.feedback === 'down') negativeFeedback++;
       if (message?.role !== 'assistant') {
@@ -120,6 +123,8 @@ function analyticsOf(conversations) {
       .slice(0, TOP_QUESTIONS)
       .map(([q, count]) => ({q, count})),
     negativeFeedback,
+    leads,
+    ratings,
   };
 }
 
@@ -463,6 +468,8 @@ export async function createAi({dir, admin, getContent}) {
       byModel: stats.byModel,
       topQuestions: stats.topQuestions,
       negativeFeedback: stats.negativeFeedback,
+      leads: stats.leads,
+      ratings: stats.ratings,
     };
   }));
 
