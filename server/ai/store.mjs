@@ -62,7 +62,8 @@ const MAX_HEADERS = 10;
 const MAX_MESSAGES = 200;
 const MAX_CONVERSATIONS = 5000;
 const DEFAULT_TIMEOUT_MS = 30_000;
-const DEFAULT_MAX_TOKENS = 700;
+// Reasoning models spend part of the budget before the JSON; a cut-off JSON is refused.
+const DEFAULT_MAX_TOKENS = 1500;
 const TEXT_MAX = 2000;
 const SUGGESTIONS_MAX = 6;
 const SUGGESTION_MAX = 120;

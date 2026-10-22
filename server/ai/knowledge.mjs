@@ -539,6 +539,7 @@ export async function createKnowledge({dir, store}) {
             score: cos !== null ? 0.6 * cos + 0.4 * lexical[index] : lexical[index],
             lexical: lexical[index],
             coverage: coverage[index],
+            rare: rare[index],
             semantic: cos,
             updatedAt: source.updatedAt ?? null,
           };
