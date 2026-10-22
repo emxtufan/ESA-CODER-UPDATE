@@ -1,6 +1,6 @@
 # Asistent AI (chatbot RAG)
 
-Modul disponibil în **`/admin` → AI Assistant**, cu panouri pentru furnizori, modele, bază de cunoștințe, sincronizare, conversații, analytics și setări. Widget-ul public răspunde exclusiv din conținutul site-ului indexat, cu citate și refuz atunci când sursele nu acoperă întrebarea. Este o implementare tehnică, nu o garanție de acuratețe a unui model extern.
+Modul disponibil în **`/admin` → AI Assistant**, cu panouri pentru furnizori, modele, bază de cunoștințe, sincronizare, conversații, analytics și setări. Widget-ul public răspunde exclusiv din conținutul site-ului indexat, cu surse și refuz atunci când sursele nu acoperă întrebarea. Este o implementare tehnică, nu o garanție de acuratețe a unui model extern.
 
 ## Pornire pentru administrator
 
@@ -46,7 +46,14 @@ Conversația păstrează `ownerHash` = sha256(sessionId). `/api/ai/feedback`, `/
 ## Limitări
 - Stocare în fișiere JSON (`data/ai`), nu Postgres/pgvector.
 - Cache-ul și revizia KB sunt în memorie: se golesc la restart.
-- Embeddings opționale: necesită un provider cu embeddings (DeepSeek nu are); fără ele căutarea e lexicală (BM25 + sinonime + rescriere), completată de profilul firmei.
+- Embeddings opționale: necesită un provider cu embeddings (DeepSeek nu are); fără ele căutarea e lexicală (BM25 + sinonime + rescriere), completată de profilul firmei; schimbarea modelului de embeddings cere reindexare (`server/ai/knowledge.mjs:121`, `:436`).
+- Modelul nu este antrenat pe datele firmei: răspunsul depinde de retrieval, iar evaluarea automată folosește un model mock, deci măsoară retrieval + validare, nu calitatea unui LLM real (`tests/ai-eval.mjs:43`).
+- Calitatea depinde de conținutul publicat: textele din `source_data.json` trebuie să fie aprobate, iar sursele nepublicate nu hrănesc asistentul.
+- Protecția anti-injection este euristică (regex pe text), nu o barieră completă (`server/ai/extract.mjs:17-24`).
+- Costul și disponibilitatea țin de furnizorul ales; fallback-ul se face o singură dată și numai dacă bugetul permite (`server/ai/chat.mjs:393-400`).
+- Starea este JSON cu o singură instanță: nu scalează pe mai multe procese concurente (`server/ai/store.mjs:1-3`).
+- Retenția și bugetul sunt setări administrative; ștergerea din `conversations.json` nu acoperă copiile de backup ale hostului.
+- Widget-ul nu este afișat cât timp lipsește consimțământul pentru statistici, deci asistentul nu e disponibil pentru vizitatorii care nu acceptă (`src/components/chat/ChatWidget.tsx:472`).
 
 ## Funcții reale
 
@@ -56,7 +63,7 @@ Conversația păstrează `ownerHash` = sha256(sessionId). `/api/ai/feedback`, `/
 - Bază de cunoștințe construită determinist din `source_data.json`, tăiată în bucăți, tokenizată și — opțional — vectorizată; un singur `kb.json`, scris atomic (`server/ai/extract.mjs:1-3`, `server/ai/knowledge.mjs:1-2`).
 - Căutare hibridă: lexical BM25 plus cosinus pe embeddings, cu degradare la lexical dacă furnizorul de embeddings nu răspunde (`server/ai/knowledge.mjs:486-506`, `:500-548`).
 - Respingerea textelor care conțin instrucțiuni pentru model (prompt injection) la indexare, nu la afișare (`server/ai/extract.mjs:17-24`).
-- Răspunsuri validate: citate verificate în surse, valori numerice susținute de text; stări explicite `answer`/`clarify`/`refused`/`insufficient`/`conflict` (`server/ai/chat.mjs:45-48`, `:152-223`).
+- Răspunsuri validate: valori (numere, bani, email, URL, telefon) susținute de surse sau de calcule verificate; stări explicite `answer`/`clarify`/`refused`/`insufficient`/`conflict` (`server/ai/chat.mjs:45-48`, `:152-223`).
 - Streaming SSE pentru vizitator, cu text tăiat în fragmente scurte și oprire când clientul pleacă (`server/ai/routes.mjs:16-17`, `:212-242`).
 - Widget public ascuns fără consimțământul pentru statistici, cu antet `x-ai` cerut de server pentru orice scriere (`src/components/chat/ChatWidget.tsx:7`, `:341-342`, `:472`, `server/ai/routes.mjs:174`).
 - Persistență atomară în `AI_DIR`: `config.json`, `conversations.json`, `usage.json`, cu scrieri serializate (`server/ai/store.mjs:266-268`, `:1-3`).
@@ -104,14 +111,3 @@ Conversația păstrează `ownerHash` = sha256(sessionId). `/api/ai/feedback`, `/
 - `npm run test:ai` — 24 scenarii cu provider mock (fără apeluri facturabile): schimbare provider, consultanță, întrebare necunoscută, prețuri lipsă, surse contradictorii, prompt injection (vizitator și document), cheie invalidă, provider căzut, conținut șters, citări lipsă, număr inventat, retry JSON, limite de cost, secretul cheilor, SSRF, CSRF, rescriere query, email și rating, calcul anual, numere ale vizitatorului, cache + actualizare preț, izolarea sesiunilor, conversație de 50 de mesaje + buget de tokeni.
 - `npm run test:ai-eval` — setul de evaluare de retrieval.
 - `npm run test:ai-live` — conversații reale din `tests/ai-live.json` pe providerul configurat (consumă tokeni), pe o copie temporară a `data/ai`. `AI_DEBUG=1` afișează valoarea respinsă sau răspunsul brut la JSON invalid.
-
-## Limitări
-
-- Modelul nu este antrenat pe datele firmei: răspunsul depinde de retrieval, iar evaluarea automată folosește un model mock, deci măsoară retrieval + validare, nu calitatea unui LLM real (`tests/ai-eval.mjs:43`).
-- Fără embeddings configurate, căutarea rămâne lexicală; schimbarea modelului de embeddings cere reindexare (`server/ai/knowledge.mjs:121`, `:436`).
-- Calitatea depinde de conținutul publicat: textele din `source_data.json` trebuie să fie aprobate, iar sursele nepublicate nu hrănesc asistentul.
-- Protecția anti-injection este euristică (regex pe text), nu o barieră completă (`server/ai/extract.mjs:17-24`).
-- Costul și disponibilitatea țin de furnizorul ales; fallback-ul se face o singură dată și numai dacă bugetul permite (`server/ai/chat.mjs:393-400`).
-- Starea este JSON cu o singură instanță: nu scalează pe mai multe procese concurente (`server/ai/store.mjs:1-3`).
-- Retenția și bugetul sunt setări administrative; ștergerea din `conversations.json` nu acoperă copiile de backup ale hostului.
-- Widget-ul nu este afișat cât timp lipsește consimțământul pentru statistici, deci asistentul nu e disponibil pentru vizitatorii care nu acceptă (`src/components/chat/ChatWidget.tsx:472`).
