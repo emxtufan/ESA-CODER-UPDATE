@@ -24,6 +24,14 @@ const TOKENIZER_VERSION = 4;
 // A [COMPLETEAZĂ: …] placeholder means the operator still owes content: it may never go live.
 const PLACEHOLDER = /\[COMPLETEAZ/i;
 
+// The profile: the sources every answer carries, in this order, before the FAQ and manual ones.
+const CONTACT_SOURCE_ID = 'site:contact:main';
+const SERVICES_SOURCE_ID = 'site:overview:services';
+const PROJECTS_SOURCE_ID = 'site:overview:projects';
+const POSTS_SOURCE_ID = 'site:overview:posts';
+const PROFILE_KINDS = new Set(['faq', 'manual']);
+const PROFILE_MAX_CHARS = 16_000;
+
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isoNow = () => new Date().toISOString();
 const count = (value) => (Array.isArray(value) ? value.length : 0);
@@ -58,6 +66,13 @@ export async function createKnowledge({dir, store}) {
     return run;
   };
 
+  // Every write moves the revision, and only a revision change invalidates the profile cache.
+  let revision = 0;
+  const saveKb = async (kb) => {
+    await atomic(kbFile, kb);
+    revision++;
+  };
+
   const emptyKb = () => ({sources: [], chunks: [], embedKey: null, lastSync: null, errors: [], tokenizer: TOKENIZER_VERSION});
 
   async function loadKb() {
@@ -79,7 +94,7 @@ export async function createKnowledge({dir, store}) {
         chunk.tokens = tokenize(`${source?.title ?? ''} ${chunk.text}`);
       }
       kb.tokenizer = TOKENIZER_VERSION;
-      await atomic(kbFile, kb);
+      await saveKb(kb);
     }
     return kb;
   }
@@ -207,7 +222,7 @@ export async function createKnowledge({dir, store}) {
       });
       kb.sources.push(source);
       await indexSource(kb, source, await resolveEmbedder());
-      await atomic(kbFile, kb);
+      await saveKb(kb);
       return summaryOf(source, kb);
     });
   }
@@ -246,6 +261,56 @@ export async function createKnowledge({dir, store}) {
     }
     return {kind: ext === '.md' ? 'markdown' : 'text', title: fileName, text: data.toString('utf8'), url: ''};
   }
+
+  // The profile list of one KB snapshot, in its fixed order: the contact page, every plan chunk,
+  // the three site overviews, then the approved FAQ and manual sources. Unranked, so each hit
+  // scores 1 with coverage 1, and the chunk filters are the ones search() applies.
+  function buildProfile(kb) {
+    const sources = new Map(kb.sources.map((source) => [source.id, source]));
+    const groups = [
+      (source) => source?.id === CONTACT_SOURCE_ID,
+      (source) => source?.kind === 'plan',
+      (source) => source?.id === SERVICES_SOURCE_ID,
+      (source) => source?.id === PROJECTS_SOURCE_ID,
+      (source) => source?.id === POSTS_SOURCE_ID,
+      (source) => PROFILE_KINDS.has(source?.kind),
+    ];
+    const hits = [];
+    const taken = new Set();
+    for (const wanted of groups) {
+      for (const chunk of kb.chunks) {
+        if (taken.has(chunk.id)) continue;
+        const source = sources.get(chunk.sourceId);
+        if (!source || source.status !== 'approved' || !wanted(source)) continue;
+        if (chunk.blocked === true) continue;
+        if (PLACEHOLDER.test(String(chunk.text ?? ''))) continue;
+        if (looksLikeInjection(chunk.text)) continue;
+        taken.add(chunk.id);
+        hits.push({
+          chunkId: chunk.id,
+          sourceId: chunk.sourceId,
+          title: source.title ?? '',
+          url: source.url ?? '',
+          kind: source.kind ?? '',
+          text: chunk.text,
+          score: 1,
+          lexical: 1,
+          coverage: 1,
+          rare: false,
+          semantic: null,
+          updatedAt: source.updatedAt ?? null,
+        });
+      }
+    }
+    return hits;
+  }
+
+  // The built list, kept until a write moves the revision.
+  let profile = {revision: -1, hits: []};
+  const profileOf = async () => {
+    if (profile.revision !== revision) profile = {revision, hits: buildProfile(await loadKb())};
+    return profile.hits;
+  };
 
   return {
     // -------------------------------------------------------------- sync from the site
@@ -291,7 +356,7 @@ export async function createKnowledge({dir, store}) {
           result.removed = gone.length;
         }
         kb.lastSync = isoNow();
-        await atomic(kbFile, kb);
+        await saveKb(kb);
         return result;
       });
     },
@@ -330,7 +395,7 @@ export async function createKnowledge({dir, store}) {
         if (prev) kb.sources[kb.sources.indexOf(prev)] = source;
         else kb.sources.push(source);
         await indexSource(kb, source, await resolveEmbedder());
-        await atomic(kbFile, kb);
+        await saveKb(kb);
         return summaryOf(source, kb);
       });
     },
@@ -361,7 +426,7 @@ export async function createKnowledge({dir, store}) {
         assertNoPlaceholder(status, source.title, source.text);
         source.status = status;
         source.updatedAt = isoNow();
-        await atomic(kbFile, kb);
+        await saveKb(kb);
         return summaryOf(source, kb);
       });
     },
@@ -373,7 +438,7 @@ export async function createKnowledge({dir, store}) {
         if (index < 0) return false;
         kb.sources.splice(index, 1);
         kb.chunks = kb.chunks.filter((chunk) => chunk.sourceId !== id);
-        await atomic(kbFile, kb);
+        await saveKb(kb);
         return true;
       });
     },
@@ -427,7 +492,7 @@ export async function createKnowledge({dir, store}) {
           chunks += indexed.chunks;
           if (!indexed.ok) failed++;
         }
-        await atomic(kbFile, kb);
+        await saveKb(kb);
         return {chunks, failed};
       });
     },
@@ -602,6 +667,22 @@ export async function createKnowledge({dir, store}) {
           semantic: null,
           updatedAt: source.updatedAt ?? null,
         });
+      }
+      return hits;
+    },
+
+    // The chunks every answer carries, in the fixed profile order, cut at maxChars of cumulative
+    // text. Same hit shape as search(), coverage 1; built once per KB revision.
+    async profileHits(maxChars = PROFILE_MAX_CHARS) {
+      const raw = Number(maxChars);
+      const budget = Number.isFinite(raw) && raw > 0 ? raw : PROFILE_MAX_CHARS;
+      const hits = [];
+      let used = 0;
+      for (const hit of await profileOf()) {
+        const chars = String(hit.text ?? '').length;
+        if (used + chars > budget) break;
+        used += chars;
+        hits.push({...hit});
       }
       return hits;
     },
