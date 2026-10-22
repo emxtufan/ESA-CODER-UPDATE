@@ -521,11 +521,11 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     // A short follow-up ("și prețul?") is searched together with the previous question and with
     // whatever the memory recalls of the earlier turns ("dar pentru 12?").
     const recalled = memoryQuery(message, memory);
-    const asked = recalled ? `${message} ${recalled}` : message;
-    let query = asked;
+    const withMemory = recalled ? `${message} ${recalled}` : message;
+    let query = withMemory;
     if (message.split(/\s+/).filter(Boolean).length < 6) {
       const previous = [...history].reverse().find((item) => item.role === 'user');
-      if (previous) query = `${asked} ${previous.text}`;
+      if (previous) query = `${withMemory} ${previous.text}`;
     }
     query = `${query} ${EXPANSIONS.filter(([re]) => re.test(message)).map(([, words]) => words).join(' ')}`.trim();
     // Too vague means there is no word at all to search for: a single word ("preț", "SAGA")
@@ -548,7 +548,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
           rewriter.key,
           {
             system: REWRITE_RULES,
-            messages: [{role: 'user', content: `QUESTION:\n<<<Q\n${asked}\nQ>>>`}],
+            messages: [{role: 'user', content: `QUESTION:\n<<<Q\n${withMemory}\nQ>>>`}],
             signal,
           },
         );
