@@ -21,8 +21,8 @@ chat.answer  → server/ai/chat.mjs:321
    ├─ limită IP/minut, sesiune/zi, buget global   → chat.mjs:340
    ├─ small talk („salut”, „mulțumesc”) → text fix   → chat.mjs:346
    ├─ întrebare < 6 cuvinte → se caută împreună cu întrebarea anterioară → chat.mjs:352
-   ├─ < 2 tokeni utili → status clarify (too_vague) → chat.mjs:357
    ├─ knowledge.search: lexical (BM25) + semantic, dacă există embeddings → chat.mjs:360
+   ├─ < 2 termeni utili → status clarify (too_vague), dar numai după căutare și numai dacă niciun fragment găsit nu conține un termen rar (df ≤ 5% din fragmente) → chat.mjs:357, :361
    ├─ 0 rezultate → status refused (no_sources) → chat.mjs:361
    ├─ prompt de sistem + sursele S1..Sn → chat.mjs:365-371
    ├─ furnizor activ; un singur fallback la eroare tranzitorie → chat.mjs:377-400
@@ -40,7 +40,7 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - Chei API criptate AES-256-GCM și mascate în API; `AI_SECRET_KEY` invalid oprește modulul cu 503 (`server/ai/security.mjs:1-27`).
 - Import de surse cu protecție SSRF: rezolvare DNS, blocare a intervalelor private și a redirecționărilor către rețeaua internă (`server/ai/security.mjs:1-2`).
 - Bază de cunoștințe construită determinist din `source_data.json`, tăiată în bucăți, tokenizată și — opțional — vectorizată; un singur `kb.json`, scris atomic (`server/ai/extract.mjs:1-3`, `server/ai/knowledge.mjs:1-2`).
-- Căutare hibridă: lexical BM25 plus cosinus pe embeddings, cu degradare la lexical dacă furnizorul de embeddings nu răspunde (`server/ai/knowledge.mjs:500-548`).
+- Căutare hibridă: lexical BM25 plus cosinus pe embeddings, cu degradare la lexical dacă furnizorul de embeddings nu răspunde; un fragment trece filtrul lexical dacă acoperă ≥ 50% din termenii întrebării **sau** conține un termen rar (df ≤ 5% din fragmente, ex. „SAGA”) (`server/ai/knowledge.mjs:486-506`, `:500-548`).
 - Respingerea textelor care conțin instrucțiuni pentru model (prompt injection) la indexare, nu la afișare (`server/ai/extract.mjs:17-24`).
 - Răspunsuri validate: citate obligatorii, citate verificate în surse, valori numerice susținute de text, prag de suport; stări explicite `answer`/`clarify`/`refused`/`insufficient`/`conflict` (`server/ai/chat.mjs:45-48`, `:152-223`).
 - Streaming SSE pentru vizitator, cu text tăiat în fragmente scurte și oprire când clientul pleacă (`server/ai/routes.mjs:16-17`, `:212-242`).
@@ -64,6 +64,7 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - `AI_PRIVATE_HOSTS` — `host:port` permis explicit pentru un Ollama local (`.env.example:33-34`).
 - Setări funcționale: `enabled`, `language`, `tone`, `welcome`, `noInfo`, `contactUrl`, `maxAnswerChars`, `citations`, `suggestions`, `topK`, `minScore`, `retentionDays` (`server/ai/store.mjs:11-25`).
 - Limite: `maxMessageChars`, `perSessionPerDay`, `perIpPerMinute` și bugetul lunar (`server/ai/store.mjs:27-31`).
+- Furnizor: `maxTokens` — bugetul de tokeni al răspunsului, implicit 1500, reglabil între 16 și 8000 (`server/ai/store.mjs:66`, `:140`).
 
 ## Fișiere
 
@@ -77,6 +78,7 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - `npm run test:ai-eval` — evaluare de retrieval și validare pe conținutul real al site-ului, cu model mock (`package.json:23`, `tests/ai-eval.mjs:1`, `:22-27`).
 - Raportul de evaluare numără separat întrebările `answerable`, `unanswerable` și `ambiguous` (`tests/ai-eval.mjs:39-47`).
 - Ambiguous: cele 4 întrebări din `tests/ai-eval.json:22-25` trebuie să primească cerere de clarificare, nu un răspuns afirmativ — metrica `refusedOrClarify` = 4/4 (`tests/ai-eval.mjs:46`), conform regulii din prompt ca întrebarea ambiguă să primească o singură întrebare scurtă de clarificare (`server/ai/chat.mjs:48`, `:357-359`).
+- După relaxarea filtrului lexical, cu modelul mock „ascultător” (răspunde mereu) refuzul la întrebările fără răspuns a scăzut la 13% (`tests/ai-eval.mjs:10-15`, `:45`), iar testul live cu DeepSeek a refuzat corect întrebarea despre „reduceri Black Friday”. Limitare: filtrul mai permisiv trimite mai multe întrebări la model (cost), iar refuzul depinde de statusul `insufficient` al modelului plus validare (`server/ai/chat.mjs:152-223`).
 
 ## Limitări
 
