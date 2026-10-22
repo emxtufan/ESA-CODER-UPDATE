@@ -15,6 +15,7 @@ type AiSettings = {
   maxAnswerChars: number; style: string; citations: 'always' | 'when-available'; suggestions: string[];
   topK: number; minScore: number; retentionDays: number;
   leadAfter: number; leadRequired: boolean; leadPrompt: string; ratingPrompt: string; teaserDelay: number;
+  memoryWindow: number; cacheEnabled: boolean;
 };
 type AiLimits = {
   maxMessageChars: number; perSessionPerDay: number; perIpPerMinute: number; perIpPerDay: number;
@@ -1012,6 +1013,19 @@ export function Settings() {
           {row('topK', 'Fragmente folosite (topK)', {type: 'number', min: 1, max: 12})}
           {row('minScore', 'Prag de relevanță (minScore)', {type: 'number', min: 0, max: 1, step: 0.05})}
           {row('retentionDays', 'Păstrarea conversațiilor (zile)', {type: 'number', min: 1, max: 365})}
+          {row('memoryWindow', 'Mesaje păstrate în context', {type: 'number', min: 1, max: 20})}
+          <label className="a-field is-inline">
+            <span className="a-field-label">Cache răspunsuri publice</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.cacheEnabled}
+              className={`a-switch${settings.cacheEnabled ? ' is-on' : ''}`}
+              onClick={() => set({cacheEnabled: !settings.cacheEnabled})}
+            >
+              <i />
+            </button>
+          </label>
           <div className="a-group-title">Captare email și feedback</div>
           <label className="a-field">
             <span className="a-field-label">Cere emailul după (întrebări)</span>

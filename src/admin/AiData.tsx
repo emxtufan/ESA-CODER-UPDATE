@@ -1070,7 +1070,52 @@ export function AiAnalytics() {
           <span className="a-muted">Rating conversații</span>
           <strong style={{fontSize: 20}}>{`👍 ${r.good} · 😐 ${r.ok} · 👎 ${r.bad}`}</strong>
         </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Cache hit</span>
+          <strong>{percent(data.cacheHitRate)}</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Căutare extinsă</span>
+          <strong>{percent(data.fallbackRate)}</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Predat echipei</span>
+          <strong>{percent(data.handoffRate)}</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Retrieval mediu</span>
+          <strong style={{fontSize: 20}}>{Math.round(data.avgRetrievalMs || 0)} ms</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Valori respinse</span>
+          <strong>{data.unsupported ?? 0}</strong>
+        </div>
       </div>
+      <section className="a-card a-panel">
+        <h2>Rute</h2>
+        {!data.routes || Object.keys(data.routes).length === 0 ? (
+          <p className="a-empty">Fără date în perioada selectată.</p>
+        ) : (
+          <div className="a-table-wrap">
+            <table className="a-table">
+              <thead>
+                <tr>
+                  <th>Rută</th>
+                  <th>Cereri</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(data.routes).map(([route, count]) => (
+                  <tr key={route}>
+                    <td>{route}</td>
+                    <td>{count ?? 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
       <UsageTable title="Pe provider" rows={data.byProvider} />
       <UsageTable title="Pe model" rows={data.byModel} />
       <section className="a-card a-panel">
