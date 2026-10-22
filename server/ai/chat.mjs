@@ -474,8 +474,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       return finish({conversationId, message, outcome: blank('error', TEXTS.error, 'no_provider')});
     }
 
-    const aborted = () => {
+    const aborted = async () => {
       console.warn('[ai] chat request aborted by the client');
+      await recordRewrite(rewriteUsage);
       return {conversationId, messageId: null, status: 'aborted', text: '', sources: []};
     };
 
@@ -519,10 +520,10 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     }
 
     const rawUsage = isObject(called.result?.usage) ? called.result.usage : {};
-    const usage = {input: Number(rawUsage.input) || 0, output: Number(rawUsage.output) || 0};
-    const costReported = typeof called.result?.costReported === 'number' ? called.result.costReported : null;
+    const usage = billedUsage({input: Number(rawUsage.input) || 0, output: Number(rawUsage.output) || 0});
+    const costReported = billedCost(typeof called.result?.costReported === 'number' ? called.result.costReported : null);
     const checked = validate(called.result?.text, sources, s);
-    const base = {called: true, cfg: used, usage, costReported, latencyMs};
+    const base = {called: true, cfg: used, usage, costReported, latencyMs, rewritten};
 
     if (!checked.ok) {
       console.warn(`[ai] chat refused: ${checked.reason}`);
