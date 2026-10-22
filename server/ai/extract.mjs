@@ -11,6 +11,16 @@ const MIN_TEXT = 20;
 // The project fields that describe the work (icons, images, refs and URLs are left out).
 const PROJECT_FIELDS = ['title', 'category', 'platform', 'overview', 'brief', 'approach', 'outcome', 'about', 'pagesList', 'featuresList'];
 const TOOLS_TITLE = 'Tehnologii folosite';
+// Interface scopes (forms, cookie banners, header, 404): labels a visitor clicks, not knowledge.
+const UI_SCOPE_RE = /ContactForm|CookieBanner|CookieSettings|Header|NotFound|^404$|PageTransition/;
+// The contact document: one place with phone, email and the company line.
+const CONTACT_TITLE = 'Date de contact ESA Coder Solutions (telefon, email, firmă)';
+const CONTACT_SCOPES = ['components/layout/Footer', '/contact'];
+const COMPANY_KEYS = ['company-phone', 'company-email'];
+const PHONE_LABEL_RE = /^telefon\s*:\s*/i;
+const PHONE_FORM_RE = /(\+?40|0)7\d{2}[\s.]?\d{3}[\s.]?\d{3}/;
+const PHONE_FULL_RE = /^\+?\d{9,13}$/;
+const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 
 // Text that reads like an instruction for the model, not like knowledge. Chunks that match are
 // flagged at indexing time and never retrieved, so a source can't steer the assistant.
@@ -71,9 +81,12 @@ export function siteDocuments(data) {
   if (tools.length) add('text', 'tools', TOOLS_TITLE, '', tools.join(', '));
 
   for (const [scope, value] of Object.entries(data ?? {})) {
-    if (scope.startsWith('_') || !value || typeof value !== 'object' || Array.isArray(value)) continue;
+    if (scope.startsWith('_') || UI_SCOPE_RE.test(scope)) continue;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
     add('page', scopeKey(scope), scopeTitle(value) || scope, scope.startsWith('/') ? scope : '', scopeText(value));
   }
+  const contact = contactText(data ?? {});
+  if (contact) add('contact', 'main', CONTACT_TITLE, '/contact', contact);
   return docs;
 }
 
@@ -275,6 +288,91 @@ function usefulValue(value) {
   const words = text.split(/\s+/);
   if (words.length < 3 && !/\d/.test(text)) return '';
   return text;
+}
+
+// The contact document: phones, emails and the company line, taken from the footer, the contact
+// page, data.seo and every scope that holds company-phone / company-email. Empty when neither a
+// phone nor an email is found.
+function contactText(data) {
+  const pairs = [];
+  for (const scope of CONTACT_SCOPES) walkPairs(data?.[scope], pairs);
+  walkPairs(data?.seo, pairs);
+  for (const value of Object.values(data ?? {})) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+    for (const key of COMPANY_KEYS) if (typeof value[key] === 'string') pairs.push([key, value[key]]);
+  }
+
+  const phones = [];
+  const numbers = new Map();
+  const emails = [];
+  const seenEmails = new Set();
+  let companyLine = '';
+  let fallbackLine = '';
+  for (const [key, value] of pairs) {
+    const text = normalize(value);
+    if (!text) continue;
+    const phone = phoneOf(text);
+    if (phone) {
+      const number = phoneKey(phone);
+      const known = numbers.get(number);
+      if (!known) {
+        const entry = {text: phone};
+        numbers.set(number, entry);
+        phones.push(entry);
+      } else if (!known.text.includes(phone)) {
+        known.text = `${known.text} (${phone})`;
+      }
+    }
+    for (const email of text.match(EMAIL_RE) ?? []) {
+      const lower = email.toLowerCase();
+      if (seenEmails.has(lower)) continue;
+      seenEmails.add(lower);
+      emails.push(email);
+    }
+    if (!/S\.R\.L\.|CUI/.test(text)) continue;
+    if (key === 'company-line') companyLine = text;
+    else if (!fallbackLine) fallbackLine = text;
+  }
+  if (!phones.length && !emails.length) return '';
+
+  const parts = [];
+  if (phones.length) parts.push(`Număr de telefon de contact: ${phones.map((entry) => entry.text).join(' / ')}.`);
+  if (emails.length) parts.push(`Email de contact: ${emails.join(', ')}.`);
+  const line = companyLine || fallbackLine;
+  if (line) parts.push(`Date firmă: ${line}.`);
+  parts.push('Pagina de contact: /contact.');
+  return parts.join('\n');
+}
+
+// Every string of a scope as a [key, value] pair, recursively.
+function walkPairs(value, pairs, key = '') {
+  if (typeof value === 'string') {
+    pairs.push([key, value]);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) walkPairs(entry, pairs, key);
+    return;
+  }
+  if (value && typeof value === 'object') {
+    for (const [name, entry] of Object.entries(value)) walkPairs(entry, pairs, name);
+  }
+}
+
+// The phone number of a value ("Telefon: 0748 452 215"), or '' when the value is not a phone.
+// Links are skipped: a WhatsApp URL carries the number but is not one.
+function phoneOf(text) {
+  if (URL_RE.test(text)) return '';
+  const plain = text.replace(PHONE_LABEL_RE, '').trim();
+  if (PHONE_FULL_RE.test(plain.replace(/[\s.]/g, ''))) return plain;
+  const match = PHONE_FORM_RE.exec(plain);
+  return match ? match[0].trim() : '';
+}
+
+// Phones are deduped by digits: "0748 452 215" and "+40748452215" are the same number.
+function phoneKey(phone) {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length > 10 ? digits.replace(/^0*40/, '') : digits.replace(/^0+/, '');
 }
 
 // A paragraph longer than the chunk size is cut at word boundaries.
