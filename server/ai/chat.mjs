@@ -9,6 +9,9 @@ const MAX_HISTORY = 6;
 const HISTORY_TEXT_MAX = 2000;
 const CLARIFY_MAX = 300;
 const QUOTE_MIN = 8;
+// A rephrased quote still passes when it is long enough and nearly all its words are in the source.
+const QUOTE_TOKENS_MIN = 6;
+const QUOTE_OVERLAP_MIN = 0.85;
 const MAX_SOURCE_LINKS = 4;
 const SUPPORT_MIN = 0.5;
 const MINUTE_MS = 60_000;
@@ -36,7 +39,7 @@ const CONTACT_WORDS = new Set(tokenize('telefon numar email mail contact contact
 const CONTACT_PERSON_RE = /\b(om|operator\w*|cineva|persoan[aă])\b/i;
 const CONTACT_ADDRESS_RE = /adres|sediu|unde/i;
 // A price question: the whole plan list is the answer, not a single ranked chunk.
-const PRICE_RE = /\b(cost\w*|c[aâ]t\s+(e|este|vine|ar\s+fi)|pre[tț]\w*|tarif\w*|buget\w*|ofert\w*|bani|lei|euro|€|ieftin\w*|scump\w*|pachet\w*|abonament\w*|plan(ul|uri|urile)?)\b/i;
+const PRICE_RE = /\b(cost\w*|c[aâ]t\s+(e|este|vine|ar\s+fi)|pre[tț]\w*|tarif\w*|buget\w*|ofert\w*|bani|lei|euro|€|ieftin\w*|scump\w*|pachet\w*|abonament\w*|pl[aă]t\w*|achit\w*|lunar\w*|pe\s+lun[aă]|plan(ul|uri|urile)?)\b/i;
 const CONTACT_SOURCE_ID = 'site:contact:main';
 const CONTACT_PHONE_PREFIX = 'Număr de telefon de contact:';
 const CONTACT_EMAIL_PREFIX = 'Email de contact:';
@@ -48,6 +51,14 @@ const REWRITE_COVERAGE_MIN = 0.75;
 const REWRITE_MAX_TOKENS = 300;
 const REWRITE_KEYWORDS_MAX = 12;
 const REWRITE_KEYWORD_MAX = 40;
+// Deterministic topic synonyms: a visitor's words rarely match the page's words.
+const EXPANSIONS = [
+  [/\b(c[aâ]nd|c[aâ]t\s+timp|[iî]n\s+c[aâ]t|durea\w*|durat\w*|termen\w*|gata|livr\w*|s[aă]pt[aă]m\w*)\b/i, 'durează durata realizare termen săptămâni'],
+  [/\b(host\w*|g[aă]zdui\w*|server\w*|domeni\w*)\b/i, 'hosting găzduire infrastructură domeniu lunar'],
+  [/\b(proiect\w*|portofoli\w*|lucr[aă]ri|clien[tț]i|exemple|realiz[aă]ri)\b/i, 'proiecte realizate portofoliu'],
+  [/\b(servicii|ce\s+face[tț]i|ce\s+oferi[tț]i)\b/i, 'servicii oferite'],
+  [/\b(tehnolog\w*|platform\w*|framework\w*|limbaj\w*)\b/i, 'tehnologii folosite platforme'],
+];
 
 const TEXTS = {
   invalid: 'Mesajul este gol sau prea lung.',
@@ -115,6 +126,16 @@ function plain(value) {
     .replace(QUOTES_RE, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+// A quote that was lightly rephrased keeps most of its words in the source; it is still a quote.
+function rephrasedQuote(quoteText, sourceText) {
+  const quoteTerms = tokenize(quoteText);
+  if (quoteTerms.length < QUOTE_TOKENS_MIN) return false;
+  const sourceTerms = new Set(tokenize(sourceText));
+  const unique = [...new Set(quoteTerms)];
+  const found = unique.filter((term) => sourceTerms.has(term)).length;
+  return found / unique.length >= QUOTE_OVERLAP_MIN;
 }
 
 // Numbers compare without their separators, so "4.990" matches "4990".
@@ -231,7 +252,10 @@ export function validate(raw, sources, settings) {
     const quote = typeof claim.quote === 'string' ? claim.quote : '';
     const source = typeof claim.source === 'string' ? cited.find((item) => item.id === claim.source) : null;
     if (!source || quote.length < QUOTE_MIN) return fail('unverified_quote');
-    if (!plain(source.text).includes(plain(quote))) return fail('unverified_quote');
+    const quoteText = plain(quote);
+    const sourceText = plain(source.text);
+    // ponytail: token-overlap fallback for lightly rephrased quotes; numbers are still checked exactly below
+    if (!sourceText.includes(quoteText) && !rephrasedQuote(quoteText, sourceText)) return fail('unverified_quote');
   }
 
   // Every hard value the answer states must already exist in the cited sources.
@@ -473,6 +497,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       const previous = [...history].reverse().find((item) => item.role === 'user');
       if (previous) query = `${message} ${previous.text}`;
     }
+    query = `${query} ${EXPANSIONS.filter(([re]) => re.test(message)).map(([, words]) => words).join(' ')}`.trim();
     const vague = new Set(tokenize(query)).size < 2;
     let {hits} = await knowledge.search(query, {topK: s.topK, minScore: s.minScore, signal});
 
