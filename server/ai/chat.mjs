@@ -296,11 +296,18 @@ function userPrompt(message, sources) {
 
 // The provider message may carry keys or user data: only the error kind is ever logged.
 
+// A refusal in debug mode (AI_DEBUG=1, set by the live test) prints its reason, the value that
+// failed and, for a reply that could not be parsed, the beginning of what the model wrote.
+const AI_DEBUG = process.env.AI_DEBUG === '1';
+const DEBUG_RAW_MAX = 1500;
+
 // -------------------------------------------------------------------- validation
 // Every hard value a text states must exist in the numbers it was given: the sources, the results
 // a calculation of the reply was checked for, and the numbers of the visitor's own messages. The
 // text may combine and compare them, so the whole set counts, not only the cited ones. Money is
 // stricter: a number with a currency must come from the sources or from a checked calculation.
+// Returns the first value the sources do not support, as it was written, or null when every value
+// holds: the caller reports it as the detail of the refusal.
 function unsupportedValue(text, list, allowed) {
   const body = String(text ?? '');
   const haystack = plain(list.map((item) => `${item.title ?? ''}\n${item.text ?? ''}`).join('\n'));
@@ -312,35 +319,43 @@ function unsupportedValue(text, list, allowed) {
     const before = body.slice(0, match.index);
     const after = body.slice(match.index + match[0].length);
     const stated = MONEY_AFTER_RE.test(after) || MONEY_BEFORE_RE.test(before) ? money : numbers;
-    if (!stated.has(numberKey(match[0]))) return true;
+    if (!stated.has(numberKey(match[0]))) return match[0];
   }
   for (const email of text.match(EMAIL_RE) ?? []) {
-    if (!haystack.includes(plain(email))) return true;
+    if (!haystack.includes(plain(email))) return email;
   }
   for (const url of text.match(URL_RE) ?? []) {
     // A link at the end of a sentence carries the sentence punctuation; it is not part of it.
-    if (!haystack.includes(plain(url.replace(/[.,;:!?]+$/, '')))) return true;
+    const link = url.replace(/[.,;:!?]+$/, '');
+    if (!haystack.includes(plain(link))) return link;
   }
   const hayDigits = haystack.replace(/\D/g, '');
   for (const phone of text.match(PHONE_RE) ?? []) {
     const digits = phone.replace(/\D/g, '');
-    if (digits.length >= 9 && !hayDigits.includes(digits)) return true;
+    if (digits.length >= 9 && !hayDigits.includes(digits)) return phone;
   }
-  return false;
+  return null;
 }
 
 /**
  * Checks a raw model reply against the sources it was given.
  * `userTexts` are the visitor's own words (the current message and the user turns of the history):
  * a number stated there may be repeated, but never as money.
- * Returns {ok, status, text, cited, reason}; every failure carries the reason codes
- * used by the store: invalid_json, insufficient, conflict, bad_clarify, unsupported_value.
+ * Returns {ok, status, text, cited, reason, detail}; every failure carries the reason codes
+ * used by the store: invalid_json, insufficient, conflict, bad_clarify, unsupported_value, and
+ * `detail` holds the value that failed (null for a refusal that has none). It is never stored.
  */
 export function validate(raw, sources, settings, userTexts) {
   const cfg = isObject(settings) ? settings : {};
   const list = Array.isArray(sources) ? sources.filter((item) => isObject(item) && typeof item.id === 'string') : [];
   const noInfo = typeof cfg.noInfo === 'string' ? cfg.noInfo : '';
-  const fail = (reason) => ({ok: false, status: 'refused', text: noInfo, cited: [], reason, memory: null});
+  const fail = (reason, detail = null) => {
+    if (AI_DEBUG) {
+      const shown = reason === 'invalid_json' ? String(raw ?? '').slice(0, DEBUG_RAW_MAX) : detail;
+      console.warn('[ai] debug', reason, shown);
+    }
+    return {ok: false, status: 'refused', text: noInfo, cited: [], reason, detail, memory: null};
+  };
 
   const data = parseAnswer(raw);
   if (!data) return fail('invalid_json');
@@ -371,7 +386,8 @@ export function validate(raw, sources, settings, userTexts) {
     const limit = Number(cfg.maxAnswerChars);
     if (!question) return fail('bad_clarify');
     if (Number.isFinite(limit) && limit > 0 && question.length > limit) return fail('bad_clarify');
-    if (unsupportedValue(question, list, allowed)) return fail('unsupported_value');
+    const unsupported = unsupportedValue(question, list, allowed);
+    if (unsupported) return fail('unsupported_value', unsupported);
     return {ok: true, status: 'clarify', text: question, cited: [], reason: '', memory};
   }
   if (status !== 'answer') return fail('invalid_json');
@@ -386,7 +402,8 @@ export function validate(raw, sources, settings, userTexts) {
     ? [...new Set(data.citations.filter((item) => typeof item === 'string' && known.has(item)))]
     : [];
 
-  if (unsupportedValue(answerText, list, allowed)) return fail('unsupported_value');
+  const unsupported = unsupportedValue(answerText, list, allowed);
+  if (unsupported) return fail('unsupported_value', unsupported);
 
   const limit = Number(cfg.maxAnswerChars);
   const text = Number.isFinite(limit) && limit > 0 && answerText.length > limit

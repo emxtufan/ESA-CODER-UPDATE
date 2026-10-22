@@ -2,6 +2,7 @@
 import fs from 'node:fs/promises'; import os from 'node:os'; import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 try { process.loadEnvFile('.env'); } catch { console.warn('[ai-live] .env lipsește: folosesc variabilele de mediu existente.'); }
+process.env.AI_DEBUG = '1';
 const {createStore} = await import('../server/ai/store.mjs');
 const {createKnowledge} = await import('../server/ai/knowledge.mjs');
 const {createChat} = await import('../server/ai/chat.mjs');
