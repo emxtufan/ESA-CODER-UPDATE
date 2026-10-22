@@ -380,7 +380,7 @@ export async function createAi({dir, admin, getContent}) {
   }));
 
   adminRouter.post('/test-chat', express.json({limit: BODY_LIMIT}), (req, res) =>
-    send(res, async () => chat.answer({message: bodyOf(req).message, sessionId: 'admin-test', ip: 'admin'})));
+    send(res, async () => ({reply: await chat.answer({message: bodyOf(req).message, sessionId: 'admin-test', ip: 'admin'})})));
 
   // ----------------------------------------------------------------- conversations
   adminRouter.get('/conversations', (req, res) => send(res, async () => store.listConversations(req.query)));
