@@ -113,6 +113,10 @@ export function titleOf(html) {
 // Longest suffix first, so "planurilor" loses "urilor" and not "ilor".
 const SUFFIXES = ['urilor', 'ilor', 'elor', 'ului', 'uri', 'ele', 'ile', 'ul', 'ii', 'ei', 'le', 'a', 'e', 'i', 'u'];
 
+const ABBREV = {
+  tel: 'telefon', tlf: 'telefon', nr: 'numar', mail: 'email', 'e-mail': 'email', mobil: 'telefon', whatsapp: 'telefon',
+};
+
 // ponytail: naive Romanian suffix stemmer; swap for a real stemmer if recall suffers
 function stem(term) {
   for (const suffix of SUFFIXES) {
@@ -130,6 +134,7 @@ export function tokenize(s) {
     .normalize('NFD')
     .replace(/\p{M}+/gu, '')
     .split(/[^\p{L}\p{N}]+/u)
+    .map((term) => ABBREV[term] ?? term)
     .filter((term) => term.length >= 2 && !STOPWORDS.has(term))
     .map(stem);
 }

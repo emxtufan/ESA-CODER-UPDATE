@@ -21,6 +21,15 @@ const NUMBER_RE = /\d+(?:[.,]\d+)*/g;
 const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}/gi;
 const URL_RE = /(?:https?:\/\/|www\.)[^\s<>()"']+/gi;
 const PHONE_RE = /\+?\d[\d\s().-]{6,}\d/g;
+const CONTACT_PHONE_RE = /\b(tel|tlf|telefon\w*|mobil|whatsapp|num[aă]r\w*\s+(de\s+)?(tel|telefon|contact|mobil))\b/i;
+const CONTACT_EMAIL_RE = /\b(e-?mail\w*|mail\w*|adres[aă]\s+de\s+e-?mail)\b/i;
+// A question that merely mentions a form or the site is about the site, not about the details.
+const CONTACT_OFFTOPIC_RE = /\b(formular|site-ul meu|pe site|integr|implement|magazin|aplica)/i;
+const CONTACT_MAX_WORDS = 10;
+const CONTACT_SOURCE_ID = 'site:contact:main';
+const CONTACT_PHONE_PREFIX = 'Număr de telefon de contact:';
+const CONTACT_EMAIL_PREFIX = 'Email de contact:';
+const CONTACT_PAGE_PREFIX = 'Pagina de contact:';
 const QUOTES_RE = /["'`„”‘’«»]/g;
 const REWRITE_COVERAGE_MIN = 0.75;
 const REWRITE_MAX_TOKENS = 300;
@@ -381,6 +390,36 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     if (SMALL_TALK_RE.test(message)) {
       const text = THANKS_RE.test(message) ? TEXTS.thanks : BYE_RE.test(message) ? TEXTS.bye : s.welcome;
       return finish({conversationId, message, outcome: blank('smalltalk', text, 'small_talk')});
+    }
+
+    // Contact details are authoritative structured data: served verbatim, never generated.
+    const asksContact = message.split(/\s+/).filter(Boolean).length <= CONTACT_MAX_WORDS
+      && (CONTACT_PHONE_RE.test(message) || CONTACT_EMAIL_RE.test(message))
+      && !CONTACT_OFFTOPIC_RE.test(message);
+    if (asksContact) {
+      const contact = await knowledge.getSource(CONTACT_SOURCE_ID);
+      if (contact && contact.status === 'approved') {
+        const lines = String(contact.text ?? '').split('\n');
+        const line = (prefix) => lines.find((item) => item.startsWith(prefix)) ?? '';
+        const wanted = CONTACT_PHONE_RE.test(message)
+          ? [line(CONTACT_PHONE_PREFIX), line(CONTACT_EMAIL_PREFIX)]
+          : [line(CONTACT_EMAIL_PREFIX), line(CONTACT_PHONE_PREFIX)];
+        const text = [...wanted, line(CONTACT_PAGE_PREFIX)].filter(Boolean).join('\n');
+        if (text) {
+          return finish({
+            conversationId,
+            message,
+            outcome: {
+              ...blank('answer', text, 'contact_data'),
+              cites: [{
+                sourceId: String(contact.id ?? CONTACT_SOURCE_ID),
+                title: String(contact.title ?? ''),
+                url: String(contact.url ?? ''),
+              }],
+            },
+          });
+        }
+      }
     }
 
     // A short follow-up ("și prețul?") is searched together with the previous question.

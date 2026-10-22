@@ -19,7 +19,7 @@ const MAX_PER_SOURCE = 2;
 const K1 = 1.2;
 const B = 0.75;
 // Bumped whenever tokenize() changes: an older index is re-tokenized on load.
-const TOKENIZER_VERSION = 3;
+const TOKENIZER_VERSION = 4;
 
 // A [COMPLETEAZĂ: …] placeholder means the operator still owes content: it may never go live.
 const PLACEHOLDER = /\[COMPLETEAZ/i;
