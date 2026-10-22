@@ -75,9 +75,13 @@ async function adminOk(method, url, body) {
   return response.value;
 }
 
+// The last HTTP reply the widget got, kept so a FAIL can show what the server actually answered.
+let lastReply = null;
+
 // The visitor widget: same shape the page posts, with the custom header a cross-site form cannot set.
 async function ask(message) {
   const response = await call('POST', '/api/ai/chat', {message, sessionId: randomUUID()}, {'x-ai': '1'});
+  lastReply = {status: response.status, text: response.value?.text ?? response.raw, reason: response.value?.reason};
   assert.equal(response.status, 200, `chat "${message}": ${response.raw}`);
   assert.equal(response.value?.ok, true, response.raw);
   return response.value;
@@ -391,6 +395,9 @@ try {
     } catch (error) {
       failed++;
       console.log(`FAIL ${scenario.name}: ${String(error?.message ?? error).split('\n')[0]}`);
+      console.log(String(error?.message ?? error));
+      console.log(JSON.stringify({actual: error?.actual, expected: error?.expected}));
+      console.log(`lastReply: ${JSON.stringify(lastReply)}`);
     }
   }
 } finally {
