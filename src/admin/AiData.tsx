@@ -787,6 +787,9 @@ export function Conversations() {
               </button>
             </div>
           </div>
+          <p className="a-muted">
+            Email: {detail.lead ? <a href={`mailto:${detail.lead.email}`}>{detail.lead.email}</a> : '—'} · Rating: {detail.rating ? RATINGS[detail.rating.value] : '—'}
+          </p>
           {retention}
           {detail.messages.map((m, index) => (
             <div className="a-field" key={m.id || index}>
@@ -846,6 +849,7 @@ export function Conversations() {
               value={draft.q}
               onChange={(e) => setDraft({...draft, q: e.target.value})}
             />
+            <span className="a-hint">caută și după email</span>
             <select className="a-input a-select-sm" aria-label="Status" value={draft.status} onChange={(e) => setDraft({...draft, status: e.target.value})}>
               <option value="">toate statusurile</option>
               <option value="refused">refused</option>
@@ -868,6 +872,8 @@ export function Conversations() {
                   <th>Început</th>
                   <th>Mesaje</th>
                   <th>Primul mesaj</th>
+                  <th>Email</th>
+                  <th>Rating</th>
                   <th>Flag-uri</th>
                   <th>Acțiuni</th>
                 </tr>
@@ -878,6 +884,8 @@ export function Conversations() {
                     <td>{when(c.startedAt)}</td>
                     <td>{c.count ?? 0}</td>
                     <td>{cut(c.first || '', 120)}</td>
+                    <td>{c.email ?? '—'}</td>
+                    <td>{c.rating ? RATINGS[c.rating] : '—'}</td>
                     <td>
                       {flags(c).length === 0 ? (
                         <span className="a-muted">—</span>
@@ -990,6 +998,7 @@ export function AiAnalytics() {
   }, [load]);
 
   if (!data) return error ? <Failed title="Analytics" error={error} /> : <Loading />;
+  const r = data.ratings ?? {good: 0, ok: 0, bad: 0};
 
   return (
     <>
@@ -1049,6 +1058,14 @@ export function AiAnalytics() {
         <div className="a-card a-kpi">
           <span className="a-muted">Feedback negativ</span>
           <strong>{data.negativeFeedback ?? 0}</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Emailuri colectate</span>
+          <strong>{data.leads ?? 0}</strong>
+        </div>
+        <div className="a-card a-kpi">
+          <span className="a-muted">Rating conversații</span>
+          <strong style={{fontSize: 20}}>{`👍 ${r.good} · 😐 ${r.ok} · 👎 ${r.bad}`}</strong>
         </div>
       </div>
       <UsageTable title="Pe provider" rows={data.byProvider} />
