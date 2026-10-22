@@ -281,36 +281,55 @@ export async function createAi({dir, admin, getContent}) {
     }
   });
 
-  publicRouter.post('/feedback', express.json({limit: FEEDBACK_LIMIT}), (req, res) => send(res, async () => {
+  publicRouter.post('/feedback', express.json({limit: FEEDBACK_LIMIT}), (req, res) => {
     const body = bodyOf(req);
+    const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
+    if (!SESSION_RE.test(sessionId)) return badRequest(res, 'Sesiune invalidă.');
+    const conversationId = typeof body.conversationId === 'string' ? body.conversationId : '';
+    const messageId = typeof body.messageId === 'string' ? body.messageId : '';
     const value = body.value === 'up' || body.value === 'down' ? body.value : null;
-    const saved = await chat.feedback(
-      typeof body.conversationId === 'string' ? body.conversationId : '',
-      typeof body.messageId === 'string' ? body.messageId : '',
-      value,
-    );
-    return {saved: saved === true};
-  }));
+    return send(res, async () => {
+      if (!(await store.ownsConversation(conversationId, sessionId))) {
+        throw problem('Conversație inexistentă.', 404);
+      }
+      const saved = await chat.feedback(conversationId, messageId, value);
+      return {saved: saved === true};
+    });
+  });
 
   // The address is personal data: it is stored only with an explicit consent.
   publicRouter.post('/lead', express.json({limit: FEEDBACK_LIMIT}), (req, res) => {
     const body = bodyOf(req);
+    const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
+    if (!SESSION_RE.test(sessionId)) return badRequest(res, 'Sesiune invalidă.');
     const conversationId = typeof body.conversationId === 'string' ? body.conversationId : '';
     if (!UUID_RE.test(conversationId)) return badRequest(res, 'Identificator de conversație invalid.');
     if (body.consent !== true) {
       return res.status(422).json({ok: false, error: 'Este necesar acordul pentru prelucrarea adresei de email.'});
     }
-    return send(res, async () => ({saved: await store.setLead(conversationId, body.email)}));
+    return send(res, async () => {
+      if (!(await store.ownsConversation(conversationId, sessionId))) {
+        throw problem('Conversație inexistentă.', 404);
+      }
+      return {saved: await store.setLead(conversationId, body.email)};
+    });
   });
 
   // How the conversation went, at most once per conversation.
   publicRouter.post('/rating', express.json({limit: FEEDBACK_LIMIT}), (req, res) => {
     const body = bodyOf(req);
+    const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
+    if (!SESSION_RE.test(sessionId)) return badRequest(res, 'Sesiune invalidă.');
     const conversationId = typeof body.conversationId === 'string' ? body.conversationId : '';
     if (!UUID_RE.test(conversationId)) return badRequest(res, 'Identificator de conversație invalid.');
     const value = body.value === undefined ? null : body.value;
     if (value !== null && !RATING_VALUES.has(value)) return badRequest(res, 'Valoare de evaluare invalidă.');
-    return send(res, async () => ({saved: await store.setRating(conversationId, value)}));
+    return send(res, async () => {
+      if (!(await store.ownsConversation(conversationId, sessionId))) {
+        throw problem('Conversație inexistentă.', 404);
+      }
+      return {saved: await store.setRating(conversationId, value)};
+    });
   });
 
   // ------------------------------------------------------------------- admin panel

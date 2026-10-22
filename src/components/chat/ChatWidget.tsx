@@ -529,7 +529,12 @@ export default function ChatWidget() {
           'content-type': 'application/json',
           'x-ai': '1',
         },
-        body: JSON.stringify({ conversationId, messageId, value: nextValue }),
+        body: JSON.stringify({
+          conversationId,
+          messageId,
+          value: nextValue,
+          sessionId: sessionIdRef.current || getSessionId(),
+        }),
       });
     } catch {
       // feedback-ul e best-effort
@@ -565,6 +570,7 @@ export default function ChatWidget() {
           conversationId: conversationIdRef.current,
           email,
           consent: true,
+          sessionId: sessionIdRef.current || getSessionId(),
         }),
       });
 
@@ -606,7 +612,7 @@ export default function ChatWidget() {
           'content-type': 'application/json',
           'x-ai': '1',
         },
-        body: JSON.stringify({ conversationId, value }),
+        body: JSON.stringify({ conversationId, value, sessionId: sessionIdRef.current || getSessionId() }),
       }).catch(() => {
         // evaluarea e best-effort
       });
