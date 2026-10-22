@@ -89,9 +89,10 @@ async function adminOk(method, url, body) {
 let lastReply = null;
 
 // The visitor widget: same shape the page posts, with the custom header a cross-site form cannot set.
-// A conversationId continues an existing conversation instead of opening a new one.
-async function ask(message, conversationId = null) {
-  const body = conversationId ? {message, sessionId: randomUUID(), conversationId} : {message, sessionId: randomUUID()};
+// A conversationId continues an existing conversation instead of opening a new one, and only for the
+// session that created it: a caller continuing a conversation passes the session it opened it with.
+async function ask(message, conversationId = null, sessionId = randomUUID()) {
+  const body = conversationId ? {message, sessionId, conversationId} : {message, sessionId};
   const response = await call('POST', '/api/ai/chat', body, {'x-ai': '1'});
   lastReply = {status: response.status, text: response.value?.text ?? response.raw, reason: response.value?.reason};
   assert.equal(response.status, 200, `chat "${message}": ${response.raw}`);
@@ -507,37 +508,40 @@ const scenarios = [
     async run() {
       await activate(await ensureProvider('A'));
       behaviors.A = honest;
+      const sessionId = randomUUID();
       await adminOk('PUT', '/settings', {leadAfter: 2, leadRequired: true});
       calls.length = 0;
-      const first = await ask(PLAN_QUESTION);
+      // The conversation is opened by this session, so every later turn and the address it leaves
+      // are owned by it: another session id would lose the id and start a conversation of its own.
+      const first = await ask(PLAN_QUESTION, null, sessionId);
       assert.equal(first.status, 'answer');
       const conversationId = first.conversationId;
       assert.ok(typeof conversationId === 'string' && conversationId, first.status);
       assert.equal(first.askLead, false);
       // The second turn reaches the threshold: the widget is asked for an address.
-      const second = await ask(PLAN_QUESTION, conversationId);
+      const second = await ask(PLAN_QUESTION, conversationId, sessionId);
       assert.equal(second.status, 'answer');
       assert.equal(second.askLead, true);
       // A required address stops the conversation before the model: nothing is called or logged.
       const before = calls.length;
-      const third = await ask(PLAN_QUESTION, conversationId);
+      const third = await ask(PLAN_QUESTION, conversationId, sessionId);
       assert.equal(third.status, 'lead_required');
       assert.equal(calls.length, before, 'a required lead must not reach the provider');
       // The address is personal data: neither without consent nor without a valid address.
-      const noConsent = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro'}, {'x-ai': '1'});
+      const noConsent = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro', sessionId}, {'x-ai': '1'});
       assert.equal(noConsent.status, 422, noConsent.raw);
-      const invalid = await call('POST', '/api/ai/lead', {conversationId, email: 'client@exemplu', consent: true}, {'x-ai': '1'});
+      const invalid = await call('POST', '/api/ai/lead', {conversationId, email: 'client@exemplu', consent: true, sessionId}, {'x-ai': '1'});
       assert.equal(invalid.status, 422, invalid.raw);
-      const savedLead = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro', consent: true}, {'x-ai': '1'});
+      const savedLead = await call('POST', '/api/ai/lead', {conversationId, email: 'Client@Exemplu.ro', consent: true, sessionId}, {'x-ai': '1'});
       assert.equal(savedLead.status, 200, savedLead.raw);
       assert.equal(savedLead.value?.saved, true, savedLead.raw);
       // With the address stored the same conversation goes on.
-      const resumed = await ask(PLAN_QUESTION, conversationId);
+      const resumed = await ask(PLAN_QUESTION, conversationId, sessionId);
       assert.equal(resumed.status, 'answer');
-      const thanks = await ask('mersi', conversationId);
+      const thanks = await ask('mersi', conversationId, sessionId);
       assert.equal(thanks.status, 'smalltalk');
       assert.equal(thanks.askRating, true);
-      const rated = await call('POST', '/api/ai/rating', {conversationId, value: 'good'}, {'x-ai': '1'});
+      const rated = await call('POST', '/api/ai/rating', {conversationId, value: 'good', sessionId}, {'x-ai': '1'});
       assert.equal(rated.status, 200, rated.raw);
       assert.equal(rated.value?.saved, true, rated.raw);
       const listed = await adminOk('GET', '/conversations');
@@ -649,6 +653,25 @@ const scenarios = [
       assert.equal(calls.length, 2, 'a knowledge revision must invalidate the cached answer');
       // Back to the fixture state the rest of the run starts from.
       await adminOk('PUT', '/settings', {cacheEnabled: false});
+    },
+  },
+  {
+    name: 'session-isolation',
+    async run() {
+      await activate(await ensureProvider('A'));
+      behaviors.A = honest;
+      const sA = randomUUID();
+      const sB = randomUUID();
+      const r1 = await ask(PLAN_QUESTION, null, sA);
+      assert.ok(typeof r1.conversationId === 'string' && r1.conversationId, JSON.stringify(r1));
+      // Another session that knows the id cannot continue the conversation: it opens its own.
+      const r2 = await ask('Și Business?', r1.conversationId, sB);
+      assert.notEqual(r2.conversationId, r1.conversationId);
+      // Nor can it attach an address to someone else's conversation.
+      const foreign = await call('POST', '/api/ai/lead', {conversationId: r1.conversationId, email: 'x@y.ro', consent: true, sessionId: sB}, {'x-ai': '1'});
+      assert.equal(foreign.status, 404, foreign.raw);
+      const own = await call('POST', '/api/ai/lead', {conversationId: r1.conversationId, email: 'x@y.ro', consent: true, sessionId: sA}, {'x-ai': '1'});
+      assert.equal(own.status, 200, own.raw);
     },
   },
 ];
