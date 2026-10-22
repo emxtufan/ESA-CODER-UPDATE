@@ -154,7 +154,11 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
               <button className={`a-nav-item a-nav-flat${active === GDPR ? ' is-active' : ''}`} aria-current={active === GDPR ? 'page' : undefined} onClick={() => go(GDPR)}>
                 <span>GDPR &amp; Compliance</span>
               </button>
-              <button className={`a-nav-item a-nav-flat${active === AI ? ' is-active' : ''}`} aria-current={active === AI ? 'page' : undefined} onClick={() => go(AI)}>
+              <button
+                className={`a-nav-item a-nav-flat${active === AI ? ' is-active' : ''}`}
+                aria-current={active === AI ? 'page' : undefined}
+                onClick={() => go(AI)}
+              >
                 <span>AI Assistant</span>
               </button>
                 <span>GDPR &amp; Compliance</span>
