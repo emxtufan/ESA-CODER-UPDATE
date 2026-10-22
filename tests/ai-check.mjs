@@ -99,9 +99,10 @@ async function ask(message, conversationId = null) {
   return response.value;
 }
 
-// A model reply in the contract the system prompt asks for.
-const reply = (answer, quote, cite = 'S1', status = 'answer') =>
-  JSON.stringify({status, answer, citations: [cite], claims: [{source: cite, quote}]});
+// A model reply in the contract the system prompt asks for. `extra` merges into the JSON as is:
+// it is how a scenario adds the optional fields of the contract (the calcs of a computed number).
+const reply = (answer, quote, cite = 'S1', status = 'answer', extra = null) =>
+  JSON.stringify({status, answer, citations: [cite], claims: [{source: cite, quote}], ...(extra ?? {})});
 
 const SOURCES_RE = /<<<SOURCES\n([\s\S]*?)\nSOURCES>>>/;
 
@@ -545,6 +546,82 @@ const scenarios = [
       assert.equal(row.rating, 'good');
       // Back to a state where the later scenarios never hit the lead gate.
       await adminOk('PUT', '/settings', {leadAfter: 0});
+    },
+  },
+  {
+    name: 'calc-yearly',
+    async run() {
+      await activate(await ensureProvider('A'));
+      // No rewrite keywords left over from the earlier scenario: the retrieval is the plain search.
+      rewriteWords = [];
+      await addSource('Infrastructură', 'Infrastructura costă 25 lei pe lună.');
+      const question = 'Cât costă infrastructura pe an, 12 luni?';
+      // The yearly price is computed from the monthly one and from the visitor's 12 months: the
+      // reply declares the calculation it used, and the answer states nothing else.
+      const computed = (result) => (cfg, key, req) => {
+        const monthly = sourceWith(req, '25 lei pe lună');
+        assert.ok(monthly, 'the monthly price must be among the sources');
+        return reply(`Infrastructura costă ${result} lei pe an.`, String(monthly.text ?? ''), monthly.id, 'answer', {
+          calcs: [{expr: '25*12', result}],
+        });
+      };
+      behaviors.A = computed(300);
+      calls.length = 0;
+      const answered = await ask(question);
+      assert.equal(answered.status, 'answer');
+      assert.equal(calls.length, 1);
+      // The same answer without the calculation: 300 exists in no source.
+      behaviors.A = (cfg, key, req) => {
+        const monthly = sourceWith(req, '25 lei pe lună');
+        assert.ok(monthly, 'the monthly price must be among the sources');
+        return reply('Infrastructura costă 300 lei pe an.', String(monthly.text ?? ''), monthly.id);
+      };
+      calls.length = 0;
+      const uncounted = await ask(question);
+      assert.equal(uncounted.status, 'refused');
+      const withoutCalc = await conversationOf(uncounted.conversationId);
+      const reasonsOf = (conversation) => conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
+      assert.ok(reasonsOf(withoutCalc).includes('unsupported_value'), JSON.stringify(reasonsOf(withoutCalc)));
+      // A calculation that does not hold up (25*12 is not 400) is dropped, so the number it
+      // would have allowed is refused as well.
+      behaviors.A = computed(400);
+      calls.length = 0;
+      const wrong = await ask(question);
+      assert.equal(wrong.status, 'refused');
+      const badCalc = await conversationOf(wrong.conversationId);
+      assert.ok(reasonsOf(badCalc).includes('unsupported_value'), JSON.stringify(reasonsOf(badCalc)));
+    },
+  },
+  {
+    name: 'user-number',
+    async run() {
+      await activate(await ensureProvider('A'));
+      rewriteWords = [];
+      const question = 'suntem 12 angajati, ce recomanzi?';
+      const plan = (req) => {
+        const starter = sourceWith(req, 'Starter');
+        assert.ok(starter, 'the plan list must reach the model');
+        return starter;
+      };
+      // The visitor wrote 12 themselves: the team size may be repeated, never as money.
+      behaviors.A = (cfg, key, req) => {
+        const starter = plan(req);
+        return reply('Pentru 12 angajați recomandăm planul Starter.', String(starter.text ?? ''), starter.id);
+      };
+      calls.length = 0;
+      const answered = await ask(question);
+      assert.equal(answered.status, 'answer');
+      assert.equal(calls.length, 1);
+      behaviors.A = (cfg, key, req) => {
+        const starter = plan(req);
+        return reply('Pentru 12 angajați costă 12 lei.', String(starter.text ?? ''), starter.id);
+      };
+      calls.length = 0;
+      const refused = await ask(question);
+      assert.equal(refused.status, 'refused');
+      const conversation = await conversationOf(refused.conversationId);
+      const reasons = conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
+      assert.ok(reasons.includes('unsupported_value'), JSON.stringify(reasons));
     },
   },
 ];

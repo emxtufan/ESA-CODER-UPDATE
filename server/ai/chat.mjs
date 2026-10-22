@@ -786,7 +786,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       } else {
         addSpend(again.result);
         final = again.result;
-        checked = validate(final?.text, sources, s);
+        checked = validate(final?.text, sources, s, userTexts);
       }
     }
 
