@@ -681,9 +681,9 @@ const scenarios = [
       await activate(await ensureProvider('A'));
       await adminOk('PUT', '/limits', {perIpPerDay: 0, perSessionPerDay: 0, globalPerDay: 0});
       const memory = {summary: 'Discuție despre planuri și magazin.', state: {topic: 'planuri', plans: ['Starter'], users: 12, budget: '', preferences: [], comparisons: [], open: []}};
-      behaviors.A = (req) => {
-        const first = sourcesOf(req)[0];
-        return reply(String(first?.text ?? ''), String(first?.text ?? ''), first?.id ?? 'S1', 'answer', {memory});
+      behaviors.A = (cfg, key, req) => {
+        const base = JSON.parse(honest(cfg, key, req));
+        return JSON.stringify({...base, memory});
       };
       const questions = ['Faceți și magazine online pentru produse?', 'Ce garanție oferiți pentru cod?', 'Cât costă planul Starter pe lună cu infrastructura?', 'Și planul anterior ce includea?', 'Ce include planul Starter?'];
       const sessionId = randomUUID();
