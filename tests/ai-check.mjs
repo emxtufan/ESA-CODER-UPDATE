@@ -435,6 +435,46 @@ const scenarios = [
     },
   },
   {
+    name: 'unsupported-retry',
+    async run() {
+      await addSource('Hosting lunar', 'Hosting lunar: Găzduirea costă 25 lei pe lună.');
+      await activate(await ensureProvider('A'));
+      const question = 'Cât costă hostingul pentru 12 luni?';
+      // The first reply states a yearly total no source holds (the source says 25 lei per month);
+      // the retry asks for the calculation, and the second reply lists it.
+      const yearly = (cfg, key, req, calcs = null) => {
+        const [first] = sourcesOf(req);
+        return reply('Costă 300 lei pe an.', String(first.text ?? '').slice(0, 60), first.id, 'answer', calcs ? {calcs} : null);
+      };
+      let attemptNo = 0;
+      behaviors.A = (cfg, key, req) => {
+        attemptNo += 1;
+        return attemptNo === 1 ? yearly(cfg, key, req) : yearly(cfg, key, req, [{expr: '25*12', result: 300}]);
+      };
+      calls.length = 0;
+      const retried = await ask(question);
+      assert.equal(retried.status, 'answer', JSON.stringify(retried));
+      assert.equal(calls.length, 2);
+      // The second call repeats the conversation and ends with the value the retry names.
+      const firstMessages = calls[0].req.messages;
+      const secondMessages = calls[1].req.messages;
+      assert.deepEqual(secondMessages.slice(0, firstMessages.length), firstMessages);
+      const last = secondMessages.at(-1);
+      assert.equal(last.role, 'user');
+      assert.equal(last.content, 'The value "300" is not in SOURCES. If you computed it, list it in calcs with an expression whose operands come from SOURCES or the visitor\'s messages; otherwise remove it. Reply with JSON only.');
+      // A model that keeps stating the value without a calculation is asked twice, then refused.
+      behaviors.A = yearly;
+      calls.length = 0;
+      const refused = await ask(question);
+      assert.equal(refused.status, 'refused');
+      assert.equal(refused.text, noInfo);
+      assert.equal(calls.length, 2);
+      const conversation = await conversationOf(refused.conversationId);
+      const reasons = conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
+      assert.ok(reasons.includes('unsupported_value'), JSON.stringify(reasons));
+    },
+  },
+  {
     name: 'cost-limits',
     async run() {
       await activate(await ensureProvider('A'));
