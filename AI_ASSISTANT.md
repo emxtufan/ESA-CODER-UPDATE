@@ -64,7 +64,7 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - `AI_PRIVATE_HOSTS` — `host:port` permis explicit pentru un Ollama local (`.env.example:33-34`).
 - Setări funcționale: `enabled`, `language`, `tone`, `welcome`, `noInfo`, `contactUrl`, `maxAnswerChars`, `citations`, `suggestions`, `topK`, `minScore`, `retentionDays` (`server/ai/store.mjs:11-25`).
 - Limite: `maxMessageChars`, `perSessionPerDay`, `perIpPerMinute` și bugetul lunar (`server/ai/store.mjs:27-31`).
-- Furnizor: `maxTokens` — bugetul de tokeni al răspunsului, implicit 1500, reglabil între 16 și 8000 (`server/ai/store.mjs:66`, `:140`).
+- Furnizor: `maxTokens` — bugetul de tokeni al răspunsului, implicit 6000, reglabil în admin între 16 și 16000 (`server/ai/store.mjs:80`, `:154`, `src/admin/AiConfig.tsx:433`). Modelele de tip reasoning consumă din buget înainte de a scrie JSON-ul, așa că un buget prea mic taie răspunsul; un răspuns tăiat nu e tratat ca JSON invalid, ci refuzat cu motivul `truncated` (`server/ai/chat.mjs:655-659`, `server/ai/providers.mjs:151`, `:191`, `:227`).
 
 ## Fișiere
 

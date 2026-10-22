@@ -60,6 +60,16 @@ export function siteDocuments(data) {
       text: 'Proiecte realizate:\n' + projects.map((item) => `- ${normalize(item.title)}${item.category ? ' — ' + normalize(item.category) : ''}${item.platform ? ' (' + normalize(item.platform) + ')' : ''}: /works/${item.slug}`).join('\n'),
     });
   }
+  const posts = list('posts').filter((item) => item?.slug && item?.title);
+  if (posts.length) {
+    docs.push({
+      id: 'site:overview:posts',
+      kind: 'post',
+      title: 'Blog: articole publicate',
+      url: '/blog',
+      text: 'Blogul ESA Coder Solutions are articole despre:\n' + posts.map((item) => `- ${normalize(item.title)}: /blog/${item.slug}`).join('\n'),
+    });
+  }
   for (const item of list('posts')) {
     if (!item?.slug) continue;
     const body = htmlToText(item.html) || normalize(item.excerpt);

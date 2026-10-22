@@ -430,7 +430,7 @@ function ProviderForm({types, provider, onSaved, onCancel}: {
         </label>
         <label className="a-field">
           <span className="a-field-label">Tokeni maximi</span>
-          <input className="a-input" type="number" min={16} max={8000} value={draft.maxTokens} onChange={(e) => set({maxTokens: e.target.value})} />
+          <input className="a-input" type="number" min={16} max={16000} value={draft.maxTokens} onChange={(e) => set({maxTokens: e.target.value})} />
         </label>
         <label className="a-field">
           <span className="a-field-label">Temperatura</span>
