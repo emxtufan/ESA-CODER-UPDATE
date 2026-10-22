@@ -244,7 +244,8 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     if (perDay > 0 && !limiterFor('ipDay', perDay, DAY_MS)(String(ip ?? ''))) return 'perIpPerDay';
     const perSession = limits.perSessionPerDay;
     if (perSession > 0 && !limiterFor('sessionDay', perSession, DAY_MS)(String(sessionId ?? ''))) return 'perSessionPerDay';
-    if ((await store.dayRequests()) >= limits.globalPerDay) return 'globalPerDay';
+    const globalPerDay = limits.globalPerDay;
+    if (globalPerDay > 0 && (await store.dayRequests()) >= globalPerDay) return 'globalPerDay';
     if (limits.monthlyBudget <= 0 || (await store.monthCost()) >= limits.monthlyBudget) return 'monthlyBudget';
     return null;
   }
