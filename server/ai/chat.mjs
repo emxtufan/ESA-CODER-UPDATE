@@ -41,7 +41,7 @@ const CONTACT_ADDRESS_RE = /adres|sediu|unde/i;
 // A price question: the whole plan list is the answer, not a single ranked chunk.
 const PRICE_RE = /\b(cost\w*|c[aâ]t\s+(e|este|vine|ar\s+fi)|pre[tț]\w*|tarif\w*|buget\w*|ofert\w*|bani|lei|euro|€|ieftin\w*|scump\w*|pachet\w*|abonament\w*|pl[aă]t\w*|achit\w*|lunar\w*|pe\s+lun[aă]|plan(ul|uri|urile)?)\b/i;
 // A visitor describing the website they want: it needs the plans and the service overview, not one ranked chunk.
-const NEED_RE = /\b(vreau|a[sș]\s+(vrea|dori)|am\s+nevoie|[iî]mi\s+trebuie|caut|doresc|sectiuni|sec[tț]iuni|pagini|magazin|galerie|poze|portofoliu|formular|rezerv[aă]ri|program[aă]ri|blog|multilingv|admin|s[aă]\s+pot\s+(incarca|inc[aă]rca|adauga|ad[aă]uga))\b/i;
+const NEED_RE = /\b(vreau|a[sș]\s+(vrea|dori)|am\s+nevoie|[iî]mi\s+trebuie|caut|doresc|sectiuni|sec[tț]iuni|pagini|magazin|galerie|poze|portofoliu|formular|rezerv[aă]ri|program[aă]ri|multilingv|admin|s[aă]\s+pot\s+(incarca|inc[aă]rca|adauga|ad[aă]uga))\b/i;
 const CONTACT_SOURCE_ID = 'site:contact:main';
 const SERVICES_SOURCE_ID = 'site:overview:services';
 const CONTACT_PHONE_PREFIX = 'Număr de telefon de contact:';
