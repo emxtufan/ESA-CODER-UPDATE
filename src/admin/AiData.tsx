@@ -20,16 +20,21 @@ type KbStats = {
 type SearchHit = {title: string; url: string; kind: string; score: number; lexical: number; semantic: number; text: string};
 type KbSearch = {mode: string; hits: SearchHit[]};
 type SyncResult = {added: number; updated: number; removed: number; unchanged: number; failed: number};
+type RatingValue = 'good' | 'ok' | 'bad';
 type ConversationSummary = {
   id: string; startedAt: string; updatedAt: string; count: number; first: string;
   flags: {refused: boolean; down: boolean; error: boolean};
+  email: string | null; rating: RatingValue | null;
 };
 type Message = {
   id: string; role: string; text: string; at: string; status: string; reason: string;
   provider: string; model: string; latencyMs: number; usage: {input: number; output: number};
   costReported: number; costEstimated: number; citations: {title: string; url: string}[]; feedback: string;
 };
-type Conversation = {id: string; startedAt: string; messages: Message[]};
+type Conversation = {
+  id: string; startedAt: string; messages: Message[];
+  lead: {email: string; at: string} | null; rating: {value: RatingValue; at: string} | null;
+};
 type AiStats = {
   conversations: number; messages: number; avgLatencyMs: number;
   byStatus: {answered: number; refused: number; error: number; limited: number};
@@ -40,9 +45,12 @@ type AiStats = {
   byModel: Record<string, {messages: number; input: number; output: number}>;
   topQuestions: {q: string; count: number}[];
   negativeFeedback: number;
+  leads: number;
+  ratings: {good: number; ok: number; bad: number};
 };
 
 const ORIGINS: Record<SourceOrigin, string> = {site: 'site', manual: 'manual', url: 'url', file: 'fișier'};
+const RATINGS: Record<RatingValue, string> = {good: '👍 Bună', ok: '😐 Ok', bad: '👎 Slabă'};
 const KINDS = ['text', 'faq', 'service', 'plan', 'policy'];
 const when = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleString('ro-RO', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'niciodată';

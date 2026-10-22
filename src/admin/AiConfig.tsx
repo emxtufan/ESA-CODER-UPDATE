@@ -14,6 +14,7 @@ type AiSettings = {
   enabled: boolean; language: string; tone: string; welcome: string; noInfo: string; contactUrl: string;
   maxAnswerChars: number; style: string; citations: 'always' | 'when-available'; suggestions: string[];
   topK: number; minScore: number; retentionDays: number;
+  leadAfter: number; leadRequired: boolean; leadPrompt: string; ratingPrompt: string; teaserDelay: number;
 };
 type AiLimits = {
   maxMessageChars: number; perSessionPerDay: number; perIpPerMinute: number; perIpPerDay: number;
@@ -899,7 +900,7 @@ export function Settings() {
     </label>
   );
 
-  const area = (key: 'welcome' | 'noInfo' | 'style', label: string, rows: number) => (
+  const area = (key: 'welcome' | 'noInfo' | 'style' | 'leadPrompt', label: string, rows: number) => (
     <label className="a-field">
       <span className="a-field-label">{label}</span>
       <textarea className="a-input" rows={rows} value={String(settings[key] ?? '')} onChange={(e) => set({[key]: e.target.value} as Partial<AiSettings>)} />
@@ -1011,6 +1012,46 @@ export function Settings() {
           {row('topK', 'Fragmente folosite (topK)', {type: 'number', min: 1, max: 12})}
           {row('minScore', 'Prag de relevanță (minScore)', {type: 'number', min: 0, max: 1, step: 0.05})}
           {row('retentionDays', 'Păstrarea conversațiilor (zile)', {type: 'number', min: 1, max: 365})}
+          <div className="a-group-title">Captare email și feedback</div>
+          <label className="a-field">
+            <span className="a-field-label">Cere emailul după (întrebări)</span>
+            <input
+              className="a-input"
+              type="number"
+              min={0}
+              max={20}
+              value={String(settings.leadAfter ?? 0)}
+              onChange={(e) => set({leadAfter: Number(e.target.value)})}
+            />
+            <span className="a-hint">după câte întrebări cere emailul; 0 = niciodată</span>
+          </label>
+          <label className="a-field is-inline">
+            <span className="a-field-label">Email obligatoriu</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.leadRequired}
+              className={`a-switch${settings.leadRequired ? ' is-on' : ''}`}
+              onClick={() => set({leadRequired: !settings.leadRequired})}
+            >
+              <i />
+            </button>
+          </label>
+          <p className="a-hint" style={{padding: '0 16px 6px'}}>vizitatorul nu poate continua fără email</p>
+          {area('leadPrompt', 'Mesaj pentru cererea emailului', 3)}
+          {row('ratingPrompt', 'Mesajul de rating', {placeholder: 'Cum a fost conversația?'})}
+          <label className="a-field">
+            <span className="a-field-label">Întârziere balon (secunde)</span>
+            <input
+              className="a-input"
+              type="number"
+              min={0}
+              max={120}
+              value={String(settings.teaserDelay ?? 0)}
+              onChange={(e) => set({teaserDelay: Number(e.target.value)})}
+            />
+            <span className="a-hint">secunde până apare balonul cu mesaj lângă buton; 0 = fără balon</span>
+          </label>
           <div className="a-bar-actions" style={{padding: '10px 0'}}>
             <button className="a-btn a-btn-primary" disabled={!!busy}>
               Salvează instrucțiunile
