@@ -20,7 +20,8 @@
     "test:seo": "node tests/seo-check.mjs",
     "test:privacy": "node tests/privacy-check.mjs",
     "test:launch": "node tests/launch-check.mjs",
-    "test:ai": "node tests/ai-check.mjs","test:ai-eval": "node tests/ai-eval.mjs"
+    "test:ai": "node tests/ai-check.mjs","test:ai-eval": "node tests/ai-eval.mjs",
+    "test:ai-live": "node tests/ai-live.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

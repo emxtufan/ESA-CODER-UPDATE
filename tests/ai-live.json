@@ -1,0 +1,31 @@
+[
+  {
+    "name": "context-plans",
+    "turns": [
+      {"q": "Ce plan recomanzi pentru un site de prezentare cu 5 pagini?", "expect": {"status": "answer", "includesAny": ["plan"]}},
+      {"q": "Dar dacă vreau și magazin online?", "expect": {"status": "answer"}},
+      {"q": "Și cât ar costa anual infrastructura?", "expect": {"status": "answer", "includesAny": ["lei", "€"]}},
+      {"q": "Dar planul anterior cât costa?", "expect": {"status": "answer", "includesAny": ["lei"]}}
+    ]
+  },
+  {
+    "name": "unknown",
+    "turns": [
+      {"q": "Cât costă un abonament de 99 de angajați la voi?", "expect": {"excludes": ["99 lei"]}},
+      {"q": "Aveți reducere de Black Friday?", "expect": {"excludes": ["%"]}}
+    ]
+  },
+  {
+    "name": "compare",
+    "turns": [
+      {"q": "Care e diferența dintre Starter și Business?", "expect": {"status": "answer", "includesAny": ["Starter"]}},
+      {"q": "Care e mai ieftin?", "expect": {"status": "answer", "includesAny": ["Starter"]}}
+    ]
+  },
+  {
+    "name": "need",
+    "turns": [
+      {"q": "vreau 5 sectiuni, negru pe alb, sa pot incarca poze cu proiecte", "expect": {"status": "answer", "includesAny": ["lei"]}}
+    ]
+  }
+]
