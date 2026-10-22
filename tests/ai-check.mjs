@@ -194,12 +194,18 @@ const scenarios = [
     name: 'unknown-question',
     async run() {
       await activate(await ensureProvider('A'));
-      behaviors.A = honest;
+      // The profile chunks (plans, contact) lead every prompt, so the model is always reached and
+      // no_sources never fires: the mock proves the topic is absent from the sources it was given
+      // and answers "insufficient", which is what the server turns into a refusal.
+      behaviors.A = (cfg, key, req) => {
+        assert.equal(sourceWith(req, 'Marte'), null, 'the unknown topic must not be among the sources');
+        return reply('Nu am informații despre zboruri spațiale în surse.', '', 'S1', 'insufficient');
+      };
       calls.length = 0;
       const answer = await ask('Oferiți servicii de zbor spațial pe Marte?');
       assert.equal(answer.status, 'refused');
       assert.equal(answer.text, noInfo);
-      assert.equal(calls.length, 0);
+      assert.equal(calls.length, 1);
     },
   },
   {
@@ -326,23 +332,33 @@ const scenarios = [
       assert.equal(answered.status, 'answer');
       assert.equal(calls.length, 1);
       await setSourceStatus(id, 'draft');
+      // The profile chunks keep the source list non-empty, so the refusal comes from the model:
+      // the mock checks the drafted text is gone, then answers "insufficient".
+      behaviors.A = (cfg, key, req) => {
+        assert.equal(sourceWith(req, '24 de luni'), null, 'a drafted source must not reach the prompt');
+        return reply('Nu am informații despre garanție în surse.', '', 'S1', 'insufficient');
+      };
       calls.length = 0;
       const drafted = await ask(question);
       assert.equal(drafted.status, 'refused');
-      assert.equal(calls.length, 0);
+      assert.equal(calls.length, 1);
       await setSourceStatus(id, 'approved');
       await adminOk('DELETE', `/kb/sources/${id}`);
       calls.length = 0;
       const removed = await ask(question);
       assert.equal(removed.status, 'refused');
-      assert.equal(calls.length, 0);
+      assert.equal(calls.length, 1);
       // A page unpublished in the CMS leaves the knowledge base on the next sync.
       content._collections.faqs[0].published = false;
       await ai.knowledge.syncSite(content);
+      behaviors.A = (cfg, key, req) => {
+        assert.equal(sourceWith(req, '30 de zile de suport'), null, 'an unpublished page must not reach the prompt');
+        return reply('Nu am informații despre suportul de după lansare în surse.', '', 'S1', 'insufficient');
+      };
       calls.length = 0;
       const unpublished = await ask('Ce suport oferiți după lansare?');
       assert.equal(unpublished.status, 'refused');
-      assert.equal(calls.length, 0);
+      assert.equal(calls.length, 1);
     },
   },
   {
