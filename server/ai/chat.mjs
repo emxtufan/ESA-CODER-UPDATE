@@ -354,6 +354,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       const previous = [...history].reverse().find((item) => item.role === 'user');
       if (previous) query = `${message} ${previous.text}`;
     }
+    if (new Set(tokenize(query)).size < 2) {
+      return finish({conversationId, message, outcome: blank('clarify', 'Poți detalia puțin? De exemplu: un plan, un serviciu sau un proiect anume.', 'too_vague')});
+    }
     const {hits} = await knowledge.search(query, {topK: s.topK, minScore: s.minScore, signal});
     if (!hits.length) {
       return finish({conversationId, message, outcome: blank('refused', s.noInfo, 'no_sources')});
