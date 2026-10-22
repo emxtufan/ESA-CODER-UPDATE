@@ -7,7 +7,6 @@ import {ProviderError, RETRYABLE, estimateCost, provider} from './providers.mjs'
 
 const MAX_HISTORY = 6;
 const HISTORY_TEXT_MAX = 2000;
-const CLARIFY_MAX = 300;
 const MAX_SOURCE_LINKS = 4;
 // A reply that cites nothing still shows this many search hits as its sources.
 const MAX_FALLBACK_SOURCES = 3;
@@ -217,6 +216,30 @@ function userPrompt(message, sources) {
 // The provider message may carry keys or user data: only the error kind is ever logged.
 
 // -------------------------------------------------------------------- validation
+// Every hard value a text states must exist in the sources it was given. The text may combine
+// and compare them, so the whole set counts, not only the cited ones.
+function unsupportedValue(text, list) {
+  const haystack = plain(list.map((item) => `${item.title ?? ''}\n${item.text ?? ''}`).join('\n'));
+  // Every number is compared as one whole value: "10" is not supported by a source holding "100".
+  const hayNumbers = numberValues(haystack);
+  for (const number of text.match(NUMBER_RE) ?? []) {
+    if (!hayNumbers.has(numberKey(number))) return true;
+  }
+  for (const email of text.match(EMAIL_RE) ?? []) {
+    if (!haystack.includes(plain(email))) return true;
+  }
+  for (const url of text.match(URL_RE) ?? []) {
+    // A link at the end of a sentence carries the sentence punctuation; it is not part of it.
+    if (!haystack.includes(plain(url.replace(/[.,;:!?]+$/, '')))) return true;
+  }
+  const hayDigits = haystack.replace(/\D/g, '');
+  for (const phone of text.match(PHONE_RE) ?? []) {
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length >= 9 && !hayDigits.includes(digits)) return true;
+  }
+  return false;
+}
+
 /**
  * Checks a raw model reply against the sources it was given.
  * Returns {ok, status, text, cited, reason}; every failure carries the reason codes
@@ -234,12 +257,15 @@ export function validate(raw, sources, settings) {
   if (status === 'insufficient') return {ok: false, status: 'insufficient', text: noInfo, cited: [], reason: 'insufficient'};
   if (status === 'conflict') return {ok: false, status: 'conflict', text: noInfo, cited: [], reason: 'conflict'};
 
-  // A clarifying question states no facts: no digits, no address, no link.
+  // A clarifying question is plain text and nothing else: no citations and no question mark are
+  // required, only a non-empty answer within the settings limit. It still cannot state a value
+  // the sources do not hold.
   if (status === 'clarify') {
     const question = stripTags(data.answer);
-    const ok = question.length >= 1 && question.length <= CLARIFY_MAX
-      && !/\d/.test(question) && !question.includes('@') && !/https?:/i.test(question);
-    if (!ok) return fail('bad_clarify');
+    const limit = Number(cfg.maxAnswerChars);
+    if (!question) return fail('bad_clarify');
+    if (Number.isFinite(limit) && limit > 0 && question.length > limit) return fail('bad_clarify');
+    if (unsupportedValue(question, list)) return fail('unsupported_value');
     return {ok: true, status: 'clarify', text: question, cited: [], reason: ''};
   }
   if (status !== 'answer') return fail('invalid_json');
@@ -254,26 +280,7 @@ export function validate(raw, sources, settings) {
     ? [...new Set(data.citations.filter((item) => typeof item === 'string' && known.has(item)))]
     : [];
 
-  // Every hard value the answer states must exist in the sources it was given. The answer may
-  // combine and compare them, so the whole set counts, not only the cited ones.
-  const haystack = plain(list.map((item) => `${item.title ?? ''}\n${item.text ?? ''}`).join('\n'));
-  // Every number is compared as one whole value: "10" is not supported by a source holding "100".
-  const hayNumbers = numberValues(haystack);
-  for (const number of answerText.match(NUMBER_RE) ?? []) {
-    if (!hayNumbers.has(numberKey(number))) return fail('unsupported_value');
-  }
-  for (const email of answerText.match(EMAIL_RE) ?? []) {
-    if (!haystack.includes(plain(email))) return fail('unsupported_value');
-  }
-  for (const url of answerText.match(URL_RE) ?? []) {
-    // A link at the end of a sentence carries the sentence punctuation; it is not part of it.
-    if (!haystack.includes(plain(url.replace(/[.,;:!?]+$/, '')))) return fail('unsupported_value');
-  }
-  const hayDigits = haystack.replace(/\D/g, '');
-  for (const phone of answerText.match(PHONE_RE) ?? []) {
-    const digits = phone.replace(/\D/g, '');
-    if (digits.length >= 9 && !hayDigits.includes(digits)) return fail('unsupported_value');
-  }
+  if (unsupportedValue(answerText, list)) return fail('unsupported_value');
 
   const limit = Number(cfg.maxAnswerChars);
   const text = Number.isFinite(limit) && limit > 0 && answerText.length > limit
