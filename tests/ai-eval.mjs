@@ -25,7 +25,7 @@ try {
   await store.setActive({activeChat: p.id});
   await store.saveSettings({enabled: true});
   await store.saveLimits({perIpPerMinute: 0, perIpPerDay: 0, perSessionPerDay: 0, globalPerDay: 0, monthlyBudget: 1000});
-  const {topK, minScore} = store.config().settings;
+  const {topK, minScore} = (await store.config()).settings;
   const rows = [];
   for (const [i, item] of questions.entries()) {
     const {hits} = await knowledge.search(item.q, {topK, minScore});
