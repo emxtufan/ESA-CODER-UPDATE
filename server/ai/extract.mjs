@@ -18,18 +18,11 @@ const UI_SCOPE_RE = /ContactForm|CookieBanner|CookieSettings|Header|NotFound|^40
 // The contact document: one place with phone, email and the company line.
 const CONTACT_TITLE = 'Date de contact ESA Coder Solutions (telefon, email, adresă, firmă)';
 const CONTACT_SCOPES = ['components/layout/Footer', '/contact'];
-const COMPANY_KEYS = ['company-phone', 'company-email'];
+const COMPANY_KEYS = ['company-phone', 'company-email', 'company-address'];
 const PHONE_LABEL_RE = /^telefon\s*:\s*/i;
 const PHONE_FORM_RE = /(\+?40|0)7\d{2}[\s.]?\d{3}[\s.]?\d{3}/;
 const PHONE_FULL_RE = /^\+?\d{9,13}$/;
 const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
-// The address of the office: a street type followed by the number, told apart from the sentence
-// around it by "sediul" / the street token on the left and a new sentence on the right.
-const ADDRESS_STREET_RE = /\b(Bd\.|Bulevardul|Str\.|Strada|Calea|Șos\.)\s/;
-const ADDRESS_NUMBER_RE = /\bnr\b/i;
-const ADDRESS_SEAT_RE = /sediul/i;
-const ADDRESS_END_RE = /\.\s+(?=\p{Lu})/u;
-const ADDRESS_MAX = 160;
 
 // Text that reads like an instruction for the model, not like knowledge. Chunks that match are
 // flagged at indexing time and never retrieved, so a source can't steer the assistant.
@@ -56,6 +49,16 @@ export function siteDocuments(data) {
   for (const item of list('projects')) {
     if (!item?.slug) continue;
     add('project', item.slug, item.title, `/works/${item.slug}`, PROJECT_FIELDS.map((field) => fieldText(item[field])).filter(Boolean).join('\n'));
+  }
+  const projects = list('projects').filter((item) => item?.slug && item?.title);
+  if (projects.length) {
+    docs.push({
+      id: 'site:overview:projects',
+      kind: 'project',
+      title: PROJECTS_TITLE,
+      url: '/works',
+      text: 'Proiecte realizate:\n' + projects.map((item) => `- ${normalize(item.title)}${item.category ? ' — ' + normalize(item.category) : ''}${item.platform ? ' (' + normalize(item.platform) + ')' : ''}: /works/${item.slug}`).join('\n'),
+    });
   }
   for (const item of list('posts')) {
     if (!item?.slug) continue;
@@ -85,6 +88,16 @@ export function siteDocuments(data) {
     const key = item?.href || label;
     if (!key) continue;
     add('service', key.replace(/^\/+/, '').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/-+$/, ''), label, item.href || '', label);
+  }
+  const services = list('services').filter((item) => item?.title);
+  if (services.length) {
+    docs.push({
+      id: 'site:overview:services',
+      kind: 'service',
+      title: SERVICES_TITLE,
+      url: '/services',
+      text: 'Servicii oferite:\n' + services.map((item) => `- ${[normalize(item.title), normalize(item.subtitle)].filter(Boolean).join(' ')}${item.href ? ' (' + item.href + ')' : ''}`).join('\n'),
+    });
   }
   const tools = list('tools').map((item) => normalize(item?.name)).filter(Boolean);
   if (tools.length) add('text', 'tools', TOOLS_TITLE, '', tools.join(', '));
@@ -322,9 +335,14 @@ function contactText(data) {
   const seenEmails = new Set();
   let companyLine = '';
   let fallbackLine = '';
+  let address = '';
   for (const [key, value] of pairs) {
     const text = normalize(value);
     if (!text) continue;
+    if (key === 'company-address') {
+      if (!address) address = text;
+      continue;
+    }
     const phone = phoneOf(text);
     if (phone) {
       const number = phoneKey(phone);
@@ -354,6 +372,7 @@ function contactText(data) {
   if (emails.length) parts.push(`Email de contact: ${emails.join(', ')}.`);
   const line = companyLine || fallbackLine;
   if (line) parts.push(`Date firmă: ${line}.`);
+  if (address) parts.push(`Adresa sediului: ${address}.`);
   parts.push('Pagina de contact: /contact.');
   return parts.join('\n');
 }
