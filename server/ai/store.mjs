@@ -6,6 +6,7 @@ import {mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {atomic, problem, readJSON} from '../gdpr-storage.mjs';
 import {decryptSecret, encryptSecret, maskSecret} from './security.mjs';
+import {hashOf} from './extract.mjs';
 import {TYPES} from './providers.mjs';
 
 export const DEFAULT_SETTINGS = {
@@ -438,6 +439,9 @@ export async function createStore(dir) {
   });
 
   // ---------------------------------------------------------------- conversations
+
+  // The owner of a conversation as it lands on disk: a hash of the session id, never the id itself.
+  const sessionHash = (value) => (typeof value === 'string' && value.trim() ? hashOf(value.trim()) : '');
 
   async function loadConversations() {
     const saved = await readJSON(conversationsFile, null);
