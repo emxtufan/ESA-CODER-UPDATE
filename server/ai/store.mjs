@@ -77,7 +77,7 @@ const MAX_MESSAGES = 200;
 const MAX_CONVERSATIONS = 5000;
 const DEFAULT_TIMEOUT_MS = 30_000;
 // Reasoning models spend part of the budget before the JSON; a cut-off JSON is refused.
-const DEFAULT_MAX_TOKENS = 3000;
+const DEFAULT_MAX_TOKENS = 6000;
 const TEXT_MAX = 2000;
 const SUGGESTIONS_MAX = 6;
 const SUGGESTION_MAX = 120;
@@ -151,7 +151,7 @@ function cleanProvider(input, prev = null) {
   const baseUrl = data.baseUrl === undefined ? (prev?.baseUrl ?? '') : cleanBaseUrl(data.baseUrl, label);
   const enabled = data.enabled === undefined ? (prev?.enabled ?? true) : data.enabled === true;
   const timeoutMs = integerIn(data.timeoutMs, 1000, 120_000, 'Timeout-ul', prev?.timeoutMs ?? DEFAULT_TIMEOUT_MS);
-  const maxTokens = integerIn(data.maxTokens, 16, 8000, 'Numărul maxim de tokeni', prev?.maxTokens ?? DEFAULT_MAX_TOKENS);
+  const maxTokens = integerIn(data.maxTokens, 16, 16000, 'Numărul maxim de tokeni', prev?.maxTokens ?? DEFAULT_MAX_TOKENS);
   let temperature = null;
   if (data.temperature !== undefined && data.temperature !== null && data.temperature !== '') {
     const value = toNumber(data.temperature);

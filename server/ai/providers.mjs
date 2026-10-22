@@ -148,6 +148,7 @@ function openaiLike(type) {
         text,
         usage: usageOf(usage.prompt_tokens, usage.completion_tokens),
         costReported: typeof usage.cost === 'number' ? usage.cost : null,
+        truncated: data?.choices?.[0]?.finish_reason === 'length',
         model: typeof data?.model === 'string' && data.model ? data.model : cfg.model,
       };
     },
@@ -187,6 +188,7 @@ const anthropic = {
       text,
       usage: usageOf(usage.input_tokens, usage.output_tokens),
       costReported: null,
+      truncated: data?.stop_reason === 'max_tokens',
       model: typeof data?.model === 'string' && data.model ? data.model : cfg.model,
     };
   },
@@ -222,6 +224,7 @@ const gemini = {
       text,
       usage: usageOf(usage.promptTokenCount, usage.candidatesTokenCount),
       costReported: null,
+      truncated: data?.candidates?.[0]?.finishReason === 'MAX_TOKENS',
       model: cfg.model,
     };
   },

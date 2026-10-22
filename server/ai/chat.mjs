@@ -603,8 +603,10 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     const base = {called: true, cfg: used, usage, costReported, latencyMs, rewritten};
 
     if (!checked.ok) {
-      console.warn(`[ai] chat refused: ${checked.reason}`);
-      return finish({conversationId, message, outcome: {...blank('refused', s.noInfo, checked.reason), ...base}});
+      // A reply cut off at the token limit is a truncated answer, not a malformed one.
+      const reason = checked.reason === 'invalid_json' && called.result?.truncated ? 'truncated' : checked.reason;
+      console.warn(`[ai] chat refused: ${reason}`);
+      return finish({conversationId, message, outcome: {...blank('refused', s.noInfo, reason), ...base}});
     }
     return finish({
       conversationId,
