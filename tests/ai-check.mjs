@@ -105,12 +105,16 @@ const reply = (answer, quote, cite = 'S1', status = 'answer') =>
 
 const SOURCES_RE = /<<<SOURCES\n([\s\S]*?)\nSOURCES>>>/;
 
-// The sources block of the prompt, as the model would read it.
+// The sources block of the prompt, as the model would read it: the last user turn that carries one
+// (the JSON retry appends a bare format reminder after it).
 function sourcesOf(req) {
   const messages = Array.isArray(req?.messages) ? req.messages : [];
-  const last = [...messages].reverse().find((message) => message?.role === 'user');
-  const found = SOURCES_RE.exec(String(last?.content ?? ''));
-  return found ? JSON.parse(found[1]) : [];
+  const carriers = messages.filter((message) => message?.role === 'user');
+  for (const message of [...carriers].reverse()) {
+    const found = SOURCES_RE.exec(String(message.content ?? ''));
+    if (found) return JSON.parse(found[1]);
+  }
+  return [];
 }
 
 // What an honest model does: quote S1 verbatim and answer from S1 only.
@@ -336,6 +340,39 @@ const scenarios = [
       calls.length = 0;
       assert.equal((await ask(PLAN_QUESTION)).status, 'refused');
       assert.equal(calls.length, 1);
+    },
+  },
+  {
+    name: 'invalid-json-retry',
+    async run() {
+      await activate(await ensureProvider('A'));
+      // The first reply breaks the JSON contract, the second one follows it: the retry answers.
+      let attemptNo = 0;
+      behaviors.A = (cfg, key, req) => {
+        attemptNo += 1;
+        return attemptNo === 1 ? 'Planul Starter costă 2.490 lei.' : honest(cfg, key, req);
+      };
+      calls.length = 0;
+      const retried = await ask(PLAN_QUESTION);
+      assert.equal(retried.status, 'answer', JSON.stringify(retried));
+      assert.equal(calls.length, 2);
+      // The second call repeats the conversation and ends with the format reminder.
+      const first = calls[0].req.messages;
+      const second = calls[1].req.messages;
+      assert.deepEqual(second.slice(0, first.length), first);
+      const last = second.at(-1);
+      assert.equal(last.role, 'user');
+      assert.equal(last.content, 'Răspunde DOAR cu JSON valid conform formatului cerut.');
+      // A model that never returns JSON is asked twice, then refused as before.
+      behaviors.A = () => 'Îmi pare rău, dar nu pot răspunde în acest format.';
+      calls.length = 0;
+      const refused = await ask(PLAN_QUESTION);
+      assert.equal(refused.status, 'refused');
+      assert.equal(refused.text, noInfo);
+      assert.equal(calls.length, 2);
+      const conversation = await conversationOf(refused.conversationId);
+      const reasons = conversation.messages.filter((message) => message.role === 'assistant').map((message) => message.reason);
+      assert.ok(reasons.includes('invalid_json'), JSON.stringify(reasons));
     },
   },
   {
