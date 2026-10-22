@@ -91,8 +91,9 @@ let lastReply = null;
 // The visitor widget: same shape the page posts, with the custom header a cross-site form cannot set.
 // A conversationId continues an existing conversation instead of opening a new one, and only for the
 // session that created it: a caller continuing a conversation passes the session it opened it with.
-async function ask(message, conversationId = null, sessionId = randomUUID()) {
-  const body = conversationId ? {message, sessionId, conversationId} : {message, sessionId};
+// The history is the window of earlier turns the widget keeps: it travels in the body when given.
+async function ask(message, conversationId = null, sessionId = randomUUID(), history = null) {
+  const body = {message, sessionId, ...(conversationId ? {conversationId} : {}), ...(history ? {history} : {})};
   const response = await call('POST', '/api/ai/chat', body, {'x-ai': '1'});
   lastReply = {status: response.status, text: response.value?.text ?? response.raw, reason: response.value?.reason};
   assert.equal(response.status, 200, `chat "${message}": ${response.raw}`);
