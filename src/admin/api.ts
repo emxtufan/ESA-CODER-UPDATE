@@ -47,6 +47,16 @@ export type AnalyticsSummary = {
   recent: Visit[];
 };
 
+// --- contact requests (server/contacts.mjs) and their email notification (server/mail.mjs) -----
+export type ContactRequest = {
+  id: string; createdAt: string; name: string; email: string; country: string; phone: string; projectType: string;
+  pages: string; budget: string; message: string; preferred_response_method: string;
+  status?: ContactStatus; note?: string; updatedAt?: string;
+};
+export type ContactStatus = 'new' | 'in_progress' | 'replied' | 'done' | 'rejected';
+export type RecaptchaSettings = {enabled: boolean; siteKey: string; secretKey?: string; hasSecret?: boolean; minScore: number};
+export type SmtpSettings = {enabled: boolean; host: string; port: number; secure: boolean; user: string; pass?: string; hasPass?: boolean; from: string; to: string; autoReply: boolean; replySubject: string; replyText: string};
+
 // --- section-based admin (server/sections.json) ---------------------------------------------
 export type TextField =
   | {type: 'text' | 'textarea' | 'link' | 'email' | 'phone' | 'code'; scope: string; key: string; label: string; hint?: string; placeholder?: string}
@@ -125,8 +135,34 @@ export const api = {
       headers: {'content-type': file.type},
       body: file,
     }),
+  contacts: () => call<{items: ContactRequest[]}>('/api/admin/contacts'),
+  updateContact: (id: string, patch: {status?: ContactStatus; note?: string}) =>
+    call<{item: ContactRequest}>(`/api/admin/contacts/${encodeURIComponent(id)}`, {method: 'PATCH', headers: {'content-type': 'application/json'}, body: JSON.stringify(patch)}),
+  deleteContact: (id: string) => call(`/api/admin/contacts/${encodeURIComponent(id)}`, {method: 'DELETE'}),
+  smtp: () => call<{settings: SmtpSettings}>('/api/admin/smtp'),
+  saveSmtp: (settings: SmtpSettings) =>
+    call<{settings: SmtpSettings}>('/api/admin/smtp', {method: 'PUT', headers: {'content-type': 'application/json'}, body: JSON.stringify(settings)}),
+  testSmtp: () => call('/api/admin/smtp/test', {method: 'POST'}),
+  recaptcha: () => call<{settings: RecaptchaSettings}>('/api/admin/recaptcha'),
+  saveRecaptcha: (settings: RecaptchaSettings) =>
+    call<{settings: RecaptchaSettings}>('/api/admin/recaptcha', {method: 'PUT', headers: {'content-type': 'application/json'}, body: JSON.stringify(settings)}),
   analytics: (days: number) => call<AnalyticsSummary>(`/api/admin/analytics?days=${days}`),
+  deleteVisit: (sid: string) => call(`/api/admin/analytics/visits/${encodeURIComponent(sid)}`, {method: 'DELETE'}),
+  clearAnalytics: () => call('/api/admin/analytics', {method: 'DELETE'}),
   hasOriginal: (path: string) => call<{exists: boolean}>(`/api/admin/image/original?path=${encodeURIComponent(path)}`),
   restoreImage: (path: string) =>
     call<{version: number}>(`/api/admin/image/restore?path=${encodeURIComponent(path)}`, {method: 'POST'}),
+  aiGet: (path: string) => call<any>('/api/admin/ai' + path),
+  aiSend: (method: string, path: string, body?: any) =>
+    call<any>('/api/admin/ai' + path, {
+      method,
+      headers: {'content-type': 'application/json'},
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }),
+  aiUpload: (file: File) =>
+    call<any>('/api/admin/ai/kb/upload?name=' + encodeURIComponent(file.name), {
+      method: 'POST',
+      headers: {'content-type': file.type || 'application/octet-stream'},
+      body: file,
+    }),
 };

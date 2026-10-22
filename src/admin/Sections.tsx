@@ -2,6 +2,9 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {api, type Block, type Item, type SectionError, type SectionView, type TextField} from './api';
 import {AutoTextarea, ImageTile, Mark} from './Advanced';
 import Analytics from './Analytics';
+import Gdpr from './Gdpr';
+import Ai from './Ai';
+import Requests, {EmailSettings} from './Requests';
 import {CollectionList, ItemEditor, countChanges, labelOf, newItem, type Ctx} from './Collections';
 
 // ---------------------------------------------------------------------------
@@ -13,6 +16,10 @@ type Toast = {text: string; error?: boolean} | null;
 type SaveFn = () => Promise<boolean>;
 // Not a section of sections.json: the traffic analysis, shown in the same right-hand pane.
 const ANALYTICS = 'analytics';
+const REQUESTS = 'requests';
+const EMAIL = 'email-settings';
+const GDPR = 'gdpr';
+const AI = 'ai-assistant';
 
 const idOf = (scope: string, key: string) => `${scope}::${key}`;
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
@@ -77,7 +84,7 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
     if (r.ok) {
       setGroups(r.groups);
       setSections(r.sections);
-      setActive((a) => (a === ANALYTICS || r.sections.some((s) => s.key === a) ? a : r.sections[0]?.key ?? ''));
+      setActive((a) => (a === ANALYTICS || a === REQUESTS || a === EMAIL || a === GDPR || a === AI || r.sections.some((s) => s.key === a) ? a : r.sections[0]?.key ?? ''));
     }
   }, [onLogout]);
   useEffect(() => {
@@ -109,7 +116,7 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
   };
 
   const section = sections.find((s) => s.key === active);
-  if (!section && active !== ANALYTICS) return <div className="a-center"><span className="a-spinner" /></div>;
+  if (!section && active !== ANALYTICS && active !== REQUESTS && active !== EMAIL && active !== GDPR && active !== AI) return <div className="a-center"><span className="a-spinner" /></div>;
   const group = groups.find((g) => g.key === section?.group);
 
   return (
@@ -129,6 +136,28 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
                 onClick={() => go(ANALYTICS)}
               >
                 <span>Trafic</span>
+              </button>
+              <button
+                className={`a-nav-item a-nav-flat${active === REQUESTS ? ' is-active' : ''}`}
+                aria-current={active === REQUESTS ? 'page' : undefined}
+                onClick={() => go(REQUESTS)}
+              >
+                <span>Cereri</span>
+              </button>
+              <button
+                className={`a-nav-item a-nav-flat${active === EMAIL ? ' is-active' : ''}`}
+                aria-current={active === EMAIL ? 'page' : undefined}
+                onClick={() => go(EMAIL)}
+              >
+                <span>Email și anti-spam</span>
+              </button>
+              <button className={`a-nav-item a-nav-flat${active === GDPR ? ' is-active' : ''}`} aria-current={active === GDPR ? 'page' : undefined} onClick={() => go(GDPR)}>
+                <span>GDPR &amp; Compliance</span>
+              </button>
+              <button className={`a-nav-item a-nav-flat${active === AI ? ' is-active' : ''}`} aria-current={active === AI ? 'page' : undefined} onClick={() => go(AI)}>
+                <span>AI Assistant</span>
+              </button>
+                <span>GDPR &amp; Compliance</span>
               </button>
             </div>
           </div>
@@ -188,6 +217,16 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
           onSaved={(all) => setSections(all)}
           onStale={load}
         />
+      ) : active === REQUESTS ? (
+        <Requests onLogout={onLogout} notify={notify} />
+      ) : active === EMAIL ? (
+        <EmailSettings onLogout={onLogout} notify={notify} />
+      ) : active === GDPR ? (
+        <Gdpr />
+      ) : active === AI ? (
+        <Ai />
+      ) : (
+        <Gdpr />
       ) : (
         <Analytics onLogout={onLogout} />
       )}
