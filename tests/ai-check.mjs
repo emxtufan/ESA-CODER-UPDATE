@@ -175,6 +175,22 @@ const scenarios = [
     },
   },
   {
+    name: 'need-consult',
+    async run() {
+      await activate(await ensureProvider('A'));
+      // A visitor describing the site they want: the plan list always reaches the model.
+      behaviors.A = (cfg, key, req) => {
+        const plan = sourceWith(req, 'Starter');
+        assert.ok(plan);
+        return reply(String(plan.text ?? ''), String(plan.text ?? ''), plan.id);
+      };
+      calls.length = 0;
+      const answer = await ask('vreau sa am 5 sectiuni si sa pot incarca poze cu proiecte');
+      assert.equal(answer.status, 'answer');
+      assert.equal(calls.length, 1);
+    },
+  },
+  {
     name: 'unknown-question',
     async run() {
       await activate(await ensureProvider('A'));
