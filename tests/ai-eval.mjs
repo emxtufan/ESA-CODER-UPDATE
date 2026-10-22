@@ -1,5 +1,6 @@
 // node tests/ai-eval.mjs — retrieval + validation evaluation on the real site content (mock model, no network).
 import fs from 'node:fs/promises'; import os from 'node:os'; import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 process.env.AI_SECRET_KEY = 'ab'.repeat(32);
 const {registerAdapter} = await import('../server/ai/providers.mjs');
 const {createStore} = await import('../server/ai/store.mjs');
@@ -13,7 +14,7 @@ registerAdapter('oracle', {models: async () => ['oracle'], generate: async (cfg,
   return {text: JSON.stringify({status: 'answer', answer: sentence, citations: ['S1'], claims: [{source: 'S1', quote: sentence}]}), usage: {input: 0, output: 0}, costReported: null, model: cfg.model};
 }});
 const CITATION = new Set(['bad_citation', 'unverified_quote', 'unsupported_value', 'low_support']);
-const root = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
+const root = path.dirname(fileURLToPath(import.meta.url));
 const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'esa-ai-eval-'));
 try {
   const {questions} = JSON.parse(await fs.readFile(path.join(root, 'ai-eval.json'), 'utf8'));
