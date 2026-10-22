@@ -22,6 +22,11 @@ export const DEFAULT_SETTINGS = {
   topK: 6,
   minScore: 0.3,
   retentionDays: 30,
+  leadAfter: 2,
+  leadRequired: true,
+  leadPrompt: 'Ca să putem continua și să te contactăm dacă e nevoie, lasă-ne adresa ta de email.',
+  ratingPrompt: 'Cum a fost conversația?',
+  teaserDelay: 5,
 };
 
 export const DEFAULT_LIMITS = {
@@ -47,6 +52,11 @@ const SETTINGS_RULES = {
   topK: {kind: 'number', min: 1, max: 12},
   minScore: {kind: 'number', min: 0, max: 1},
   retentionDays: {kind: 'number', min: 1, max: 365},
+  leadAfter: {kind: 'int', min: 0, max: 20},
+  leadRequired: {kind: 'bool'},
+  leadPrompt: {kind: 'string'},
+  ratingPrompt: {kind: 'string'},
+  teaserDelay: {kind: 'int', min: 0, max: 120},
 };
 
 const INT_LIMITS = new Set(['maxMessageChars', 'perSessionPerDay', 'perIpPerMinute', 'perIpPerDay', 'globalPerDay']);
@@ -54,6 +64,10 @@ const INT_LIMITS = new Set(['maxMessageChars', 'perSessionPerDay', 'perIpPerMinu
 const ROLES = new Set(['chat', 'embedding']);
 const MESSAGE_STATUSES = new Set(['answered', 'refused', 'error', 'limited']);
 const FEEDBACK = new Set(['up', 'down']);
+const RATING_VALUES = new Set(['good', 'ok', 'bad']);
+// A lead is only an address: one @, a dotted domain, no whitespace, at most 254 characters.
+const LEAD_EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+const EMAIL_MAX = 254;
 const ACTIVE_KEYS = ['activeChat', 'fallbackChat', 'activeEmbedding'];
 // Auth and routing headers are set by providers.mjs, never by the operator.
 const FORBIDDEN_HEADERS = new Set(['authorization', 'x-api-key', 'x-goog-api-key', 'cookie', 'host']);
@@ -204,6 +218,12 @@ function validateSetting(key, value) {
     return value.map((item) => item.trim()).filter(Boolean);
   }
   const number = toNumber(value);
+  if (rule.kind === 'int') {
+    if (typeof number !== 'number' || !Number.isInteger(number) || number < rule.min || number > rule.max) {
+      throw problem(`${key} trebuie să fie un întreg între ${rule.min} și ${rule.max}.`);
+    }
+    return number;
+  }
   if (typeof number !== 'number' || !Number.isFinite(number) || number < rule.min || number > rule.max) {
     throw problem(`${key} trebuie să fie un număr între ${rule.min} și ${rule.max}.`);
   }
@@ -532,6 +552,49 @@ export async function createStore(dir) {
       });
     },
 
+    setRating(conversationId, value) {
+      const next = value === undefined ? null : value;
+      if (next !== null && !RATING_VALUES.has(next)) return Promise.resolve(false);
+      return serial(async () => {
+        const data = await loadConversations();
+        const conversation = data.conversations.find((item) => item.id === conversationId);
+        if (!conversation) return false;
+        if (next === null) delete conversation.rating;
+        else conversation.rating = {value: next, at: isoNow()};
+        await atomic(conversationsFile, data);
+        return true;
+      });
+    },
+
+    // The lead is an address captured with consent: checked, lowercased, stored once.
+    setLead(conversationId, email) {
+      const value = typeof email === 'string' ? email.trim().toLowerCase() : '';
+      if (value.length > EMAIL_MAX || !LEAD_EMAIL_RE.test(value)) throw problem('Adresa de email nu este validă.', 422);
+      return serial(async () => {
+        const data = await loadConversations();
+        const conversation = data.conversations.find((item) => item.id === conversationId);
+        if (!conversation) throw problem('Conversația nu există.', 404);
+        conversation.lead = {email: value, at: isoNow()};
+        await atomic(conversationsFile, data);
+        return true;
+      });
+    },
+
+    // What the chat needs to decide: the stored address and the number of user turns.
+    async leadOf(conversationId) {
+      const data = await loadConversations();
+      const conversation = data.conversations.find((item) => item.id === conversationId);
+      const email = conversation?.lead?.email;
+      return typeof email === 'string' && email ? email : null;
+    },
+
+    async userCount(conversationId) {
+      const data = await loadConversations();
+      const conversation = data.conversations.find((item) => item.id === conversationId);
+      const messages = Array.isArray(conversation?.messages) ? conversation.messages : [];
+      return messages.filter((message) => message.role === 'user').length;
+    },
+
     async listConversations(query) {
       const params = isObject(query) ? query : {};
       const data = await loadConversations();
@@ -550,6 +613,7 @@ export async function createStore(dir) {
         if (from !== null && !(started >= from)) continue;
         if (to !== null && !(started <= to)) continue;
         if (q && !String(conversation.id ?? '').toLowerCase().includes(q)
+          && !String(conversation.lead?.email ?? '').toLowerCase().includes(q)
           && !messages.some((message) => String(message.text ?? '').toLowerCase().includes(q))) continue;
         if (status && !messages.some((message) => message.status === status)) continue;
         const first = messages.find((message) => message.role === 'user');
@@ -559,6 +623,8 @@ export async function createStore(dir) {
           updatedAt: conversation.updatedAt ?? null,
           count: messages.length,
           first: String(first?.text ?? '').slice(0, 120),
+          email: conversation.lead?.email ?? null,
+          rating: conversation.rating?.value ?? null,
           flags: {
             refused: messages.some((message) => message.status === 'refused'),
             down: messages.some((message) => message.feedback === 'down'),
@@ -573,7 +639,9 @@ export async function createStore(dir) {
     async getConversation(id) {
       const data = await loadConversations();
       const conversation = data.conversations.find((item) => item.id === id);
-      return conversation ? structuredClone(conversation) : null;
+      if (!conversation) return null;
+      const copy = structuredClone(conversation);
+      return {...copy, lead: copy.lead ?? null, rating: copy.rating ?? null};
     },
 
     // Whole conversations (not the list projection) inside a date range, newest first:

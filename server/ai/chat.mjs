@@ -14,9 +14,11 @@ const SUPPORT_MIN = 0.5;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const CONTROL_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g;
-const SMALL_TALK_RE = /^(salut|bun[aă]( ziua| seara| dimineata)?|hei|hello|hi|hey|mul[tț]umesc|mersi|thanks|thank you|ok|pa|la revedere)[\s!.?]*$/i;
+const SMALL_TALK_RE = /^(salut|bun[aă]( ziua| seara| dimineata)?|hei|hello|hi|hey|mul[tț]umesc|mersi|thanks|thank you|ok|bine|super|perfect|gata|asta e tot|nimic altceva|pa|la revedere)[\s!.?]*$/i;
 const THANKS_RE = /^(mul[tț]umesc|mersi|thanks|thank you)/i;
 const BYE_RE = /^(pa|la revedere)/i;
+// A short confirmation that the conversation is over: the moment to ask how it went.
+const ACK_RE = /^(ok|okay|bine|super|perfect|gata|asta e tot|nimic altceva)[\s!.?]*$/i;
 const NUMBER_RE = /\d+(?:[.,]\d+)*/g;
 const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}/gi;
 const URL_RE = /(?:https?:\/\/|www\.)[^\s<>()"']+/gi;
@@ -43,6 +45,7 @@ const TEXTS = {
   error: 'Am o problemă tehnică momentan. Te rog încearcă din nou.',
   thanks: 'Cu plăcere! Mai am ceva cu care te pot ajuta?',
   bye: 'O zi bună!',
+  ack: 'Mă bucur că te-am putut ajuta!',
 };
 
 // Stored message statuses, from the answer status.
@@ -313,7 +316,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
   });
 
   // Stores the exchange and returns what the route sends back to the page.
-  async function finish({conversationId, message, outcome}) {
+  async function finish({conversationId, message, outcome, settings}) {
     if (outcome.called) {
       await store.record({
         provider: outcome.cfg?.name ?? '',
@@ -341,12 +344,25 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       },
     ]);
     const ids = Array.isArray(saved?.messageIds) ? saved.messageIds : [];
+    const stored = saved?.conversationId ?? conversationId;
+    // Two prompts ride with the answer: the lead once the conversation is long enough (and
+    // still has no address), the rating only after a closing remark, never twice.
+    const leadAfter = Number(settings?.leadAfter) || 0;
+    const [lead, userTurns, conversation] = stored
+      ? await Promise.all([store.leadOf(stored), store.userCount(stored), store.getConversation(stored)])
+      : [null, 0, null];
+    const askLead = leadAfter > 0 && !lead && userTurns >= leadAfter;
+    const askRating = outcome.status === 'smalltalk'
+      && !conversation?.rating?.value
+      && (THANKS_RE.test(message) || BYE_RE.test(message) || ACK_RE.test(message));
     return {
-      conversationId: saved?.conversationId ?? conversationId,
+      conversationId: stored,
       messageId: ids.length ? ids[ids.length - 1] : null,
       status: outcome.status,
       text: outcome.text,
       sources: outcome.cites.map((item) => ({title: item.title, url: item.url})),
+      askLead,
+      askRating,
     };
   }
 
@@ -384,12 +400,20 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     const blocked = await limitHit({limits: L, ip: args.ip, sessionId: args.sessionId});
     if (blocked) {
       console.warn(`[ai] chat limited by ${blocked}`);
-      return finish({conversationId, message, outcome: blank('limited', TEXTS.limited, blocked)});
+      return finish({conversationId, message, outcome: blank('limited', TEXTS.limited, blocked), settings: s});
+    }
+
+    // A required address stops the conversation before the model: nothing is logged or billed.
+    if (s.leadAfter > 0 && s.leadRequired === true && conversationId
+      && !(await store.leadOf(conversationId)) && (await store.userCount(conversationId)) >= s.leadAfter) {
+      return {conversationId, messageId: null, status: 'lead_required', text: s.leadPrompt, sources: []};
     }
 
     if (SMALL_TALK_RE.test(message)) {
-      const text = THANKS_RE.test(message) ? TEXTS.thanks : BYE_RE.test(message) ? TEXTS.bye : s.welcome;
-      return finish({conversationId, message, outcome: blank('smalltalk', text, 'small_talk')});
+      const text = ACK_RE.test(message)
+        ? TEXTS.ack
+        : THANKS_RE.test(message) ? TEXTS.thanks : BYE_RE.test(message) ? TEXTS.bye : s.welcome;
+      return finish({conversationId, message, outcome: blank('smalltalk', text, 'small_talk'), settings: s});
     }
 
     // Contact details are authoritative structured data: served verbatim, never generated.
