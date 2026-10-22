@@ -447,10 +447,33 @@ export async function createAi({dir, admin, getContent}) {
       ? body.conversationId
       : null;
     return send(res, async () => {
-      const result = await chat.answer({message: body.message, conversationId, sessionId: 'admin-test', ip: 'admin'});
+      const result = await chat.answer({
+        message: body.message,
+        history: body.history,
+        conversationId,
+        sessionId: 'admin-test',
+        ip: 'admin',
+      });
+      // What the store actually kept for this answer: the panel shows the real route, tokens and
+      // timings, not what the request hoped for.
+      const conversation = result.conversationId ? await store.getConversation(result.conversationId) : null;
+      const messages = Array.isArray(conversation?.messages) ? conversation.messages : [];
+      const saved = result.messageId ? messages.find((item) => item.id === result.messageId) : null;
       return {
         reply: result,
         memory: result.conversationId ? await store.getMemory(result.conversationId) : null,
+        metrics: saved ? {
+          provider: saved.provider,
+          model: saved.model,
+          status: saved.status,
+          reason: saved.reason,
+          route: saved.route,
+          latencyMs: saved.latencyMs,
+          retrievalMs: saved.retrievalMs,
+          hits: saved.hits,
+          input: saved.usage?.input,
+          output: saved.usage?.output,
+        } : null,
       };
     });
   });

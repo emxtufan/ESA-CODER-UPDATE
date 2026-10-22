@@ -39,7 +39,16 @@ type AiProviders = {
   types: Record<string, {label: string; base: string; key: boolean}>;
 };
 type ChatTest = {status: number | string; text: string; sources: {title: string; url: string}[]};
-type ChatTurn = {role: 'user' | 'assistant'; text: string; sources: {title: string; url: string}[]};
+type ChatMetrics = {
+  provider: string; model: string; status: string; reason: string; route: string;
+  latencyMs: number; retrievalMs: number; hits: number; input: number; output: number;
+};
+type ChatTurn = {
+  role: 'user' | 'assistant';
+  text: string;
+  sources: {title: string; url: string}[];
+  metrics?: ChatMetrics | null;
+};
 
 const when = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleString('ro-RO', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'niciodată';
@@ -965,7 +974,9 @@ export function Settings() {
     if (!question || busy) return;
     setBusy('test');
     setReply(null);
-    const r = await api.aiSend('POST', '/test-chat', {message: question, conversationId: conversation});
+    // The last turns ride along, so the test behaves like the visitor widget with its memory.
+    const history = thread.slice(-12).map((turn) => ({role: turn.role, text: turn.text}));
+    const r = await api.aiSend('POST', '/test-chat', {message: question, conversationId: conversation, history});
     setBusy('');
     if (!r.ok) {
       setError(r.error || 'Testul nu a putut fi rulat.');
@@ -978,7 +989,7 @@ export function Settings() {
     setThread([
       ...thread,
       {role: 'user', text: question, sources: []},
-      {role: 'assistant', text: answer.text || '', sources: answer.sources || []},
+      {role: 'assistant', text: answer.text || '', sources: answer.sources || [], metrics: r.metrics ?? null},
     ]);
     setMessage('');
     setError('');
@@ -1147,6 +1158,19 @@ export function Settings() {
                       <li key={`${s.url}-${j}`}>{s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.title || s.url}</a> : s.title}</li>
                     ))}
                   </ul>
+                )}
+                {turn.role === 'assistant' && turn.metrics && (
+                  <p className="a-hint">
+                    {[
+                      turn.metrics.status,
+                      turn.metrics.route,
+                      turn.metrics.model,
+                      `${turn.metrics.input}/${turn.metrics.output} tokeni`,
+                      `${turn.metrics.latencyMs} ms`,
+                      `${turn.metrics.hits} surse`,
+                    ].filter(Boolean).join(' · ')}
+                    {turn.metrics.reason ? ` · ${turn.metrics.reason}` : ''}
+                  </p>
                 )}
               </div>
             ))}
