@@ -38,12 +38,7 @@ const CONTACT_WORDS = new Set(tokenize('telefon numar email mail contact contact
 // The two extra lines that can be asked for: the street address and the human team.
 const CONTACT_PERSON_RE = /\b(om|operator\w*|cineva|persoan[aă])\b/i;
 const CONTACT_ADDRESS_RE = /adres|sediu|unde/i;
-// A price question: the whole plan list is the answer, not a single ranked chunk.
-const PRICE_RE = /\b(cost\w*|c[aâ]t\s+(e|este|vine|ar\s+fi)|pre[tț]\w*|tarif\w*|buget\w*|ofert\w*|bani|lei|euro|€|ieftin\w*|scump\w*|pachet\w*|abonament\w*|pl[aă]t\w*|achit\w*|lunar\w*|pe\s+lun[aă]|plan(ul|uri|urile)?)\b/i;
-// A visitor describing the website they want: it needs the plans and the service overview, not one ranked chunk.
-const NEED_RE = /\b(vreau|a[sș]\s+(vrea|dori)|am\s+nevoie|[iî]mi\s+trebuie|caut|doresc|sectiuni|sec[tț]iuni|pagini|magazin|galerie|poze|portofoliu|formular|rezerv[aă]ri|program[aă]ri|multilingv|admin|s[aă]\s+pot\s+(incarca|inc[aă]rca|adauga|ad[aă]uga))\b/i;
 const CONTACT_SOURCE_ID = 'site:contact:main';
-const SERVICES_SOURCE_ID = 'site:overview:services';
 const CONTACT_PHONE_PREFIX = 'Număr de telefon de contact:';
 const CONTACT_EMAIL_PREFIX = 'Email de contact:';
 const CONTACT_PAGE_PREFIX = 'Pagina de contact:';
@@ -514,7 +509,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       if (previous) query = `${message} ${previous.text}`;
     }
     query = `${query} ${EXPANSIONS.filter(([re]) => re.test(message)).map(([, words]) => words).join(' ')}`.trim();
-    const vague = new Set(tokenize(query)).size < 2;
+    // Too vague means there is no word at all to search for: a single word ("preț", "SAGA")
+    // still names a topic.
+    const vague = tokenize(message).length === 0;
     let {hits} = await knowledge.search(query, {topK: s.topK, minScore: s.minScore, signal});
 
     // A weak retrieval (nothing found, or no chunk covering most of the query terms) is
@@ -561,21 +558,15 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       }
     }
 
-    // Prices are authoritative structured data: the plan records always reach the model for price
-    // questions; a visitor describing the site they want gets them too, together with the overview
-    // of the services. The validator still checks every number.
-    const wantsNeed = NEED_RE.test(message);
-    let priced = false;
-    if (PRICE_RE.test(message) || wantsNeed) {
-      const plans = await knowledge.hitsOfKind('plan');
-      const extra = wantsNeed
-        ? [...plans, ...(await knowledge.hitsOfKind('service')).filter((hit) => hit.sourceId === SERVICES_SOURCE_ID)]
-        : plans;
-      const seen = new Set(extra.map((hit) => hit.chunkId));
-      hits = [...extra, ...hits.filter((hit) => !seen.has(hit.chunkId))].slice(0, s.topK + extra.length);
-      // A described need is never handled as an empty search while the plans are in the sources.
-      priced = plans.length > 0;
+    // The profile chunks (who we are, what we offer) lead every answer; the searched chunks
+    // follow, deduplicated by chunk. Only the search is capped at topK, the profile is not.
+    const profile = await knowledge.profileHits();
+    const found = Array.isArray(hits) ? hits : [];
+    const merged = new Map();
+    for (const hit of [...profile, ...found]) {
+      if (!merged.has(hit.chunkId)) merged.set(hit.chunkId, hit);
     }
+    hits = [...merged.values()];
 
     // Whatever is stored carries the usage of both calls.
     const billedUsage = (usage) => (rewriteUsage
@@ -586,10 +577,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       return parts.length ? parts.reduce((sum, value) => sum + value, 0) : null;
     };
 
-    // Too vague only when nothing specific was matched: a rare term ("SAGA") still
-    // identifies a topic even in a one-word question. A price question, or a described need,
-    // is never too vague (and never empty) once the plan list is in the sources.
-    if (vague && !priced && !hits.some((hit) => hit.rare)) {
+    // Too vague only when the message carries no word at all: a single term ("SAGA", "preț")
+    // already names a topic. An empty hit list is the only no-sources case.
+    if (vague) {
       await recordRewrite(rewriteUsage);
       return finish({conversationId, message, outcome: {...blank('clarify', 'Poți detalia puțin? De exemplu: un plan, un serviciu sau un proiect anume.', 'too_vague'), rewritten}});
     }
