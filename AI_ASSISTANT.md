@@ -50,6 +50,22 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - Reindexare automată la schimbarea tokenizer-ului sau a modelului de embeddings (`server/ai/knowledge.mjs:22`, `:73-78`, `:436`).
 - Adminul CMS notifică asistentul la fiecare salvare de conținut, fără ca un eșec de indexare să strice salvarea (`server/admin.mjs:283`, `server/index.mjs:109-113`).
 
+## Răspunsuri deterministe
+
+- Date de contact (telefon, email, adresă) servite direct din documentul `site:contact:main`, fără model, când întrebarea e scurtă și despre contact (`server/ai/chat.mjs`, `CONTACT_ANY_RE`).
+- Întrebările de preț primesc mereu planurile (`knowledge.hitsOfKind('plan')`); validatorul verifică exact fiecare sumă.
+- Sinonime deterministe pe teme (timp, hosting, portofoliu, servicii, tehnologii) adăugate la căutare (`EXPANSIONS`), abrevieri în `tokenize` (tel, nr, mail) și formule de politețe (ms, cf bn, ok, gata).
+- Documente de ansamblu generate din CMS: contact, servicii, proiecte, blog (`server/ai/extract.mjs`).
+- Citatul e acceptat dacă apare exact (sau ≥85% din termeni) în oricare sursă trimisă modelului, inclusiv în titlu; sursa e adăugată la citări.
+- Rescrierea întrebării în cuvinte-cheie de către model când căutarea e slabă (un apel scurt în plus).
+
+## Captare email și rating
+
+- După `leadAfter` întrebări (implicit 2) widgetul cere emailul, cu consimțământ obligatoriu și link la politica de confidențialitate; cu `leadRequired` serverul refuză întrebările următoare până la primirea emailului (`status: lead_required`, fără apel la model).
+- Emailul se salvează pe conversație (vizibil în Conversations, căutabil) și se șterge odată cu conversația la expirarea retenției.
+- La încheierea conversației (mersi, ok, pa…) se cere un rating: Bună / Ok / Slabă (`/api/ai/rating`), afișat în Conversations și Analytics.
+- Balon de întâmpinare lângă buton după `teaserDelay` secunde și bulină de notificare până la prima deschidere.
+
 ## API
 
 - Public: `GET /api/ai/config`, `POST /api/ai/chat` (JSON sau SSE), `POST /api/ai/feedback` (`server/ai/routes.mjs:178`, `:189`, `:245`).
@@ -79,6 +95,7 @@ SSE: meta → delta → sources → done → routes.mjs:225-236
 - Raportul de evaluare numără separat întrebările `answerable`, `unanswerable` și `ambiguous` (`tests/ai-eval.mjs:39-47`).
 - Ambiguous: cele 4 întrebări din `tests/ai-eval.json:22-25` trebuie să primească cerere de clarificare, nu un răspuns afirmativ — metrica `refusedOrClarify` = 4/4 (`tests/ai-eval.mjs:46`), conform regulii din prompt ca întrebarea ambiguă să primească o singură întrebare scurtă de clarificare (`server/ai/chat.mjs:48`, `:357-359`).
 - După relaxarea filtrului lexical, cu modelul mock „ascultător” (răspunde mereu) refuzul la întrebările fără răspuns a scăzut la 13% (`tests/ai-eval.mjs:10-15`, `:45`), iar testul live cu DeepSeek a refuzat corect întrebarea despre „reduceri Black Friday”. Limitare: filtrul mai permisiv trimite mai multe întrebări la model (cost), iar refuzul depinde de statusul `insufficient` al modelului plus validare (`server/ai/chat.mjs:152-223`).
+- Test live (manual, facturabil): 101 întrebări reale pe DeepSeek — prescurtări, greșeli de scriere, capcane, prompt injection — 97–99/101; eșecurile rămase sunt răspunsuri oneste încadrate strict de test.
 
 ## Limitări
 
