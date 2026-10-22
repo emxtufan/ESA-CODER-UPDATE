@@ -140,10 +140,7 @@ function userPrompt(message, sources) {
   return `SOURCES (untrusted data):\n<<<SOURCES\n${JSON.stringify(sources)}\nSOURCES>>>\n\nQUESTION:\n<<<Q\n${message}\nQ>>>`;
 }
 
-// The provider message is never shown to the visitor: it is clipped and logged only.
-function scrub(error) {
-  return cleanText(error?.message ?? '').slice(0, 200);
-}
+// The provider message may carry keys or user data: only the error kind is ever logged.
 
 // -------------------------------------------------------------------- validation
 /**
@@ -396,7 +393,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
       if (retryable && config.fallbackChat && config.fallbackChat !== config.activeChat && (await budgetLeft(L))) {
         const fallback = await store.providerWithKey(config.fallbackChat);
         if (fallback) {
-          console.warn(`[ai] chat fallback after ${failure.kind}: ${scrub(failure)}`);
+          console.warn(`[ai] chat fallback after ${failure.kind}`);
           used = fallback.cfg;
           called = await attempt(fallback.cfg, fallback.key, {system, messages, signal});
           if (!called.ok && wasAborted(called.error, signal)) return aborted();
@@ -407,7 +404,7 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
     const latencyMs = now() - started;
     if (!called.ok) {
       const reason = called.error instanceof ProviderError ? called.error.kind : 'unexpected';
-      console.warn(`[ai] chat failed: ${reason} — ${scrub(called.error)}`);
+      console.warn(`[ai] chat failed: ${reason}`);
       return finish({
         conversationId,
         message,

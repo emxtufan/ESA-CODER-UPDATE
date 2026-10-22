@@ -35,9 +35,12 @@ const behaviors = {};
 
 registerAdapter('mock', {
   models: async () => ['m1', 'm2'],
+  // The adapter contract, exactly as the real ones (providers.mjs): the reply text together
+  // with its usage, never the bare text, because chat.mjs reads result.text.
   generate: async (cfg, key, req) => {
     calls.push({name: cfg.name, req});
-    return behaviors[cfg.name](cfg, key, req);
+    const text = await behaviors[cfg.name](cfg, key, req);
+    return {text, usage: {input: 0, output: 0}, costReported: null, model: cfg.model};
   },
 });
 
