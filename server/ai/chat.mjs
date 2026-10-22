@@ -14,7 +14,7 @@ const SUPPORT_MIN = 0.5;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const CONTROL_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g;
-const SMALL_TALK_RE = /^(salut|bun[aă]( ziua| seara| dimineata)?|hei|hello|hi|hey|mul[tț]umesc|mersi|thanks|thank you|ok|bine|super|perfect|gata|asta e tot|nimic altceva|pa|la revedere)[\s!.?]*$/i;
+const SMALL_TALK_RE = /^(salut|bun[aă]( ziua| seara| dimineata)?|hei|hello|hi|hey|mul[tț]umesc|mersi|thanks|thank you|ok|okay|bine|super|perfect|gata|asta e tot|nimic altceva|pa|la revedere)[\s!.?]*$/i;
 const THANKS_RE = /^(mul[tț]umesc|mersi|thanks|thank you)/i;
 const BYE_RE = /^(pa|la revedere)/i;
 // A short confirmation that the conversation is over: the moment to ask how it went.
@@ -316,7 +316,9 @@ export function createChat({store, knowledge, now = () => Date.now()}) {
   });
 
   // Stores the exchange and returns what the route sends back to the page.
-  async function finish({conversationId, message, outcome, settings}) {
+  async function finish(args) {
+    const {conversationId, message, outcome} = args;
+    const settings = args.settings ?? (await store.config()).settings;
     if (outcome.called) {
       await store.record({
         provider: outcome.cfg?.name ?? '',

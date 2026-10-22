@@ -21,6 +21,7 @@ const MAX_DAYS = 365;
 const DAY_MS = 86_400_000;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SESSION_RE = /^[a-zA-Z0-9-]{8,64}$/;
+const RATING_VALUES = new Set(['good', 'ok', 'bad']);
 const STREAM_ERROR = 'Am o problemă tehnică momentan.';
 // Refusals that mean "the knowledge base could not support an answer", not "the model broke".
 const INSUFFICIENT_REASONS = new Set(['no_sources', 'insufficient', 'conflict', 'low_support', 'unverified_quote', 'unsupported_value']);
@@ -76,6 +77,8 @@ function analyticsOf(conversations) {
   let latencyCount = 0;
   let insufficient = 0;
   let negativeFeedback = 0;
+  let leads = 0;
+  const ratings = {good: 0, ok: 0, bad: 0};
 
   const tally = (map, key, message) => {
     const row = map[key] ?? {messages: 0, input: 0, output: 0};
@@ -183,6 +186,11 @@ export async function createAi({dir, admin, getContent}) {
       suggestions: settings.suggestions,
       contactUrl: settings.contactUrl,
       maxMessageChars: limits.maxMessageChars,
+      leadAfter: settings.leadAfter,
+      leadRequired: settings.leadRequired === true,
+      leadPrompt: settings.leadPrompt,
+      ratingPrompt: settings.ratingPrompt,
+      teaserDelay: settings.teaserDelay,
     };
   }));
 
@@ -224,7 +232,13 @@ export async function createAi({dir, admin, getContent}) {
     };
     try {
       const result = await chat.answer(input);
-      write('meta', {conversationId: result.conversationId, messageId: result.messageId, status: result.status});
+      write('meta', {
+        conversationId: result.conversationId,
+        messageId: result.messageId,
+        status: result.status,
+        askLead: !!result.askLead,
+        askRating: !!result.askRating,
+      });
       for (const piece of deltas(result.text)) {
         if (controller.signal.aborted) break;
         write('delta', {text: piece});
@@ -252,6 +266,27 @@ export async function createAi({dir, admin, getContent}) {
     );
     return {saved: saved === true};
   }));
+
+  // The address is personal data: it is stored only with an explicit consent.
+  publicRouter.post('/lead', express.json({limit: FEEDBACK_LIMIT}), (req, res) => {
+    const body = bodyOf(req);
+    const conversationId = typeof body.conversationId === 'string' ? body.conversationId : '';
+    if (!UUID_RE.test(conversationId)) return badRequest(res, 'Identificator de conversație invalid.');
+    if (body.consent !== true) {
+      return res.status(422).json({ok: false, error: 'Este necesar acordul pentru prelucrarea adresei de email.'});
+    }
+    return send(res, async () => ({saved: await store.setLead(conversationId, body.email)}));
+  });
+
+  // How the conversation went, at most once per conversation.
+  publicRouter.post('/rating', express.json({limit: FEEDBACK_LIMIT}), (req, res) => {
+    const body = bodyOf(req);
+    const conversationId = typeof body.conversationId === 'string' ? body.conversationId : '';
+    if (!UUID_RE.test(conversationId)) return badRequest(res, 'Identificator de conversație invalid.');
+    const value = body.value === undefined ? null : body.value;
+    if (value !== null && !RATING_VALUES.has(value)) return badRequest(res, 'Valoare de evaluare invalidă.');
+    return send(res, async () => ({saved: await store.setRating(conversationId, value)}));
+  });
 
   // ------------------------------------------------------------------- admin panel
 
