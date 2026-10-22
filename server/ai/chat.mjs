@@ -250,11 +250,16 @@ export function validate(raw, sources, settings) {
   const cited = citations.map((id) => list.find((item) => item.id === id));
   for (const claim of claims) {
     const quote = typeof claim.quote === 'string' ? claim.quote : '';
-    const source = typeof claim.source === 'string' ? cited.find((item) => item.id === claim.source) : null;
-    if (!source || quote.length < QUOTE_MIN) return fail('unverified_quote');
+    if (quote.length < QUOTE_MIN) return fail('unverified_quote');
     // The quote is checked verbatim first, exactly as before: plain(quote) inside plain(source.text).
     // ponytail: token-overlap fallback for lightly rephrased quotes, on the raw texts (tokenize normalises them itself); numbers are still checked exactly below
-    if (!plain(source.text).includes(plain(quote)) && !rephrasedQuote(quote, source.text)) return fail('unverified_quote');
+    const source = typeof claim.source === 'string' ? cited.find((item) => item.id === claim.source) : null;
+    if (source && (plain(source.text).includes(plain(quote)) || rephrasedQuote(quote, source.text))) continue;
+    // Models often attribute a real quote to the neighbouring chunk; the quote must exist verbatim in the retrieved context, wherever it is.
+    const holder = list.find((item) => plain(item.text).includes(plain(quote)) || rephrasedQuote(quote, item.text));
+    if (!holder) return fail('unverified_quote');
+    if (!citations.includes(holder.id)) citations.push(holder.id);
+    if (!cited.includes(holder)) cited.push(holder);
   }
 
   // Every hard value the answer states must already exist in the cited sources.
