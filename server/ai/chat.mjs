@@ -8,12 +8,9 @@ import {ProviderError, RETRYABLE, estimateCost, provider} from './providers.mjs'
 const MAX_HISTORY = 6;
 const HISTORY_TEXT_MAX = 2000;
 const CLARIFY_MAX = 300;
-const QUOTE_MIN = 8;
-// A rephrased quote still passes when it is long enough and nearly all its words are in the source.
-const QUOTE_TOKENS_MIN = 6;
-const QUOTE_OVERLAP_MIN = 0.85;
 const MAX_SOURCE_LINKS = 4;
-const SUPPORT_MIN = 0.5;
+// A reply that cites nothing still shows this many search hits as its sources.
+const MAX_FALLBACK_SOURCES = 3;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const CONTROL_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g;
