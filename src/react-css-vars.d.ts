@@ -20,4 +20,7 @@ declare module 'react' {
   interface TextareaHTMLAttributes<T> {
     toolparamdescription?: string;
   }
+  interface FieldsetHTMLAttributes<T> {
+    toolparamdescription?: string;
+  }
 }

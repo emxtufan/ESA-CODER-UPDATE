@@ -70,8 +70,10 @@ function CountryCombobox({
   return (
     <div ref={rootRef} className="relative">
       <input type="hidden" name={name} value={value} />
+      {/* doar căutare: valoarea trimisă e în câmpul ascuns, deci căsuța nu face parte din formular (nici pentru WebMCP) */}
       <input
         role="combobox"
+        form="esa-country-search"
         aria-expanded={open}
         aria-controls={listId}
         aria-autocomplete="list"
@@ -417,7 +419,7 @@ export default function ContactForm() {
           <SelectField name="pages" placeholder={$t("select")} options={pageCounts} description="Numărul aproximativ de pagini ale site-ului." />
         </Field>
       </div>
-      <fieldset className="flex flex-col gap-2">
+      <fieldset className="flex flex-col gap-2" toolparamdescription="Bugetul estimat pentru proiect.">
         <legend className="mb-2 text-[14px] leading-[1.4] text-fg-muted">
           {$t("budget-range")}
           <RequiredMark />
@@ -438,7 +440,6 @@ export default function ContactForm() {
                   clearError('budget');
                 }}
                 className="sr-only"
-                toolparamdescription="Bugetul estimat pentru proiect."
               />
               {option}
             </label>
@@ -455,7 +456,7 @@ export default function ContactForm() {
           toolparamdescription="Descrierea proiectului: ce trebuie făcut, obiective, termen dorit."
         />
       </Field>
-      <fieldset className="flex flex-col gap-3">
+      <fieldset className="flex flex-col gap-3" toolparamdescription="Cum preferă să primească răspunsul: Email sau WhatsApp.">
         <legend className="mb-1 text-[14px] leading-[1.4] text-fg-muted">
           {$t("preferred-response-method")}
           <RequiredMark />
@@ -474,7 +475,6 @@ export default function ContactForm() {
                   'WhatsApp' !== option && clearError('phone');
                 }}
                 className="sr-only"
-                toolparamdescription="Cum preferă să primească răspunsul: Email sau WhatsApp."
               />
               <span
                 aria-hidden
