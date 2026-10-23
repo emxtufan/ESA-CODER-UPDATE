@@ -6,6 +6,7 @@ import {useGSAP} from '@gsap/react';
 
 import {text} from '@/lib/text';
 import {collection} from '@/lib/collections';
+import {mediaSrcSet} from '@/lib/media';
 
 const $t = text("components/sections/TechStack");
 

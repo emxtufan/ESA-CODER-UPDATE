@@ -751,9 +751,7 @@ export default function ChatWidget() {
           <path d="M4 5h16v11H9l-5 4V5Z" />
         </svg>
         {!open && !seen ? (
-          <span className="esa-chat-badge" aria-hidden="true">
-            1
-          </span>
+          <span className="esa-chat-badge" aria-hidden="true" data-count="1" />
         ) : null}
       </button>
 

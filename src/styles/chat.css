@@ -499,6 +499,11 @@
   animation: esa-chat-pulse 2s infinite;
 }
 
+/* cifra din CSS, nu din text: numele accesibil al butonului rămâne cel din aria-label */
+.esa-chat-badge::before {
+  content: attr(data-count);
+}
+
 @keyframes esa-chat-pulse {
   0% {
     transform: scale(1);

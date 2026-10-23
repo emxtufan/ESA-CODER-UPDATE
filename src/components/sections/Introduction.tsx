@@ -169,6 +169,8 @@ export default function Introduction() {
                       <img
                         key={cardIndex}
                         src={`/intro/${id}.webp`}
+                        srcSet={`/intro/${id}.webp?w=448 448w, /intro/${id}.webp 720w`}
+                        sizes="360px"
                         alt=""
                         width={720}
                         height={540}
