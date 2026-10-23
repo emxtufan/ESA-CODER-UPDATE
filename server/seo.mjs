@@ -303,5 +303,35 @@ Disallow: /admin
 Disallow: /api/
 
 Sitemap: ${SITE}/sitemap.xml
+# Rezumat pentru asistenți AI: ${SITE}/llms.txt
 `;
+}
+
+// llms.txt (llmstxt.org): rezumatul Markdown al site-ului pentru asistenții AI, din aceleași URL-uri ca sitemap-ul
+export function llmsTxt(urls, data) {
+  const seo = data['settings/seo'] ?? {};
+  const c = data._collections ?? {};
+  const one = (s) => plain(String(s ?? '')).replace(/\s+/g, ' ').trim();
+  const items = new Map([
+    ...(c.projects ?? []).map((p) => [`/works/${p.slug}`, {title: p.title}]),
+    ...(c.posts ?? []).map((p) => [`/blog/${p.slug}`, {title: p.title, desc: p.excerpt}]),
+    ...(c.postCategories ?? []).map((p) => [`/blog/category/${p.key}`, {title: p.label, desc: p.description}]),
+    ...(c.pages ?? []).map((p) => [`/${p.slug}`, {title: p.title}]),
+  ]);
+  const groups = {'Pagini principale': [], Servicii: [], Proiecte: [], Blog: [], Optional: []};
+  for (const {loc} of urls) {
+    const item = items.get(loc) ?? {};
+    const meta = data[loc] ?? {};
+    const title = one(item.title || meta['meta-title'] || loc).replace(/\s*\|.*$/, '');
+    const desc = one(item.desc || meta['meta-description']);
+    const group = /^\/(politica-|terms)/.test(loc) ? 'Optional'
+      : loc.startsWith('/services') ? 'Servicii'
+      : loc.startsWith('/works/') ? 'Proiecte'
+      : loc.startsWith('/blog/') ? 'Blog'
+      : 'Pagini principale';
+    groups[group].push(`- [${title}](${SITE}${loc === '/' ? '/' : encodeURI(loc)})${desc ? `: ${desc}` : ''}`);
+  }
+  const contact = [seo['company-email'] && `E-mail: ${seo['company-email']}`, seo['company-phone'] && `Telefon: ${seo['company-phone']}`].filter(Boolean).join(' · ');
+  const sections = Object.entries(groups).filter(([, lines]) => lines.length).map(([h, lines]) => `## ${h}\n\n${lines.join('\n')}`);
+  return [`# ${seo['company-name'] || 'ESA Coder Solutions'}`, `> ${one(seo['company-description']) || 'Website-uri, magazine online, aplicații web și automatizări pentru afaceri.'}`, contact, ...sections].filter(Boolean).join('\n\n') + '\n';
 }

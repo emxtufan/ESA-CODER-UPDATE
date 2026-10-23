@@ -16,7 +16,7 @@ import {isKnownPath} from './routes.mjs';
 import {createContactStore, createRateLimiter, parseSubmission} from './contacts.mjs';
 import {createMailer} from './mail.mjs';
 import {createRecaptcha} from './recaptcha.mjs';
-import {robotsTxt, sitemapUrls, sitemapXml} from './seo.mjs';
+import {llmsTxt, robotsTxt, sitemapUrls, sitemapXml} from './seo.mjs';
 import {createPages} from './ssr.mjs';
 import {fullItem} from './content.mjs';
 import {createGdpr} from './gdpr.mjs';
@@ -194,6 +194,9 @@ const isKnown = Object.assign((pathname, data) => isKnownPath(pathname, staticRo
 app.get('/robots.txt', (_req, res) => res.type('text/plain').set('Cache-Control', 'public, max-age=3600').send(robotsTxt()));
 app.get('/sitemap.xml', (_req, res) =>
   res.type('application/xml').set('Cache-Control', 'public, max-age=3600').send(sitemapXml(sitemapUrls(staticRoutes, admin.current()))),
+);
+app.get('/llms.txt', (_req, res) =>
+  res.type('text/markdown').set('Cache-Control', 'public, max-age=3600').send(llmsTxt(sitemapUrls(staticRoutes, admin.current()), admin.current())),
 );
 
 if (isProd) {
