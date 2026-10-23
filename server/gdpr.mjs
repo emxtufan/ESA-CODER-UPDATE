@@ -265,15 +265,17 @@ export async function createGdpr({dir, contacts, analytics, content, mailer, rec
     return data.consents.find(c => c.id === id && !c.superseded && c.services === serviceVersion());
   }
   const consentRouter = express.Router();
-  const consentLimit = createRateLimiter({limit: 30, windowMs: 10 * 60000});
+  const consentLimit = createRateLimiter({limit: 60, windowMs: 10 * 60000});
+  const sameChoice = (previous, choice) => !!previous && previous.statistics === choice.statistics && previous.marketing === choice.marketing;
   consentRouter.post('/', express.json({limit: '2kb'}), async (req, res) => {
     res.set('Cache-Control', 'no-store');
     if (req.get('origin') && req.get('origin') !== `${req.protocol}://${req.get('host')}`) return res.status(403).json({ok: false});
-    if (!consentLimit(req.ip)) return res.status(429).json({ok: false});
     if (typeof req.body?.statistics !== 'boolean' || typeof req.body?.marketing !== 'boolean') return res.status(422).json({ok: false});
+    if (sameChoice(receipt(await disk.load(), consentCookie(req)), req.body)) return res.json({ok: true});
+    if (!consentLimit(req.ip)) return res.status(429).json({ok: false});
     const token = await serial(async () => {
       const data = await disk.load(), previous = receipt(data, consentCookie(req));
-      if (previous && previous.statistics === req.body.statistics && previous.marketing === req.body.marketing) return `${previous.id}.${fp('consent-cookie', previous.id)}`;
+      if (sameChoice(previous, req.body)) return `${previous.id}.${fp('consent-cookie', previous.id)}`;
       const entry = {id: randomUUID(), at: isoNow(), statistics: req.body.statistics, marketing: req.body.marketing, services: serviceVersion(), noticeVersion: 'gdpr-module-1'};
       if (previous) previous.superseded = true;
       data.consents.push(entry);
