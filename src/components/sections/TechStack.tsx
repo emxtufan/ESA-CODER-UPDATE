@@ -61,6 +61,8 @@ export default function TechStack() {
                 <img
                   key={`${logo.name}-${i}`}
                   src={logo.src}
+                  srcSet={mediaSrcSet(logo.src, [448])}
+                  sizes={`${Math.round((22 * logo.w) / 120)}px`}
                   alt={0 === copy ? logo.name : ''}
                   width={Math.round((22 * logo.w) / 120)}
                   height={22}
@@ -81,6 +83,8 @@ export default function TechStack() {
             <img
               key={`${logo.name}-${index}`}
               src={logo.src}
+              srcSet={mediaSrcSet(logo.src, [448])}
+              sizes={`${Math.round((22 * logo.w) / 120)}px`}
               alt={logo.name}
               width={Math.round((22 * logo.w) / 120)}
               height={22}
