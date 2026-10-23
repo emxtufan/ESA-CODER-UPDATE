@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 
 import Link from '@/components/Link';
 import { lockScroll, unlockScroll } from '@/lib/scrollLock';
@@ -94,6 +95,13 @@ function writeFlag(key: string): void {
   } catch {
     // stocarea poate fi indisponibilă
   }
+}
+
+// iOS ignoră overflow:hidden pe html; fixăm body ca pagina din spate să nu se miște sub tastatură
+function freezeBody() {
+  const y = window.scrollY, s = document.body.style, prev = s.cssText;
+  Object.assign(s, {position: 'fixed', top: `-${y}px`, left: '0', right: '0', width: '100%', overflow: 'hidden'});
+  return () => { s.cssText = prev; window.scrollTo(0, y); };
 }
 
 function teaserText(welcome: string | undefined): string {
@@ -264,18 +272,35 @@ export default function ChatWidget() {
 
   useEffect(() => {
     const vv = window.visualViewport, panel = panelRef.current;
-    if (!open || !vv || !panel) return;
-    // iOS: tastatura micșorează doar visualViewport, nu layout-ul — panoul îl urmărește
-    const sync = () => {
-      panel.style.setProperty('--esa-vvh', `${vv.height}px`);
-      panel.style.setProperty('--esa-vvt', `${vv.offsetTop}px`);
+    if (!open || !vv || !panel || !window.matchMedia(MOBILE_QUERY).matches) return;
+    const unfreeze = freezeBody();
+    let frame = 0;
+    // panoul urmărește zona vizibilă (deasupra tastaturii) — un singur update pe cadru
+    const apply = () => {
+      frame = 0;
+      panel.style.height = `${vv.height}px`;
+      panel.style.transform = `translate3d(0, ${vv.offsetTop}px, 0)`;
       panel.classList.toggle('is-keyboard', window.innerHeight - vv.height > 120);
     };
-    const resize = () => { sync(); const log = logRef.current; if (log) log.scrollTop = log.scrollHeight; };
-    sync();
-    vv.addEventListener('resize', resize);
-    vv.addEventListener('scroll', sync);
-    return () => { vv.removeEventListener('resize', resize); vv.removeEventListener('scroll', sync); };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(apply); };
+    const resized = () => {
+      schedule();
+      requestAnimationFrame(() => { const log = logRef.current; if (log) log.scrollTop = log.scrollHeight; });
+    };
+    apply();
+    vv.addEventListener('resize', resized);
+    vv.addEventListener('scroll', schedule);
+    window.addEventListener('orientationchange', resized);
+    return () => {
+      cancelAnimationFrame(frame);
+      vv.removeEventListener('resize', resized);
+      vv.removeEventListener('scroll', schedule);
+      window.removeEventListener('orientationchange', resized);
+      panel.style.height = '';
+      panel.style.transform = '';
+      panel.classList.remove('is-keyboard');
+      unfreeze();
+    };
   }, [open]);
 
   useLayoutEffect(() => {
@@ -654,7 +679,7 @@ export default function ChatWidget() {
   const showRating = !ratedDone && !!lastAssistant?.askRating && !streaming;
   const leadBlocking = showLead && !!config.leadRequired;
 
-  return (
+  return createPortal(
     <>
       <button
         ref={fabRef}
@@ -917,6 +942,7 @@ export default function ChatWidget() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              onFocus={() => requestAnimationFrame(() => { const log = logRef.current; if (log) log.scrollTop = log.scrollHeight; })}
               maxLength={maxChars}
               rows={1}
               enterKeyHint="send"
@@ -941,6 +967,7 @@ export default function ChatWidget() {
           </form>
         </div>
       ) : null}
-    </>
+    </>,
+    document.body,
   );
 }

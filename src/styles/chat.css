@@ -372,25 +372,25 @@
 
 @media (max-width: 639px) {
   .esa-chat-panel {
-    inset: auto;
-    top: var(--esa-vvt, 0px);
-    left: 0;
-    right: 0;
+    inset: 0 0 auto 0;
+    height: 100dvh;
+    will-change: transform;
+    overscroll-behavior: none;
     width: 100%;
-    height: var(--esa-vvh, 100dvh);
     border: none;
     border-radius: 0;
     z-index: 250;
     padding-bottom: 0;
-    overscroll-behavior: contain;
     touch-action: manipulation;
   }
 
   .esa-chat-head {
+    flex: none;
     padding: max(10px, env(safe-area-inset-top)) 12px 10px;
   }
 
   .esa-chat-log {
+    overflow-anchor: none;
     padding: 12px;
     -webkit-overflow-scrolling: touch;
   }
@@ -411,6 +411,7 @@
   }
 
   .esa-chat-form {
+    flex: none;
     flex-wrap: nowrap;
     align-items: flex-end;
     gap: 8px;
