@@ -28,7 +28,7 @@ export default function Studio({projects}: {projects: Project[]}) {
       return () => mq.removeEventListener('change', cb);
     }, reduced, () => true,
   );
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [panels, setPanels] = useState(true);
   const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
