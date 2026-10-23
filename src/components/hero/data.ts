@@ -2,14 +2,14 @@
 import {mediaSrcSet} from '@/lib/media';
 
 export const DESKTOP_SIZE = {
-  desktop: { w: 700, h: 700 * 9 / 16 },
-  mobile: { w: 400, h: Math.round(6400 / 9) },
+  w: 700,
+  h: 700 * 9 / 16,
 };
-export const MOBILE_SIZE = {
-  desktop: { w: 430, h: 430 * 9 / 16 },
-  mobile: { w: 232, h: Math.round(3712 / 9) },
+export const DEFAULT_WIDTHS = [
+  448,
+  828,
 };
-export const DEFAULT_WIDTHS = [448, 828, 1440];
+];
 
 export const buildSrcSet = (src: string, widths: number[] = DEFAULT_WIDTHS) => mediaSrcSet(src, widths);
 

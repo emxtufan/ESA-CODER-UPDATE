@@ -9,7 +9,6 @@ import {text} from '@/lib/text';
 import '@/styles/hero-studio.css';
 
 const $h = text("components/sections/Hero");
-type Mode = 'desktop' | 'mobile';
 type Project = {title: string; slug: string; desktop: string; mobile?: string; themes: string[]};
 const small = () => window.matchMedia('(max-width: 639px)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
