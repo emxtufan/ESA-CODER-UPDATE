@@ -174,14 +174,21 @@ function SelectField({
   name,
   placeholder,
   options,
+  description,
 }: {
   name: string;
   placeholder: string;
   options: string[];
+  description: string;
 }) {
   return (
     <span className="relative block">
-      <select name={name} defaultValue="" className={`${selectClass} appearance-none pr-9`}>
+      <select
+        name={name}
+        defaultValue=""
+        className={`${selectClass} appearance-none pr-9`}
+        toolparamdescription={description}
+      >
         <option value="" disabled>
           {placeholder}
         </option>
@@ -345,7 +352,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form className="flex w-full flex-col gap-6 lg:w-[450px]" onSubmit={onSubmit}>
+    <form className="flex w-full flex-col gap-6 lg:w-[450px]" onSubmit={onSubmit} toolname="request_quote" tooldescription="Trimite o cerere de ofertă către ESA Coder Solutions pentru un website, magazin online, aplicație web sau automatizare. Echipa răspunde pe e-mail sau WhatsApp, de obicei în aceeași zi lucrătoare.">
       <input
         type="text"
         name="company_website"
@@ -353,6 +360,7 @@ export default function ContactForm() {
         autoComplete="off"
         aria-hidden="true"
         className="pointer-events-none absolute h-0 w-0 opacity-0"
+        toolparamdescription="Câmp anti-spam. Lasă-l întotdeauna gol."
       />
       <div className="grid grid-cols-2 gap-x-3 gap-y-[21px]">
         <Field label={$t("name")} required name="name" error={errors.name}>
@@ -364,6 +372,7 @@ export default function ContactForm() {
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'name-error' : undefined}
             onChange={() => clearError('name')}
+            toolparamdescription="Numele complet al persoanei care cere oferta."
           />
         </Field>
         <Field label={$t("email")} required name="email" error={errors.email}>
@@ -376,6 +385,7 @@ export default function ContactForm() {
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
             onChange={() => clearError('email')}
+            toolparamdescription="Adresa de e-mail la care primește răspunsul."
           />
         </Field>
         <Field label={$t("country")} required name="country" error={errors.country}>
@@ -397,6 +407,7 @@ export default function ContactForm() {
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? 'phone-error' : undefined}
             onChange={() => clearError('phone')}
+            toolparamdescription="Număr de telefon cu prefix internațional, ex. +40 7xx xxx xxx. Obligatoriu dacă metoda de răspuns este WhatsApp."
           />
         </Field>
         <Field label={$t("project-type")}>
