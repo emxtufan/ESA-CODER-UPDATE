@@ -4,7 +4,6 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 import Link from '@/components/Link';
-import { needsConsent, readConsent } from '@/lib/consent';
 import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
 import '@/styles/chat.css';
@@ -120,7 +119,6 @@ function normalizeSources(value: unknown): ChatSource[] | null {
 export default function ChatWidget() {
   const [mounted, setMounted] = useState(false);
   const [config, setConfig] = useState<AiConfig | null>(null);
-  const [consentBlocked, setConsentBlocked] = useState(false);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -190,16 +188,6 @@ export default function ChatWidget() {
     } catch {
       conversationIdRef.current = null;
     }
-
-    const syncConsent = () => {
-      setConsentBlocked(needsConsent() && !readConsent());
-    };
-    syncConsent();
-
-    window.addEventListener('vv:consent-change', syncConsent);
-    return () => {
-      window.removeEventListener('vv:consent-change', syncConsent);
-    };
   }, []);
 
   useEffect(() => {
@@ -223,7 +211,7 @@ export default function ChatWidget() {
   }, []);
 
   useEffect(() => {
-    if (!config?.enabled || open || seen || consentBlocked) return;
+    if (!config?.enabled || open || seen) return;
     const delay = typeof config.teaserDelay === 'number' ? config.teaserDelay : 0;
     if (!(delay > 0)) return;
 
@@ -231,7 +219,7 @@ export default function ChatWidget() {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [config, open, seen, consentBlocked]);
+  }, [config, open, seen]);
 
   const openChat = useCallback(() => {
     setOpen(true);
@@ -626,7 +614,7 @@ export default function ChatWidget() {
     ]);
   };
 
-  if (!mounted || !config || !config.enabled || consentBlocked) return null;
+  if (!mounted || !config || !config.enabled) return null;
 
   const hasUserMessage = messages.some((message) => message.role === 'user');
   const suggestions = Array.isArray(config.suggestions) ? config.suggestions : [];
