@@ -112,7 +112,7 @@ await section('footer', async () => {
   const mails = await site.locator('a[href^="mailto:"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   check('Footer e-mail updates every use (Footer + Header)', mails.length >= 2 && mails.every((m) => m === 'mailto:test@example.com'), mails.join(','));
   await openSection('footer');
-  await field('E-mail').locator('input').fill('contact@visuvate.com');
+  await field('E-mail').locator('input').fill('support@esa-coder-solutions.com');
   await save();
 });
 
