@@ -40,8 +40,9 @@ export function createPages({root, isProd, vite, isKnown}) {
         .replace(
           '<script type="module"',
           // texts first: classic `defer` scripts and module scripts run in document order
-      '<script defer src="/content.js"></script>\n    <script type="module"',
-    );
+          '<script defer src="/content.js"></script>\n    <script type="module"',
+        );
+    }
     return {html: template, render: renderProd};
   }
 
