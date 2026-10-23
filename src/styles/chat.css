@@ -380,7 +380,7 @@
     height: var(--esa-vvh, 100dvh);
     border: none;
     border-radius: 0;
-    z-index: 195;
+    z-index: 250;
     padding-bottom: 0;
     overscroll-behavior: contain;
     touch-action: manipulation;
