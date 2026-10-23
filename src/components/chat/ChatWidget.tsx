@@ -104,6 +104,18 @@ function freezeBody() {
   return () => { s.cssText = prev; window.scrollTo(0, y); };
 }
 
+// mai poate derula ceva din fereastră în direcția gestului? dacă nu, gestul se oprește aici, nu ajunge la pagină
+function canScrollInside(target: EventTarget | null, panel: HTMLElement, dx: number, dy: number) {
+  for (let el = target instanceof Element ? (target as HTMLElement) : null; el && el !== panel; el = el.parentElement) {
+    const style = getComputedStyle(el);
+    if (dy && /(auto|scroll)/.test(style.overflowY) && el.scrollHeight > el.clientHeight + 1
+      && (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+    if (dx && /(auto|scroll)/.test(style.overflowX) && el.scrollWidth > el.clientWidth + 1
+      && (dx < 0 ? el.scrollLeft > 0 : el.scrollLeft + el.clientWidth < el.scrollWidth - 1)) return true;
+  }
+  return false;
+}
+
 function teaserText(welcome: string | undefined): string {
   const text = typeof welcome === 'string' ? welcome.trim() : '';
   if (text.length <= TEASER_MAX_CHARS) return text;
@@ -274,13 +286,19 @@ export default function ChatWidget() {
     const vv = window.visualViewport, panel = panelRef.current;
     if (!open || !vv || !panel || !window.matchMedia(MOBILE_QUERY).matches) return;
     const unfreeze = freezeBody();
+    document.documentElement.classList.add('esa-chat-open');
     let frame = 0;
-    // panoul urmărește zona vizibilă (deasupra tastaturii) — un singur update pe cadru
+    // chatul ocupă exact zona vizibilă; deplasarea e limitată la înălțimea tastaturii,
+    // ca valorile întârziate ale iOS (la închiderea tastaturii / scroll elastic) să nu-l scoată din ecran
     const apply = () => {
       frame = 0;
-      panel.style.height = `${vv.height}px`;
-      panel.style.transform = `translate3d(0, ${vv.offsetTop}px, 0)`;
-      panel.classList.toggle('is-keyboard', window.innerHeight - vv.height > 120);
+      if (window.scrollY) window.scrollTo(0, 0);
+      const height = vv.height;
+      const keyboard = Math.max(window.innerHeight - height, 0);
+      const shift = Math.min(Math.max(vv.offsetTop, 0), keyboard);
+      panel.style.height = `${height}px`;
+      panel.style.transform = shift ? `translate3d(0, ${shift}px, 0)` : '';
+      panel.classList.toggle('is-keyboard', keyboard > 120);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(apply); };
     const resized = () => {
@@ -290,16 +308,47 @@ export default function ChatWidget() {
     apply();
     vv.addEventListener('resize', resized);
     vv.addEventListener('scroll', schedule);
+    window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('orientationchange', resized);
     return () => {
       cancelAnimationFrame(frame);
       vv.removeEventListener('resize', resized);
       vv.removeEventListener('scroll', schedule);
       window.removeEventListener('orientationchange', resized);
+      window.removeEventListener('scroll', schedule);
       panel.style.height = '';
       panel.style.transform = '';
       panel.classList.remove('is-keyboard');
+      document.documentElement.classList.remove('esa-chat-open');
       unfreeze();
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !panel) return;
+    // fereastră izolată: rotița și degetul derulează doar chatul, niciodată pagina din spate
+    let x = 0, y = 0;
+    const guard = (event: Event, dx: number, dy: number) => {
+      const [h, v] = Math.abs(dx) > Math.abs(dy) ? [dx, 0] : [0, dy];
+      if (event.cancelable && !canScrollInside(event.target, panel, h, v)) event.preventDefault();
+    };
+    const onWheel = (event: WheelEvent) => guard(event, event.deltaX, event.deltaY);
+    const onTouchStart = (event: TouchEvent) => { x = event.touches[0].clientX; y = event.touches[0].clientY; };
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      guard(event, x - touch.clientX, y - touch.clientY);
+      x = touch.clientX;
+      y = touch.clientY;
+    };
+    panel.addEventListener('wheel', onWheel, { passive: false });
+    panel.addEventListener('touchstart', onTouchStart, { passive: true });
+    panel.addEventListener('touchmove', onTouchMove, { passive: false });
+    return () => {
+      panel.removeEventListener('wheel', onWheel);
+      panel.removeEventListener('touchstart', onTouchStart);
+      panel.removeEventListener('touchmove', onTouchMove);
     };
   }, [open]);
 
@@ -725,7 +774,7 @@ export default function ChatWidget() {
       ) : null}
 
       {open ? (
-        <div ref={panelRef} className="esa-chat-panel" role="dialog" aria-label="Asistent ESA" tabIndex={-1}>
+        <div ref={panelRef} className="esa-chat-panel" role="dialog" aria-label="Asistent ESA" tabIndex={-1} data-lenis-prevent>
           <div className="esa-chat-head">
             <div className="esa-chat-who">
               <span className="esa-chat-avatar" aria-hidden="true">E</span>

@@ -371,6 +371,10 @@
 }
 
 @media (max-width: 639px) {
+  /* cât timp chatul e deschis pe telefon, site-ul de dedesubt nu se vede deloc */
+  html.esa-chat-open #root,
+  html.esa-chat-open #boot { visibility: hidden; }
+
   .esa-chat-panel {
     inset: 0 0 auto 0;
     height: 100dvh;
