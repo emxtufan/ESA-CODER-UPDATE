@@ -411,10 +411,10 @@ export default function ContactForm() {
           />
         </Field>
         <Field label={$t("project-type")}>
-          <SelectField name="projectType" placeholder={$t("select")} options={projectTypes} />
+          <SelectField name="projectType" placeholder={$t("select")} options={projectTypes} description="Tipul proiectului." />
         </Field>
         <Field label={$t("number-of-pages")}>
-          <SelectField name="pages" placeholder={$t("select")} options={pageCounts} />
+          <SelectField name="pages" placeholder={$t("select")} options={pageCounts} description="Numărul aproximativ de pagini ale site-ului." />
         </Field>
       </div>
       <fieldset className="flex flex-col gap-2">
@@ -438,6 +438,7 @@ export default function ContactForm() {
                   clearError('budget');
                 }}
                 className="sr-only"
+                toolparamdescription="Bugetul estimat pentru proiect."
               />
               {option}
             </label>
@@ -451,6 +452,7 @@ export default function ContactForm() {
           rows={3}
           placeholder={$t("tell-us-what-you-re-looking")}
           className="w-full resize-y rounded-[10px] border border-[var(--vv-field-border)] bg-[var(--vv-field-bg)] px-3 py-2.5 text-[14px] leading-[1.6] text-fg-strong transition-colors placeholder:text-fg-subtle focus:border-fg/60 focus:outline-none"
+          toolparamdescription="Descrierea proiectului: ce trebuie făcut, obiective, termen dorit."
         />
       </Field>
       <fieldset className="flex flex-col gap-3">
@@ -472,6 +474,7 @@ export default function ContactForm() {
                   'WhatsApp' !== option && clearError('phone');
                 }}
                 className="sr-only"
+                toolparamdescription="Cum preferă să primească răspunsul: Email sau WhatsApp."
               />
               <span
                 aria-hidden
