@@ -42,9 +42,11 @@
         "Framer",
         "Wix Studio",
         "WordPress",
+        "Shopify",
         "Astro",
         "Next.js",
-        "Custom Code"
+        "Custom Code",
+        "Figma"
       ]
     },
     {
@@ -141,15 +143,14 @@
       ]
     },
     {
-      "key": "heroPosition",
-      "label": "Poziție în hero (gol = nu apare)",
-      "type": "number"
+      "key": "heroDesktop",
+      "label": "Slider hero — Desktop",
+      "type": "image"
     },
     {
       "key": "heroMobile",
-      "label": "Imagine mobil (hero)",
-      "type": "image",
-      "advanced": true
+      "label": "Slider hero — iPhone",
+      "type": "image"
     },
     {
       "key": "heroDark",
@@ -205,7 +206,7 @@
     }
   ],
   "defaults": {
-    "metaTitle": "{title} — Website Design Case Study | Visuvate",
+    "metaTitle": "{title}: proiect web | ESA Coder Solutions",
     "published": true
   }
 }

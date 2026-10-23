@@ -72,6 +72,10 @@ const visible = {};
 
 // page titles are shown in the browser tab
 const data = JSON.parse(readFileSync(path.join(root, 'source_data.json'), 'utf8'));
+// Legal pages render their numbered sections dynamically through the existing text editor.
+for (const scope of ['/politica-de-confidentialitate', '/politica-de-cookies', '/terms-and-conditions']) {
+  (visible[scope] ??= new Set()).add(/.*/);
+}
 for (const [scope, entries] of Object.entries(data)) {
   if ('meta-title' in entries) (visible[scope] ??= new Set()).add('meta-title');
 }

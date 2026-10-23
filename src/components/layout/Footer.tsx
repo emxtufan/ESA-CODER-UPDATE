@@ -27,12 +27,12 @@ export default function Footer() {
           </Link>
         </div>
       </div>
-      <FooterMark />
-      <div className="mx-auto max-w-[1425px] px-6 md:px-8">
-        <div className="relative mt-[172px] backdrop-blur-[20px] md:mt-[305px]" style={{ background: "var(--vv-footer-veil)" }}>
+      <div className="vv-footer-content relative mx-auto max-w-[1425px] px-6 md:px-8">
+        <FooterMark />
+        <div className="relative backdrop-blur-[20px]" style={{ background: "var(--vv-footer-veil)" }}>
           <div aria-hidden className="pointer-events-none absolute top-0 -right-[100vw] -left-[100vw] border-t border-line" />
           <div className="border-x border-line">
-            <ul className="grid grid-cols-2 md:grid-cols-4">
+            <ul className="grid grid-cols-2 md:grid-flow-col md:auto-cols-fr md:grid-cols-none">
               <li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
                 <a href={$t("instagram-link")} target="_blank" rel="noreferrer" className="group/social flex h-[52px] items-center gap-2.5 px-4 text-[12px] text-fg-strong transition-colors hover:text-fg md:h-[62px] md:px-6 md:text-body-s">
                   <svg viewBox="0 0 24 24" className="size-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -50,7 +50,7 @@ export default function Footer() {
                   </span>
                 </a>
               </li>
-              <li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
+              {$t("linkedin-link") && (<li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
                 <a href={$t("linkedin-link")} target="_blank" rel="noreferrer" className="group/social flex h-[52px] items-center gap-2.5 px-4 text-[12px] text-fg-strong transition-colors hover:text-fg md:h-[62px] md:px-6 md:text-body-s">
                   <svg viewBox="0 0 24 24" className="size-[18px] shrink-0" fill="currentColor">
                     <path d="M20.45 2H3.55A1.53 1.53 0 0 0 2 3.51v16.98A1.53 1.53 0 0 0 3.55 22h16.9A1.53 1.53 0 0 0 22 20.49V3.51A1.53 1.53 0 0 0 20.45 2ZM8.02 18.34H5.07V9.5h2.95v8.84ZM6.54 8.29a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.4 10.05h-2.94v-4.3c0-1.03-.02-2.35-1.43-2.35-1.44 0-1.66 1.12-1.66 2.28v4.37H9.98V9.5h2.82v1.21h.04a3.1 3.1 0 0 1 2.78-1.53c2.98 0 3.53 1.96 3.53 4.5v4.66Z" />
@@ -64,8 +64,8 @@ export default function Footer() {
                     </svg>
                   </span>
                 </a>
-              </li>
-              <li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
+              </li>)}
+              {$t("twitter-link") && (<li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
                 <a href={$t("twitter-link")} target="_blank" rel="noreferrer" className="group/social flex h-[52px] items-center gap-2.5 px-4 text-[12px] text-fg-strong transition-colors hover:text-fg md:h-[62px] md:px-6 md:text-body-s">
                   <svg viewBox="0 0 24 24" className="size-[18px] shrink-0" fill="currentColor">
                     <path d="M21.5 5.9a7.6 7.6 0 0 1-2.2.6 3.85 3.85 0 0 0 1.69-2.12c-.74.44-1.56.76-2.43.93a3.83 3.83 0 0 0-6.62 2.62c0 .3.03.59.1.87A10.87 10.87 0 0 1 4.15 4.8a3.83 3.83 0 0 0 1.19 5.11c-.63-.02-1.22-.19-1.74-.48v.05a3.83 3.83 0 0 0 3.07 3.75c-.3.09-.63.13-.97.13-.24 0-.47-.02-.69-.07a3.83 3.83 0 0 0 3.58 2.66A7.69 7.69 0 0 1 2.9 17.5a10.84 10.84 0 0 0 5.87 1.72c7.04 0 10.9-5.84 10.9-10.9l-.01-.5a7.77 7.77 0 0 0 1.84-1.92Z" />
@@ -79,7 +79,7 @@ export default function Footer() {
                     </svg>
                   </span>
                 </a>
-              </li>
+              </li>)}
               <li className="border-b border-line md:border-b-0 [&:nth-child(even)]:border-l md:[&:not(:first-child)]:border-l">
                 <a href={$t("whatsapp-link")} target="_blank" rel="noreferrer" className="group/social flex h-[52px] items-center gap-2.5 px-4 text-[12px] text-fg-strong transition-colors hover:text-fg md:h-[62px] md:px-6 md:text-body-s">
                   <svg viewBox="0 0 24 24" className="size-[18px] shrink-0" fill="currentColor">
@@ -162,11 +162,7 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link href={$t("templates-link")} className="block py-1 text-[12px] leading-[1.3] text-fg-strong transition-colors hover:text-fg md:text-body-s">
-                      {$t("templates")}
-                    </Link>
-                  </li>
-                  <li>
+                    <Link href="/politica-de-cookies" className="block py-1 text-[12px] leading-[1.3] text-fg-strong md:text-body-s">Politica de cookie-uri</Link>
                     <CookieSettingsButton className="block w-full py-1 text-left text-[12px] leading-[1.3] text-fg-strong transition-colors hover:text-fg md:text-body-s" />
                   </li>
                   <li>

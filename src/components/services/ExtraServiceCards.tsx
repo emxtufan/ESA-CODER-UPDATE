@@ -62,7 +62,7 @@ export default function ExtraServiceCards() {
   return (
     <>
       {CARDS.map((c) => (
-        <Link key={c.key} data-reveal href={c.href} className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+        <Link key={c.key} data-reveal href={c.href} className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
           <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={SHINE('a')} />
           <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={SHINE('b')} />
           <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">

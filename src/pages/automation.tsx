@@ -46,7 +46,7 @@ export default function Page_automation() {
       </header>
 
       <div className="relative z-10 mx-auto max-w-[1425px] px-0 md:px-8">
-        <div className="relative rounded-[12px] backdrop-blur-[10px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
+        <div className="relative rounded-[12px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
           <span aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-px w-[600px] max-w-full -translate-x-1/2" style={{ background: "linear-gradient(90deg, transparent 0%, var(--vv-card-line) 50%, transparent 100%)" }} />
           <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[12px]" style={{ background: "radial-gradient(58% 46% at 50% 0%, var(--vv-card-lift) 0%, var(--vv-card-lift-mid) 45%, transparent 78%)" }} />
           <div className="relative flex flex-col gap-6 pt-[50px] pb-6 lg:gap-10">

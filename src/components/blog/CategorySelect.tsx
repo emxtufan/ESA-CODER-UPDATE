@@ -9,7 +9,7 @@ export default function CategorySelect({
   active,
   onSelect,
   label,
-  eyebrow = 'Category',
+  eyebrow = label ?? 'Category',
   className = '',
 }: {
   options: Option[];
@@ -88,7 +88,6 @@ export default function CategorySelect({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={menuId}
-        aria-label={label}
         onClick={() => (open ? closeMenu() : openMenu())}
         onKeyDown={(e) => {
           (e.key === 'ArrowDown' || e.key === 'ArrowUp') && !open && (e.preventDefault(), openMenu());

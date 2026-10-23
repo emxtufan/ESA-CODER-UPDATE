@@ -298,10 +298,12 @@ export function ShaderCanvas({
   className,
   colors = DEFAULT_COLORS,
   colorCount = 4,
+  pauseOnScroll = false,
 }: {
   className?: string;
   colors?: number[][];
   colorCount?: number;
+  pauseOnScroll?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const colorsKey = colors.map((c) => c.join(',')).join('|') + `#${colorCount}`;
@@ -367,6 +369,7 @@ export function ShaderCanvas({
     let rect = canvas.getBoundingClientRect();
     let frame = 0;
     let lastTime: number | null = null;
+    let scrollingUntil = 0;
     let pageVisible = document.visibilityState === 'visible';
     let inView = true;
     let disposed = false;
@@ -381,8 +384,8 @@ export function ShaderCanvas({
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.max(1, Math.round(rect.width * dpr));
       const h = Math.max(1, Math.round(rect.height * dpr));
-      // a soft gradient: ~0.5 MP is enough (it is often seen through a blur), and much cheaper than full resolution
-      const scale = Math.min(1, Math.sqrt(5e5 / Math.max(1, w * h)));
+      // a soft gradient: ~0.25 MP is enough (it is often seen through a blur), and much cheaper than full resolution
+      const scale = Math.min(1, Math.sqrt(2.5e5 / Math.max(1, w * h)));
       const width = Math.max(1, Math.round(w * scale));
       const height = Math.max(1, Math.round(h * scale));
       if (canvas.width !== width || canvas.height !== height) {
@@ -437,11 +440,25 @@ export function ShaderCanvas({
       updatePointer();
       schedule();
     };
+    const onScrollStart = () => {
+      scrollingUntil = performance.now() + 150;
+      schedule();
+    };
+    // scrolling only moves the canvas: refresh its rect (a forced layout) only
+    // while it is on screen and the pointer is in play, never off-screen
+    const onScroll = () => {
+      if (pauseOnScroll) onScrollStart();
+      if (!inView || !pointerSeen) return;
+      rect = canvas.getBoundingClientRect();
+      updatePointer();
+    };
     window.addEventListener('resize', onResize);
     if (interactive) {
       window.addEventListener('pointermove', onPointerMove, { passive: true });
       window.addEventListener('pointercancel', onPointerLeave);
-      window.addEventListener('scroll', onResize, true);
+      window.addEventListener('scroll', onScroll, true);
+      // Pause before Lenis begins moving, as well as throughout its inertia.
+      if (pauseOnScroll) window.addEventListener('wheel', onScrollStart, { passive: true });
       window.addEventListener('blur', onPointerLeave);
       document.documentElement.addEventListener('pointerleave', onPointerLeave);
     }
@@ -469,6 +486,11 @@ export function ShaderCanvas({
     function render(now: number) {
       frame = 0;
       if (disposed || !pageVisible || !inView) return;
+      if (pauseOnScroll && now < scrollingUntil) {
+        lastTime = null;
+        schedule();
+        return;
+      }
       const delta = lastTime === null ? 0 : Math.min((now - lastTime) / 1e3, 0.1);
       lastTime = now;
       const ease = 1 - Math.exp(-12 * delta);
@@ -501,7 +523,8 @@ export function ShaderCanvas({
       if (interactive) {
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointercancel', onPointerLeave);
-        window.removeEventListener('scroll', onResize, true);
+        window.removeEventListener('scroll', onScroll, true);
+        if (pauseOnScroll) window.removeEventListener('wheel', onScrollStart);
         window.removeEventListener('blur', onPointerLeave);
         document.documentElement.removeEventListener('pointerleave', onPointerLeave);
       }
@@ -517,7 +540,7 @@ export function ShaderCanvas({
       }, 0);
       pendingRelease.set(canvas, timeout);
     };
-  }, [colorsKey]);
+  }, [colorsKey, pauseOnScroll]);
 
   return (
     <canvas

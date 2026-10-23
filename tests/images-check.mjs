@@ -55,5 +55,13 @@ assert.equal(r.status, 200);
 assert.notEqual(r.headers.get('etag'), etag);
 assert.equal((await sharp(Buffer.from(await r.arrayBuffer())).metadata()).width, MAX_EDGE);
 
+// srcset widths: ?w= from the allowed list gives that width, its own cache entry and ETag; others are ignored
+r = await fetch(url('/media/big.png?w=448'), {headers: WEBP});
+assert.equal((await sharp(Buffer.from(await r.arrayBuffer())).metadata()).width, 448);
+const etag448 = r.headers.get('etag');
+assert.notEqual(etag448, (await fetch(url('/media/big.png'), {headers: WEBP})).headers.get('etag'));
+r = await fetch(url('/media/big.png?w=123'), {headers: WEBP});
+assert.equal((await sharp(Buffer.from(await r.arrayBuffer())).metadata()).width, MAX_EDGE, 'unknown width → default size');
+
 server.close();
 console.log('images: ok');

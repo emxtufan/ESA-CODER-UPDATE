@@ -5,13 +5,14 @@ import RevealBatch from '@/components/motion/RevealBatch';
 import RollText from '@/components/RollText';
 
 import {collection} from '@/lib/collections';
+import {mediaSrcSet} from '@/lib/media';
 import {text} from '@/lib/text';
 
 const $t = text('components/blog/PostList');
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = ['ian.', 'feb.', 'mar.', 'apr.', 'mai', 'iun.', 'iul.', 'aug.', 'sept.', 'oct.', 'nov.', 'dec.'];
 
-/** "2026-07-10" -> "10 Jul 2026" */
+/** "2026-07-10" -> "10 iul. 2026" */
 export function formatPostDate(date: string): string {
   const [year, month, day] = (date ?? '').split('-');
   const name = MONTHS[Number(month) - 1];
@@ -34,6 +35,7 @@ const PILL_IDLE = 'border-line bg-bg text-fg-muted hover:border-line-strong hove
 /** Category dropdown (mobile) + pills (desktop). `active` = "all" or a category key. */
 export function CategoryNav({active}: {active: string}) {
   const posts = getPosts();
+  if (!posts.length) return null;
   const categories = collection('postCategories');
   const options = [
     {key: 'all', label: $t('all'), href: '/blog', count: posts.length},
@@ -69,14 +71,15 @@ export function PostGrid({posts}: {posts: any[]}) {
   return (
     <RevealBatch>
       <div className="mx-auto max-w-[1425px] px-4 pb-[clamp(80px,10vw,140px)] md:px-8">
+        {!posts.length && <p className="text-center text-fg-muted">{$t('empty-posts')}</p>}
         <div className="flex flex-wrap justify-center gap-2 lg:gap-5 lg:[&>*]:w-[calc((100%-40px)/3)] [&>*]:w-full">
-          {posts.map((post) => (
+          {posts.map((post, i) => (
             <div data-reveal key={post.slug}>
-              <Link href={`/blog/${post.slug}`} className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-6 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link href={`/blog/${post.slug}`} className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-6 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] bg-surface lg:rounded-[6px]" style={{ aspectRatio: "16 / 9" }}>
-                  <BadgeImage src={post.image} sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 430px" alt={post.title} className="absolute transition-[filter,opacity] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)] inset-0 size-full object-cover object-center" loading="lazy" decoding="async" />
+                  <BadgeImage src={post.image} srcSet={mediaSrcSet(post.image)} sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 430px" alt={post.title} className="absolute transition-[filter,opacity] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)] inset-0 size-full object-cover object-center" loading={i ? "lazy" : "eager"} fetchPriority={i ? undefined : "high"} decoding="async" />
                   <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
                     <span className="vv-accent text-[clamp(22px,2.2vw,32px)] leading-none text-white">
                       {$t('view-project')}

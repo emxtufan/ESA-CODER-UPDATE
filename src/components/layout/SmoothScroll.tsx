@@ -14,10 +14,9 @@ export default function SmoothScroll({children}: {children?: ReactNode}) {
       !window.matchMedia('(any-pointer: fine)').matches
     )
       return;
-    const lenis = new Lenis({
-      duration: 1.05,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    });
+    // lerp = continuous inertia: each wheel tick blends into the running motion
+    // instead of restarting a fixed-duration tween. Lower = smoother/floatier.
+    const lenis = new Lenis({lerp: 0.065, wheelMultiplier: 1.1, });
     setLenis(lenis);
     lenis.on('scroll', ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);

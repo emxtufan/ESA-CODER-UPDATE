@@ -52,7 +52,7 @@ export default function ServicePage({scope, next, related}: Props) {
               <p key={i} className="mt-5 text-lead leading-[1.75] text-fg-muted">{p}</p>
             ))}
           </div>
-          <div className="relative h-fit rounded-[16px] border border-fg/12 bg-bg/30 p-7 backdrop-blur-[14px] lg:sticky lg:top-[104px]">
+          <div className="relative h-fit rounded-[16px] border border-fg/12 bg-bg/30 p-7 lg:sticky lg:top-[104px]">
             <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-text-primary) 40%, transparent) 50%, transparent 100%)" }} />
             <h2 className="text-[12px] leading-none font-medium tracking-[0.14em] text-fg-subtle uppercase">
               {$t("what-s-included")}
@@ -82,7 +82,7 @@ export default function ServicePage({scope, next, related}: Props) {
         </div>
       </RevealBatch>
       <section className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
-        <div className="flex flex-col items-start gap-6 rounded-[12px] border border-fg/12 bg-bg/30 p-8 backdrop-blur-[14px] md:flex-row md:items-center md:justify-between md:p-10">
+        <div className="flex flex-col items-start gap-6 rounded-[12px] border border-fg/12 bg-bg/30 p-8 md:flex-row md:items-center md:justify-between md:p-10">
           <div>
             <h2 className="font-display text-[clamp(24px,2.6vw,34px)] leading-[1.15] font-medium tracking-h3">
               {$t("need-this-for-your-project")}

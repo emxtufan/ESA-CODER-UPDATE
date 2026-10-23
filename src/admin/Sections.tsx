@@ -161,8 +161,6 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
               >
                 <span>AI Assistant</span>
               </button>
-                <span>GDPR &amp; Compliance</span>
-              </button>
             </div>
           </div>
           {groups.map((g) => (
@@ -229,8 +227,6 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
         <Gdpr />
       ) : active === AI ? (
         <Ai />
-      ) : (
-        <Gdpr />
       ) : (
         <Analytics onLogout={onLogout} />
       )}

@@ -97,7 +97,6 @@ const NAV_ITEMS = [
   { label: $t("works"), href: $t("works-link") },
   { label: $t("services"), href: $t("services-link") },
   { label: $t("blogs"), href: $t("blogs-link") },
-  { label: $t("templates"), href: $t("templates-link") },
 ];
 
 export default function Header() {

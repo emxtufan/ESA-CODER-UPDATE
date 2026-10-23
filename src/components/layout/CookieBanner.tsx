@@ -1,18 +1,20 @@
 // module 1790
 import { useEffect, useState } from 'react';
 import Link from '@/components/Link';
-import { applyConsent, categories, needsConsent, readConsent, saveConsent, type Consent } from '@/lib/consent';
+import { categories, needsConsent, readConsent, saveConsent, type Consent } from '@/lib/consent';
 
 import {text} from '@/lib/text';
 
 const $t = text("components/layout/CookieBanner");
 
 // Asks once, by category (only the categories whose trackers are set in the admin); the footer "Cookies"
-// button reopens it. Without any tracker configured it never shows.
+// button reopens it. Internal statistics are always an optional category.
 export default function CookieBanner() {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [custom, setCustom] = useState(false);
+  const [error, setError] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [choice, setChoice] = useState<Consent>({statistics: false, marketing: false});
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function CookieBanner() {
       });
     };
     const stored = readConsent();
-    if (stored) applyConsent(stored);
+    if (stored) saveConsent(stored).then(ok => { if (!ok) { setError(true); open(); } });
     else if (needsConsent()) timeout = window.setTimeout(open, 2200);
     const onOpen = () => {
       if (!needsConsent()) return;
@@ -34,18 +36,28 @@ export default function CookieBanner() {
       open();
     };
     window.addEventListener('vv:consent-open', onOpen);
+    const sync = (event: StorageEvent) => {
+      if (event.key === 'vv-consent' || event.key === null) window.location.reload();
+    };
+    window.addEventListener('storage', sync);
     return () => {
       window.clearTimeout(timeout);
       cancelAnimationFrame(raf);
       window.removeEventListener('vv:consent-open', onOpen);
+      window.removeEventListener('storage', sync);
     };
   }, []);
 
   if (!mounted) return null;
 
   const has = categories();
-  const choose = (next: Consent) => {
-    saveConsent(next);
+  const choose = async (next: Consent) => {
+    if (saving) return;
+    setSaving(true);
+    const ok = await saveConsent(next);
+    setSaving(false);
+    if (!ok) { setError(true); return; }
+    setError(false);
     setVisible(false);
     window.setTimeout(() => {
       setMounted(false);
@@ -111,10 +123,10 @@ export default function CookieBanner() {
           <p className="mt-2.5 text-[13px] leading-[1.6] text-fg-muted">
             {$t("one-optional-cookie-tells-us-which")}{' '}
             <Link
-              href="/privacy-policy"
+              href="/politica-de-cookies"
               className="text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg"
             >
-              {$t("privacy-policy")}
+              Politica de cookie-uri
             </Link>
             .
           </p>
@@ -126,6 +138,7 @@ export default function CookieBanner() {
             </div>
           )}
           <div className="mt-4 grid grid-cols-2 gap-2.5">
+            {error && <p role="alert">Nu am putut confirma salvarea preferințelor. Verifică stocarea browserului și conexiunea, apoi încearcă din nou. Serviciile opționale rămân blocate.</p>}
             <button type="button" onClick={() => choose({statistics: false, marketing: false})} className={secondary}>
               {$t("decline")}
             </button>

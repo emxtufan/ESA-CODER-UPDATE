@@ -9,5 +9,5 @@
     {"key": "description", "label": "Descriere", "type": "textarea"},
     {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
   ],
-  "defaults": {"metaTitle": "{label} Tutorials & Guides | Visuvate"}
+  "defaults": {"metaTitle": "Tutoriale și ghiduri {label} | ESA Coder Solutions"}
 }

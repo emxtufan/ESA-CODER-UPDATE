@@ -15,10 +15,16 @@ declare global {
   }
 }
 
-/** The whole source_data.json (texts by scope + `_collections`). */
-export const sourceData: Record<string, any> =
-  (typeof window !== 'undefined' && window.__SOURCE_DATA__) || (bundled as unknown as Record<string, any>) || {};
-const scopes = sourceData as Record<string, Scope>;
+/** The whole source_data.json (texts by scope + `_collections`). Read on every call, so the
+ *  server renderer can hand each request the current file (globalThis.__SOURCE_DATA__). */
+export function getSourceData(): Record<string, any> {
+  return (
+    (globalThis as any).__SOURCE_DATA__ ||
+    (typeof window !== 'undefined' && window.__SOURCE_DATA__) ||
+    (bundled as unknown as Record<string, any>) ||
+    {}
+  );
+}
 
 function missing(scope: string, key: string) {
   if (import.meta.env.DEV) console.warn(`[source_data.json] missing text "${scope}" → "${key}"`);
@@ -26,14 +32,13 @@ function missing(scope: string, key: string) {
 }
 
 export function text(scope: string) {
-  const entries = scopes[scope] ?? {};
   return (key: string): string => {
-    const value = entries[key];
+    const value = (getSourceData()[scope] as Scope | undefined)?.[key];
     return typeof value === 'string' ? value : missing(scope, key);
   };
 }
 
 export function textList(scope: string, key: string): string[] {
-  const value = scopes[scope]?.[key];
+  const value = (getSourceData()[scope] as Scope | undefined)?.[key];
   return Array.isArray(value) ? value : [];
 }

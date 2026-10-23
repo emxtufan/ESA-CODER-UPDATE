@@ -1,6 +1,6 @@
 // node tests/analytics-check.mjs — source attribution, visits/views and the summary of server/analytics.mjs
 import assert from 'node:assert/strict';
-import {mkdtempSync, readFileSync} from 'node:fs';
+import {mkdirSync, mkdtempSync, readFileSync, unlinkSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {countryOf, createAnalytics, sourceOf} from '../server/analytics.mjs';
@@ -54,5 +54,37 @@ assert.deepEqual(s.exits.map((e) => e.key).sort(), ['/blog', '/contact']);
 await a.flush();
 assert.equal(JSON.parse(readFileSync(file, 'utf8')).totals.visits, 2);
 assert.equal(createAnalytics(file).summary(30).totals.range, 2); // survives a restart
+await Promise.all([a.flush(), a.remove('s1'), a.flush()]);
+assert.deepEqual(a.summary(30).recent.map(v => v.sid), ['s2']);
+assert.deepEqual(a.summary(30).daily, s.daily); // only details are deleted
+assert.deepEqual(createAnalytics(file).summary(30).recent.map(v => v.sid), ['s2']);
+assert.equal(await a.remove('unknown'), false);
+
+await Promise.all([a.flush(), a.clear(), a.flush()]);
+const cleared = createAnalytics(file).summary(30);
+assert.equal(cleared.totals.allTime, 0);
+assert.equal(cleared.totals.views, 0);
+assert.deepEqual(cleared.recent, []);
+assert.deepEqual(cleared.ips, []);
+assert.deepEqual(cleared.sources, []);
+assert.deepEqual(JSON.parse(readFileSync(file, 'utf8')).days, {});
+a.record({type: 'visit', sid: 'after-reset', path: '/'}, {headers});
+await a.flush();
+assert.equal(createAnalytics(file).summary(30).totals.allTime, 1);
+
+// Failed writes leave the in-memory records intact, and a later retry can succeed.
+const blocked = path.join(path.dirname(file), 'blocked');
+writeFileSync(blocked, 'not a directory');
+const broken = createAnalytics(path.join(blocked, 'a.json'));
+broken.record({type: 'visit', sid: 'keep-me', path: '/'}, {headers});
+await assert.rejects(broken.remove('keep-me'));
+await assert.rejects(broken.clear());
+assert.equal(broken.summary(30).recent[0].sid, 'keep-me');
+assert.equal(broken.summary(30).totals.allTime, 1);
+await assert.rejects(broken.flush());
+unlinkSync(blocked);
+mkdirSync(blocked);
+assert.equal(await broken.remove('keep-me'), true);
+assert.deepEqual(createAnalytics(path.join(blocked, 'a.json')).summary(30).recent, []);
 console.log('analytics: ok');
 process.exit(0);

@@ -3,6 +3,7 @@ import {useEffect, useRef, useState} from 'react';
 import gsap from 'gsap';
 import {useGSAP} from '@gsap/react';
 
+import {mediaSrcSet} from '@/lib/media';
 import {text} from '@/lib/text';
 
 const $t = text("components/works/WorkShots");
@@ -143,6 +144,8 @@ export default function WorkShots({shots, alt}: any) {
             <img
               key={`${copy}-${shot.id}`}
               src={shot.src}
+              srcSet={mediaSrcSet(shot.src)}
+              sizes={`${shotW}px`}
               alt={0 === copy ? (shot.title ?? alt) : ''}
               aria-hidden={1 === copy}
               draggable={false}

@@ -3,33 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ESA Coder Solutions | Dezvoltare website-uri, magazine online și aplicații web</title>
-    <meta name="description" content="Website-uri, magazine online și aplicații web personalizate, plus automatizări pentru afaceri. Design atent la detalii și cod scris ca să funcționeze."/>
-    <meta name="robots" content="index, follow"/>
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1"/>
-    <meta property="og:title" content="ESA Coder Solutions | Dezvoltare website-uri, magazine online și aplicații web"/>
-    <meta property="og:description" content="Website-uri, magazine online și aplicații web personalizate, plus automatizări pentru afaceri. Design atent la detalii și cod scris ca să funcționeze."/>
-    <meta property="og:url" content="https://visuvate.com"/>
-    <meta property="og:site_name" content="ESA Coder Solutions"/>
-    <meta property="og:locale" content="ro_RO"/>
-    <meta property="og:image" content="https://visuvate.com/social-card.jpg"/>
-    <meta property="og:image:width" content="1200"/>
-    <meta property="og:image:height" content="630"/>
-    <meta property="og:image:alt" content="ESA Coder Solutions | Dezvoltare website-uri, magazine online și aplicații web"/>
-    <meta property="og:type" content="website"/>
-    <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="ESA Coder Solutions | Dezvoltare website-uri, magazine online și aplicații web"/>
-    <meta name="twitter:description" content="Website-uri, magazine online și aplicații web personalizate, plus automatizări pentru afaceri. Design atent la detalii și cod scris ca să funcționeze."/>
-    <meta name="twitter:image" content="https://visuvate.com/social-card.jpg"/>
-    <link rel="canonical" href="https://visuvate.com"/>
-    <link rel="icon" href="/favicon.ico?03c1d617e0faae6d" type="image/x-icon" sizes="16x16"/>
-    <link rel="icon" href="/icon.png?f9ed1d971d95a407" type="image/png" sizes="512x512"/>
-    <link rel="apple-touch-icon" href="/apple-icon.png?095462b94c70d3f0" type="image/png" sizes="180x180"/>
-    <script>try{var t=localStorage.getItem('vv-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!matchMedia('(pointer: coarse)').matches)document.documentElement.setAttribute('data-intro','pending')}catch(e){}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://visuvate.com/#organization","name":"ESA Coder Solutions","url":"https://visuvate.com","description":"Website-uri, magazine online și aplicații web personalizate, plus automatizări pentru afaceri. Design atent la detalii și cod scris ca să funcționeze.","logo":"https://visuvate.com/brand/logo.webp","image":"https://visuvate.com/opengraph-image","email":"contact@visuvate.com","knowsAbout":["Dezvoltare website-uri","Dezvoltare web personalizată","Magazine online","Shopify","Aplicații web","Automatizări pentru afaceri","React","Next.js","Node.js"],"areaServed":[{"@type":"Country","name":"Romania"}],"availableLanguage":[{"@type":"Language","name":"Romanian","alternateName":"ro"},{"@type":"Language","name":"English","alternateName":"en"}],"priceRange":"$350 – $3,000+","currenciesAccepted":"USD, GBP, EUR, INR","sameAs":["https://www.instagram.com/visuvate","https://www.linkedin.com/company/visuvate","https://twitter.com/visuvate"]}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://visuvate.com/#website","url":"https://visuvate.com","name":"ESA Coder Solutions","description":"Website-uri, magazine online și aplicații web personalizate, plus automatizări pentru afaceri. Design atent la detalii și cod scris ca să funcționeze.","publisher":{"@id":"https://visuvate.com/#organization"},"inLanguage":"ro"}</script>
+    <!--seo-head-->
+    <link rel="icon" href="/favicon.ico?esa-20261017" type="image/x-icon" sizes="16x16 32x32 48x48"/>
+    <link rel="icon" href="/icon.png?esa-20261017" type="image/png" sizes="512x512"/>
+    <link rel="apple-touch-icon" href="/apple-icon.png?esa-20261017" type="image/png" sizes="180x180"/>
+    <script>try{var t=localStorage.getItem('vv-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!matchMedia('(pointer: coarse), (max-width: 639px)').matches)document.documentElement.setAttribute('data-intro','pending')}catch(e){}</script>
+    <style>
+      #boot{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#000;transition:opacity .4s,visibility .4s}
+      [data-theme=light] #boot{background:#fff}
+      #boot.done{opacity:0;visibility:hidden}
+      #boot i{width:min(180px,40vw);aspect-ratio:2785/778;-webkit-mask:url(/brand/logo.webp) center/contain no-repeat;mask:url(/brand/logo.webp) center/contain no-repeat;
+        background:linear-gradient(100deg,#2a2a2a 40%,#8a8a8a 50%,#2a2a2a 60%) 0 0/300% 100%;animation:boot 1.4s linear infinite}
+      [data-theme=light] #boot i{background-image:linear-gradient(100deg,#d8d8d8 40%,#f7f7f7 50%,#d8d8d8 60%)}
+      @keyframes boot{from{background-position:100% 0}to{background-position:0 0}}
+      @media (prefers-reduced-motion:reduce){#boot i{animation:none}}
+    </style>
   </head>
   <body class="__variable_ce62b5 __variable_41a08d __variable_56bdf6">
+    <div id="boot" role="status" aria-label="Se încarcă"><i></i></div>
+    <script>window.__bootDone=function(){var b=document.getElementById('boot');if(!b)return;b.className='done';setTimeout(function(){b.remove()},500)};setTimeout(window.__bootDone,10000)</script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -14,24 +14,22 @@ import Works from '@/components/sections/Works';
 
 import {collection} from '@/lib/collections';
 import {text} from '@/lib/text';
-import {faqJsonLd, offersJsonLd, reviewsJsonLd} from '@/lib/jsonLd';
 
 const $t = text("/");
 
 // Server-rendered tree of app/(site)/page.tsx, converted 1:1 from the RSC payload.
-// Position fields in the projects collection decide who appears in the hero / the home coil (empty = hidden).
+// The hero shows every published project in the order of the collection (as /works does);
+// homePosition decides who appears in the home coil (empty = hidden).
 const byPosition = (field: string) => (a: any, b: any) => a[field] - b[field];
 
 export default function Home() {
   const projects = collection('projects');
   const heroProjects = projects
-    .filter((p: any) => p.heroPosition)
-    .sort(byPosition('heroPosition'))
     .map((p: any) => ({
       title: p.title,
       slug: p.slug,
-      desktop: p.image,
-      mobile: p.heroMobile || p.image,
+      desktop: p.heroDesktop || p.image,
+      mobile: p.heroMobile || p.heroDesktop || p.image,
       themes: [p.heroDark && 'dark', p.heroLight && 'light'].filter(Boolean),
     }));
   const homeProjects = projects
@@ -40,9 +38,6 @@ export default function Home() {
     .map((p: any) => ({title: p.title, slug: p.slug, image: p.homeImage || p.image}));
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd() }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: reviewsJsonLd() }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: offersJsonLd() }} />
       <Hero projects={heroProjects} />
       <TechStack />
       <Introduction />

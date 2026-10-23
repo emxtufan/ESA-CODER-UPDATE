@@ -31,7 +31,7 @@ export default function WorksGrid({items}: any) {
                 eager={i < 3}
                 image={e.image}
                 title={e.title}
-                action="Visit site"
+                action={e.url ? $t("visit-site") : $t("view-project")}
                 actionHref={e.url}
                 sub={e.category}
               />

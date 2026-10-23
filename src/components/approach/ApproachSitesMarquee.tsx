@@ -6,7 +6,13 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const SITES = ['agency', 'lumora', 'watches', 'greenearth', 'guardianvets'];
+const SITES = [
+  '/Proiecte/teamstoica.ro.png',
+  '/Proiecte/xelle.ro.png',
+  '/Proiecte/beautyvilla.ro.png',
+  '/Proiecte/greentechpro.png',
+  '/Proiecte/greentechcharity.ro.png',
+];
 const DOTS = ['#ff5f57', '#febc2e', '#28c840'];
 
 export default function ApproachSitesMarquee() {
@@ -46,7 +52,7 @@ export default function ApproachSitesMarquee() {
           <div
             key={site}
             className="shrink-0 overflow-hidden rounded-[7px] bg-black"
-            style={{ width: 524, height: 524, boxShadow: '0 6px 12px 6px rgba(0, 0, 0, 0.1)' }}
+            style={{ width: 524, height: 524 * 9 / 16, boxShadow: '0 6px 12px 6px rgba(0, 0, 0, 0.1)' }}
           >
             <div className="flex items-center gap-[5px] pl-[10px]" style={{ height: 18 }}>
               {DOTS.map((color) => (
@@ -54,14 +60,14 @@ export default function ApproachSitesMarquee() {
               ))}
             </div>
             <img
-              src={`/approach/${site}.jpg`}
+              src={`${site}?w=828`}
               alt=""
               width={524}
-              height={506}
+              height={277}
               loading="lazy"
               decoding="async"
               className="block w-full object-cover object-top"
-              style={{ height: 506 }}
+              style={{ height: 'calc(100% - 18px)' }}
             />
           </div>
         ))}

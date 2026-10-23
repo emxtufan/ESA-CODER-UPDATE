@@ -23,7 +23,8 @@ export default function Hero({projects}: {projects: any[]}) {
   const sectionRef = useRef<HTMLElement>(null);
   useGSAP(
     () => {
-      if (window.matchMedia('(pointer: coarse)').matches) {
+      // phones (touch or a phone-sized screen) skip the intro: the page shows at once
+      if (window.matchMedia('(pointer: coarse), (max-width: 639px)').matches) {
         firstRun = false;
         document.documentElement.removeAttribute('data-intro');
         document.documentElement.setAttribute('data-hero-ready', '');

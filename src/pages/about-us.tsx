@@ -11,9 +11,8 @@ export default function Page_about_us() {
   return (
     <>
       <main className="relative isolate">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"About Us\",\"item\":\"https://visuvate.com/about-us\"}]}" }} />
         <PageTitle lead={$t("about")} trail={$t("us")} />
-        <div className="relative mt-0 pt-[40px] backdrop-blur-[10px] lg:-mt-[73px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
+        <div className="relative mt-0 pt-[40px] lg:-mt-[73px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
           <span aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-px w-[600px] max-w-full -translate-x-1/2" style={{ background: "linear-gradient(90deg, transparent 0%, var(--vv-card-line) 50%, transparent 100%)" }} />
           <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[420px]" style={{ background: "radial-gradient(34% 40% at 50% 0%, var(--vv-card-lift) 0%, var(--vv-card-lift-mid) 45%, transparent 76%)" }} />
           <div className="relative flex justify-center">

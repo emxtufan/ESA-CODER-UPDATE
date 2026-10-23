@@ -13,6 +13,7 @@ import {text} from '@/lib/text';
 const $t = text("components/sections/Works");
 
 const CARD_ASPECT = 30 / 14;
+const CARD_HEIGHT = 5 * 9 / 16;
 
 // Coil (curved pole of cards) vertex shader
 const COIL_VERTEX_SOURCE = `
@@ -65,20 +66,20 @@ const COIL_FRAGMENT_SOURCE = `
     float alpha = 1.0 - smoothstep(-edgeWidth, edgeWidth, dist);
     if (alpha < 0.01) discard;
 
-    // object-fit: cover, hung from the top edge for taller artwork — the
-    // same masthead-first crop every card on the site uses.
-    float pa = planeSize.x / planeSize.y;
-    vec2 tuv = vUv;
-    if (imageAspect > pa) {
-      tuv.x = 0.5 + (vUv.x - 0.5) * (pa / imageAspect);
+    // Keep the whole screenshot inside an evenly padded light blue card.
+    vec2 imageSize = planeSize - vec2(0.28);
+    if (imageAspect > imageSize.x / imageSize.y) {
+      imageSize.y = imageSize.x / imageAspect;
     } else {
-      tuv.y = 1.0 - (1.0 - vUv.y) * (imageAspect / pa);
+      imageSize.x = imageSize.y * imageAspect;
     }
-
-    // No colour management: the bytes from the file land in the framebuffer
-    // untouched, as a DOM <img> would paint them.
-    vec4 texColor = texture2D(map, tuv);
-    gl_FragColor = vec4(texColor.rgb, texColor.a * alpha * opacity);
+    vec2 tuv = (px - (planeSize - imageSize) * 0.5) / imageSize;
+    vec3 color = vec3(219.0, 234.0, 254.0) / 255.0;
+    if (all(greaterThanEqual(tuv, vec2(0.0))) && all(lessThanEqual(tuv, vec2(1.0)))) {
+      vec4 texColor = texture2D(map, tuv);
+      color = mix(color, texColor.rgb, texColor.a);
+    }
+    gl_FragColor = vec4(color, alpha * opacity);
   }
 `;
 
@@ -113,12 +114,12 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
     canvas.getContext('webgl2', {
       alpha: true,
       antialias: true,
-      premultipliedAlpha: false,
+      premultipliedAlpha: true,
     }) ??
     canvas.getContext('webgl', {
       alpha: true,
       antialias: true,
-      premultipliedAlpha: false,
+      premultipliedAlpha: true,
     });
   if (!gl) return { dispose: () => {} };
   const isWebGL2 =
@@ -153,7 +154,7 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
     const indices: number[] = [];
     for (let row = 0; row <= 16; row++) {
       const v = row / 16;
-      const y = -(3.75 * v) + 1.875;
+      const y = CARD_HEIGHT * (0.5 - v);
       for (let col = 0; col <= 64; col++) {
         const u = col / 64;
         const theta = thetaStart + 0.6493506493506493 * u;
@@ -192,7 +193,7 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geometry.indices, gl.STATIC_DRAW);
   const indexCount = geometry.indices.length;
   gl.uniform1f(uniforms.poleFlare, 0.028);
-  gl.uniform2f(uniforms.planeSize, 5, 3.75);
+  gl.uniform2f(uniforms.planeSize, 5, CARD_HEIGHT);
   gl.uniform1f(uniforms.borderRadius, 0.2);
   gl.uniform1i(uniforms.map, 0);
   const viewMatrix = new Float32Array(16);
@@ -205,7 +206,7 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(0, 0, 0, 0);
   const textures: any[] = Array(count).fill(null);
-  const aspects = new Float32Array(count).fill(5 / 3.75);
+  const aspects = new Float32Array(count).fill(5 / CARD_HEIGHT);
   const fades = new Float32Array(count);
   const anisotropic = gl.getExtension('EXT_texture_filter_anisotropic');
   const images: HTMLImageElement[] = [];
@@ -243,7 +244,8 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
   let width = 1;
   let height = 1;
   const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 1x: at 2x this canvas alone halved the frame rate while scrolling (GPU-bound)
+    const dpr = 1;
     width = canvas.clientWidth || 1;
     height = canvas.clientHeight || 1;
     const w = Math.round(width * dpr);
@@ -340,10 +342,10 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
   });
   intersectionObserver.observe(canvas);
   const corners = [
-    [7.7 * Math.sin(geometry.thetaStart), 1.875, 7.7 * Math.cos(geometry.thetaStart)],
-    [7.7 * Math.sin(geometry.thetaEnd), 1.875, 7.7 * Math.cos(geometry.thetaEnd)],
-    [7.7 * Math.sin(geometry.thetaEnd), -1.875, 7.7 * Math.cos(geometry.thetaEnd)],
-    [7.7 * Math.sin(geometry.thetaStart), -1.875, 7.7 * Math.cos(geometry.thetaStart)],
+    [7.7 * Math.sin(geometry.thetaStart), CARD_HEIGHT / 2, 7.7 * Math.cos(geometry.thetaStart)],
+    [7.7 * Math.sin(geometry.thetaEnd), CARD_HEIGHT / 2, 7.7 * Math.cos(geometry.thetaEnd)],
+    [7.7 * Math.sin(geometry.thetaEnd), -CARD_HEIGHT / 2, 7.7 * Math.cos(geometry.thetaEnd)],
+    [7.7 * Math.sin(geometry.thetaStart), -CARD_HEIGHT / 2, 7.7 * Math.cos(geometry.thetaStart)],
   ];
   const project = (corner: number[], y: number, angle: number) => {
     const cos = Math.cos(angle);
@@ -373,7 +375,9 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
   const hitTest = (event: PointerEvent | MouseEvent) => {
     const rect = canvas.getBoundingClientRect();
     const point = [event.clientX - rect.left, event.clientY - rect.top];
-    for (const slot of slots)
+    // front-most card first (cards are drawn back to front, in `order`)
+    for (let k = order.length - 1; k >= 0; k--) {
+      const slot = slots[order[k]];
       if (
         slot.active &&
         insidePolygon(
@@ -382,6 +386,7 @@ function createCoil(canvas: HTMLCanvasElement, options: any) {
         )
       )
         return items[slot.idx];
+    }
     return null;
   };
   const onPointerMove = (event: PointerEvent) => {
@@ -580,14 +585,13 @@ export default function Works({ items }: { items: any[] }) {
           aria-hidden
           className={`pointer-events-none absolute inset-0 z-[15] transition-opacity duration-500 ease-brand ${isLight ? 'bg-white/75' : 'bg-black/70'} ${showAll ? 'opacity-100' : 'opacity-0'}`}
         />
-        <div
-          className={`absolute inset-0 z-20 grid place-items-center px-6 md:px-8 ${showAll ? '' : 'pointer-events-none'}`}
-        >
+        {/* only the link takes clicks; the cards around it stay clickable */}
+        <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center px-6 md:px-8">
           <Link
             href={$t("view-all-link")}
             aria-hidden={!showAll}
             tabIndex={showAll ? undefined : -1}
-            className={`transition-opacity duration-500 ease-brand ${showAll ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+            className={`transition-opacity duration-500 ease-brand ${showAll ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
           >
             <span className="inline-flex font-display text-[clamp(44px,7vw,104px)] leading-[1] font-medium tracking-[-0.05em]">
               <span className="vv-accent">

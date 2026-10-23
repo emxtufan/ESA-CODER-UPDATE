@@ -2,7 +2,7 @@
 // Exports (compiled name -> readable name):
 //   qh -> mediaUrl      resolves a stored image ref (/media/.., http.., wix:image://..) to a URL
 //   HL -> vectorUrl     resolves a stored vector/icon ref (wix:vector://..) to a URL
-//   LT -> mediaSrcSet   builds a srcset for /_next/image URLs (undefined otherwise)
+//   LT -> mediaSrcSet   builds a srcset for /_next/image URLs and local images (undefined otherwise)
 function parseWixImage(ref: string) {
   const m = ref.match(/^wix:image:\/\/v1\/([^/]+)\/([^#]*)(?:#(.*))?$/);
   if (!m) return null;
@@ -39,5 +39,7 @@ export function mediaSrcSet(url: string, widths = [448, 828]): string | undefine
   if (url.startsWith('/_next/image?')) {
     return widths.map((w) => `${url.replace(/([?&])w=\d+/, `$1w=${w}`)} ${w}w`).join(', ');
   }
+  // local images: resized copies made by server/images.mjs (it only accepts the widths it lists)
+  if (/^\/[^?#]+\.(jpe?g|png|webp)$/i.test(url)) return widths.map((w) => `${url}?w=${w} ${w}w`).join(', ');
   return undefined;
 }

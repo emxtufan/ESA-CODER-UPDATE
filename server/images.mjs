@@ -9,18 +9,20 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 export const MAX_EDGE = 1600;
+// ?w= widths the site asks for in srcset (src/components/hero/data.ts); anything else is ignored.
+export const WIDTHS = new Set([448, 828, 1440]);
 const QUALITY = 78;
 const MIN_BYTES = 40 * 1024; // smaller files are not worth a second encode
 const RASTER_RE = /\.(jpe?g|png|webp)$/i;
 
 /** One pipeline for every image: EXIF orientation applied, long side capped, WebP, metadata stripped. Null = keep the original. */
-export async function optimize(input) {
+export async function optimize(input, width) {
   const image = sharp(input, {failOn: 'none', animated: false});
   const meta = await image.metadata();
   if ((meta.pages ?? 1) > 1) return null; // animated
   const out = await image
     .rotate()
-    .resize({width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true})
+    .resize(width ? {width, withoutEnlargement: true} : {width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true})
     .webp({quality: QUALITY, effort: 4})
     .toBuffer();
   return out.length < input.length * 0.9 ? out : null;
@@ -29,15 +31,15 @@ export async function optimize(input) {
 /** Express middleware. `root`: the folder the site's files are served from; `cacheDir`: where the WebP copies go. */
 export function imageOptimizer({root, cacheDir}) {
   const pending = new Map();
-  const variantOf = async (file, st) => {
-    const key = createHash('sha1').update(`${file}|${st.size}|${st.mtimeMs}|${MAX_EDGE}|${QUALITY}`).digest('hex');
+  const variantOf = async (file, st, width) => {
+    const key = createHash('sha1').update(`${file}|${st.size}|${st.mtimeMs}|${MAX_EDGE}|${QUALITY}|${width ?? ''}`).digest('hex');
     const cached = path.join(cacheDir, key.slice(0, 2), `${key}.webp`);
     const skip = `${cached}.skip`; // remembers "the original is already the lighter one"
     if (existsSync(cached)) return {file: cached, key};
     if (existsSync(skip)) return null;
     if (!pending.has(key)) {
       pending.set(key, (async () => {
-        const out = await optimize(await readFile(file));
+        const out = await optimize(await readFile(file), width);
         await mkdir(path.dirname(cached), {recursive: true});
         const tmp = `${out ? cached : skip}.${process.pid}.tmp`;
         await writeFile(tmp, out ?? '');
@@ -60,7 +62,8 @@ export function imageOptimizer({root, cacheDir}) {
     try {
       const st = await stat(file);
       if (!st.isFile() || st.size < MIN_BYTES) return next();
-      const variant = await variantOf(file, st);
+      const width = WIDTHS.has(Number(req.query.w)) ? Number(req.query.w) : undefined;
+      const variant = await variantOf(file, st, width);
       res.vary('Accept');
       if (!variant) return next();
       const etag = `"w-${variant.key.slice(0, 20)}"`;

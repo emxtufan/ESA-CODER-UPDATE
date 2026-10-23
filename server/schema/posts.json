@@ -16,5 +16,5 @@
     {"key": "related", "label": "Articole asemănătoare (implicit primele 3)", "type": "refs", "collection": "posts", "advanced": true},
     {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
   ],
-  "defaults": {"metaTitle": "{title} | Visuvate", "readMinutes": 4}
+  "defaults": {"metaTitle": "{title} | ESA Coder Solutions", "readMinutes": 4}
 }

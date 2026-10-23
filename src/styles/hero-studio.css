@@ -1,0 +1,85 @@
+.esa-studio { position: relative; text-align: left; }
+.esa-studio-frame {
+  position: relative; height: 620px; padding: 6px 6px 0; border: 0;
+  border-radius: 18px 18px 0 0; background: color-mix(in srgb, var(--vv-bg) 82%, transparent);
+}
+.esa-studio-frame > .vv-shine { z-index: 3; opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .esa-studio-frame > .vv-shine { animation-timing-function: linear; animation-iteration-count: infinite; }
+  .esa-studio-frame > .vv-shine-lyr-a { animation-name: vv-shine-a; }
+  .esa-studio-frame > .vv-shine-lyr-b { animation-name: vv-shine-b; }
+}
+.esa-studio-window { display: flex; height: 100%; flex-direction: column; overflow: hidden; border-radius: 12px 12px 0 0; background: color-mix(in srgb, var(--vv-bg) 80%, transparent); }
+.esa-studio-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--vv-hairline); background: var(--vv-bg); }
+.esa-studio button { cursor: pointer; }
+.esa-studio button:focus-visible, .esa-studio a:focus-visible, .esa-studio-viewport:focus-visible { outline: 2px solid #0099ff; outline-offset: 3px; }
+.esa-studio-brand { display: flex; align-items: center; gap: 8px; justify-self: start; border-radius: 6px; padding: 6px 8px; background: var(--vv-field); }
+.esa-studio-logo { width: 46px; height: 18px; }
+.esa-studio .esa-studio-static-logo { display: none !important; }
+.esa-studio-devices { display: flex; gap: 3px; padding: 3px; border-radius: 6px; background: var(--vv-field); }
+.esa-studio-devices button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 4px 14px; border-radius: 4px; font-size: 12px; color: color-mix(in srgb, var(--vv-text-primary) 60%, transparent); }
+.esa-studio-devices button[aria-pressed=true] { color: var(--vv-text-primary); background: var(--vv-bg); box-shadow: 0 1px 2px var(--vv-raise-shadow); }
+.esa-studio svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.esa-studio-measure { justify-self: end; padding: 8px 12px; border: 1px solid var(--vv-hairline); border-radius: 6px; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.esa-studio-body { display: flex; flex: 1; min-height: 0; }
+.esa-studio-sidebar { z-index: 2; flex: 0 0 250px; min-width: 0; overflow: hidden; background: var(--vv-bg); }
+.esa-studio-projects { display: flex; flex-direction: column; border-right: 1px solid var(--vv-hairline); }
+.esa-studio-panel-title { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--vv-hairline); font-size: 13px; font-weight: 600; }
+.esa-studio-panel-title span { color: color-mix(in srgb, var(--vv-text-primary) 50%, transparent); font-weight: 400; }
+.esa-studio-project-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 10px 12px 64px; scrollbar-width: thin; }
+.esa-studio-project-list button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 38px; border-radius: 6px; padding: 8px 10px; text-align: left; font-size: 12px; }
+.esa-studio-project-list button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.esa-studio-project-list button:hover { background: var(--vv-field); }
+.esa-studio-project-list button[aria-pressed=true] { background: #006bad; color: #fff; }
+.esa-studio-project-list svg { width: 15px; height: 15px; }
+.esa-studio-project-link { padding: 16px 20px 60px; border-top: 1px solid var(--vv-hairline); font-size: 12px; }
+.esa-studio-details { border-left: 1px solid var(--vv-hairline); }
+.esa-studio-detail-group { padding: 20px; border-bottom: 1px solid var(--vv-hairline); }
+.esa-studio-detail-group h2 { margin-bottom: 16px; font-size: 13px; font-weight: 600; }
+.esa-studio-detail-group p { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; font-size: 12px; }
+.esa-studio-detail-group p > span, .esa-studio-help { color: color-mix(in srgb, var(--vv-text-primary) 60%, transparent); }
+.esa-studio-detail-group strong { min-width: 95px; padding: 7px 10px; border-radius: 6px; background: var(--vv-field); font-weight: 400; }
+.esa-studio-help { padding: 20px; font-size: 12px; line-height: 1.7; }
+.esa-studio-viewport { position: relative; flex: 1; min-width: 0; margin-top: 32px; overflow: hidden; background: var(--vv-bg); }
+.esa-studio-track { display: flex; width: max-content; gap: 20px; will-change: transform; }
+.esa-studio-slide { position: relative; display: block; flex-shrink: 0; overflow: hidden; padding: 0; border: 0; border-radius: 8px; touch-action: pan-y; background: var(--vv-field); }
+.esa-studio-slide picture { display: contents; }
+.esa-studio-slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; user-select: none; -webkit-touch-callout: none; animation: esa-studio-image .3s ease-out; }
+@keyframes esa-studio-image { from { opacity: .3; } to { opacity: 1; } }
+.esa-studio-toolbar { position: absolute; z-index: 30; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; width: max-content; max-width: calc(100% - 20px); padding: 5px; border: 1px solid var(--vv-hairline); border-radius: 10px; background: var(--vv-bg); }
+.esa-studio-toolbar button { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 6px; font-size: 13px; }
+.esa-studio-toolbar button:hover { background: var(--vv-field); }
+.esa-studio-all { display: flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 6px; white-space: nowrap; background: var(--vv-text-primary); color: var(--vv-bg); font-size: 13px; font-weight: 500; }
+.esa-studio[data-panels=false] .esa-studio-sidebar { display: none; }
+.esa-studio[data-reduced=true] .esa-studio-viewport { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 70px; }
+.esa-studio[data-reduced=true] .esa-studio-track { will-change: auto; }
+.esa-studio[data-reduced=true] .esa-studio-slide { touch-action: pan-x pan-y; }
+.esa-studio[data-selected=true] .esa-studio-viewport { margin-inline: 16px; padding: 0; overflow: hidden; }
+.esa-studio[data-selected=true] .esa-studio-track { width: 100%; height: 100%; justify-content: center; gap: 0; will-change: auto; }
+.esa-studio[data-selected=true] .esa-studio-slide { width: 100%; height: 100%; }
+.esa-studio[data-selected=true][data-mode=mobile] .esa-studio-slide { width: auto; max-width: 100%; aspect-ratio: 9 / 16; }
+.esa-studio[data-mode=desktop] .esa-studio-frame, .esa-studio[data-mode=desktop] .esa-studio-window { height: auto; }
+.esa-studio[data-mode=desktop] .esa-studio-sidebar { contain: size; }
+.esa-studio[data-mode=desktop] .esa-studio-details { overflow-y: auto; }
+.esa-studio[data-mode=desktop] .esa-studio-viewport { aspect-ratio: 16 / 9; padding: 0; }
+.esa-studio[data-mode=desktop] .esa-studio-track { position: absolute; inset: 0 auto auto 0; }
+@media (max-width: 1199px) { .esa-studio-sidebar { flex-basis: 210px; } }
+@media (max-width: 1023px) {
+  .esa-studio-sidebar { display: none; }
+  .esa-studio-brand { display: none; }
+  .esa-studio .esa-studio-static-logo { display: inline-block !important; }
+}
+@media (max-width: 639px) {
+  .esa-studio-frame, .esa-studio-window { height: auto; }
+  .esa-studio-viewport { margin-top: 16px; }
+  .esa-studio[data-mode=mobile] .esa-studio-viewport { aspect-ratio: 9 / 16; padding: 0; }
+  .esa-studio[data-mode=mobile] .esa-studio-track { position: absolute; inset: 0 auto auto 0; }
+  .esa-studio-header { padding: 10px; gap: 8px; grid-template-columns: auto 1fr; }
+  .esa-studio-devices { justify-self: end; }
+  .esa-studio-devices button { min-height: 38px; padding: 4px 8px; }
+  .esa-studio-measure { display: none; }
+  .esa-studio-all { padding: 0 10px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .esa-studio-slide img { animation: none; }
+}

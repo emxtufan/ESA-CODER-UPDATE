@@ -14,9 +14,8 @@ const $t = text("/services");
 export default function Page_services() {
   return (
     <>
-      <main className="relative isolate">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Services\",\"item\":\"https://visuvate.com/services\"}]}" }} />
-        <ServicesBackdrop className="fixed inset-0 -z-10" />
+      <main data-services className="relative isolate">
+        <ServicesBackdrop pauseOnScroll className="fixed inset-0 -z-10" />
         <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[280px]" style={{ background: "linear-gradient(180deg, transparent 0%, var(--vv-bg) 92%)" }} />
         <PageTitle lead={$t("our")} trail={$t("services")}>
           <p className="mx-auto mt-8 max-w-[620px] text-center text-lead leading-[1.6] text-fg-muted">
@@ -26,7 +25,7 @@ export default function Page_services() {
         <BlurPanel>
           <RevealBatch className="mx-auto max-w-[1425px] px-6 pb-[clamp(80px,10vw,140px)] md:px-8">
             <div className="grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:[&>*:last-child:nth-child(3n+1)]:col-start-2">
-              <Link data-reveal href="/services/crafted-websites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/crafted-websites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -65,7 +64,7 @@ export default function Page_services() {
                               {$t("crafted-not-assembled")}
                             </span>
                             <span className="mt-1.5 flex items-center gap-2">
-                              <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0099FF" }}>
+                              <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0070D6" }}>
                                 {$t("start-a-project")}
                               </span>
                               <span className="text-[7px] leading-none text-white/60">
@@ -105,14 +104,14 @@ export default function Page_services() {
                               <span className="mt-1 block h-[5px] w-[70%] rounded-full bg-white/12" />
                               <span className="mt-1 block h-[5px] w-[82%] rounded-full bg-white/12" />
                             </span>
-                            <img src="/services/brand.jpg" alt="" className="block h-[36px] w-[36%] shrink-0 rounded-[5px] object-cover" loading="lazy" decoding="async" />
+                            <img src="/services/brand.jpg?w=448" alt="" className="block h-[36px] w-[36%] shrink-0 rounded-[5px] object-cover" loading="lazy" decoding="async" />
                           </span>
                           <span className="mt-2.5 block text-[8px] leading-none font-medium text-white">
                             {$t("selected-work")}
                           </span>
                           <span className="mt-1.5 flex gap-1.5">
-                            <img src="/services/vivid.jpg" alt="" className="block h-[32px] min-w-0 flex-1 rounded-[5px] object-cover" loading="lazy" decoding="async" />
-                            <img src="/services/office.jpg" alt="" className="block h-[32px] min-w-0 flex-1 rounded-[5px] object-cover" loading="lazy" decoding="async" />
+                            <img src="/services/vivid.jpg?w=448" width={720} height={900} alt="" className="block h-[32px] min-w-0 flex-1 rounded-[5px] object-cover" loading="lazy" decoding="async" />
+                            <img src="/services/office.jpg?w=448" width={720} height={481} alt="" className="block h-[32px] min-w-0 flex-1 rounded-[5px] object-cover" loading="lazy" decoding="async" />
                           </span>
                           <span className="mt-2.5 flex justify-between border-t border-white/10 pt-1.5 pb-2 text-[6.5px] leading-none text-white/40">
                             <span>
@@ -141,7 +140,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/website-redesign" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/website-redesign" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -149,7 +148,7 @@ export default function Page_services() {
                     <span className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(90% 80% at 18% 0%, rgba(255,255,255,0.16) 0%, transparent 55%)" }} />
                     <span className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.17) 1px, transparent 1px)", backgroundSize: "13px 13px", maskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)", WebkitMaskImage: "radial-gradient(130% 110% at 50% 0%, #000 26%, transparent 76%)" }} />
                     <div className="absolute top-[13%] bottom-0 left-[6%] w-[56%] overflow-hidden rounded-t-[4px] bg-[#DDE1E5]">
-                      <span className="flex items-center justify-between bg-[#9AA4AD] px-2.5 py-1.5">
+                      <span className="flex items-center justify-between px-2.5 py-1.5" style={{ background: "#5F6A74" }}>
                         <span className="text-[7px] leading-none font-bold tracking-wide text-white/90 uppercase">
                           {$t("old-homepage")}
                         </span>
@@ -177,11 +176,11 @@ export default function Page_services() {
                         <span className="block text-[8px] leading-[1.2] font-bold" style={{ color: "#4A555E" }}>
                           {$t("welcome-to-our-website")}
                         </span>
-                        <span className="mt-1 block text-[6px] leading-[1.3]" style={{ color: "#6B767F" }}>
+                        <span className="mt-1 block text-[6px] leading-[1.3]" style={{ color: "#4F5A63" }}>
                           {$t("best-viewed-at-1024-768")}
                         </span>
                         <span className="mt-1.5 flex gap-1.5">
-                          <img src="/services/office.jpg" alt="" className="block h-[34px] w-[44%] rounded-[2px] object-cover [filter:grayscale(1)_contrast(0.85)]" loading="lazy" decoding="async" />
+                          <img src="/services/office.jpg?w=448" alt="" className="block h-[34px] w-[44%] rounded-[2px] object-cover [filter:grayscale(1)_contrast(0.85)]" loading="lazy" decoding="async" />
                           <span className="min-w-0 flex-1">
                             <span className="block h-[5px] w-full rounded-full bg-[#AEB7BF]" />
                             <span className="mt-1 block h-[5px] w-[88%] rounded-full bg-[#AEB7BF]" />
@@ -203,7 +202,7 @@ export default function Page_services() {
                         <span className="block h-[4px] w-[92%] rounded-full bg-[#B9C1C8]" />
                         <span className="mt-[3px] block h-[4px] w-[78%] rounded-full bg-[#B9C1C8]" />
                         <span className="mt-[3px] block h-[4px] w-[86%] rounded-full bg-[#B9C1C8]" />
-                        <span className="mt-1.5 flex justify-between border-t pt-1 pb-1.5 text-[6px] leading-none" style={{ borderColor: "#C2C9CF", color: "#6B767F" }}>
+                        <span className="mt-1.5 flex justify-between border-t pt-1 pb-1.5 text-[6px] leading-none" style={{ borderColor: "#C2C9CF", color: "#4F5A63" }}>
                           <span>
                             {$t("visitors-003847")}
                           </span>
@@ -233,7 +232,7 @@ export default function Page_services() {
                             {$t("same-brand-new-energy")}
                           </span>
                           <span className="mt-1.5 flex items-center gap-1.5">
-                            <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0099FF" }}>
+                            <span className="inline-block rounded-full px-2.5 py-[5px] text-[8px] leading-none font-medium text-white" style={{ background: "#0070D6" }}>
                               {$t("explore")}
                             </span>
                             <span className="inline-block rounded-full border border-white/25 px-2.5 py-[5px] text-[8px] leading-none font-medium text-white/85">
@@ -259,7 +258,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/ecommerce-website-design" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/ecommerce-website-design" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -381,7 +380,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/cms-and-dynamic-websites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/cms-and-dynamic-websites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -414,7 +413,7 @@ export default function Page_services() {
                           {$t("28-june-2024")}
                         </span>
                         <span className="w-[15%] shrink-0">
-                          <img src="/services/vivid.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
+                          <img src="/services/vivid.jpg?w=448" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
                         </span>
                       </span>
                       <span className="flex flex-1 items-center border-t border-white/8 px-3 py-[6px]">
@@ -431,7 +430,7 @@ export default function Page_services() {
                           {$t("8-june-2024")}
                         </span>
                         <span className="w-[15%] shrink-0">
-                          <img src="/services/brand.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
+                          <img src="/services/brand.jpg?w=448" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
                         </span>
                       </span>
                       <span className="flex flex-1 items-center border-t border-white/8 px-3 py-[6px]">
@@ -448,7 +447,7 @@ export default function Page_services() {
                           {$t("10-may-2024")}
                         </span>
                         <span className="w-[15%] shrink-0">
-                          <img src="/services/arch.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
+                          <img src="/services/arch.jpg?w=448" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
                         </span>
                       </span>
                       <span className="flex flex-1 items-center border-t border-white/8 px-3 py-[6px]">
@@ -465,7 +464,7 @@ export default function Page_services() {
                           {$t("23-april-2024")}
                         </span>
                         <span className="w-[15%] shrink-0">
-                          <img src="/services/office.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
+                          <img src="/services/office.jpg?w=448" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
                         </span>
                       </span>
                       <span className="flex flex-1 items-center border-t border-white/8 px-3 py-[6px]">
@@ -482,7 +481,7 @@ export default function Page_services() {
                           {$t("12-april-2024")}
                         </span>
                         <span className="w-[15%] shrink-0">
-                          <img src="/services/tee.jpg" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
+                          <img src="/services/tee.jpg?w=448" alt="" className="block h-[13px] w-[24px] rounded-[4px] object-cover" loading="lazy" decoding="async" />
                         </span>
                       </span>
                       <span className="mt-auto flex items-center justify-between border-t border-white/8 px-3 py-2 text-[7px] leading-none text-white/40">
@@ -511,7 +510,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/landing-pages-and-microsites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/landing-pages-and-microsites" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -543,7 +542,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/consistent-identity" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/consistent-identity" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -853,7 +852,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/motion-and-interaction-design" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/motion-and-interaction-design" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -949,7 +948,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/ux-centric-strategy" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/ux-centric-strategy" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -975,7 +974,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/performance-optimization" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/performance-optimization" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">
@@ -1045,7 +1044,7 @@ export default function Page_services() {
                   </span>
                 </div>
               </Link>
-              <Link data-reveal href="/services/maintenance-and-ongoing-support" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+              <Link data-reveal href="/services/maintenance-and-ongoing-support" className="group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-5 lg:rounded-[12px] lg:p-[10px] lg:pb-4">
                 <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-a) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={{ padding: 1, animationDuration: "2.8s", backgroundImage: "conic-gradient(from calc(var(--vv-shine-b) - var(--vv-shine-w, 24deg)), transparent 0deg, #0099FF calc(var(--vv-shine-w, 24deg) / 2), #7ACAFF var(--vv-shine-w, 24deg), transparent calc(var(--vv-shine-w, 24deg) * 2), transparent 360deg)", mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", maskComposite: "exclude", WebkitMaskComposite: "xor" }} />
                 <div className="relative overflow-hidden rounded-[3px] lg:rounded-[6px]">

@@ -1,6 +1,7 @@
 // Minimal client-side router exposing the next/navigation API used by the
 // original components (usePathname, useRouter, useSearchParams).
 import {useSyncExternalStore} from 'react';
+import {scrollToTop} from '@/lib/scrollLock';
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -42,6 +43,9 @@ function navigate(href: string, replace = false) {
   if (replace) window.history.replaceState(null, '', target);
   else window.history.pushState(null, '', target);
   emit();
+  // like Next's router.push: a new page starts at the top (also resets Lenis, which
+  // would otherwise scroll back to its old position)
+  if (!replace && !url.hash) scrollToTop();
 }
 
 // Stable object, like Next's router.
@@ -54,8 +58,10 @@ const router = {
   refresh: () => emit(),
 };
 
-// During server rendering (tests) the path can be set with globalThis.__SSR_PATH__.
-const serverPathname = () => normalize((globalThis as any).__SSR_PATH__ ?? '/');
+// On the server the path comes from globalThis.__SSR_PATH__ (src/entry-server.tsx); while the
+// browser hydrates that HTML it is simply the current URL.
+const serverPathname = () =>
+  typeof window !== 'undefined' ? getPathname() : normalize((globalThis as any).__SSR_PATH__ ?? '/');
 
 export function usePathname() {
   return useSyncExternalStore(subscribe, getPathname, serverPathname);

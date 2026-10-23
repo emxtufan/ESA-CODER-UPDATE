@@ -32,14 +32,14 @@
 .pr-details > ul:not(.pr-excluded) li { position: relative; padding-left: 16px; }
 .pr-details > ul:not(.pr-excluded) li::before { content: ''; position: absolute; left: 2px; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: #0099ff; }
 
-.pr-terms { padding: clamp(24px, 3vw, 40px); border-radius: 12px; border: 1px solid var(--vv-card-border); background: color-mix(in srgb, var(--vv-bg) 42%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.pr-terms { padding: clamp(24px, 3vw, 40px); border-radius: 12px; border: 1px solid var(--vv-card-border); background: color-mix(in srgb, var(--vv-bg) 80%, transparent); }
 
 /* /services/crafted-websites: the long-form blocks */
 .cw-grid { display: grid; gap: 20px; }
 @media (min-width: 768px) { .cw-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1200px) { .cw-grid-3 { grid-template-columns: repeat(3, 1fr); } }
 .cw-card { position: relative; display: flex; flex-direction: column; padding: clamp(22px, 2.4vw, 32px); border-radius: 12px; border: 1px solid color-mix(in srgb, var(--vv-text-primary) 12%, transparent);
-  background: color-mix(in srgb, var(--vv-bg) 30%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  background: color-mix(in srgb, var(--vv-bg) 72%, transparent); }
 .cw-num { font-size: 12px; line-height: 1; font-weight: 500; letter-spacing: 0.14em; color: var(--vv-text-muted); }
 .cw-card h3 { margin-top: 16px; font-size: clamp(20px, 1.8vw, 24px); line-height: 1.2; font-weight: 500; letter-spacing: -0.02em; }
 .cw-card > p { margin-top: 10px; font-size: 15px; line-height: 1.65; color: var(--vv-text-muted); }

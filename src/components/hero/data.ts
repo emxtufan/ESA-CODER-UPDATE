@@ -1,19 +1,17 @@
 // Sizes and image helpers of the hero project strip.
+import {mediaSrcSet} from '@/lib/media';
+
 export const DESKTOP_SIZE = {
-  desktop: { w: 700, h: 700 },
+  desktop: { w: 700, h: 700 * 9 / 16 },
   mobile: { w: 400, h: Math.round(6400 / 9) },
 };
 export const MOBILE_SIZE = {
-  desktop: { w: 430, h: 430 },
+  desktop: { w: 430, h: 430 * 9 / 16 },
   mobile: { w: 232, h: Math.round(3712 / 9) },
 };
 export const DEFAULT_WIDTHS = [448, 828, 1440];
 
-// Build a /_next/image srcSet from widths (only for optimizer URLs)
-export function buildSrcSet(src: string, widths: number[] = DEFAULT_WIDTHS) {
-  if (src.startsWith('/_next/image?'))
-    return widths.map((w) => `${src.replace(/([?&])w=\d+/, `$1w=${w}`)} ${w}w`).join(', ');
-}
+export const buildSrcSet = (src: string, widths: number[] = DEFAULT_WIDTHS) => mediaSrcSet(src, widths);
 
 export const MOBILE_WIDTHS = [448];
 

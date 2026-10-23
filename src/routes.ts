@@ -5,6 +5,8 @@ import {resolveDynamic, type ResolvedRoute} from '@/lib/dynamicRoutes';
 // Static pages. Projects, blog posts, blog categories and custom pages are resolved from
 // collections (src/lib/dynamicRoutes.ts). Titles live in source_data.json.
 export const routes: Record<string, ResolvedRoute> = {
+  '/politica-de-confidentialitate': {title: text('/politica-de-confidentialitate')('meta-title'), page: lazy(() => import('@/pages/privacy-policy'))},
+  '/politica-de-cookies': {title: text('/politica-de-cookies')('meta-title'), page: lazy(() => import('@/pages/privacy-policy'))},
   '/': {title: text('/')('meta-title'), page: lazy(() => import('@/pages/Home'))},
   "/about-us": {title: text("/about-us")('meta-title'), page: lazy(() => import('@/pages/about-us'))},
   "/automation": {title: text("/automation")('meta-title'), page: lazy(() => import('@/pages/automation'))},
@@ -27,7 +29,6 @@ export const routes: Record<string, ResolvedRoute> = {
   "/services/3d-modeling": {title: text("/services/3d-modeling")('meta-title'), page: lazy(() => import('@/pages/services/3d-modeling'))},
   "/services/video-and-reels": {title: text("/services/video-and-reels")('meta-title'), page: lazy(() => import('@/pages/services/video-and-reels'))},
   "/services/website-redesign": {title: text("/services/website-redesign")('meta-title'), page: lazy(() => import('@/pages/services/website-redesign'))},
-  "/templates": {title: text("/templates")('meta-title'), page: lazy(() => import('@/pages/templates'))},
   "/terms-and-conditions": {title: text("/terms-and-conditions")('meta-title'), page: lazy(() => import('@/pages/terms-and-conditions'))},
   "/works": {title: text("/works")('meta-title'), page: lazy(() => import('@/pages/works'))},
 };

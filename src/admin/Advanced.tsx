@@ -10,8 +10,9 @@ const GROUPS = ['Pagini', 'Pagini de servicii', 'Șabloane', 'Altele', 'Secțiun
 // Static pages, in sidebar order (an array: "404" as an object key would sort first).
 const PAGE_LABELS: [string, string][] = Object.entries({
   '/': 'Acasă', '/about-us': 'Despre noi', '/works': 'Proiecte', '/services': 'Servicii', '/automation': 'Automatizare', '/blog': 'Blog',
-  '/templates': 'Template-uri', '/contact': 'Contact', '/contact/thank-you': 'Contact · mulțumire',
-  '/terms-and-conditions': 'Termeni și condiții', '/privacy-policy': 'Confidențialitate',
+  '/contact': 'Contact', '/contact/thank-you': 'Contact · mulțumire',
+  '/terms-and-conditions': 'Termeni și condiții',
+  '/politica-de-confidentialitate': 'Politica de confidențialitate', '/politica-de-cookies': 'Politica de cookie-uri',
 }).concat([['404', 'Pagina 404']]);
 // Pages generated from a collection: one template, many URLs.
 const TEMPLATE_LABELS: Record<string, string> = {
@@ -656,7 +657,11 @@ function Field({name, value, link, changed, onChange, onReset}: {name: string; v
   const str = list ? value.join('\n') : value;
   const html = !list && isHtml(str);
   const multiline = !link && (list || html || str.length > 70 || str.includes('\n'));
-  const label = name === 'meta-title' ? 'Titlu în browser (tab)' : words(name.replace(/-link$/, '')) + (name.endsWith('-link') ? ' → link' : '');
+  const legalSection = name.match(/^section-(\d+)-(title|body)$/);
+  const label = legalSection ? `Secțiunea ${legalSection[1]} · ${legalSection[2] === 'title' ? 'titlu' : 'conținut'}`
+    : name === 'meta-title' ? 'Titlu în browser (tab)'
+    : name === 'meta-description' ? 'Descriere pentru motoarele de căutare'
+    : words(name.replace(/-link$/, '')) + (name.endsWith('-link') ? ' → link' : '');
   return (
     <label className={`a-field${changed ? ' is-changed' : ''}`}>
       <span className="a-field-label">
@@ -763,9 +768,7 @@ export function ImageTile({path, version, onReplace, onRestore}: {path: string; 
 }
 
 export const Mark = () => (
-  <svg className="a-mark" viewBox="0 0 54 54" fill="currentColor" aria-hidden>
-    <path d="M54 0 27 54 0 0h10.8L27 32.4 43.2 0z" />
-  </svg>
+  <span className="a-mark" role="img" aria-label="ESA Coder Solutions" />
 );
 export const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>

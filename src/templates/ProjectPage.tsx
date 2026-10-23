@@ -8,11 +8,11 @@ import RollText from '@/components/RollText';
 import WorkShots from '@/components/works/WorkShots';
 
 import {collection} from '@/lib/collections';
+import {mediaSrcSet} from '@/lib/media';
 import {text} from '@/lib/text';
 
 const $t = text('templates/project');
 
-const SITE = 'https://visuvate.com';
 
 const PLATFORM_ICONS: Record<string, string> = {
   'Wix Studio': '/media/12f174fbe6106094af5b31e0042943c2.png',
@@ -21,6 +21,7 @@ const PLATFORM_ICONS: Record<string, string> = {
   WordPress: '/media/14b4685a23fcb8a367c70dc4aa12a650.png',
   'Next.js': '/media/01c6c37ed2862ef3d8bbe647dc861174.png',
   Framer: '/media/b8f738a1ce12a869dd6b08b1ea128e6b.png',
+  Figma: '/media/platform-figma.png',
 };
 
 const shineStyle = (angle: string) => ({
@@ -35,7 +36,6 @@ const shineStyle = (angle: string) => ({
 const SHINE_A = shineStyle('--vv-shine-a');
 const SHINE_B = shineStyle('--vv-shine-b');
 
-const stripHtml = (html: string) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 type IconItem = {icon?: string; title?: string};
 
@@ -57,7 +57,7 @@ export function Stat({label, value, icon, className = ''}: {label: string; value
 
 export function BriefCard({title, body}: {title: string; body: string}) {
   return (
-    <div data-act className="group relative flex flex-col overflow-hidden rounded-[12px] border border-fg/12 backdrop-blur-[12px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 42%, transparent)" }}>
+    <div data-act className="group relative flex flex-col overflow-hidden rounded-[12px] border border-fg/12" style={{ background: "color-mix(in srgb, var(--vv-bg) 75%, transparent)" }}>
       <span aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-px w-[180px] max-w-[70%] -translate-x-1/2" style={{ background: "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--vv-card-line) 52%, transparent) 50%, transparent 100%)" }} />
       <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(58% 46% at 50% 0%, color-mix(in srgb, var(--vv-card-lift) 38%, transparent) 0%, color-mix(in srgb, var(--vv-card-lift-mid) 38%, transparent) 45%, transparent 78%)" }} />
       <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={SHINE_A} />
@@ -94,11 +94,11 @@ function IconList({title, items}: {title: string; items: IconItem[]}) {
 
 function RelatedCard({project}: {project: any}) {
   return (
-    <Link data-reveal href={`/works/${project.slug}`} className="group relative w-[72vw] max-w-[280px] shrink-0 snap-start rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] sm:w-auto sm:max-w-none lg:rounded-[12px] lg:p-[10px] lg:pb-4">
+    <Link data-reveal href={`/works/${project.slug}`} className="group relative w-[72vw] max-w-[280px] shrink-0 snap-start rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 sm:w-auto sm:max-w-none lg:rounded-[12px] lg:p-[10px] lg:pb-4">
       <span aria-hidden className="vv-shine vv-shine-lyr-a pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={SHINE_A} />
       <span aria-hidden className="vv-shine vv-shine-lyr-b pointer-events-none absolute inset-0 rounded-[inherit] pointer-coarse:hidden" style={SHINE_B} />
       <div className="relative overflow-hidden rounded-[3px] bg-surface lg:rounded-[6px]" style={{ aspectRatio: "4 / 3" }}>
-        <img src={project.image} alt={project.title} className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
+        <img src={project.image} srcSet={mediaSrcSet(project.image)} sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 430px" alt={project.title} className="absolute inset-x-0 top-0 w-full transition-[filter] duration-500 ease-brand group-hover:[filter:blur(7px)_brightness(0.62)]" loading="lazy" decoding="async" />
         <span className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-400 ease-brand group-hover:opacity-100">
           <span className="vv-accent text-[clamp(20px,2vw,28px)] leading-none text-white">
             {$t('view-project')}
@@ -130,32 +130,11 @@ function relatedProjects(item: any): any[] {
 const has = (value: unknown) => value !== undefined && value !== null && value !== '';
 
 export default function ProjectPage({item}: {item: any}) {
-  const url = `${SITE}/works/${item.slug}`;
-  const creativeWork = {
-    '@context': 'https://schema.org',
-    '@type': 'CreativeWork',
-    name: item.title,
-    description: stripHtml(item.about ?? ''),
-    url,
-    image: [`${SITE}/_next/image?url=${encodeURIComponent(item.image ?? '')}&w=1200&q=80`],
-    creator: {'@id': `${SITE}/#organization`},
-  };
-  const breadcrumbs = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {'@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/`},
-      {'@type': 'ListItem', position: 2, name: 'Works', item: `${SITE}/works`},
-      {'@type': 'ListItem', position: 3, name: item.title, item: url},
-    ],
-  };
   const platformIcon = PLATFORM_ICONS[item.platform];
   const related = relatedProjects(item);
   return (
     <>
       <main className="relative isolate">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWork) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
         <header className="relative z-0 mx-auto max-w-[1425px] px-6 pt-[153px] md:px-8">
           <ParallaxDrift>
             <HeadingReveal>
@@ -166,7 +145,7 @@ export default function ProjectPage({item}: {item: any}) {
           </ParallaxDrift>
         </header>
         <div className="relative z-10 mx-auto max-w-[1425px] px-0 md:px-8">
-          <div className="relative rounded-[12px] backdrop-blur-[10px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
+          <div className="relative rounded-[12px]" style={{ background: "color-mix(in srgb, var(--vv-bg) 80%, transparent)" }}>
             <span aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-px w-[600px] max-w-full -translate-x-1/2" style={{ background: "linear-gradient(90deg, transparent 0%, var(--vv-card-line) 50%, transparent 100%)" }} />
             <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[12px]" style={{ background: "radial-gradient(58% 46% at 50% 0%, var(--vv-card-lift) 0%, var(--vv-card-lift-mid) 45%, transparent 78%)" }} />
             <div className="relative flex flex-col gap-6 pt-[50px] lg:gap-10">
@@ -236,14 +215,15 @@ export default function ProjectPage({item}: {item: any}) {
             </div>
           </div>
         </div>
-        <section className="mx-auto max-w-[1425px] px-4 pt-[36px] md:px-8 md:pt-[96px]">
+        {/* sections without content are left out (a project can be just its screenshots) */}
+        {(has(item.brief) || has(item.approach) || has(item.outcome)) && <section className="mx-auto max-w-[1425px] px-4 pt-[36px] md:px-8 md:pt-[96px]">
           <RevealBatch selector="[data-act]" distance={22} stagger={0.09} className="grid gap-4 lg:grid-cols-3 lg:gap-5">
             {has(item.brief) && <BriefCard title={$t('the-brief')} body={item.brief} />}
             {has(item.approach) && <BriefCard title={$t('the-approach')} body={item.approach} />}
             {has(item.outcome) && <BriefCard title={$t('the-outcome')} body={item.outcome} />}
           </RevealBatch>
-        </section>
-        <section className="mx-auto max-w-[1425px] px-4 pt-[36px] md:px-8 md:pt-[96px]">
+        </section>}
+        {(has(item.about) || !!item.pagesList?.length || !!item.featuresList?.length) && <section className="mx-auto max-w-[1425px] px-4 pt-[36px] md:px-8 md:pt-[96px]">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.5fr]">
             <RevealBatch selector="h2, p" distance={22} stagger={0.07}>
               <h2 className="font-display text-[20px] leading-[1.1] font-medium tracking-h3 lg:text-[24px] lg:leading-[1.2]">
@@ -256,7 +236,7 @@ export default function ProjectPage({item}: {item: any}) {
               <IconList title={$t('features')} items={item.featuresList ?? []} />
             </RevealBatch>
           </div>
-        </section>
+        </section>}
         <RevealBatch className="mx-auto max-w-[1425px] pt-[100px] pb-[130px] max-sm:overflow-x-clip sm:px-6 md:px-8">
           <div className="mb-8 flex items-center justify-between gap-4 px-4 sm:px-0">
             <h2 className="font-display text-[20px] leading-[1.1] font-medium tracking-h3 lg:text-[24px] lg:leading-[1.2]">

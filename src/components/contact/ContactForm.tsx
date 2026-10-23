@@ -156,14 +156,7 @@ const projectTypes = [
   'Altceva',
 ];
 const pageCounts = ['1 – 3', '4 – 6', '7 – 10', '10+', $t("not-sure-yet")];
-const budgetsUsd = ['$350 – $800', '$800 – $1,500', '$1,500 – $3,000', 'Peste $3,000'];
-const budgetsInr = [
-  '₹20,000 – ₹50,000',
-  '₹50,000 – ₹80,000',
-  '₹80,000 – ₹1,50,000',
-  'Peste ₹1,50,000',
-];
-const INDIA = 'India';
+const budgets = ['Sub 2.500 lei', '2.500 – 4.999 lei', '5.000 – 9.999 lei', '10.000 lei sau mai mult'];
 const subscribeNoop = () => () => {};
 
 // Country guessed from the browser time zone
@@ -264,10 +257,29 @@ export default function ContactForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+  // load the thank-you page while the form is being filled, so it shows the moment the send succeeds
+  useEffect(() => {
+    import('@/pages/contact/thank-you');
+  }, []);
+  // reCAPTCHA v3 (invisible), only when it is switched on in the admin
+  const recaptchaKey = useRef('');
+  useEffect(() => {
+    fetch('/api/recaptcha')
+      .then((r) => r.json())
+      .then(({siteKey}) => {
+        if (!siteKey || document.getElementById('recaptcha-js')) return void (recaptchaKey.current = siteKey || '');
+        recaptchaKey.current = siteKey;
+        const s = document.createElement('script');
+        s.id = 'recaptcha-js';
+        s.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(siteKey)}`;
+        s.async = true;
+        document.head.append(s);
+      })
+      .catch(() => {});
+  }, []);
   const detected = useSyncExternalStore(subscribeNoop, detectCountry, () => '');
   const country = pickedCountry || detected;
   const clearError = (key: string) => setErrors((prev) => (prev[key] ? { ...prev, [key]: '' } : prev));
-  const budgets = country === INDIA ? budgetsInr : budgetsUsd;
 
   async function onSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault();
@@ -309,6 +321,13 @@ export default function ContactForm() {
     setSubmitting(true);
     setFormError(null);
     try {
+      const grecaptcha = (window as any).grecaptcha;
+      if (recaptchaKey.current && grecaptcha) {
+        const token: string = await new Promise((resolve, reject) =>
+          grecaptcha.ready(() => grecaptcha.execute(recaptchaKey.current, {action: 'contact'}).then(resolve, reject)),
+        );
+        data.set('recaptcha_token', token);
+      }
       // NOTE: relative endpoint kept as compiled (original site: /api/contact)
       const res = await fetch('/api/contact', { method: 'POST', body: data });
       const json = await res.json().catch(() => null);
@@ -365,8 +384,6 @@ export default function ContactForm() {
             onPick={(picked) => {
               setPickedCountry(picked);
               clearError('country');
-              const nextBudgets = picked === INDIA ? budgetsInr : budgetsUsd;
-              budget && !nextBudgets.includes(budget) && setBudget('');
             }}
           />
         </Field>
@@ -462,6 +479,7 @@ export default function ContactForm() {
           {formError}
         </p>
       ) : null}
+      <p className="text-[13px] leading-[1.6] text-fg-muted">Folosim datele pentru analiza cererii și răspuns, inclusiv pe WhatsApp dacă alegi acest canal. Câmpurile marcate sunt necesare. Nu trimite date sensibile. Citește <a href="/politica-de-confidentialitate" className="underline underline-offset-4">Politica de confidențialitate</a> pentru scopuri, păstrare și drepturile tale.</p>
       <button
         type="submit"
         disabled={submitting}

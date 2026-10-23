@@ -43,7 +43,7 @@ function useTheme() {
   return theme;
 }
 
-export default function ServicesBackdrop({ className = '', tone = 'brand' }: { className?: string; tone?: string }) {
+export default function ServicesBackdrop({ className = '', tone = 'brand', pauseOnScroll = false }: { className?: string; tone?: string; pauseOnScroll?: boolean }) {
   const isLight = useTheme() === 'light';
   return (
     <div aria-hidden className={`pointer-events-none ${className}`}>
@@ -51,6 +51,7 @@ export default function ServicesBackdrop({ className = '', tone = 'brand' }: { c
         className="size-full"
         colors={tone === 'mono' ? (isLight ? MONO_LIGHT : MONO_DARK) : isLight ? BRAND_LIGHT : BRAND_DARK}
         colorCount={4}
+        pauseOnScroll={pauseOnScroll}
       />
     </div>
   );

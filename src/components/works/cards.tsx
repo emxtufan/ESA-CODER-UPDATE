@@ -36,7 +36,7 @@ export function ProjectCard({
   children,
 }: any) {
   const cardClass =
-    'group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 backdrop-blur-[14px] lg:gap-6 lg:rounded-[12px] lg:p-[10px] lg:pb-4';
+    'group relative flex flex-col gap-3 rounded-[6px] border border-fg/12 bg-bg/30 p-[6px] pb-3 lg:gap-6 lg:rounded-[12px] lg:p-[10px] lg:pb-4';
   const actionClass =
     'hidden rounded-[10px] bg-tint px-4 py-2.5 text-[14px] leading-none font-medium text-fg transition-colors group-hover:bg-tint-strong group-hover:text-fg-strong lg:inline-flex';
   const media = (

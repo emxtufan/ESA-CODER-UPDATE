@@ -20,8 +20,7 @@
             {"type": "pair", "scope": "components/layout/Header", "title": "2. Despre noi", "text": "about-us", "link": "about-us-link"},
             {"type": "pair", "scope": "components/layout/Header", "title": "3. Proiecte", "text": "works", "link": "works-link"},
             {"type": "pair", "scope": "components/layout/Header", "title": "4. Servicii", "text": "services", "link": "services-link"},
-            {"type": "pair", "scope": "components/layout/Header", "title": "5. Blog", "text": "blogs", "link": "blogs-link"},
-            {"type": "pair", "scope": "components/layout/Header", "title": "6. Template-uri", "text": "templates", "link": "templates-link"}
+            {"type": "pair", "scope": "components/layout/Header", "title": "5. Blog", "text": "blogs", "link": "blogs-link"}
           ]
         },
         {
@@ -85,8 +84,7 @@
           "fields": [
             {"type": "text", "scope": "components/layout/Footer", "key": "resources", "label": "Titlu coloană"},
             {"type": "pair", "scope": "components/layout/Footer", "title": "Link 1", "text": "blog", "link": "blog-link"},
-            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 2", "text": "templates", "link": "templates-link"},
-            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 3", "text": "faqs", "link": "faqs-link"}
+            {"type": "pair", "scope": "components/layout/Footer", "title": "Link 2", "text": "faqs", "link": "faqs-link"}
           ]
         },
         {
@@ -95,8 +93,8 @@
           "fields": [
             {"type": "text", "scope": "components/layout/Footer", "key": "contact", "label": "Titlu coloană"},
             {"type": "email", "scope": "global/Site", "key": "email", "label": "E-mail"},
-            {"type": "text", "scope": "components/layout/Footer", "key": "phone-91-9278388499", "label": "Telefon (text afișat, ex: Phone: +91 …)"},
-            {"type": "phone", "scope": "components/layout/Footer", "key": "phone-link", "label": "Telefon (număr pentru apel, ex: +919278388499)"},
+            {"type": "text", "scope": "components/layout/Footer", "key": "phone-91-9278388499", "label": "Telefon (text afișat, ex: Telefon: 0748 452 215)"},
+            {"type": "phone", "scope": "components/layout/Footer", "key": "phone-link", "label": "Telefon (număr pentru apel, ex: +40748452215; îl folosește și pagina de contact)"},
             {"type": "text", "scope": "components/layout/Footer", "key": "based-in-india", "label": "Locație"},
             {"type": "text", "scope": "components/layout/Footer", "key": "serving-the-us-uk-worldwide", "label": "Zonă deservită"}
           ]
@@ -110,6 +108,54 @@
         }
       ],
       "footnote": "Logo-ul și butonul de cookie-uri sunt elemente din cod și nu se editează de aici."
+    },
+    {
+      "key": "seo",
+      "group": "global",
+      "label": "SEO și date firmă",
+      "description": "Date folosite în rezultatele Google, în datele structurate (schema.org) și la distribuirea linkurilor pe Facebook, WhatsApp sau LinkedIn. Completează doar informații reale; un câmp gol nu se publică.",
+      "view": "/",
+      "blocks": [
+        {
+          "title": "Firma",
+          "fields": [
+            {"type": "text", "scope": "settings/seo", "key": "company-name", "label": "Numele firmei"},
+            {"type": "text", "scope": "settings/seo", "key": "legal-name", "label": "Denumire juridică", "optional": true, "placeholder": "ELEXA SOCIETY S.R.L."},
+            {"type": "text", "scope": "settings/seo", "key": "company-cui", "label": "CUI", "optional": true},
+            {"type": "text", "scope": "settings/seo", "key": "company-reg", "label": "Nr. Registrul Comerțului", "optional": true},
+            {"type": "textarea", "scope": "settings/seo", "key": "company-description", "label": "Descriere scurtă", "hint": "Apare în Google pentru pagina principală și în datele structurate. Ideal 120–160 de caractere."},
+            {"type": "email", "scope": "settings/seo", "key": "company-email", "label": "Email public", "optional": true},
+            {"type": "phone", "scope": "settings/seo", "key": "company-phone", "label": "Telefon public", "optional": true},
+            {"type": "text", "scope": "settings/seo", "key": "company-address", "label": "Oraș / adresă", "optional": true, "placeholder": "București, România"},
+            {"type": "textarea", "scope": "settings/seo", "key": "social-links", "label": "Profiluri sociale", "optional": true, "hint": "Câte un link complet pe rând (Facebook, Instagram, LinkedIn…)."}
+          ]
+        },
+        {
+          "title": "Titluri și descrieri în Google",
+          "note": "Titlul ideal are sub 60 de caractere. Proiectele, articolele și serviciile au titlul în secțiunile lor.",
+          "fields": [
+            {"type": "textarea", "scope": "/", "key": "meta-description", "label": "Pagina de start · descriere", "optional": true, "hint": "Gol = descrierea firmei de mai sus."},
+            {"type": "text", "scope": "/services", "key": "meta-title", "label": "Servicii · titlu"},
+            {"type": "textarea", "scope": "/services", "key": "meta-description", "label": "Servicii · descriere", "optional": true, "hint": "Apare sub titlu în Google. Ideal 120–160 de caractere. Gol = primul paragraf al paginii."},
+            {"type": "text", "scope": "/works", "key": "meta-title", "label": "Proiecte · titlu"},
+            {"type": "textarea", "scope": "/works", "key": "meta-description", "label": "Proiecte · descriere", "optional": true, "hint": "Apare sub titlu în Google. Ideal 120–160 de caractere. Gol = primul paragraf al paginii."},
+            {"type": "text", "scope": "/blog", "key": "meta-title", "label": "Blog · titlu"},
+            {"type": "textarea", "scope": "/blog", "key": "meta-description", "label": "Blog · descriere", "optional": true, "hint": "Apare sub titlu în Google. Ideal 120–160 de caractere. Gol = primul paragraf al paginii."},
+            {"type": "text", "scope": "/contact", "key": "meta-title", "label": "Contact · titlu"},
+            {"type": "textarea", "scope": "/contact", "key": "meta-description", "label": "Contact · descriere", "optional": true, "hint": "Apare sub titlu în Google. Ideal 120–160 de caractere. Gol = primul paragraf al paginii."},
+            {"type": "text", "scope": "/about-us", "key": "meta-title", "label": "Despre noi · titlu"},
+            {"type": "textarea", "scope": "/about-us", "key": "meta-description", "label": "Despre noi · descriere", "optional": true, "hint": "Apare sub titlu în Google. Ideal 120–160 de caractere. Gol = primul paragraf al paginii."}
+          ]
+        },
+        {
+          "title": "Distribuire și verificare",
+          "fields": [
+            {"type": "text", "scope": "settings/seo", "key": "og-image", "label": "Imagine implicită la distribuire", "hint": "Cale către o imagine 1200×630 (ex. /social-card.jpg). Proiectele și articolele folosesc imaginea lor."},
+            {"type": "code", "scope": "settings/seo", "key": "google-site-verification", "label": "Google Search Console · cod de verificare", "optional": true, "pattern": "^[A-Za-z0-9_-]{10,100}$", "hint": "Doar valoarea content din meta tag-ul google-site-verification."},
+            {"type": "code", "scope": "settings/seo", "key": "bing-site-verification", "label": "Bing Webmaster Tools · cod de verificare", "optional": true, "pattern": "^[A-Za-z0-9]{10,100}$", "hint": "Doar valoarea content din meta tag-ul msvalidate.01."}
+          ]
+        }
+      ]
     },
     {
       "key": "cookies",
@@ -181,7 +227,7 @@
         },
         {
           "title": "Banda de proiecte",
-          "note": "Bara de sub panoul cu proiecte: buton pauză/pornire și buton spre toate proiectele. Proiectele din bandă se aleg din Works (câmpul „Hero position”).",
+          "note": "Sliderul are previzualizări Desktop și iPhone. Imaginile se încarcă din Homepage › Works › proiect, în câmpurile „Slider hero — Desktop” și „Slider hero — iPhone”. Dacă un câmp rămâne gol, se păstrează imaginea existentă a proiectului.",
           "fields": [
             {"type": "pair", "scope": "components/sections/Hero", "title": "Buton", "text": "strip-all-work", "link": "strip-all-work-link"},
             {"type": "text", "scope": "components/sections/Hero", "key": "strip-pause", "label": "Buton pauză (pentru cititoare de ecran)"},
@@ -193,15 +239,6 @@
           "fields": [
             {"type": "text", "scope": "/", "key": "meta-title", "label": "Titlu pagină de start"}
           ]
-        },
-        {
-          "collection": "projects",
-          "mode": "ranked",
-          "fixed": true,
-          "position": "heroPosition",
-          "title": "Proiecte afișate în Hero",
-          "note": "Ordinea de aici este ordinea din Hero. Proiectele se adaugă și se creează în secțiunea Works.",
-          "fields": ["title", "slug", "image", "heroPosition"]
         }
       ]
     },
@@ -270,11 +307,13 @@
           "ranked": "homePosition",
           "title": "Proiecte",
           "itemName": "proiect",
-          "note": "Ordinea listei este ordinea din /works. Un proiect ascuns dispare de pe tot site-ul. Imaginile suplimentare, capturile și restul paginii proiectului se editează din Avansat › Liste › Proiecte.",
+          "note": "Ordinea listei este și ordinea sliderului hero. În fiecare proiect poți încărca separat imaginile Desktop (recomandat 1400 × 1400 px) și iPhone (recomandat 800 × 1422 px). Acestea nu schimbă imaginea cardului. Dacă lipsesc, sliderul folosește imaginea cardului; pentru iPhone, prioritate are imaginea Desktop dedicată. Un proiect ascuns dispare de pe tot site-ul. Capturile și restul paginii proiectului se editează din Avansat › Liste › Proiecte.",
           "fields": [
             "title",
             "category",
             "image",
+            "heroDesktop",
+            "heroMobile",
             {"key": "overview", "label": "Descriere scurtă"},
             "url",
             "slug",

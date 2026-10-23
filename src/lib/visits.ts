@@ -1,6 +1,7 @@
 // Cookieless visit beacons (server/analytics.mjs): one "visit" per browser session with the utm_* tags and referrer
 // of the landing URL, then one "view" per page. The session id lives in sessionStorage only: no cookie, nothing
-// that survives closing the tab, so it needs no consent.
+// that survives closing the tab. Optional statistics still require consent.
+import {currentConsent} from './consent';
 const KEY = 'vv-visit';
 
 function session(): {sid: string; fresh: boolean} {
@@ -24,13 +25,15 @@ const send = (body: Record<string, unknown>) => {
   try {
     if (!navigator.sendBeacon?.('/api/visits', new Blob([payload], {type: 'text/plain'}))) throw 0;
   } catch {
-    fetch('/api/visits', {method: 'POST', headers: {'content-type': 'text/plain'}, body: payload, keepalive: true, credentials: 'omit'}).catch(() => {});
+    fetch('/api/visits', {method: 'POST', headers: {'content-type': 'text/plain'}, body: payload, keepalive: true, credentials: 'same-origin'}).catch(() => {});
   }
 };
 
 let lastPath = '';
 export function trackView(path: string) {
-  if (typeof window === 'undefined' || navigator.webdriver || path === lastPath) return;
+  if (typeof window === 'undefined') return;
+  if (!currentConsent()?.statistics) { lastPath = ''; return; }
+  if (navigator.webdriver || path === lastPath) return;
   lastPath = path;
   const {sid, fresh} = session();
   if (!fresh) return send({type: 'view', sid, path});

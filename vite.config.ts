@@ -31,7 +31,7 @@ function externalTexts(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({isSsrBuild}) => ({
   plugins: [react(), routesManifest(), externalTexts()],
   resolve: {
     alias: {
@@ -39,11 +39,16 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(import.meta.dirname, 'index.html'),
-        admin: path.resolve(import.meta.dirname, 'admin.html'),
-      },
-    },
+    // the server bundle (dist/server, `--ssr`) needs no copy of public/
+    copyPublicDir: !isSsrBuild,
+    rollupOptions: isSsrBuild
+      ? // one file, so server/ssr.mjs can re-import it whole when the texts change
+        {output: {inlineDynamicImports: true}}
+      : {
+          input: {
+            main: path.resolve(import.meta.dirname, 'index.html'),
+            admin: path.resolve(import.meta.dirname, 'admin.html'),
+          },
+        },
   },
-});
+}));

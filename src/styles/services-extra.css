@@ -1,4 +1,6 @@
 /* /services: pictures of the cards added after the original ten (ExtraServiceCards.tsx). */
+[data-services] [data-anim=paused] ::before,
+[data-services] [data-anim=paused] ::after { animation-play-state: paused !important; }
 .svx-art { background: linear-gradient(168deg, #0B6BBE 0%, #084F92 46%, #052E58 100%); }
 
 /* app / ERP: the dashboard in a window rising from the bottom */

@@ -13,7 +13,6 @@ export default function Page_contact() {
   return (
     <>
       <main className="relative isolate">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Contact\",\"item\":\"https://visuvate.com/contact\"}]}" }} />
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <AuroraImage src="/contact/aurora-dark.webp" className="vv-aurora-dark absolute max-w-none -translate-x-1/2 -translate-y-1/2 rotate-45" style={{ height: "min(max(92.58vw, 100vh), 1400px)", width: "min(max(92.58vw, 100vh), 1400px)", left: "49.5vw", top: "max(668px, calc(0.46 * min(max(92.58vw, 100vh), 1400px)))", maskImage: "radial-gradient(closest-side, #000 55%, transparent 92%)", WebkitMaskImage: "radial-gradient(closest-side, #000 55%, transparent 92%)" }} />
           <AuroraImage src="/contact/aurora-light.webp" className="vv-aurora-light absolute max-w-none -translate-x-1/2 -translate-y-1/2 rotate-45" style={{ height: "min(max(92.58vw, 100vh), 1400px)", width: "min(max(92.58vw, 100vh), 1400px)", left: "49.5vw", top: "max(668px, calc(0.46 * min(max(92.58vw, 100vh), 1400px)))", maskImage: "radial-gradient(closest-side, #000 55%, transparent 92%)", WebkitMaskImage: "radial-gradient(closest-side, #000 55%, transparent 92%)" }} />
@@ -47,7 +46,7 @@ export default function Page_contact() {
                     <path d="M2 6.2A1.2 1.2 0 0 1 3.2 5h17.6A1.2 1.2 0 0 1 22 6.2l-10 6.1L2 6.2Z" />
                     <path d="M22 8.5V17.8a1.2 1.2 0 0 1-1.2 1.2H3.2A1.2 1.2 0 0 1 2 17.8V8.5l10 6.1 10-6.1Z" />
                   </svg>
-                  <a href="mailto:contact@visuvate.com" aria-label={$t("email")} className="w-fit text-[14px] leading-[1] text-fg-muted transition-colors hover:text-fg">
+                  <a href={`mailto:${$t("contact-visuvate-com")}`} aria-label={$t("email")} className="w-fit text-[14px] leading-[1] text-fg-muted transition-colors hover:text-fg">
                     {$t("contact-visuvate-com")}
                   </a>
                 </div>
@@ -55,8 +54,8 @@ export default function Page_contact() {
                   <svg viewBox="0 0 24 24" className="size-[18px] text-fg" fill="currentColor" aria-hidden>
                     <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.5 0a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5.3-.4v-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4 7.6 7.6 0 0 0 3.1.8 2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z" />
                   </svg>
-                  <a href="tel:+919278388499" aria-label={$t("phone")} className="w-fit text-[14px] leading-[1] text-fg-muted transition-colors hover:text-fg">
-                    {"+91 9278388499"}
+                  <a href={`tel:${text("components/layout/Footer")("phone-link")}`} aria-label={$t("phone")} className="w-fit text-[14px] leading-[1] text-fg-muted transition-colors hover:text-fg">
+                    {$t("phone-number")}
                   </a>
                 </div>
                 <div data-reveal className="flex flex-col gap-[10px] text-[14px] leading-[1]">
@@ -67,6 +66,7 @@ export default function Page_contact() {
                     {$t("india-working-globally")}
                   </span>
                 </div>
+                <p className="mt-3 text-[13px] leading-[1.5] text-fg-muted">{$t("company-line")}</p>
               </Reveal>
             </div>
           </section>

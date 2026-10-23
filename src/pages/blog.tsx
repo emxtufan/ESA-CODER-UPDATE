@@ -10,7 +10,6 @@ export default function Page_blog() {
   return (
     <>
       <main className="relative isolate">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://visuvate.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Blog\",\"item\":\"https://visuvate.com/blog\"}]}" }} />
         <PageTitle lead={$t("our")} trail={$t("blogs")} />
         <BlurPanel>
           <CategoryNav active="all" />

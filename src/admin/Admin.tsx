@@ -3,6 +3,7 @@ import {api} from './api';
 import Advanced from './Advanced';
 import Sections from './Sections';
 import {Mark} from './Advanced';
+import Gdpr from './Gdpr';
 
 // /admin            → section editor (Header, Footer, homepage sections)
 // /admin/<section>  → the same, opened on that section
@@ -14,7 +15,7 @@ export default function Admin() {
     api.session().then((r) => setState(r.ok ? 'ready' : 'login'));
   }, []);
   if (state === 'loading') return <div className="a-center"><span className="a-spinner" /></div>;
-  if (state === 'login') return <Login onDone={() => setState('ready')} />;
+  if (state === 'login') return location.pathname.replace(/\/+$/, '') === '/admin/gdpr' ? <div className="gdpr-standalone"><Gdpr /></div> : <Login onDone={() => setState('ready')} />;
   const logout = () => setState('login');
   const route = location.pathname.replace(/\/+$/, '');
   return route.startsWith('/admin/advanced') ? <Advanced onLogout={logout} /> : <Sections onLogout={logout} />;

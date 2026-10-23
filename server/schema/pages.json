@@ -10,5 +10,5 @@
     {"key": "body", "label": "Conținut", "type": "html"},
     {"key": "metaTitle", "label": "Titlu în browser", "type": "text", "advanced": true}
   ],
-  "defaults": {"metaTitle": "{title} | Visuvate"}
+  "defaults": {"metaTitle": "{title} | ESA Coder Solutions"}
 }

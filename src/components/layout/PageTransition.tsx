@@ -9,7 +9,7 @@ export default function PageTransition() {
   const pathname = usePathname();
   const rootRef = useRef<HTMLDivElement>(null);
   const panelsRef = useRef<HTMLDivElement[]>([]);
-  const markRef = useRef<SVGSVGElement>(null);
+  const markRef = useRef<HTMLSpanElement>(null);
   const pending = useRef<{ path: string; pop: boolean } | null>(null);
   const timeoutRef = useRef<any>(null);
   const currentPath = useRef(pathname);
@@ -148,15 +148,17 @@ export default function PageTransition() {
         ))}
       </div>
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <svg
+        <span
           ref={markRef}
-          viewBox="0 0 516 516"
-          className="w-[52px]"
-          fill="currentColor"
-          style={{ opacity: 0, color: 'var(--vv-text-primary)' }}
-        >
-          <path d="M516,0l-7.17,14.33-221.01,442.02-29.69,59.4-.13.25-.13-.25-31.27-62.55-36.24-72.49c8.88-51.64,46.83-124.31,50.89-132-24.36,29.21-48.72,58.41-73.09,87.62L0,0l160.35,31.73s65.16,121.41,97.75,177.32L350.46,31.91,516,0Z" />
-        </svg>
+          className="w-[180px]"
+          style={{
+            opacity: 0,
+            aspectRatio: '2785 / 778',
+            backgroundColor: 'var(--vv-text-primary)',
+            mask: 'url(/brand/logo.webp) center / contain no-repeat',
+            WebkitMask: 'url(/brand/logo.webp) center / contain no-repeat',
+          }}
+        />
       </div>
     </div>
   );

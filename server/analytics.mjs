@@ -91,7 +91,7 @@ export function createAnalytics(file) {
   try {
     if (existsSync(file)) doc = {...doc, ...JSON.parse(readFileSync(file, 'utf8'))};
   } catch (err) {
-    console.error('[analytics] unreadable file, starting fresh:', err.message);
+    throw new Error('Analytics file unreadable; refusing to overwrite existing data.', {cause: err});
   }
   // visits saved before the time zone counted got their country from the language: correct them
   for (const v of doc.recent) {
@@ -104,12 +104,23 @@ export function createAnalytics(file) {
   }
   // ponytail: whole document in memory, flushed at most once a second; a database if traffic ever outgrows a JSON file
   let timer = null;
-  const flush = async () => {
-    timer = null;
+  let queue = Promise.resolve();
+  const write = (operation) => {
+    const run = queue.then(operation);
+    queue = run.catch(() => {});
+    return run;
+  };
+  const persist = async (value) => {
+    const json = JSON.stringify(value);
     await mkdir(path.dirname(file), {recursive: true});
     const tmp = `${file}.${process.pid}.tmp`;
-    await writeFile(tmp, JSON.stringify(doc));
+    await writeFile(tmp, json);
     await rename(tmp, file);
+  };
+  const flush = () => {
+    clearTimeout(timer);
+    timer = null;
+    return write(() => persist(doc));
   };
   const save = () => {
     timer ??= setTimeout(() => flush().catch((err) => console.error('[analytics] save failed', err)), 1000);
@@ -118,8 +129,6 @@ export function createAnalytics(file) {
     const key = dayKey(new Date());
     if (!doc.days[key]) {
       doc.days[key] = emptyDay();
-      const keys = Object.keys(doc.days).sort();
-      while (keys.length > MAX_DAYS) delete doc.days[keys.shift()];
     }
     return doc.days[key];
   };
@@ -130,6 +139,9 @@ export function createAnalytics(file) {
     const sid = clip(input.sid, 40);
     const path_ = clip(input.path, 160) || '/';
     if (!sid || path_.startsWith('/admin')) return;
+    // Capacity limits stop new collection; approved GDPR retention handles deletion and holds.
+    if (!doc.days[dayKey(new Date())] && Object.keys(doc.days).length >= MAX_DAYS) return;
+    if (input.type === 'visit' && doc.recent.length >= RECENT_LIMIT) return;
     const day = today();
     const at = new Date().toISOString();
 
@@ -185,7 +197,6 @@ export function createAnalytics(file) {
       bump(day.weekdays, visit.weekday);
       bump(day.landings, visit.landing);
       doc.recent.unshift(visit);
-      doc.recent.length = Math.min(doc.recent.length, RECENT_LIMIT);
     }
 
     // every visit also counts its landing page as a view
@@ -272,5 +283,43 @@ export function createAnalytics(file) {
     };
   }
 
-  return {record, summary, flush};
+  function remove(sid) {
+    return write(async () => {
+      const recent = doc.recent.filter((visit) => visit.sid !== sid);
+      if (recent.length === doc.recent.length) return false;
+      await persist({...doc, recent});
+      // Keep visits received during the write; aggregate counters remain unchanged.
+      doc.recent = doc.recent.filter((visit) => visit.sid !== sid);
+      return true;
+    });
+  }
+
+  function clear() {
+    return write(async () => {
+      const empty = {version: 1, days: {}, recent: [], totals: {visits: 0, views: 0}};
+      await persist(empty);
+      doc = empty;
+    });
+  }
+
+  async function privacyRead() {
+    await flush();
+    return JSON.parse(readFileSync(file, 'utf8'));
+  }
+  function removeDay(key) {
+    return write(async () => {
+      if (!doc.days[key]) return false;
+      const next = structuredClone(doc);
+      delete next.days[key];
+      next.totals.visits = Math.max(0, next.totals.visits - (doc.days[key].visits || 0));
+      next.totals.views = Math.max(0, next.totals.views - (doc.days[key].views || 0));
+      await persist(next);
+      // A concurrent visit may add counters while persist awaits IO.
+      doc.totals.visits = Math.max(0, doc.totals.visits - (doc.days[key]?.visits || 0));
+      doc.totals.views = Math.max(0, doc.totals.views - (doc.days[key]?.views || 0));
+      delete doc.days[key];
+      return true;
+    });
+  }
+  return {record, summary, flush, remove, clear, privacyRead, removeDay};
 }
