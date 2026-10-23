@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 import Link from '@/components/Link';
@@ -138,6 +138,7 @@ export default function ChatWidget() {
   const leadConsentId = `${leadId}-consent`;
 
   const fabRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const logRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -247,7 +248,12 @@ export default function ChatWidget() {
   useEffect(() => {
     if (open) {
       wasOpenRef.current = true;
-      textareaRef.current?.focus();
+      if (window.matchMedia(MOBILE_QUERY).matches) {
+        // pe mobil focusăm panoul, ca tastatura să nu sară automat peste conversație
+        panelRef.current?.focus({ preventScroll: true });
+      } else {
+        textareaRef.current?.focus();
+      }
       return;
     }
     if (wasOpenRef.current) {
@@ -255,6 +261,30 @@ export default function ChatWidget() {
       fabRef.current?.focus();
     }
   }, [open]);
+
+  useEffect(() => {
+    const vv = window.visualViewport, panel = panelRef.current;
+    if (!open || !vv || !panel) return;
+    // iOS: tastatura micșorează doar visualViewport, nu layout-ul — panoul îl urmărește
+    const sync = () => {
+      panel.style.setProperty('--esa-vvh', `${vv.height}px`);
+      panel.style.setProperty('--esa-vvt', `${vv.offsetTop}px`);
+      panel.classList.toggle('is-keyboard', window.innerHeight - vv.height > 120);
+    };
+    const resize = () => { sync(); const log = logRef.current; if (log) log.scrollTop = log.scrollHeight; };
+    sync();
+    vv.addEventListener('resize', resize);
+    vv.addEventListener('scroll', sync);
+    return () => { vv.removeEventListener('resize', resize); vv.removeEventListener('scroll', sync); };
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+  }, [input, open]);
 
   useEffect(() => {
     if (!open) return;
@@ -629,7 +659,7 @@ export default function ChatWidget() {
       <button
         ref={fabRef}
         type="button"
-        className="esa-chat-fab"
+        className={`esa-chat-fab${open ? ' is-open' : ''}`}
         aria-label={!open && !seen ? 'Deschide asistentul – un mesaj nou' : 'Deschide asistentul'}
         aria-expanded={open}
         onClick={() => (open ? setOpen(false) : openChat())}
@@ -670,9 +700,15 @@ export default function ChatWidget() {
       ) : null}
 
       {open ? (
-        <div className="esa-chat-panel" role="dialog" aria-label="Asistent ESA">
+        <div ref={panelRef} className="esa-chat-panel" role="dialog" aria-label="Asistent ESA" tabIndex={-1}>
           <div className="esa-chat-head">
-            <span>Asistent ESA</span>
+            <div className="esa-chat-who">
+              <span className="esa-chat-avatar" aria-hidden="true">E</span>
+              <span className="esa-chat-who-text">
+                <strong>Asistent ESA</strong>
+                <small>Online · răspunde imediat</small>
+              </span>
+            </div>
             <button
               type="button"
               className="esa-chat-close"
@@ -882,7 +918,8 @@ export default function ChatWidget() {
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
               maxLength={maxChars}
-              rows={2}
+              rows={1}
+              enterKeyHint="send"
               disabled={leadBlocking}
               placeholder={
                 leadBlocking ? 'Lasă adresa de email ca să continuăm' : 'Scrie un mesaj…'
@@ -896,8 +933,9 @@ export default function ChatWidget() {
                 Oprește
               </button>
             ) : (
-              <button type="submit" className="esa-chat-send" disabled={leadBlocking}>
-                Trimite
+              <button type="submit" className="esa-chat-send" disabled={leadBlocking} aria-label="Trimite">
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>
+                <span className="esa-chat-send-label">Trimite</span>
               </button>
             )}
           </form>
