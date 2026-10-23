@@ -1,38 +1,10 @@
 // Sizes and image helpers of the hero project strip.
 import {mediaSrcSet} from '@/lib/media';
 
-export const DESKTOP_SIZE = {
-  desktop: { w: 700, h: 700 * 9 / 16 },
-  mobile: { w: 400, h: Math.round(6400 / 9) },
-};
-export const MOBILE_SIZE = {
-  desktop: { w: 430, h: 430 * 9 / 16 },
-  mobile: { w: 232, h: Math.round(3712 / 9) },
-};
+export const DESKTOP_SIZE = { w: 700, h: 700 * 9 / 16 };
+export const SMALL_SIZE = { w: 430, h: 430 * 9 / 16 }; // cardul desktop pe ecran ≤639px
 export const DEFAULT_WIDTHS = [448, 828, 1440];
 
 export const buildSrcSet = (src: string, widths: number[] = DEFAULT_WIDTHS) => mediaSrcSet(src, widths);
-
-
-
-export function preloadImages(projects: any[], mode: string) {
-  return Promise.all(
-    projects
-      .slice(0, 4)
-      .map((p) => ('desktop' === mode ? p.desktop : p.mobile))
-      .filter((src) => !!src)
-      .map(
-(src) =>
-  new Promise<void>((resolve) => {
-    const img = new Image();
-    img.src = src;
-    img.decode?.().then(
-      () => resolve(),
-      () => resolve(),
-    ) ?? resolve();
-  }),
-      ),
-  );
-}
 
 export const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));

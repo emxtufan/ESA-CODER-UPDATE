@@ -4,12 +4,12 @@ import {useGSAP} from '@gsap/react';
 import Link from '@/components/Link';
 import ShineBorder from '@/components/ShineBorder';
 import {EsaMark} from '@/components/Logo';
-import {DESKTOP_SIZE, MOBILE_SIZE, MOBILE_WIDTHS, buildSrcSet} from './data';
+import {DESKTOP_SIZE, SMALL_SIZE, buildSrcSet} from './data';
 import {text} from '@/lib/text';
 import '@/styles/hero-studio.css';
 
 const $h = text("components/sections/Hero");
-type Project = {title: string; slug: string; desktop: string; mobile?: string; themes: string[]};
+type Project = {title: string; slug: string; desktop: string; themes: string[]};
 const small = () => window.matchMedia('(max-width: 639px)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -28,17 +28,13 @@ export default function Studio({projects}: {projects: Project[]}) {
       return () => mq.removeEventListener('change', cb);
     }, reduced, () => true,
   );
-  const [preview, setPreview] = useState<Mode | null>(null);
-  const mode = preview ?? (isSmall ? 'mobile' : 'desktop');
   const [theme, setTheme] = useState('dark');
   const [panels, setPanels] = useState(true);
   const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [selected, setSelected] = useState<string | null>(null);
   const [viewportSize, setViewportSize] = useState({w: 0, h: 0});
-  const cardSize = (mode === 'desktop' || isSmall) && viewportSize.w
-    ? {w: viewportSize.w, h: viewportSize.w * (mode === 'mobile' ? 16 / 9 : 9 / 16)}
-    : (isSmall ? MOBILE_SIZE : DESKTOP_SIZE)[mode];
+  const cardSize = viewportSize.w ? {w: viewportSize.w, h: viewportSize.w * 9 / 16} : (isSmall ? SMALL_SIZE : DESKTOP_SIZE);
   const scopeRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -62,7 +58,7 @@ export default function Studio({projects}: {projects: Project[]}) {
   const activeProject = list.find(project => project.slug === selected);
   const visibleProjects = activeProject ? [activeProject] : list;
   const previewSize = activeProject && viewportSize.h ? {
-    w: mode === 'mobile' ? Math.round(Math.min(viewportSize.w, viewportSize.h * 9 / 16)) : viewportSize.w,
+    w: viewportSize.w,
     h: viewportSize.h,
   } : cardSize;
   const loopWidth = list.length * (cardSize.w + 20);
@@ -102,9 +98,9 @@ export default function Studio({projects}: {projects: Project[]}) {
       tween.kill();
       tweenRef.current = null;
     };
-  }, {scope: scopeRef, dependencies: [mode, list, loopWidth, reduceMotion, activeProject?.slug], revertOnUpdate: true});
+  }, {scope: scopeRef, dependencies: [list, loopWidth, reduceMotion, activeProject?.slug], revertOnUpdate: true});
 
-  useEffect(() => { tweenRef.current?.timeScale(speed); }, [speed, mode, list, loopWidth, reduceMotion, activeProject?.slug]);
+  useEffect(() => { tweenRef.current?.timeScale(speed); }, [speed, list, loopWidth, reduceMotion, activeProject?.slug]);
 
   const setPlayback = (stop: boolean) => {
     pausedRef.current = stop;
@@ -114,11 +110,10 @@ export default function Studio({projects}: {projects: Project[]}) {
   };
 
   if (!list.length) return null;
-  const imageWidths = mode === 'mobile' && isSmall ? MOBILE_WIDTHS : undefined;
-  const imageSource = (project: Project) => mode === 'mobile' ? project.mobile || project.desktop : project.desktop;
+  const imageSource = (project: Project) => project.desktop;
 
   return (
-    <div className="esa-studio relative" data-mode={mode} data-panels={panels} data-reduced={reduceMotion} data-selected={!!activeProject}>
+    <div className="esa-studio relative" data-mode="desktop" data-panels={panels} data-reduced={reduceMotion} data-selected={!!activeProject}>
       <div ref={scopeRef} data-theme={theme} className="hh-editor esa-studio-frame">
         <div className="esa-studio-window">
           <div className="esa-studio-header">
@@ -133,13 +128,9 @@ export default function Studio({projects}: {projects: Project[]}) {
             </button>
             <EsaMark className="esa-studio-logo esa-studio-static-logo" />
             <div className="esa-studio-devices" role="group" aria-label="Dispozitiv de previzualizare">
-              <button type="button" aria-pressed={mode === 'desktop'} onClick={() => setPreview('desktop')}>
+              <button type="button" aria-pressed={true}>
                 <svg viewBox="0 0 24 24" aria-hidden><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
                 <span>Desktop</span>
-              </button>
-              <button type="button" aria-pressed={mode === 'mobile'} onClick={() => setPreview('mobile')}>
-                <svg viewBox="0 0 24 24" aria-hidden><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg>
-                <span>iPhone</span>
               </button>
             </div>
             <span className="esa-studio-measure" aria-label="Dimensiuni previzualizare">{Math.round(previewSize.w)} × {Math.round(previewSize.h)} px</span>
@@ -168,8 +159,7 @@ export default function Studio({projects}: {projects: Project[]}) {
                     aria-hidden={copy > 0 || undefined}
                   >
                     <picture>
-                      {preview === null && <source media="(max-width: 639px)" srcSet={buildSrcSet(project.mobile || project.desktop, MOBILE_WIDTHS) || project.mobile || project.desktop} sizes={`${previewSize.w}px`} />}
-                      <img key={`${mode}-${imageSource(project)}`} src={imageSource(project)} srcSet={buildSrcSet(imageSource(project), imageWidths)}
+                      <img key={imageSource(project)} src={imageSource(project)} srcSet={buildSrcSet(imageSource(project))}
                         sizes={`${previewSize.w}px`} alt={copy === 0 ? project.title : ''}
                         width={cardSize.w} height={cardSize.h} draggable={false}
                         loading={copy === 0 && index < 2 ? 'eager' : 'lazy'} decoding="async"
@@ -184,7 +174,7 @@ export default function Studio({projects}: {projects: Project[]}) {
               <p className="esa-studio-panel-title">Previzualizare</p>
               <div className="esa-studio-detail-group">
                 <h2>Dispozitiv</h2>
-                <p><span>Variantă</span><strong>{mode === 'desktop' ? 'Desktop' : 'iPhone'}</strong></p>
+                <p><span>Variantă</span><strong>Desktop</strong></p>
                 <p><span>Lățime</span><strong>{Math.round(previewSize.w)} px</strong></p>
                 <p><span>Înălțime</span><strong>{Math.round(previewSize.h)} px</strong></p>
               </div>
