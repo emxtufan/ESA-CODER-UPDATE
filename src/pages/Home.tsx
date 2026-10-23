@@ -29,7 +29,6 @@ export default function Home() {
       title: p.title,
       slug: p.slug,
       desktop: p.heroDesktop || p.image,
-      mobile: p.heroMobile || p.heroDesktop || p.image,
       themes: [p.heroDark && 'dark', p.heroLight && 'light'].filter(Boolean),
     }));
   const homeProjects = projects

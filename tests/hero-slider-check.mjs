@@ -94,28 +94,16 @@ try {
     if (await reject.isVisible()) await reject.click();
     const studio = page.locator('.esa-studio');
     await studio.scrollIntoViewIfNeeded();
-    assert.equal(await studio.getAttribute('data-mode'), width < 640 ? 'mobile' : 'desktop');
-    for (const [label, key, mode] of [['Desktop', 'heroDesktop', 'desktop'], ['iPhone', 'heroMobile', 'mobile']]) {
-      await studio.getByRole('button', {name: label, exact: true}).click();
-      assert.equal(await studio.getAttribute('data-mode'), mode);
-      assert.equal(await studio.locator('.esa-studio-slide img').first().getAttribute('src'), uploaded[key]);
-      await studio.locator('.esa-studio-slide img').first().evaluate(img => img.decode());
-      const box = await studio.locator('.esa-studio-slide').first().boundingBox();
-      if (mode === 'desktop') {
-        const viewport = await studio.locator('.esa-studio-viewport').boundingBox();
-        assert.ok(Math.abs(box.width - viewport.width) < 1, 'Desktop image fills the preview width');
-        assert.ok(Math.abs(box.width / box.height - 16 / 9) < 0.01, 'Desktop image keeps the 1920x1080 aspect ratio');
-        assert.ok(Math.abs(viewport.width / viewport.height - 16 / 9) < 0.01, 'Desktop viewport keeps a 16:9 aspect ratio');
-      } else {
-        assert.ok(Math.abs(box.width / box.height - 9 / 16) < 0.01, 'Mobile image keeps the 1080x1920 aspect ratio');
-        if (width < 640) {
-          const viewport = await studio.locator('.esa-studio-viewport').boundingBox();
-          assert.ok(Math.abs(box.width - viewport.width) < 1, 'Mobile image fills the preview width');
-          assert.ok(Math.abs(viewport.width / viewport.height - 9 / 16) < 0.01, 'Mobile viewport keeps a 9:16 aspect ratio');
-        } else assert.equal(Math.round(box.width), 400);
-      }
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-    }
+    assert.equal(await studio.getAttribute('data-mode'), 'desktop');
+    assert.equal(await studio.getByRole('button', {name: 'iPhone', exact: true}).count(), 0, 'The iPhone preview mode is gone');
+    assert.equal(await studio.locator('.esa-studio-slide img').first().getAttribute('src'), uploaded.heroDesktop);
+    await studio.locator('.esa-studio-slide img').first().evaluate(img => img.decode());
+    const box = await studio.locator('.esa-studio-slide').first().boundingBox();
+    const viewport = await studio.locator('.esa-studio-viewport').boundingBox();
+    assert.ok(Math.abs(box.width - viewport.width) < 1, 'Desktop image fills the preview width');
+    assert.ok(Math.abs(box.width / box.height - 16 / 9) < 0.01, 'Desktop image keeps the 1920x1080 aspect ratio');
+    assert.ok(Math.abs(viewport.width / viewport.height - 16 / 9) < 0.01, 'Desktop viewport keeps a 16:9 aspect ratio');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await page.screenshot({path: path.join(os.tmpdir(), `esa-hero-${width}.png`)});
     await studio.locator('.esa-studio-slide').first().click();
     assert.equal(await studio.locator('dialog').count(), 0);
@@ -128,20 +116,15 @@ try {
   await page.locator('#boot').waitFor({state: 'hidden'});
   const studio = page.locator('.esa-studio');
   await studio.scrollIntoViewIfNeeded();
-  const assertSoloCentered = async (mobile) => {
+  const assertSoloCentered = async () => {
     assert.equal(await studio.locator('.esa-studio-slide').count(), 1, 'Only the selected project is rendered');
     const [view, slide, img] = await studio.evaluate(el =>
       ['.esa-studio-viewport', '.esa-studio-slide', '.esa-studio-slide img']
         .map(selector => el.querySelector(selector).getBoundingClientRect().toJSON()));
     assert.ok(Math.abs(slide.x + slide.width / 2 - view.x - view.width / 2) < 1, 'Selected project is centered horizontally');
     assert.ok(Math.abs(slide.y - view.y) < 1 && Math.abs(slide.height - view.height) < 1, 'Selected image fills the preview height');
-    if (!mobile) {
-      assert.ok(Math.abs(slide.width - view.width) < 1, 'Desktop preview fills the available width');
-      assert.ok(Math.abs(slide.width / slide.height - 16 / 9) < 0.01, 'Selected desktop project stays 16:9');
-    } else {
-      assert.ok(Math.abs(slide.width / slide.height - 9 / 16) < 0.01, 'Selected mobile project stays 9:16');
-      if (page.viewportSize().width < 640) assert.ok(Math.abs(slide.width - view.width) < 1, 'Selected mobile project fills the preview width');
-    }
+    assert.ok(Math.abs(slide.width - view.width) < 1, 'Desktop preview fills the available width');
+    assert.ok(Math.abs(slide.width / slide.height - 16 / 9) < 0.01, 'Selected desktop project stays 16:9');
     assert.ok(Math.abs(img.width - slide.width) < 1 && Math.abs(img.height - slide.height) < 1, 'Image fills its card');
   };
   const position = () => studio.locator('.esa-studio-track').evaluate(el => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
@@ -152,10 +135,6 @@ try {
   const stopped = await position();
   await page.waitForTimeout(250);
   assert.ok(Math.abs(await position() - stopped) < 1, 'Pause stops autoplay');
-  await studio.getByRole('button', {name: 'iPhone', exact: true}).click();
-  const switched = await position();
-  await page.waitForTimeout(250);
-  assert.ok(Math.abs(await position() - switched) < 1, 'Device switch preserves pause');
   await studio.getByRole('button', {name: 'Pornește banda', exact: true}).click();
   await studio.getByRole('button', {name: /Viteza sliderului/}).click();
   assert.match(await studio.getByRole('button', {name: /Viteza sliderului/}).getAttribute('aria-label'), /1.5/);
@@ -164,10 +143,10 @@ try {
   await studio.getByRole('button', {name: 'Arată panourile', exact: true}).click();
   await studio.locator('.esa-studio-project-list button').nth(1).click();
   assert.equal(await studio.locator('.esa-studio-project-list button').nth(1).getAttribute('aria-pressed'), 'true');
-  await assertSoloCentered(true);
+  await assertSoloCentered();
   assert.equal(await studio.locator('.esa-studio-slide img').getAttribute('alt'), projects[1].title);
   await studio.getByRole('button', {name: 'Desktop', exact: true}).click();
-  await assertSoloCentered(false);
+  await assertSoloCentered();
   const shine = studio.locator('.esa-studio-slide .vv-shine-lyr-a');
   const frameShine = studio.locator('.esa-studio-frame > .vv-shine-lyr-a');
   await studio.getByRole('button', {name: 'Desktop', exact: true}).evaluate(el => el.blur());
@@ -187,12 +166,10 @@ try {
   await page.emulateMedia({reducedMotion: 'no-preference'});
   assert.equal(await studio.locator('.esa-studio-slide img').getAttribute('alt'), projects[1].title, 'Device changes preserve the selected project');
   await page.setViewportSize({width: 390, height: 844});
-  await assertSoloCentered(false);
-  await studio.getByRole('button', {name: 'iPhone', exact: true}).click();
-  await assertSoloCentered(true);
+  await assertSoloCentered();
   await page.setViewportSize({width: 1440, height: 1000});
   await studio.getByRole('button', {name: 'Ascunde panourile', exact: true}).click();
-  await assertSoloCentered(true);
+  await assertSoloCentered();
   await studio.getByRole('button', {name: 'Arată panourile', exact: true}).click();
   await studio.getByRole('button', {name: 'Pornește banda', exact: true}).click();
   assert.ok(await studio.locator('.esa-studio-slide').count() > 1, 'Play restores the full gallery');
@@ -206,7 +183,7 @@ try {
   await page.locator('.esa-studio[data-reduced="true"]').waitFor();
   assert.equal(await studio.locator('.esa-studio-slide[data-copy="1"]').count(), 0);
   await studio.locator('.esa-studio-project-list button').nth(1).click();
-  await assertSoloCentered(true);
+  await assertSoloCentered();
   await studio.getByRole('button', {name: 'Înapoi la galerie', exact: true}).click();
   assert.equal(await studio.locator('.esa-studio-slide').count(), projects.length);
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
@@ -232,7 +209,7 @@ try {
   assert.equal(await page.locator('.esa-studio').count(), 0, 'An empty collection does not render broken controls');
   assert.deepEqual(errors, []);
   assert.equal(await readFile('source_data.json', 'utf8'), original);
-  console.log('PASS: separate admin uploads/save/reload; existing projects unchanged; responsive 16:9 desktop and 9:16 mobile; animated border and reduced motion; preview without zoom/pause/speed/panels; offscreen pause; single/empty collections; no browser errors.');
+  console.log('PASS: separate admin uploads/save/reload; existing projects unchanged; responsive 16:9 desktop; animated border and reduced motion; preview without zoom/pause/speed/panels; offscreen pause; single/empty collections; no browser errors.');
 } finally {
   await browser?.close();
   if (child.exitCode === null) { const stopped = once(child, 'exit'); child.kill(); await stopped; }
