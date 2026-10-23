@@ -2,7 +2,7 @@
 // plus that page's own <head> (server/seo.mjs). The browser then renders the app over it, so
 // visitors see the same page, while crawlers, AI search bots and link previews get real content.
 import path from 'node:path';
-import {readFile} from 'node:fs/promises';
+import {readdir, readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {headTags, pageMeta} from './seo.mjs';
 import {itemScript} from './content.mjs';
@@ -26,9 +26,20 @@ export function createPages({root, isProd, vite, isKnown}) {
       const html = await readFile(path.join(root, 'index.html'), 'utf8');
       return {html: await vite.transformIndexHtml(url, html), render: (await vite.ssrLoadModule('/src/entry-server.tsx')).render};
     }
-    template ??= (await readFile(path.join(dist, 'index.html'), 'utf8')).replace(
-      '<script type="module"',
-      // texts first: classic `defer` scripts and module scripts run in document order
+    if (!template) {
+      const html = await readFile(path.join(dist, 'index.html'), 'utf8');
+      // CSS-ul paginilor (Home, servicii, articole) e în fișiere separate pe care Vite le încarcă abia după JS;
+      // fără ele în <head>, HTML-ul randat pe server apare nestilizat o clipă și sare (CLS).
+      const admin = await readFile(path.join(dist, 'admin.html'), 'utf8');
+      const styles = (await readdir(path.join(dist, 'assets')))
+        .filter((file) => file.endsWith('.css') && !html.includes(file) && !admin.includes(file))
+        .map((file) => `<link rel="stylesheet" crossorigin href="/assets/${file}">`)
+        .join('\n    ');
+      template = html
+        .replace('</head>', `    ${styles}\n  </head>`)
+        .replace(
+          '<script type="module"',
+          // texts first: classic `defer` scripts and module scripts run in document order
       '<script defer src="/content.js"></script>\n    <script type="module"',
     );
     return {html: template, render: renderProd};
