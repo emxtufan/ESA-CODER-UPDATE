@@ -35,7 +35,7 @@
 .esa-studio-project-link { padding: 16px 20px 60px; border-top: 1px solid var(--vv-hairline); font-size: 12px; }
 .esa-studio-details { border-left: 1px solid var(--vv-hairline); }
 .esa-studio-detail-group { padding: 20px; border-bottom: 1px solid var(--vv-hairline); }
-.esa-studio-detail-group h2 { margin-bottom: 16px; font-size: 13px; font-weight: 600; }
+.esa-studio-detail-title { margin-bottom: 16px; font-size: 13px; font-weight: 600; }
 .esa-studio-detail-group p { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; font-size: 12px; }
 .esa-studio-detail-group p > span, .esa-studio-help { color: color-mix(in srgb, var(--vv-text-primary) 60%, transparent); }
 .esa-studio-detail-group strong { min-width: 95px; padding: 7px 10px; border-radius: 6px; background: var(--vv-field); font-weight: 400; }

@@ -173,13 +173,13 @@ export default function Studio({projects}: {projects: Project[]}) {
             <aside id="hero-preview-details" className="esa-studio-sidebar esa-studio-details" aria-label="Detalii previzualizare">
               <p className="esa-studio-panel-title">Previzualizare</p>
               <div className="esa-studio-detail-group">
-                <h2>Dispozitiv</h2>
+                <div className="esa-studio-detail-title">Dispozitiv</div>
                 <p><span>Variantă</span><strong>Desktop</strong></p>
                 <p><span>Lățime</span><strong>{Math.round(previewSize.w)} px</strong></p>
                 <p><span>Înălțime</span><strong>{Math.round(previewSize.h)} px</strong></p>
               </div>
               <div className="esa-studio-detail-group">
-                <h2>Galerie</h2>
+                <div className="esa-studio-detail-title">Galerie</div>
                 <p><span>Proiecte</span><strong>{list.length}</strong></p>
                 <p><span>Redare</span><strong>{reduceMotion ? 'Manuală' : paused ? 'Oprită' : 'Automată'}</strong></p>
                 {!reduceMotion && <p><span>Viteză</span><strong>{speed}×</strong></p>}

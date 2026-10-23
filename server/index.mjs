@@ -35,6 +35,16 @@ app.disable('x-powered-by');
 app.set('trust proxy', 'loopback');
 app.use(compression());
 app.get('/privacy-policy', (_req, res) => res.redirect(301, '/politica-de-confidentialitate'));
+// o singură adresă pe pagină (SEO): /index.html și slash-ul final duc cu 301 la varianta canonică
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const url = new URL(req.originalUrl, 'http://localhost');
+  let target = url.pathname;
+  if (target === '/index.html') target = '/';
+  else if (target.length > 1 && target.endsWith('/') && !target.startsWith('/api/')) target = target.replace(/\/+$/, '');
+  if (target === url.pathname) return next();
+  res.redirect(301, target + url.search);
+});
 app.use((req, res, next) => {
   res.set({'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Frame-Options': 'SAMEORIGIN'});
   // HSTS only over https; no includeSubDomains, so other subdomains (e.g. mail) are not forced
