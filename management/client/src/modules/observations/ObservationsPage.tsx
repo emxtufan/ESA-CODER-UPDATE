@@ -19,7 +19,7 @@ export default function ObservationsPage() {
   const toast = useToast();
 
   const { mutate } = useMutation({
-    mutationFn: (id: string) => api.post(`/observations/${id}/convert`),
+    mutationFn: (id: string) => api(`/observations/${id}/convert`, { method: "POST" }),
     onSuccess: () => {
       toast.success("Observația a fost convertită în task");
       queryClient.invalidateQueries({ queryKey: ["resource", "/observations"] });
@@ -35,10 +35,10 @@ export default function ObservationsPage() {
       itemName="observație"
       fields={OBSERVATION_FIELDS}
       columns={[
-        { key: "title", label: "Titlu" },
-        { key: "priority", label: "Prioritate" },
-        { key: "status", label: "Status" },
-        { key: "createdAt", label: "Creat la", render: (row) => formatDate(row.createdAt) },
+        { key: "title", header: "Titlu" },
+        { key: "priority", header: "Prioritate" },
+        { key: "status", header: "Status" },
+        { key: "createdAt", header: "Creat la", render: (row) => formatDate(row.createdAt) },
       ]}
       rowActions={(row) =>
         row.convertedTaskId ? (

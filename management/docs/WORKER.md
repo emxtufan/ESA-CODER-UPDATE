@@ -7,6 +7,7 @@
 - Pagină = fișier cu `export default`; înregistrare: `client/src/app/router.tsx` (`lazy(() => import("@/modules/x/XPage"))` în `children` sub `RequireAuth`) + item în `NAV` din `client/src/app/nav.ts` (`{label,to,icon,perm?}`)
 - Căutare globală = intrare nouă în `GROUPS` din `server/modules/search/routes.ts` (`{key,label,perm,table,columns,title(row),subtitle(row),link(row)}`)
 - Rută modul: sub-rute proprii ÎNAINTE de `router.use(crudRouter({…}))`; zod fără `.default()` (`.optional()`/`.nullable()`, `<input>` gol → `""` → preprocess la `null`)
+- react-router (nu -dom); `api` e funcție, nu `api.post`; `DataTable` coloane `{key,header,render?}`; `ResourcePage` primește config-ul ca props directe; toate căile încep cu `management/`
 
 ## UI (`@/components/ui` — se importă doar din index)
 - `Badge {tone?: "neutral"|"success"|"warning"|"danger"|"info"; children; className?}`
