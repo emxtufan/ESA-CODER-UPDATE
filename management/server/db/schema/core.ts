@@ -199,7 +199,7 @@ export const taskDependencies = pgTable(
   ],
 );
 
-/** Comentarii polimorfe (entity_type/entity_id), interne sau vizibile clientului. */
+/** Comentarii polimorfe (entity_type/entity_id). */
 export const comments = pgTable(
   "comments",
   {
@@ -266,7 +266,7 @@ export const observations = pgTable(
   ],
 );
 
-/** Manual Update Log (§10) — text legat de commit/deployment/task, aprobat pentru client. */
+/** Manual Update Log (§10) — text legat de commit/deployment/task. */
 export const projectUpdates = pgTable(
   "project_updates",
   {

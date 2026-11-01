@@ -15,7 +15,6 @@ export interface Me {
     email: string;
     name: string;
     role: string;
-    clientId: string | null;
     totpEnabled: boolean;
   };
   permissions: string[];

@@ -101,7 +101,6 @@ function profile(user: typeof users.$inferSelect, roleKey: Role) {
     email: user.email,
     name: user.name,
     role: roleKey,
-    clientId: user.clientId,
     totpEnabled: user.totpEnabled,
   };
 }
@@ -443,7 +442,7 @@ export function authRouter(): Router {
     res.status(202).json({ ok: true });
   });
 
-  /** Consumă tokenul de resetare/invitație: parolă nouă, token marcat folosit, sesiuni revocate. */
+  /** Consumă tokenul de resetare: parolă nouă, token marcat folosit, sesiuni revocate. */
   router.post("/reset-password", async (req, res) => {
     const { token, password } = parse(resetPasswordSchema, req.body);
     const { db } = req.ctx;
@@ -460,7 +459,7 @@ export function authRouter(): Router {
       !found ||
       found.token.usedAt ||
       found.token.expiresAt <= now ||
-      (found.token.kind !== "reset" && found.token.kind !== "invite") ||
+      found.token.kind !== "reset" ||
       found.user.deletedAt
     ) {
       throw new HttpError(400, "invalid_token", "Linkul de resetare este invalid sau expirat");

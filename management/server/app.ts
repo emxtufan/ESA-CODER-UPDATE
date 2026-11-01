@@ -13,7 +13,8 @@ import type { Env } from "./env";
 import { errorHandler } from "./lib/http";
 import { auditRouter } from "./modules/audit/routes";
 import { authRouter } from "./modules/auth/routes";
-import { usersRouter } from "./modules/users/routes";
+import { clientsRouter, contactsRouter } from "./modules/clients/routes";
+import { projectsRouter } from "./modules/projects/routes";
 import { csrfGuard } from "./security/guards";
 import { loadSession } from "./security/session";
 
@@ -67,7 +68,9 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
 
   // MODULE ROUTES
   app.use("/api/auth", authRouter());
-  app.use("/api/users", usersRouter());
+  app.use("/api/clients", clientsRouter());
+  app.use("/api/contacts", contactsRouter());
+  app.use("/api/projects", projectsRouter());
   app.use("/api/audit", auditRouter());
 
   app.get("/api/health", (_req, res) => {

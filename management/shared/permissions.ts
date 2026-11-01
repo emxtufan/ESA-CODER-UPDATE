@@ -150,5 +150,4 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     "documents.download",
     "reports.view",
   ],
-  client: [],
 };

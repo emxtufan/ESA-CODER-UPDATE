@@ -41,7 +41,7 @@ export const users = pgTable(
     id: primaryId(),
     email: text("email").notNull().unique(),
     name: text("name").notNull(),
-    /** scrypt — null până la acceptarea invitației / setarea parolei. */
+    /** scrypt — null până la setarea parolei. */
     passwordHash: text("password_hash"),
     roleId: uuid("role_id")
       .notNull()

@@ -12,15 +12,13 @@ import { z } from "zod";
 
 import { CURRENCIES, PRIORITIES, PROJECT_STATUSES, PROJECT_TYPES } from "../../../shared/enums";
 import type { Db } from "../../db/client";
-import { users } from "../../db/schema/auth";
-import { clients, projectFavorites, projectMembers, projects } from "../../db/schema/core";
+import { clients, projectFavorites, projects } from "../../db/schema/core";
 import { crudRouter, dateStr, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
-const membersSchema = z.object({ userIds: z.array(z.uuid("Identificator invalid")) });
 
 /** URL opțional, validat ca URL absolut. */
 const webUrl = z.preprocess(
@@ -42,7 +40,6 @@ const projectSchema = z.object({
   startDate: dateStr,
   deadline: dateStr,
   deliveryDate: dateStr,
-  responsibleDeveloperId: z.uuid("Identificator invalid").nullable().optional(),
   contractValue: moneyInt.nullable().optional(),
   currency: z.enum(CURRENCIES).nullable().optional(),
   maintenanceStatus: optStr,
@@ -127,16 +124,6 @@ async function findProject(req: Request, id: string): Promise<any> {
   return row;
 }
 
-/** Membrii proiectului, cu numele și emailul utilizatorului. */
-async function memberRows(db: Db, projectId: string) {
-  return db
-    .select({ userId: users.id, name: users.name, email: users.email })
-    .from(projectMembers)
-    .innerJoin(users, eq(users.id, projectMembers.userId))
-    .where(eq(projectMembers.projectId, projectId))
-    .orderBy(asc(users.name));
-}
-
 export function projectsRouter(): Router {
   const router = Router();
 
@@ -184,44 +171,6 @@ export function projectsRouter(): Router {
       );
 
     res.status(204).end();
-  });
-
-  /** Echipa proiectului. */
-  router.get("/:id/members", requirePermission("projects.view"), async (req, res) => {
-    const { id } = parse(idSchema, req.params);
-    await findProject(req, id);
-
-    res.json({ items: await memberRows(req.ctx.db, id) });
-  });
-
-  /** Înlocuiește echipa proiectului cu lista dată. */
-  router.put("/:id/members", requirePermission("projects.update"), async (req, res) => {
-    const { id } = parse(idSchema, req.params);
-    const { userIds } = parse(membersSchema, req.body);
-    await findProject(req, id);
-
-    const unique = [...new Set(userIds)];
-    if (unique.length > 0) {
-      const existing = await req.ctx.db
-        .select({ id: users.id })
-        .from(users)
-        .where(inArray(users.id, unique));
-      if (existing.length !== unique.length) {
-        throw new HttpError(422, "validation_error", "Utilizator inexistent", {
-          userIds: "Conține utilizatori inexistenți",
-        });
-      }
-    }
-
-    await req.ctx.db.delete(projectMembers).where(eq(projectMembers.projectId, id));
-    if (unique.length > 0) {
-      await req.ctx.db
-        .insert(projectMembers)
-        .values(unique.map((userId) => ({ projectId: id, userId })))
-        .onConflictDoNothing();
-    }
-
-    res.json({ items: await memberRows(req.ctx.db, id) });
   });
 
   router.use(
