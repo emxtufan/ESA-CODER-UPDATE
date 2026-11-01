@@ -17,6 +17,8 @@ import { authRouter } from "./modules/auth/routes";
 import { clientsRouter, contactsRouter } from "./modules/clients/routes";
 import { commentsRouter } from "./modules/comments/routes";
 import { deploymentsRouter } from "./modules/deployments/routes";
+import { invoicesRouter } from "./modules/finance/invoices";
+import { expensesRouter, financeRouter, paymentsRouter, ratesRouter } from "./modules/finance/routes";
 import { githubRouter } from "./modules/github/routes";
 import { githubWebhookRouter } from "./modules/github/webhook";
 import {
@@ -108,6 +110,11 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/vault", vaultRouter());
   app.use("/api/github", githubRouter());
   app.use("/api/deployments", deploymentsRouter());
+  app.use("/api/invoices", invoicesRouter());
+  app.use("/api/payments", paymentsRouter());
+  app.use("/api/expenses", expensesRouter());
+  app.use("/api/exchange-rates", ratesRouter());
+  app.use("/api/finance", financeRouter());
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true });
