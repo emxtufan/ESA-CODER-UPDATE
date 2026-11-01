@@ -224,7 +224,10 @@ export function authRouter(): Router {
     totpLimiter.reset(auth.user.id);
 
     const now = new Date();
-    await db.update(users).set({ totpLastStep: step, updatedAt: now }).where(eq(users.id, auth.user.id));
+    await db
+      .update(users)
+      .set({ totpLastStep: step, lastLoginAt: now, updatedAt: now })
+      .where(eq(users.id, auth.user.id));
 
     // Sesiunea care aștepta al doilea factor nu mai poate fi folosită: o revocăm.
     await revokeSession(db, auth.session.id);

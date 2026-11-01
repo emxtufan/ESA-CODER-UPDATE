@@ -214,7 +214,7 @@ export function usersRouter(): Router {
       expiresAt: new Date(now.getTime() + INVITE_TTL_MS),
     });
 
-    const inviteUrl = `${appBaseUrl(env)}/accept-invite?token=${token}`;
+    const inviteUrl = `${appBaseUrl(env)}/reset-password?token=${token}&invite=1`;
     const sent = await sendEmail(env, {
       to: created.email,
       subject: "Invitație în ESA Management",
