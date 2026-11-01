@@ -312,9 +312,9 @@ export function formatDate(value: string | number | Date | null | undefined): st
   return date.toLocaleDateString("ro-RO");
 }
 
-const STATUS_SUCCESS = ["completed", "paid", "successful", "active"];
+const STATUS_SUCCESS = ["completed", "paid", "successful", "active", "resolved"];
 const STATUS_DANGER = ["failed", "overdue", "suspended", "blocked"];
-const STATUS_INFO = ["pending", "review"];
+const STATUS_WARNING = ["pending", "review", "open", "partial", "rolled back", "on hold", "in review"];
 
 /** Tonul de `Badge` pentru un status text („Active” → success, „Overdue” → danger…). */
 export function statusTone(status: string | null | undefined): BadgeTone {
@@ -323,6 +323,7 @@ export function statusTone(status: string | null | undefined): BadgeTone {
   const key = status.trim().toLowerCase();
   if (STATUS_SUCCESS.includes(key)) return "success";
   if (STATUS_DANGER.includes(key)) return "danger";
-  if (STATUS_INFO.includes(key) || key.startsWith("in")) return "info";
+  if (STATUS_WARNING.includes(key)) return "warning";
+  if (key.startsWith("in")) return "info";
   return "neutral";
 }

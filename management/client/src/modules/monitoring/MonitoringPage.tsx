@@ -142,7 +142,7 @@ const INCIDENT_COLUMNS: DataTableColumn<IncidentRow>[] = [
   { key: "name", header: "Incident", sortable: true },
   { key: "projectName", header: "Proiect" },
   { key: "severity", header: "Severitate", render: (r) => <Badge tone={severityTone(r.severity)}>{r.severity}</Badge> },
-  { key: "status", header: "Status", render: (r) => <Badge tone={r.status === "Resolved" ? "success" : statusTone(r.status)}>{r.status}</Badge> },
+  { key: "status", header: "Status", render: (r) => <Badge tone={statusTone(r.status)}>{r.status}</Badge> },
   { key: "startedAt", header: "Început", sortable: true, render: (r) => formatDate(r.startedAt) },
   { key: "endedAt", header: "Sfârșit", render: (r) => formatDate(r.endedAt) },
 ];

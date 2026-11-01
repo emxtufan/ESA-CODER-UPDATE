@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
-import { formatDate, formatMoney } from "@/components/resource/fields";
+import { formatDate, formatMoney, statusTone } from "@/components/resource/fields";
 import { Badge, Card, EmptyState, ErrorState, PageHeader, Select, Skeleton } from "@/components/ui";
 import { api } from "@/lib/api";
 import { useCan } from "@/lib/auth";
@@ -65,7 +65,7 @@ interface Favorite {
 
 function Stat({ label, value, to }: { label: string; value: ReactNode; to: string }) {
   return (
-    <Link to={to} className="rounded-lg border border-line bg-card p-4 transition-colors hover:border-primary">
+    <Link to={to} className="rounded-2xl bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-colors hover:border-primary">
       <p className="text-xs text-muted">{label}</p>
       <p className="mt-1 text-2xl font-semibold text-text">{value}</p>
     </Link>
@@ -106,6 +106,9 @@ function Connection({ label, on, hint }: { label: string; on: boolean; hint: str
     </span>
   );
 }
+
+const alertTone = (side: string): "danger" | "warning" =>
+  side === "Căzut" || side === "Critical" || side === "High" ? "danger" : "warning";
 
 const QUICK_ACTIONS = [
   { label: "Proiect nou", to: "/projects?new=1", perm: "projects.create" },
@@ -263,11 +266,11 @@ export default function DashboardPage() {
         <List title="Taskuri care cer atenție" to="/tasks" items={data.tasks?.attention} empty="Nimic urgent." render={(t) => ({ key: t.id, to: t.projectId ? `/projects/${t.projectId}?tab=tasks` : "/tasks", main: t.title, side: t.due ? formatDate(t.due) : t.priority })} />
         <List title="Termene apropiate" to="/projects" items={data.projects?.deadlines} empty="Niciun termen în 30 de zile." render={(p) => ({ key: p.id, to: `/projects/${p.id}`, main: p.name, side: formatDate(p.deadline) })} />
         <List title="Plăți în așteptare" to="/finance" items={data.finance?.pending} empty="Nicio factură neachitată." render={(i) => ({ key: i.id, to: "/finance", main: `${i.number} · ${i.client}`, side: formatMoney(i.balance, i.currency) })} />
-        <List title="Alerte" to="/monitoring" items={data.monitoring ? alerts : null} empty="Nicio alertă." render={(a) => ({ key: a.key, to: "/monitoring", main: a.main, side: a.side })} />
+        <List title="Alerte" to="/monitoring" items={data.monitoring ? alerts : null} empty="Nicio alertă." render={(a) => ({ key: a.key, to: "/monitoring", main: a.main, side: <Badge tone={alertTone(a.side)}>{a.side}</Badge> })} />
         <List title="Domenii care expiră" to="/infrastructure?tab=domains" items={data.infrastructure?.domains} empty="Niciun domeniu în 30 de zile." render={(d) => ({ key: d.id, to: "/infrastructure?tab=domains", main: d.domain, side: formatDate(d.expirationDate) })} />
         <List title="Certificate SSL care expiră" to="/infrastructure?tab=domains" items={data.infrastructure?.ssl} empty="Niciun certificat în 30 de zile." render={(s) => ({ key: s.id, to: "/infrastructure?tab=domains", main: s.domain, side: formatDate(s.expirationDate) })} />
         <List title="Commit-uri recente" to="/github?tab=commits" items={data.development.commits} empty="Niciun commit încă." render={(c) => ({ key: c.id, to: "/github?tab=commits", main: `${c.repository}: ${c.message ?? c.hash.slice(0, 7)}`, side: c.date ? formatDate(c.date) : undefined })} />
-        <List title="Deployment-uri recente" to="/deployments" items={data.development.deployments} empty="Niciun deployment încă." render={(d) => ({ key: d.id, to: `/projects/${d.projectId}?tab=development`, main: `${d.project} · ${d.environment ?? "—"}`, side: d.status })} />
+        <List title="Deployment-uri recente" to="/deployments" items={data.development.deployments} empty="Niciun deployment încă." render={(d) => ({ key: d.id, to: `/projects/${d.projectId}?tab=development`, main: `${d.project} · ${d.environment ?? "—"}`, side: <Badge tone={statusTone(d.status)}>{d.status}</Badge> })} />
         <List title="Activitate recentă" to="/projects" items={data.recentActivity} empty="Nicio activitate încă." render={(a) => ({ key: a.id, to: a.projectId ? `/projects/${a.projectId}?tab=timeline` : "/projects", main: a.description, side: formatDate(a.at) })} />
       </section>
     </div>

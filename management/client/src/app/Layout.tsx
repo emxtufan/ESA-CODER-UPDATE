@@ -145,11 +145,11 @@ export function Layout() {
             </Link>
 
             <div className="text-right leading-tight">
-              <p className="text-sm font-medium text-text">{me?.user.name ?? "—"}</p>
+              <p className="hidden text-sm font-medium text-text sm:inline">{me?.user.name ?? "—"}</p>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} loading={loggingOut}>
+            <Button variant="ghost" size="sm" onClick={handleLogout} loading={loggingOut} aria-label="Deconectare">
               <LogOut aria-hidden="true" className="size-4" />
-              Deconectare
+              <span className="hidden sm:inline">Deconectare</span>
             </Button>
           </div>
         </header>
