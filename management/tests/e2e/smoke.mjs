@@ -46,9 +46,10 @@ async function main() {
 
   const browser = await chromium.launch({ headless: true });
   const consoleErrors = [];
+  let page;
   try {
     const context = await browser.newContext({ viewport: { width: 1360, height: 820 } });
-    const page = await context.newPage();
+    page = await context.newPage();
     page.on("console", (msg) => {
       if (msg.type() === "error") consoleErrors.push(msg.text());
     });
@@ -86,6 +87,19 @@ async function main() {
     // 5. Mobil
     await page.setViewportSize({ width: 390, height: 780 });
     await shot("6-mobile.png");
+  } catch (err) {
+    if (page) {
+      try {
+        await page.screenshot({ path: path.join(OUT_DIR, "fail.png") });
+        const bodyText = await page.evaluate(() => document.body.innerText);
+        console.error(`Screenshot de eșec: ${path.join(OUT_DIR, "fail.png")}`);
+        console.error(`Primele 300 caractere din body.innerText:\n${bodyText.slice(0, 300)}`);
+      } catch (captureErr) {
+        console.error(`Nu am putut salva fail.png: ${captureErr instanceof Error ? captureErr.message : String(captureErr)}`);
+      }
+    }
+    console.error(`consoleErrors (${consoleErrors.length}): ${JSON.stringify(consoleErrors)}`);
+    throw err;
   } finally {
     await browser.close();
   }
