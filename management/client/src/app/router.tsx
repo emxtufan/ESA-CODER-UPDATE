@@ -8,10 +8,10 @@ import { RequireAuth } from "@/lib/auth";
 import LoginPage from "@/modules/auth/LoginPage";
 import ResetPasswordPage from "@/modules/auth/ResetPasswordPage";
 import AuditPage from "@/modules/audit/AuditPage";
-import DashboardPage from "@/modules/dashboard/DashboardPage";
 import AccountPage from "@/modules/settings/AccountPage";
 
 // Paginile modulelor operaționale sunt încărcate la cerere (Suspense e în Layout).
+const DashboardPage = lazy(() => import("@/modules/dashboard/DashboardPage"));
 const ClientsPage = lazy(() => import("@/modules/clients/ClientsPage"));
 const ClientDetailPage = lazy(() => import("@/modules/clients/ClientDetailPage"));
 const ProjectsPage = lazy(() => import("@/modules/projects/ProjectsPage"));
