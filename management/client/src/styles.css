@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/* Tokeni de design — sursă unică de adevăr (vezi management/docs/SPEC.md §Design). */
+@theme {
+  --color-bg: #101411;
+  --color-sidebar: #171d19;
+  --color-card: #1c241e;
+  --color-primary: #64a045;
+  --color-secondary: #3c5d2f;
+  --color-brand: #1f3a27;
+  --color-text: #f2f5f2;
+  --color-muted: #9aa59b;
+  --color-line: rgba(242, 245, 242, 0.08);
+  --color-danger: #d9605a;
+  --color-warning: #d9a441;
+  --color-info: #5b9bd5;
+
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-bg font-sans text-text antialiased;
+  }
+
+  /* Focus vizibil și uniform pe orice element interactiv. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
