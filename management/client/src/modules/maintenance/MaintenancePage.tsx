@@ -39,7 +39,7 @@ export const PLAN_FIELDS: FieldDef[] = [
   { name: "currency", label: "Monedă", type: "select", options: CURRENCIES, required: true },
   { name: "startDate", label: "Început", type: "date" },
   { name: "renewalDate", label: "Reînnoire", type: "date" },
-  { name: "frequency", label: "Frecvență", type: "text" },
+  { name: "frequency", label: "Frecvență", type: "select", options: ["Lunar", "Trimestrial", "Anual"], hint: "Creează automat câte un task pe perioadă." },
   { name: "contractStatus", label: "Status contract", type: "text" },
   { name: "includedServices", label: "Servicii incluse", type: "tags", span: 2 },
 ];
