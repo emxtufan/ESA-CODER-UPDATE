@@ -7,7 +7,7 @@ import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { Router, type Request } from "express";
 import { z } from "zod";
 
-import { CURRENCIES } from "../../../shared/enums";
+import { CLIENT_STATUSES, CURRENCIES } from "../../../shared/enums";
 import { activities, clients, contacts, projects } from "../../db/schema/core";
 import { crudRouter, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
@@ -26,6 +26,12 @@ const emailStr = z.preprocess(
 const webUrl = z.preprocess(
   (value) => (value === "" ? null : value),
   z.url("URL invalid").nullable().optional(),
+);
+
+/** Statusul clientului (§6): listă închisă, string-ul gol devine `null`. */
+const clientStatus = z.preprocess(
+  (value) => (value === "" ? null : value),
+  z.enum(CLIENT_STATUSES).nullable().optional(),
 );
 
 /** Câmpurile clientului din §6 (+ `isDemo` pentru datele DEMO ștergibile). */
@@ -49,7 +55,7 @@ const clientSchema = z.object({
   paymentTerms: optStr,
   preferredCurrency: z.enum(CURRENCIES).nullable().optional(),
   paymentMethod: optStr,
-  status: optStr,
+  status: clientStatus,
   internalNotes: optStr,
   isDemo: z.boolean().optional(),
 });

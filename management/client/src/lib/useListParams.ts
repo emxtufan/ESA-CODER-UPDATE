@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router";
 
 const DEFAULT_PAGE_SIZE = 25;
 const SEARCH_DEBOUNCE_MS = 300;
-const RESERVED_KEYS = ["page", "pageSize", "q", "sort", "dir"];
+const RESERVED_KEYS = ["page", "pageSize", "q", "sort", "dir", "tab", "view"];
 
 export type SortDir = "asc" | "desc";
 

@@ -33,6 +33,10 @@ export const PROJECT_STATUSES = [
 ] as const;
 export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
 
+// §6 Clients
+export const CLIENT_STATUSES = ["Prospect", "Active", "Inactive"] as const;
+export type ClientStatus = (typeof CLIENT_STATUSES)[number];
+
 // Prioritate (proiecte §5, taskuri §10, observații §10)
 export const PRIORITIES = ["Low", "Medium", "High", "Critical"] as const;
 export type Priority = (typeof PRIORITIES)[number];
