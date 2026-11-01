@@ -86,6 +86,7 @@ async function main() {
     // 5. Client nou
     const stamp = Date.now();
     await page.click("a[href='/clients']");
+    await page.getByRole("heading", { name: "Clienți" }).waitFor();
     await page.getByRole("button", { name: "Adaugă" }).click();
     await page.fill("dialog input[name=companyName]", `Client ${stamp}`);
     await page.getByRole("button", { name: "Salvează" }).click();
@@ -93,6 +94,7 @@ async function main() {
 
     // 6. Proiect nou
     await page.click("a[href='/projects']");
+    await page.getByRole("heading", { name: "Proiecte" }).waitFor();
     await page.getByRole("button", { name: "Adaugă" }).click();
     await page.fill("dialog input[name=name]", `Proiect ${stamp}`);
     await page.getByRole("option", { name: `Client ${stamp}` }).waitFor();
@@ -105,6 +107,7 @@ async function main() {
 
     // 7. Kanban
     await page.click("a[href='/tasks']");
+    await page.getByRole("heading", { name: "Taskuri" }).waitFor();
     await page.getByText("To Do").first().waitFor();
     await shot("8-kanban.png");
 
