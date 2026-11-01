@@ -1,5 +1,14 @@
 /** Navigația laterală: grupuri de module, fiecare item cu permisiune opțională. */
-import { LayoutDashboard, ScrollText, Settings, type LucideIcon } from "lucide-react";
+import {
+  Building2,
+  FolderKanban,
+  LayoutDashboard,
+  ListChecks,
+  ScrollText,
+  Settings,
+  StickyNote,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -18,6 +27,15 @@ export const NAV: NavGroup[] = [
   {
     group: "Dashboard",
     items: [{ label: "Dashboard", to: "/", icon: LayoutDashboard }],
+  },
+  {
+    group: "Operațional",
+    items: [
+      { label: "Proiecte", to: "/projects", icon: FolderKanban, perm: "projects.view" },
+      { label: "Clienți", to: "/clients", icon: Building2, perm: "clients.view" },
+      { label: "Taskuri", to: "/tasks", icon: ListChecks, perm: "tasks.view" },
+      { label: "Observații", to: "/observations", icon: StickyNote, perm: "observations.view" },
+    ],
   },
   {
     group: "Administrare",
