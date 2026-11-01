@@ -36,7 +36,6 @@ export function paymentsRouter(): Router {
     filters: { invoiceId: payments.invoiceId, method: payments.method, currency: payments.currency },
     sortable: { paidAt: payments.paidAt, amount: payments.amount },
     defaultSort: { column: payments.paidAt, dir: "desc" },
-    sensitiveFields: [],
     toRow: async (data: Record<string, unknown>, req: Request) => {
       const db = req.ctx.db;
       const paymentId = req.method === "PATCH" ? String(req.params.id) : undefined;
@@ -177,12 +176,12 @@ function expenseConds(q: SummaryQuery): SQL[] {
   if (q.to) conds.push(lte(expenses.spentAt, dayEnd(q.to)));
   if (q.projectId) conds.push(eq(expenses.projectId, q.projectId));
   if (q.clientId) {
-    conds.push(inArray(expenses.projectId, req_projectsOfClient(q.clientId)));
+    conds.push(inArray(expenses.projectId, projectsOfClient(q.clientId)));
   }
   return conds;
 }
 
-function req_projectsOfClient(clientId: string) {
+function projectsOfClient(clientId: string) {
   return sql`(select ${projects.id} from ${projects} where ${projects.clientId} = ${clientId})` as never;
 }
 
