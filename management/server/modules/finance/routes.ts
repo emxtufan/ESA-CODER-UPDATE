@@ -155,7 +155,7 @@ async function findRate(db: Db, from: string, to: string, date: string) {
   return null;
 }
 
-const summaryQuery = z.object({
+export const summaryQuery = z.object({
   from: z.iso.date().optional(),
   to: z.iso.date().optional(),
   clientId: z.uuid().optional(),
@@ -190,6 +190,37 @@ function expenseConds(q: SummaryQuery): SQL[] {
 
 function projectsOfClient(clientId: string) {
   return sql`(select ${projects.id} from ${projects} where ${projects.clientId} = ${clientId})` as never;
+}
+
+export async function profitByProject(db: Db, q: SummaryQuery) {
+  const issued = [...invoiceConds(q)];
+  if (q.from) issued.push(gte(invoices.issueDate, q.from));
+  if (q.to) issued.push(lte(invoices.issueDate, q.to));
+  const revenue = await db
+    .select({ projectId: invoices.projectId, currency: invoices.currency, revenue: sql<string>`sum(${invoices.subtotal})` })
+    .from(invoices)
+    .where(and(...issued))
+    .groupBy(invoices.projectId, invoices.currency);
+  const spent = await db
+    .select({ projectId: expenses.projectId, currency: expenses.currency, expenses: sql<string>`sum(${expenses.amount})` })
+    .from(expenses)
+    .where(and(...expenseConds(q)))
+    .groupBy(expenses.projectId, expenses.currency);
+  const keys = new Map<string, { projectId: string; currency: string; revenue: number; expenses: number }>();
+  const slot = (projectId: string, currency: string) => {
+    const key = `${projectId}|${currency}`;
+    if (!keys.has(key)) keys.set(key, { projectId, currency, revenue: 0, expenses: 0 });
+    return keys.get(key)!;
+  };
+  for (const r of revenue) if (r.projectId) slot(r.projectId, r.currency).revenue = num(r.revenue);
+  for (const r of spent) if (r.projectId) slot(r.projectId, r.currency).expenses = num(r.expenses);
+  const ids = [...new Set([...keys.values()].map((r) => r.projectId))];
+  const names = ids.length ? await db.select({ id: projects.id, name: projects.name }).from(projects).where(inArray(projects.id, ids)) : [];
+  const byId = new Map(names.map((p) => [p.id, p.name]));
+  const items = [...keys.values()]
+    .map((r) => ({ ...r, projectName: byId.get(r.projectId) ?? null, profit: r.revenue - r.expenses }))
+    .sort((a, b) => b.profit - a.profit);
+  return items;
 }
 
 /** Evidență separată pe monedă. Venit = facturat fără TVA; profit = venit − cheltuieli directe. */
@@ -258,36 +289,7 @@ export function financeRouter(): Router {
   });
 
   router.get("/by-project", requirePermission("finance.profitability"), async (req, res) => {
-    const db = req.ctx.db;
-    const q = parse(summaryQuery, req.query);
-    const issued = [...invoiceConds(q)];
-    if (q.from) issued.push(gte(invoices.issueDate, q.from));
-    if (q.to) issued.push(lte(invoices.issueDate, q.to));
-    const revenue = await db
-      .select({ projectId: invoices.projectId, currency: invoices.currency, revenue: sql<string>`sum(${invoices.subtotal})` })
-      .from(invoices)
-      .where(and(...issued))
-      .groupBy(invoices.projectId, invoices.currency);
-    const spent = await db
-      .select({ projectId: expenses.projectId, currency: expenses.currency, expenses: sql<string>`sum(${expenses.amount})` })
-      .from(expenses)
-      .where(and(...expenseConds(q)))
-      .groupBy(expenses.projectId, expenses.currency);
-    const keys = new Map<string, { projectId: string; currency: string; revenue: number; expenses: number }>();
-    const slot = (projectId: string, currency: string) => {
-      const key = `${projectId}|${currency}`;
-      if (!keys.has(key)) keys.set(key, { projectId, currency, revenue: 0, expenses: 0 });
-      return keys.get(key)!;
-    };
-    for (const r of revenue) if (r.projectId) slot(r.projectId, r.currency).revenue = num(r.revenue);
-    for (const r of spent) if (r.projectId) slot(r.projectId, r.currency).expenses = num(r.expenses);
-    const ids = [...new Set([...keys.values()].map((r) => r.projectId))];
-    const names = ids.length ? await db.select({ id: projects.id, name: projects.name }).from(projects).where(inArray(projects.id, ids)) : [];
-    const byId = new Map(names.map((p) => [p.id, p.name]));
-    const items = [...keys.values()]
-      .map((r) => ({ ...r, projectName: byId.get(r.projectId) ?? null, profit: r.revenue - r.expenses }))
-      .sort((a, b) => b.profit - a.profit);
-    res.json({ items });
+    res.json({ items: await profitByProject(req.ctx.db, parse(summaryQuery, req.query)) });
   });
 
   return router;

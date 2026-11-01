@@ -1,11 +1,10 @@
-import { and, eq, gte, inArray, isNotNull, isNull, lt, lte, ne, notInArray } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull, lt, lte, ne } from "drizzle-orm";
 import type { Db } from "../db/client";
 import { projects, tasks } from "../db/schema/core";
 import { invoices } from "../db/schema/finance";
 import { domains, sslCertificates } from "../db/schema/infra";
 import { maintenancePlans, monitoringResults } from "../db/schema/ops";
 import type { Env } from "../env";
-import { invoiceTotals as _unused } from "../modules/finance/calc";
 import { refreshOverdue } from "../modules/finance/invoices";
 import { notify } from "../modules/notifications/service";
 
