@@ -111,6 +111,45 @@ async function main() {
     await page.getByText("To Do").first().waitFor();
     await shot("8-kanban.png");
 
+  // 7a. Infrastructură
+  await page.click("a[href='/infrastructure']");
+  await page.getByRole("heading", { name: "Infrastructură" }).first().waitFor();
+  await shot("8a-infra.png");
+
+  // 7b. Seif: secretul nu apare decât după reveal
+  const secret = "s3cret-e2e-value";
+  await page.click("a[href='/vault']");
+  await page.getByRole("heading", { name: "Seif" }).waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.fill("dialog[open] input[name=name]", "E2E cred");
+  await page.selectOption("dialog[open] select[name=type]", { index: 1 });
+  await page.fill("dialog[open] input[name=secret]", secret);
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  const credRow = page.locator("tr", { hasText: "E2E cred" }).first();
+  await credRow.waitFor();
+  if ((await page.getByText(secret).count()) !== 0) throw new Error("secret vizibil înainte de reveal");
+  await credRow.getByRole("button", { name: "Arată" }).click();
+  await page.fill("#reveal-password", process.env.E2E_PASSWORD);
+  await page.locator("dialog[open]").getByRole("button", { name: "Arată" }).click();
+  await page.locator("dialog[open] code", { hasText: secret }).waitFor();
+  await shot("8b-reveal.png");
+  await page.locator("dialog[open]").getByRole("button", { name: "Închide" }).first().click();
+  await page.locator("dialog[open]").waitFor({ state: "detached" });
+  if ((await page.getByText(secret).count()) !== 0) throw new Error("secret rămas după închidere");
+  await credRow.getByRole("button", { name: "Revocă" }).click();
+  await page.locator("dialog[open]").getByRole("button", { name: "Revocă" }).click();
+  await credRow.getByText("Revocat").waitFor();
+  await shot("8c-revocat.png");
+
+  // 7c. Tab Infrastructură în proiect
+  await page.click("a[href='/projects']");
+  await page.getByText(`Proiect ${stamp}`).first().click();
+  await page.getByRole("tab", { name: "Infrastructură" }).click();
+  for (const name of ["Servere", "Domenii", "Hosting", "Credențiale"]) {
+    await page.getByRole("heading", { name }).waitFor();
+  }
+  await shot("8d-tab-infra.png");
+
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);
     await page.getByRole("option").first().waitFor();
