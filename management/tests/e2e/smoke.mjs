@@ -146,7 +146,7 @@ async function main() {
   await page.click("a[href='/projects']");
   await page.getByText(`Proiect ${stamp}`).first().click();
   await page.getByRole("tab", { name: "Infrastructură" }).click();
-  for (const name of ["Servere", "Domenii", "Hosting", "Credențiale"]) {
+  for (const name of ["Servere", "Domenii", "Hosting", "Servicii"]) {
     await page.getByRole("heading", { name }).waitFor();
   }
   await shot("8d-tab-infra.png");
@@ -293,16 +293,24 @@ async function main() {
   await tasksReport;
   await shot(`reports-${stamp}.png`);
 
-  // 7n. Proiect creat mai sus, tab "Operațiuni"
+  // 7n. Proiect creat mai sus, tab "Mentenanță"
   await page.click("a[href='/projects']");
   await page.getByRole("heading", { name: "Proiecte" }).waitFor();
   await page.getByText(`Proiect ${stamp}`).first().click();
   await page.getByRole("tab", { name: "Timeline" }).waitFor();
   const projectUrl = new URL(page.url());
-  projectUrl.searchParams.set("tab", "operations");
+  projectUrl.searchParams.set("tab", "maintenance");
   await page.goto(projectUrl.href);
   await page.getByRole("heading", { name: "Monitorizare" }).first().waitFor();
   await shot(`project-operations-${stamp}.png`);
+  projectUrl.searchParams.set("tab", "accounts");
+  await page.goto(projectUrl.toString());
+  await page.getByRole("button", { name: "Adaugă" }).first().waitFor();
+  await shot(`project-accounts-${stamp}.png`);
+  projectUrl.searchParams.set("tab", "client");
+  await page.goto(projectUrl.toString());
+  await page.getByRole("link", { name: "Deschide fișa clientului" }).waitFor();
+  await shot(`project-client-${stamp}.png`);
 
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);

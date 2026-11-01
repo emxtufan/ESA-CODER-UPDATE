@@ -88,7 +88,8 @@ export default function ProjectDetailPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const qc = useQueryClient();
 
-  const activeTab = searchParams.get("tab") || PROJECT_TABS[0].value;
+  const requestedTab = searchParams.get("tab");
+  const activeTab = PROJECT_TABS.some((t) => t.value === requestedTab) ? (requestedTab as string) : PROJECT_TABS[0].value;
   const [editOpen, setEditOpen] = useState(false);
 
   const overviewQuery = useQuery({

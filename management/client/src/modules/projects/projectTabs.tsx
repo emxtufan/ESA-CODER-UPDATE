@@ -111,7 +111,6 @@ const UPDATE_FIELDS: FieldDef[] = [
 ];
 
 /** Credențialele din seif: în tabă apar doar metadatele, fără secret. */
-/** Credențialele din seif: în tabă apar doar metadatele, fără secret. */
 function OverviewTab({
   projectId,
   overview,
@@ -365,6 +364,41 @@ export const PROJECT_TABS: ProjectTab[] = [
       <OverviewTab projectId={projectId} overview={overview} />
     ),
   },
+  { value: "client", label: "Client", render: (_projectId, overview) => overview?.client?.id ? <ClientInfo clientId={overview.client.id} /> : <EmptyState title="Proiectul nu are client" /> },
+  { value: "accounts", label: "Conturi", render: (projectId) => <VaultList projectId={projectId} /> },
+  {
+    value: "observations",
+    label: "Observații",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <ResourcePage
+          title="Observații"
+          endpoint="/observations"
+          perm="observations"
+          itemName="observație"
+          columns={OBSERVATION_COLUMNS}
+          fields={OBSERVATION_FIELDS}
+          extraQuery={{ projectId }}
+          defaults={{ projectId }}
+          embedded
+        />
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Update-uri</h3>
+          <ResourcePage
+            title="Update-uri"
+            endpoint="/updates"
+            perm="projects"
+            itemName="update"
+            columns={UPDATE_COLUMNS}
+            fields={UPDATE_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
+            embedded
+          />
+        </section>
+      </div>
+    ),
+  },
   {
     value: "tasks",
     label: "Taskuri",
@@ -376,40 +410,6 @@ export const PROJECT_TABS: ProjectTab[] = [
         itemName="task"
         columns={TASK_COLUMNS}
         fields={TASK_FIELDS}
-        extraQuery={{ projectId }}
-        defaults={{ projectId }}
-        embedded
-      />
-    ),
-  },
-  {
-    value: "observations",
-    label: "Observații",
-    render: (projectId) => (
-      <ResourcePage
-        title="Observații"
-        endpoint="/observations"
-        perm="observations"
-        itemName="observație"
-        columns={OBSERVATION_COLUMNS}
-        fields={OBSERVATION_FIELDS}
-        extraQuery={{ projectId }}
-        defaults={{ projectId }}
-        embedded
-      />
-    ),
-  },
-  {
-    value: "updates",
-    label: "Update-uri",
-    render: (projectId) => (
-      <ResourcePage
-        title="Update-uri"
-        endpoint="/updates"
-        perm="projects"
-        itemName="update"
-        columns={UPDATE_COLUMNS}
-        fields={UPDATE_FIELDS}
         extraQuery={{ projectId }}
         defaults={{ projectId }}
         embedded
@@ -468,18 +468,8 @@ export const PROJECT_TABS: ProjectTab[] = [
         </section>
 
         <section className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold text-text">Credențiale</h3>
-          <ResourcePage
-            title="Credențiale"
-            endpoint="/vault"
-            perm="vault"
-            itemName="credențială"
-            columns={CREDENTIAL_COLUMNS}
-            fields={[]}
-            extraQuery={{ projectId }}
-            readOnly
-            embedded
-          />
+          <h3 className="text-sm font-semibold text-text">Servicii</h3>
+          <ResourcePage embedded title="Servicii" endpoint="/services" perm="infrastructure" itemName="serviciu" columns={SERVICE_COLUMNS as never} fields={SERVICE_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
         </section>
       </div>
     ),
@@ -565,8 +555,24 @@ export const PROJECT_TABS: ProjectTab[] = [
     ),
   },
   {
-    value: "operations",
-    label: "Operațiuni",
+    value: "documents",
+    label: "Documente",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Documente</h3>
+          <DocumentsList projectId={projectId} />
+        </section>
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Contracte</h3>
+          <ContractsList projectId={projectId} />
+        </section>
+      </div>
+    ),
+  },
+  {
+    value: "maintenance",
+    label: "Mentenanță",
     render: (projectId) => (
       <div className="flex flex-col gap-8">
         <section className="flex flex-col gap-3">
@@ -576,14 +582,6 @@ export const PROJECT_TABS: ProjectTab[] = [
         <section className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold text-text">Mentenanță</h3>
           <ResourcePage embedded title="Mentenanță" endpoint="/maintenance/plans" perm="maintenance" itemName="plan" columns={PLAN_COLUMNS as never} fields={PLAN_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
-        </section>
-        <section className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold text-text">Documente</h3>
-          <DocumentsList projectId={projectId} />
-        </section>
-        <section className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold text-text">Contracte</h3>
-          <ContractsList projectId={projectId} />
         </section>
       </div>
     ),
