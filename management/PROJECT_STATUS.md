@@ -29,6 +29,7 @@ Actualizat: 2026-11-01. Branch: `esa-management`.
 - Fără regulă explicită, New Project, New Task, New Commit, Invoice Issued și Payment Received rămân doar în aplicație.
 - Sumele nu se adună între monede.
 - Pagina proiectului e locul principal de lucru. Taburi: Prezentare, Client, Conturi, Observații, Taskuri, Infrastructură, Dezvoltare, Financiar, Documente, Mentenanță, Timeline.
+- Design curat, în stil Apple, pe fundal deschis, peste componente shadcn. Verde, galben și roșu sunt rezervate stărilor și notificărilor. Select și Checkbox rămân native, ca să funcționeze cu react-hook-form; bara laterală rămâne proprie.
 
 ## Neverificat cu servicii reale
 

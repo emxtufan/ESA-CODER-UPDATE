@@ -8,7 +8,8 @@
 - Căutare globală = intrare nouă în `GROUPS` din `server/modules/search/routes.ts` (`{key,label,perm,table,columns,title(row),subtitle(row),link(row)}`)
 - Rută modul: sub-rute proprii ÎNAINTE de `router.use(crudRouter({…}))`; zod fără `.default()` (`.optional()`/`.nullable()`, `<input>` gol → `""` → preprocess la `null`)
 - react-router (nu -dom); `api` e funcție, nu `api.post`; `DataTable` coloane `{key,header,render?}`; `ResourcePage` primește config-ul ca props directe; toate căile încep cu `management/`
-- Culori doar tokeni: bg-bg bg-sidebar bg-card bg-primary bg-brand text-text text-muted border-line text-danger; niciodată bg-white/gray-*.
+- Culori doar tokeni: bg-bg bg-sidebar bg-card bg-primary bg-brand text-text text-muted border-line text-danger text-success text-warning; verde, galben și roșu doar pentru stări și notificări; niciodată bg-white/gray-*.
+- UI: `@/components/ui` e API-ul aplicației, peste shadcn din `@/components/shadcn`. După `npx shadcn@latest add`: importul `cn` din "cn" devine `@/lib/utils`, `bg-muted` devine `bg-accent`, nu instala pachetul `cn`.
 
 ## UI (`@/components/ui` — se importă doar din index)
 - `Badge {tone?: "neutral"|"success"|"warning"|"danger"|"info"; children; className?}`
