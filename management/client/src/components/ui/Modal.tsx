@@ -42,7 +42,7 @@ export function Modal({ open, onClose, title, footer, children, className }: Mod
       onClose={onClose}
       onClick={handleClick}
       className={cn(
-        "m-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-hidden rounded-lg border border-line bg-card p-0 text-text backdrop:bg-bg/70",
+        "m-auto open:flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-hidden rounded-lg border border-line bg-card p-0 text-text backdrop:bg-bg/70",
         className,
       )}
     >
