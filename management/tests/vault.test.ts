@@ -130,7 +130,7 @@ describe("/api/vault", () => {
   });
 
   it("limitează încercările greșite de reveal (429)", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -147,7 +147,7 @@ describe("/api/vault", () => {
   });
 
   it("refuză reveal pe credential revocat (409)", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -166,7 +166,7 @@ describe("/api/vault", () => {
   });
 
   it("rotește secretul", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -199,7 +199,7 @@ describe("/api/vault", () => {
   });
 
   it("interzice accesul pentru rolul finance", async () => {
-    const admin = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const admin = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const adminCookie = await ctx.loginAs(admin);
     const item = await createCredential(adminCookie);
 
@@ -221,7 +221,7 @@ describe("/api/vault", () => {
   });
 
   it("leagă blob-ul criptat de credențială prin AAD", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
 
     const a = await createCredential(cookie, { name: "SSH A", username: "root" });
@@ -250,12 +250,11 @@ describe("/api/vault", () => {
   });
 
   it("returnează 503 când lipsește VAULT_MASTER_KEY", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
 
     const original = ctx.env.VAULT_MASTER_KEY;
     try {
-      // @ts-expect-error - simulăm configurarea lipsă
       ctx.env.VAULT_MASTER_KEY = undefined;
 
       const res = await ctx.api("/api/vault", {

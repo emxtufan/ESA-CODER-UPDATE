@@ -141,9 +141,9 @@ export default function ProjectDetailPage() {
               <Badge tone={statusTone(project.status)}>{project.status}</Badge>
             )}
 
-            {project.website && (
+            {project.websiteUrl && (
               <a
-                href={project.website}
+                href={project.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-sm hover:underline"
