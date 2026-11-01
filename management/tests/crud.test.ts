@@ -19,8 +19,7 @@ import { createDb, type Db } from "../server/db/client";
 import { auditLogs, roles, sessions, users } from "../server/db/schema/auth";
 import { clients } from "../server/db/schema/core";
 import { seedRoles } from "../server/db/seed";
-import { loadEnv, type Env } from "../server/env";
-import { crudRouter } from "../server/lib/crud";
+import { crudRouter, type CrudConfig } from "../server/lib/crud";
 import { errorHandler } from "../server/lib/http";
 import type { Role } from "../shared/enums";
 
@@ -54,8 +53,8 @@ type Auth = NonNullable<Request["auth"]>;
 
 /** Conexiunea la DB, refăcută pentru fiecare test. */
 let db: Db;
-/** Mediul încărcat o singură dată pentru fiecare test (folosit de `createDb`). */
-let env: Env;
+/** Închide baza în memorie; se apelează la `afterEach`. */
+let closeDb: () => Promise<void>;
 
 /** Serverele pornite în testul curent, închise la `afterEach`. */
 const openServers: Array<() => Promise<void>> = [];
@@ -101,7 +100,7 @@ async function api(base: string, path: string, options: ApiOptions = {}): Promis
 
 /** Rândurile dintr-un răspuns de listare (`items` — forma folosită de `crudRouter`). */
 function rowsOf(json: any): any[] {
-  return json?.items ?? json?.data ?? [];
+  return json?.items ?? [];
 }
 
 /** Utilizatorul + rolul lui (cheie și permisiuni citite din DB), în forma așteptată de `req.auth`. */
@@ -118,16 +117,35 @@ async function authFor(key: Role): Promise<Auth> {
     })
     .returning();
 
-  return { user, role } as Auth;
+  // Sesiunea nu e folosită de router (auth-ul e injectat), dar `req.auth` o cere.
+  const [session] = await db
+    .insert(sessions)
+    .values({
+      tokenHash: `test-${randomUUID()}`,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      lastSeenAt: new Date(),
+    })
+    .returning();
+
+  return {
+    session,
+    user,
+    role,
+    permissions: role.permissions,
+    mfaPending: session.mfaPending,
+  };
 }
 
 /** Routerul CRUD peste `clients`, cu opțiunile folosite de majoritatea testelor. */
-function clientsRouter(options: Record<string, unknown> = {}) {
-  return crudRouter(clients, {
+function clientsRouter(options: Partial<CrudConfig> = {}) {
+  return crudRouter({
+    table: clients,
+    entityType: "client",
     permission: "clients",
     schema: clientSchema,
     searchColumns: [clients.companyName, clients.city],
-    sortColumns: {
+    sortable: {
       companyName: clients.companyName,
       city: clients.city,
       createdAt: clients.createdAt,
@@ -142,13 +160,15 @@ async function seedClients(rows: Array<{ companyName: string; city?: string | nu
 }
 
 beforeEach(async () => {
-  env = loadEnv();
-  db = await createDb(env);
+  const handle = await createDb({ memory: true });
+  db = handle.db;
+  closeDb = handle.close;
   await seedRoles(db);
 });
 
 afterEach(async () => {
   await Promise.all(openServers.splice(0).map((close) => close()));
+  await closeDb();
 });
 
 describe("crudRouter — creare și validare", () => {
@@ -162,11 +182,11 @@ describe("crudRouter — creare și validare", () => {
     });
 
     expect(created.status).toBe(201);
-    expect(created.json.companyName).toBe("ACME SRL");
+    expect(created.json.item.companyName).toBe("ACME SRL");
 
     const logs = await db.select().from(auditLogs).where(eq(auditLogs.action, "client_created"));
     expect(logs.length).toBe(1);
-    expect(logs[0].entityId).toBe(created.json.id);
+    expect(logs[0].entityId).toBe(created.json.item.id);
   });
 
   it("respinge crearea fără companyName cu 422", async () => {
@@ -217,7 +237,7 @@ describe("crudRouter — listare", () => {
     const auth = await authFor("super_admin");
     const { base } = await serve(clientsRouter(), auth);
 
-    const response = await api(base, "/?sort=coloana_inexistenta&direction=asc");
+    const response = await api(base, "/?sort=coloana_inexistenta&dir=asc");
 
     expect(response.status).toBe(200);
     expect(rowsOf(response.json).length).toBe(2);
@@ -287,7 +307,13 @@ describe("crudRouter — conflicte și permisiuni", () => {
   it("întoarce 409 la duplicat pe users.email", async () => {
     const auth = await authFor("super_admin");
     const [role] = await db.select().from(roles).where(eq(roles.key, "developer")).limit(1);
-    const router = crudRouter(users, { permission: "users", schema: userSchema });
+    const router = crudRouter({
+      table: users,
+      entityType: "user",
+      permission: "users",
+      schema: userSchema,
+      searchColumns: [users.email, users.name],
+    });
     const { base } = await serve(router, auth);
 
     const payload = {
