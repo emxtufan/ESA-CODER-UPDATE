@@ -5,6 +5,7 @@
  * Endpoint-urile urmează convenția API-ului: `GET /resursa` → `{ items, total }`,
  * `POST /resursa` și `PATCH /resursa/:id` → `{ item }`, `DELETE /resursa/:id`.
  */
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type FieldValues } from "react-hook-form";
@@ -72,6 +73,8 @@ export interface ResourcePageConfig<T> {
   embedded?: boolean;
   /** `false` ascunde butonul de ștergere, indiferent de permisiune. */
   canDelete?: boolean;
+  /** Acțiuni suplimentare pe rând, afișate în coloana de acțiuni (ex. „Convertește în task”). */
+  rowActions?: (row: T) => ReactNode;
   /** Numele entității în mesaje (ex. „client”). */
   itemName: string;
 }
@@ -213,6 +216,7 @@ export function ResourcePage<T>({
   extraQuery,
   embedded = false,
   canDelete: allowDelete = true,
+  rowActions,
   itemName,
 }: ResourcePageConfig<T>) {
   const toast = useToast();
