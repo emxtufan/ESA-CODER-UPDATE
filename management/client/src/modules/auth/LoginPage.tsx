@@ -55,7 +55,7 @@ export function LoginPage() {
   };
 
   const finishLogin = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["me"] });
+    await queryClient.invalidateQueries({ queryKey: ["me"], refetchType: "all" });
     navigate("/", { replace: true });
   };
 

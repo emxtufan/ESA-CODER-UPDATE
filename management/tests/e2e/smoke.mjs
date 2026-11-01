@@ -51,7 +51,11 @@ async function main() {
     const context = await browser.newContext({ viewport: { width: 1360, height: 820 } });
     page = await context.newPage();
     page.on("console", (msg) => {
-      if (msg.type() === "error") consoleErrors.push(msg.text());
+      if (msg.type() !== "error") return;
+      const text = msg.text();
+      // 401 pe /auth/me e normal cât timp utilizatorul nu e logat
+      if (text.includes("status of 401")) return;
+      consoleErrors.push(text);
     });
     page.on("pageerror", (err) => {
       consoleErrors.push(err instanceof Error ? err.message : String(err));
