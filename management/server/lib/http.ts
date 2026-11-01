@@ -5,6 +5,31 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError, z } from "zod";
 
+/**
+ * Mesaje de validare în română, globale. Mesajele explicite din scheme rămân
+ * prioritare; aici se traduc doar cele implicite ale Zod.
+ */
+z.config({
+  customError: (iss) => {
+    switch (iss.code) {
+      case "invalid_type":
+        return iss.input === undefined || iss.input === null ? "Câmp obligatoriu" : "Valoare invalidă";
+      case "too_small":
+        return iss.origin === "string" ? `Minimum ${iss.minimum} caractere` : `Minimum ${iss.minimum}`;
+      case "too_big":
+        return iss.origin === "string" ? `Maximum ${iss.maximum} caractere` : `Maximum ${iss.maximum}`;
+      case "invalid_format":
+        if (iss.format === "email") return "Email invalid";
+        if (iss.format === "url") return "Adresă URL invalidă";
+        return "Format invalid";
+      case "invalid_value":
+        return "Valoare invalidă";
+      default:
+        return undefined;
+    }
+  },
+});
+
 /** Câmpuri invalide: nume de câmp → mesaj. */
 export type ErrorFields = Record<string, string>;
 

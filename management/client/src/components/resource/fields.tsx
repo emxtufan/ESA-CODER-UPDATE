@@ -153,7 +153,7 @@ function bodyValue(field: FieldDef, raw: unknown): unknown {
     case "tags": {
       const list = Array.isArray(raw) ? raw.map(String) : String(raw).split(",");
       const tags = list.map((tag) => tag.trim()).filter(Boolean);
-      return tags.length > 0 ? tags : null;
+      return tags;
     }
     case "datetime": {
       if (empty) return null;

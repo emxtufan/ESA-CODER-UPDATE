@@ -42,7 +42,7 @@ export function Modal({ open, onClose, title, footer, children, className }: Mod
       onClose={onClose}
       onClick={handleClick}
       className={cn(
-        "m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-lg border border-line bg-card p-0 text-text backdrop:bg-bg/70",
+        "m-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-hidden rounded-lg border border-line bg-card p-0 text-text backdrop:bg-bg/70",
         className,
       )}
     >
@@ -59,9 +59,9 @@ export function Modal({ open, onClose, title, footer, children, className }: Mod
           <X aria-hidden="true" className="size-4" />
         </button>
       </div>
-      <div className="px-4 py-3 text-sm">{children}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 text-sm">{children}</div>
       {footer ? (
-        <div className="flex justify-end gap-2 border-t border-line px-4 py-3">{footer}</div>
+        <div className="flex shrink-0 justify-end gap-2 border-t border-line px-4 py-3">{footer}</div>
       ) : null}
     </dialog>
   );
