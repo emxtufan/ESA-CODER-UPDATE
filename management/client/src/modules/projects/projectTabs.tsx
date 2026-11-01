@@ -16,7 +16,11 @@ import {
   HOSTING_FIELDS,
   SERVER_COLUMNS,
   SERVER_FIELDS,
+  SERVICE_COLUMNS,
+  SERVICE_FIELDS,
 } from "@/modules/infra/InfrastructurePage";
+import { ClientInfo } from "@/modules/clients/ClientDetailPage";
+import { VaultList } from "@/modules/vault/VaultPage";
 import { COMMIT_COLUMNS, REPO_COLUMNS, REPO_FIELDS } from "@/modules/github/GithubPage";
 import { DEPLOY_COLUMNS, DEPLOY_FIELDS } from "@/modules/deployments/DeploymentsPage";
 import { EXPENSE_COLUMNS, EXPENSE_FIELDS } from "@/modules/finance/FinancePage";
@@ -107,12 +111,7 @@ const UPDATE_FIELDS: FieldDef[] = [
 ];
 
 /** Credențialele din seif: în tabă apar doar metadatele, fără secret. */
-const CREDENTIAL_COLUMNS: DataTableColumn<Record<string, unknown>>[] = [
-  { key: "name", header: "Nume" },
-  { key: "type", header: "Tip" },
-  { key: "username", header: "Utilizator", render: (row) => String(row.username ?? "—") },
-];
-
+/** Credențialele din seif: în tabă apar doar metadatele, fără secret. */
 function OverviewTab({
   projectId,
   overview,

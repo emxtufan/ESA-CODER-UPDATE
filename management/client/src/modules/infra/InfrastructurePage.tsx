@@ -130,7 +130,7 @@ export const SERVER_COLUMNS: DataTableColumn<ServerRow>[] = [
 ];
 
 /** Câmpurile serviciului instalat: exact cele din `serviceSchema`. */
-const SERVICE_FIELDS: FieldDef[] = [
+export const SERVICE_FIELDS: FieldDef[] = [
   { name: "serverId", label: "Server", type: "relation", endpoint: "/servers", required: true },
   { name: "name", label: "Serviciu", type: "select", options: SERVICE_NAMES, required: true },
   { name: "version", label: "Versiune", type: "text" },
@@ -142,7 +142,7 @@ const SERVICE_FIELDS: FieldDef[] = [
 ];
 
 /** Coloanele listării de servicii. */
-const SERVICE_COLUMNS: DataTableColumn<ServiceRow>[] = [
+export const SERVICE_COLUMNS: DataTableColumn<ServiceRow>[] = [
   { key: "name", header: "Serviciu", sortable: true },
   { key: "serverName", header: "Server", render: (row) => row.serverName ?? "—" },
   { key: "version", header: "Versiune", render: (row) => row.version ?? "—" },
