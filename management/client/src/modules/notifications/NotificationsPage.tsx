@@ -150,7 +150,9 @@ export default function NotificationsPage() {
         ) : emailReady ? (
           <Badge tone="success">Email conectat</Badge>
         ) : (
-          <Badge tone="neutral">Email neconfigurat: setează RESEND_API_KEY și EMAIL_FROM</Badge>
+          <Badge tone="neutral" className="h-auto max-w-full whitespace-normal">
+            Email neconfigurat: setează RESEND_API_KEY și EMAIL_FROM
+          </Badge>
         )}
 
         {canUpdate ? (
@@ -200,7 +202,7 @@ export default function NotificationsPage() {
                     <button
                       type="button"
                       onClick={() => readMutation.mutate(item)}
-                      className="flex w-full flex-col flex-wrap gap-1 px-4 py-3 text-left transition-colors hover:bg-sidebar"
+                      className="flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-sidebar"
                     >
                       <span className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className={cn("text-sm text-text", item.readAt ? undefined : "font-semibold")}>
