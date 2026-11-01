@@ -254,6 +254,54 @@ async function main() {
   await page.getByText(`Factura F-${stamp} a fost emisă`).first().waitFor();
   await shot("8l-notificari.png");
 
+  // 7j. Dashboard
+  await page.goto(`${BASE}/`);
+  await page.getByRole("heading", { name: "Dashboard" }).first().waitFor();
+  await shot(`dashboard-${stamp}.png`);
+
+  // 7k. Monitorizare: verificare nouă
+  await page.goto(new URL("/monitoring", BASE).href);
+  await page.getByRole("heading", { name: "Monitorizare" }).first().waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.selectOption("dialog[open] select[name=projectId]", { index: 1 });
+  const checkUrl = `https://example.com/e2e-${stamp}`;
+  await page.fill("dialog[open] input[name=url]", checkUrl);
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: checkUrl }).first().waitFor();
+  await shot(`monitoring-${stamp}.png`);
+
+  // 7l. Monitorizare: incidente și servere
+  const incidentsResponse = page.waitForResponse((res) => res.url().includes("/api/monitoring/incidents"));
+  await page.goto(new URL("/monitoring?tab=incidents", BASE).href);
+  await incidentsResponse;
+  await page.getByRole("tab", { name: "Incidente" }).waitFor();
+  await page.goto(new URL("/monitoring?tab=servers", BASE).href);
+  await page.getByText(/Neconectat|Niciun server adăugat/).first().waitFor();
+  await shot(`monitoring-servers-${stamp}.png`);
+
+  // 7m. Rapoarte: export CSV/Excel și raport de taskuri
+  await page.goto(new URL("/reports", BASE).href);
+  await page.getByRole("heading", { name: "Rapoarte" }).first().waitFor();
+  const csvHref = await page.getByRole("link", { name: "CSV" }).first().getAttribute("href");
+  const xlsxHref = await page.getByRole("link", { name: "Excel" }).first().getAttribute("href");
+  if (!csvHref || !csvHref.includes("format=csv")) throw new Error(`link CSV fără format=csv: ${csvHref}`);
+  if (!xlsxHref || !xlsxHref.includes("format=xlsx")) throw new Error(`link Excel fără format=xlsx: ${xlsxHref}`);
+  const tasksReport = page.waitForResponse((res) => res.url().includes("/api/reports/tasks") && res.status() === 200);
+  await page.selectOption("#report-type", "tasks");
+  await tasksReport;
+  await shot(`reports-${stamp}.png`);
+
+  // 7n. Proiect creat mai sus, tab "Operațiuni"
+  await page.click("a[href='/projects']");
+  await page.getByRole("heading", { name: "Proiecte" }).waitFor();
+  await page.getByText(`Proiect ${stamp}`).first().click();
+  await page.getByRole("tab", { name: "Timeline" }).waitFor();
+  const projectUrl = new URL(page.url());
+  projectUrl.searchParams.set("tab", "operations");
+  await page.goto(projectUrl.href);
+  await page.getByRole("heading", { name: "Monitorizare" }).first().waitFor();
+  await shot(`project-operations-${stamp}.png`);
+
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);
     await page.getByRole("option").first().waitFor();
