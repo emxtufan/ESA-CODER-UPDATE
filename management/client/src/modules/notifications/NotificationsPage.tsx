@@ -200,7 +200,7 @@ export default function NotificationsPage() {
                     <button
                       type="button"
                       onClick={() => readMutation.mutate(item)}
-                      className="flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-sidebar"
+                      className="flex w-full flex-col flex-wrap gap-1 px-4 py-3 text-left transition-colors hover:bg-sidebar"
                     >
                       <span className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className={cn("text-sm text-text", item.readAt ? undefined : "font-semibold")}>
@@ -208,7 +208,9 @@ export default function NotificationsPage() {
                         </span>
                         <span className="text-xs text-muted">{formatDate(item.createdAt)}</span>
                       </span>
-                      {item.body ? <span className="text-sm text-muted">{item.body}</span> : null}
+                      {item.body ? (
+                        <span className="min-w-0 break-words text-sm text-muted">{item.body}</span>
+                      ) : null}
                     </button>
                   </li>
                 ))}
