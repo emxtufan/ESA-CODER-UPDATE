@@ -6,17 +6,20 @@
  * Scoping pe rol: rolul `developer` vede toate proiectele (fără restricții — nu are
  * `scope`), iar izolarea pe client se face în portalul clientului, nu aici.
  */
-import { and, asc, count, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, ne, notInArray, sql } from "drizzle-orm";
 import { Router, type Request } from "express";
 import { z } from "zod";
 
 import { CURRENCIES, PRIORITIES, PROJECT_STATUSES, PROJECT_TYPES } from "../../../shared/enums";
 import type { Db } from "../../db/client";
 import { activities, clients, projectFavorites, projects, tasks } from "../../db/schema/core";
+import { expenses, invoices, payments } from "../../db/schema/finance";
+import { commits, deployments, repositories } from "../../db/schema/github";
+import { incidents, maintenancePlans, monitoringChecks } from "../../db/schema/ops";
 import { crudRouter, dateStr, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
-import { requirePermission } from "../../security/guards";
+import { can, requirePermission } from "../../security/guards";
 import { notify } from "../notifications/service";
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
@@ -125,6 +128,103 @@ async function findProject(req: Request, id: string): Promise<any> {
   return row;
 }
 
+/** Ultimul commit al proiectului, prin repository-urile lui; cele fără dată la final. */
+async function lastCommitOf(db: Db, projectId: string) {
+  const [row] = await db
+    .select({ hash: commits.hash, message: commits.message, date: commits.date })
+    .from(commits)
+    .innerJoin(repositories, eq(repositories.id, commits.repositoryId))
+    .where(eq(repositories.projectId, projectId))
+    .orderBy(sql`${commits.date} desc nulls last`)
+    .limit(1);
+  return row ?? null;
+}
+
+/** Ultimul deployment al proiectului, după momentul lansării. */
+async function lastDeploymentOf(db: Db, projectId: string) {
+  const [row] = await db
+    .select({
+      status: deployments.status,
+      environment: deployments.environment,
+      deployedAt: deployments.deployedAt,
+    })
+    .from(deployments)
+    .where(eq(deployments.projectId, projectId))
+    .orderBy(desc(deployments.deployedAt))
+    .limit(1);
+  return row ?? null;
+}
+
+/**
+ * Facturile și cheltuielile proiectului, per monedă: nimic nu se adună între monede.
+ * `balance` = facturat − încasat (doar plățile nesterse ale acelor facturi).
+ */
+async function projectFinance(db: Db, projectId: string) {
+  const live = and(
+    eq(invoices.projectId, projectId),
+    isNull(invoices.deletedAt),
+    notInArray(invoices.status, ["Draft", "Cancelled"]),
+  );
+
+  const invoiced = await db
+    .select({ currency: invoices.currency, total: sql<string>`sum(${invoices.total})` })
+    .from(invoices)
+    .where(live)
+    .groupBy(invoices.currency);
+  const collected = await db
+    .select({ currency: invoices.currency, paid: sql<string>`sum(${payments.amount})` })
+    .from(payments)
+    .innerJoin(invoices, eq(payments.invoiceId, invoices.id))
+    .where(and(isNull(payments.deletedAt), live))
+    .groupBy(invoices.currency);
+  const spent = await db
+    .select({ currency: expenses.currency, total: sql<string>`sum(${expenses.amount})` })
+    .from(expenses)
+    .where(and(eq(expenses.projectId, projectId), isNull(expenses.deletedAt)))
+    .groupBy(expenses.currency);
+
+  return {
+    invoices: invoiced.map((row) => {
+      const total = Number(row.total ?? 0);
+      const paid = Number(collected.find((r) => r.currency === row.currency)?.paid ?? 0);
+      return { currency: row.currency, total, paid, balance: total - paid };
+    }),
+    expenses: spent.map((row) => ({ currency: row.currency, total: Number(row.total ?? 0) })),
+  };
+}
+
+/** Primul plan de mentenanță al proiectului (dacă există). */
+async function projectMaintenance(db: Db, projectId: string) {
+  const [row] = await db
+    .select({
+      plan: maintenancePlans.plan,
+      monthlyPrice: maintenancePlans.monthlyPrice,
+      currency: maintenancePlans.currency,
+      renewalDate: maintenancePlans.renewalDate,
+    })
+    .from(maintenancePlans)
+    .where(eq(maintenancePlans.projectId, projectId))
+    .orderBy(asc(maintenancePlans.createdAt))
+    .limit(1);
+  return row ?? null;
+}
+
+/** Incidentele nerezolvate și verificările căzute ale proiectului. */
+async function projectProblems(db: Db, projectId: string) {
+  const [open] = await db
+    .select({ n: count() })
+    .from(incidents)
+    .where(and(eq(incidents.projectId, projectId), ne(incidents.status, "Resolved")));
+  const [down] = await db
+    .select({ n: count() })
+    .from(monitoringChecks)
+    .where(
+      and(eq(monitoringChecks.projectId, projectId), eq(monitoringChecks.lastStatus, "down")),
+    );
+
+  return { incidents: open?.n ?? 0, down: down?.n ?? 0 };
+}
+
 export function projectsRouter(): Router {
   const router = Router();
 
@@ -174,7 +274,11 @@ export function projectsRouter(): Router {
     res.status(204).end();
   });
 
-  /** Sumarul proiectului: clientul, statisticile taskurilor și ultima intrare în timeline. */
+  /**
+   * Sumarul proiectului: clientul, statisticile taskurilor, ultima intrare în timeline,
+   * ultimul commit/deployment, finanțele și mentenanța proiectului. Secțiunile pentru
+   * care utilizatorul nu are permisiune întorc `null`.
+   */
   router.get("/:id/overview", requirePermission("projects.view"), async (req, res) => {
     const { id } = parse(idSchema, req.params);
     const { db } = req.ctx;
@@ -206,11 +310,22 @@ export function projectsRouter(): Router {
       .orderBy(desc(activities.at))
       .limit(1);
 
+    const lastCommit = can(req, "github.view") ? await lastCommitOf(db, id) : null;
+    const lastDeployment = can(req, "deployments.view") ? await lastDeploymentOf(db, id) : null;
+    const finance = can(req, "finance.view") ? await projectFinance(db, id) : null;
+    const maintenance = can(req, "maintenance.view") ? await projectMaintenance(db, id) : null;
+    const problems = can(req, "monitoring.view") ? await projectProblems(db, id) : null;
+
     res.json({
       project,
       client: client ?? null,
       tasks: { total, open: total - completed, completed },
       lastActivity: lastActivity ?? null,
+      lastCommit,
+      lastDeployment,
+      finance,
+      maintenance,
+      problems,
     });
   });
 
