@@ -1,0 +1,144 @@
+/**
+ * Scheletul zonei de management: sidebar fix pe desktop, drawer pe mobil,
+ * header cu utilizatorul curent și conținutul rutei în `<main id="main">`.
+ */
+import { useQueryClient } from "@tanstack/react-query";
+import { LogOut, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router";
+
+import { NAV, type NavItem } from "@/app/nav";
+import { Button, cn } from "@/components/ui";
+import { api } from "@/lib/api";
+import { useCan, useMe } from "@/lib/auth";
+
+function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+  const allowed = useCan(item.perm);
+  if (!allowed) return null;
+
+  const Icon = item.icon;
+
+  return (
+    <NavLink
+      to={item.to}
+      end={item.to === "/"}
+      onClick={onNavigate}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+          isActive ? "bg-brand text-primary" : "text-muted hover:bg-card hover:text-text",
+        )
+      }
+    >
+      <Icon aria-hidden="true" className="size-4 shrink-0" />
+      <span className="truncate">{item.label}</span>
+    </NavLink>
+  );
+}
+
+function Sidebar({ onNavigate, onClose }: { onNavigate?: () => void; onClose?: () => void }) {
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex h-14 items-center justify-between gap-2 px-4">
+        <span className="truncate text-sm font-semibold text-text">ESA Management</span>
+        {onClose ? (
+          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Închide meniul">
+            <X aria-hidden="true" className="size-4" />
+          </Button>
+        ) : null}
+      </div>
+
+      <nav className="flex-1 space-y-6 overflow-y-auto px-2 py-4">
+        {NAV.map((group) => (
+          <div key={group.group} className="space-y-1">
+            <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted">{group.group}</p>
+            {group.items.map((item) => (
+              <SidebarLink key={item.to} item={item} onNavigate={onNavigate} />
+            ))}
+          </div>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+export function Layout() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const { data: me } = useMe();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setDrawerOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [drawerOpen]);
+
+  const closeDrawer = () => setDrawerOpen(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await api("/auth/logout", { method: "POST" });
+    } catch {
+      // Deconectarea locală are loc oricum.
+    }
+    queryClient.clear();
+    navigate("/login", { replace: true });
+  };
+
+  return (
+    <div className="min-h-screen bg-bg">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-text"
+      >
+        Sari la conținut
+      </a>
+
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-line bg-sidebar lg:block">
+        <Sidebar />
+      </aside>
+
+      {drawerOpen ? (
+        <div className="lg:hidden">
+          <div className="fixed inset-0 z-40 bg-black/60" onClick={closeDrawer} aria-hidden="true" />
+          <aside className="fixed inset-y-0 left-0 z-50 w-60 border-r border-line bg-sidebar">
+            <Sidebar onNavigate={closeDrawer} onClose={closeDrawer} />
+          </aside>
+        </div>
+      ) : null}
+
+      <div className="lg:pl-60">
+        <header className="flex h-14 items-center gap-3 border-b border-line bg-bg px-4">
+          <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setDrawerOpen(true)} aria-label="Deschide meniul">
+            <Menu aria-hidden="true" className="size-4" />
+          </Button>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="text-right leading-tight">
+              <p className="text-sm font-medium text-text">{me?.user.name ?? "—"}</p>
+              <p className="text-xs text-muted">{me?.user.role ?? ""}</p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleLogout} loading={loggingOut}>
+              <LogOut aria-hidden="true" className="size-4" />
+              Deconectare
+            </Button>
+          </div>
+        </header>
+
+        <main id="main" className="p-4 lg:p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default Layout;
