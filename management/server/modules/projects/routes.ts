@@ -6,13 +6,13 @@
  * Scoping pe rol: rolul `developer` vede toate proiectele (fără restricții — nu are
  * `scope`), iar izolarea pe client se face în portalul clientului, nu aici.
  */
-import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull } from "drizzle-orm";
 import { Router, type Request } from "express";
 import { z } from "zod";
 
 import { CURRENCIES, PRIORITIES, PROJECT_STATUSES, PROJECT_TYPES } from "../../../shared/enums";
 import type { Db } from "../../db/client";
-import { clients, projectFavorites, projects } from "../../db/schema/core";
+import { activities, clients, projectFavorites, projects, tasks } from "../../db/schema/core";
 import { crudRouter, dateStr, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
@@ -171,6 +171,46 @@ export function projectsRouter(): Router {
       );
 
     res.status(204).end();
+  });
+
+  /** Sumarul proiectului: clientul, statisticile taskurilor și ultima intrare în timeline. */
+  router.get("/:id/overview", requirePermission("projects.view"), async (req, res) => {
+    const { id } = parse(idSchema, req.params);
+    const { db } = req.ctx;
+
+    const project = await findProject(req, id);
+
+    const [client] = await db
+      .select({ id: clients.id, companyName: clients.companyName })
+      .from(clients)
+      .where(eq(clients.id, project.clientId))
+      .limit(1);
+
+    const [totals] = await db
+      .select({ total: count() })
+      .from(tasks)
+      .where(and(eq(tasks.projectId, id), isNull(tasks.deletedAt)));
+    const [done] = await db
+      .select({ completed: count() })
+      .from(tasks)
+      .where(and(eq(tasks.projectId, id), isNull(tasks.deletedAt), eq(tasks.status, "Completed")));
+
+    const total = totals?.total ?? 0;
+    const completed = done?.completed ?? 0;
+
+    const [lastActivity] = await db
+      .select({ at: activities.at, description: activities.description, type: activities.type })
+      .from(activities)
+      .where(eq(activities.projectId, id))
+      .orderBy(desc(activities.at))
+      .limit(1);
+
+    res.json({
+      project,
+      client: client ?? null,
+      tasks: { total, open: total - completed, completed },
+      lastActivity: lastActivity ?? null,
+    });
   });
 
   router.use(
