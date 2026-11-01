@@ -64,6 +64,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  console.error(error instanceof Error ? (error.cause instanceof Error ? `${error.message}\n${error.cause.message}` : error.message) : String(error));
   process.exitCode = 1;
 });
