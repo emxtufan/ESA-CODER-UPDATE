@@ -456,7 +456,7 @@ export function UsersPage() {
                 options={roleOptions}
                 placeholder={rolesLoading ? "Se încarcă…" : "Alege rolul"}
                 value={roleKey}
-                onChange={(value: string) => setRoleKey(value)}
+                onChange={(e) => setRoleKey(e.target.value)}
               />
             </Field>
           </div>
@@ -493,7 +493,7 @@ export function UsersPage() {
                                 label=""
                                 checked={selectedPermissions.includes(permissionKey)}
                                 disabled={isReadOnlyRole}
-                                onChange={(checked: boolean) => togglePermission(permissionKey, checked)}
+                                onChange={(e) => togglePermission(permissionKey, e.target.checked)}
                               />
                             </td>
                           );
@@ -514,7 +514,7 @@ export function UsersPage() {
                         label={permission}
                         checked={selectedPermissions.includes(permission)}
                         disabled={isReadOnlyRole}
-                        onChange={(checked: boolean) => togglePermission(permission, checked)}
+                        onChange={(e) => togglePermission(permission, e.target.checked)}
                       />
                     ))}
                   </div>
@@ -642,14 +642,14 @@ export function UsersPage() {
               options={roleOptions}
               placeholder="Alege rolul"
               value={editRoleKey}
-              onChange={(value: string) => setEditRoleKey(value)}
+              onChange={(e) => setEditRoleKey(e.target.value)}
             />
           </Field>
 
           <Checkbox
             label="Cont dezactivat"
             checked={editDisabled}
-            onChange={(checked: boolean) => setEditDisabled(checked)}
+            onChange={(e) => setEditDisabled(e.target.checked)}
           />
         </div>
       </Modal>

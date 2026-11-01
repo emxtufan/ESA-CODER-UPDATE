@@ -86,7 +86,7 @@ function PasswordTab() {
 
   const mutation = useMutation({
     mutationFn: (values: { current: string; next: string }) =>
-      api.post("/auth/change-password", values),
+      api("/auth/change-password", { method: "POST", body: values }),
     onSuccess: () => {
       reset();
       toast.success("Parola a fost schimbată.");
@@ -204,7 +204,7 @@ function TwoFactorTab() {
 
   const setupMutation = useMutation({
     mutationFn: (values: { password: string }) =>
-      api.post<TwoFactorSetupResult>("/auth/2fa/setup", values),
+      api<TwoFactorSetupResult>("/auth/2fa/setup", { method: "POST", body: values }),
     onSuccess: (result) => {
       setSetupData(result);
       setupForm.reset();
@@ -216,7 +216,7 @@ function TwoFactorTab() {
 
   const enableMutation = useMutation({
     mutationFn: (values: { code: string }) =>
-      api.post("/auth/2fa/enable", values),
+      api("/auth/2fa/enable", { method: "POST", body: values }),
     onSuccess: async () => {
       setSetupData(null);
       enableForm.reset();
@@ -229,7 +229,7 @@ function TwoFactorTab() {
 
   const disableMutation = useMutation({
     mutationFn: (values: { password: string; code: string }) =>
-      api.post("/auth/2fa/disable", values),
+      api("/auth/2fa/disable", { method: "POST", body: values }),
     onSuccess: async () => {
       disableForm.reset();
       await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -394,11 +394,11 @@ function SessionsTab() {
 
   const sessionsQuery = useQuery({
     queryKey: ["auth", "sessions"],
-    queryFn: () => api.get<{ items: Session[] }>("/auth/sessions"),
+    queryFn: () => api<{ items: Session[] }>("/auth/sessions"),
   });
 
   const revokeMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/auth/sessions/${id}`),
+    mutationFn: (id: string) => api(`/auth/sessions/${id}`, { method: "DELETE" }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["auth", "sessions"] });
       toast.success("Sesiunea a fost revocată.");

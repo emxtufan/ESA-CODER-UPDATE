@@ -313,6 +313,7 @@ describe("crudRouter — conflicte și permisiuni", () => {
       permission: "users",
       schema: userSchema,
       searchColumns: [users.email, users.name],
+      sortable: {},
     });
     const { base } = await serve(router, auth);
 
