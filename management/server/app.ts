@@ -11,10 +11,15 @@ import helmet from "helmet";
 import type { Db } from "./db/client";
 import type { Env } from "./env";
 import { errorHandler } from "./lib/http";
+import { activitiesRouter } from "./modules/activities/routes";
 import { auditRouter } from "./modules/audit/routes";
 import { authRouter } from "./modules/auth/routes";
 import { clientsRouter, contactsRouter } from "./modules/clients/routes";
+import { commentsRouter } from "./modules/comments/routes";
+import { observationsRouter } from "./modules/observations/routes";
 import { projectsRouter } from "./modules/projects/routes";
+import { tasksRouter } from "./modules/tasks/routes";
+import { updatesRouter } from "./modules/updates/routes";
 import { csrfGuard } from "./security/guards";
 import { loadSession } from "./security/session";
 
@@ -71,6 +76,11 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/clients", clientsRouter());
   app.use("/api/contacts", contactsRouter());
   app.use("/api/projects", projectsRouter());
+  app.use("/api/tasks", tasksRouter());
+  app.use("/api/observations", observationsRouter());
+  app.use("/api/updates", updatesRouter());
+  app.use("/api/comments", commentsRouter());
+  app.use("/api/activities", activitiesRouter());
   app.use("/api/audit", auditRouter());
 
   app.get("/api/health", (_req, res) => {
