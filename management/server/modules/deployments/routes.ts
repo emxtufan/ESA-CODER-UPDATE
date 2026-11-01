@@ -10,7 +10,7 @@ import { z } from "zod";
 import { DEPLOYMENT_STATUSES } from "../../../shared/enums";
 import { projects } from "../../db/schema/core";
 import { deployments, repositories } from "../../db/schema/github";
-import { crudRouter, dateStr, optStr } from "../../lib/crud";
+import { crudRouter, optStr } from "../../lib/crud";
 import { recordActivity } from "../../security/audit";
 
 /** Câmpurile lansării din §9; `externalId` se completează doar din integrări. */
@@ -23,7 +23,11 @@ const deploymentSchema = z.object({
   environment: optStr,
   logs: optStr,
   url: optStr,
-  deployedAt: dateStr,
+  deployedAt: z
+    .preprocess(
+      (v) => (v === "" ? null : v),
+      z.iso.datetime({ local: true, offset: true }).or(z.iso.date()).nullable().optional(),
+    ),
   status: z.enum(DEPLOYMENT_STATUSES),
 });
 
