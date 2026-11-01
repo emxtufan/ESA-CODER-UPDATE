@@ -104,7 +104,6 @@ export type Permission = (typeof PERMISSIONS)[number];
 /**
  * Permisiunile implicite pe rol. `roles.permissions` din DB le poate suprascrie
  * (super_admin le are oricum pe toate).
- * Clientul nu are permisiuni interne: folosește portalul separat, izolat strict.
  */
 export const DEFAULT_ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
   super_admin: PERMISSIONS,

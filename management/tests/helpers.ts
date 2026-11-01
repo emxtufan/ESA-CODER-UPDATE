@@ -81,7 +81,7 @@ export async function setup() {
   /** Utilizator inserat direct în DB (fără fluxul de invitație). */
   async function makeUser(
     roleKey: Role,
-    { password = TEST_PASSWORD, clientId }: { password?: string; clientId?: string } = {},
+    { password = TEST_PASSWORD }: { password?: string } = {},
   ): Promise<TestUser> {
     const [role] = await db
       .select({ id: roles.id })
@@ -96,7 +96,6 @@ export async function setup() {
         email: `${roleKey}-${randomUUID()}@test.local`,
         name: `Test ${roleKey}`,
         roleId: role.id,
-        clientId: clientId ?? null,
         passwordHash: await hashPassword(password),
       })
       .returning();

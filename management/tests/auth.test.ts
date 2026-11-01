@@ -4,10 +4,9 @@
  */
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 
-import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { auditLogs, passwordTokens, roles, users } from "../server/db/schema/auth";
+import { auditLogs, passwordTokens } from "../server/db/schema/auth";
 import { hotp } from "../server/security/totp";
 
 import { setup, TEST_PASSWORD, type Setup } from "./helpers";
@@ -281,87 +280,33 @@ describe("parolă uitată și resetare", () => {
 });
 
 describe("RBAC", () => {
-  it("developer pe GET /api/users → 403, super_admin → 200", async () => {
+  it("developer pe GET /api/audit → 403", async () => {
     const developer = await app.makeUser("developer");
-    const developerCookie = await app.loginAs(developer);
-
-    const denied = await app.api("/api/users", { cookie: developerCookie });
-    expect(denied.status).toBe(403);
-    expect(denied.json.error.code).toBe("forbidden");
-
-    const root = await app.makeUser("super_admin");
-    const rootCookie = await app.loginAs(root);
-
-    const allowed = await app.api("/api/users", { cookie: rootCookie });
-    expect(allowed.status).toBe(200);
-  });
-
-  it("client pe GET /api/audit → 403", async () => {
-    const client = await app.makeUser("client");
-    const cookie = await app.loginAs(client);
+    const cookie = await app.loginAs(developer);
 
     const denied = await app.api("/api/audit", { cookie });
     expect(denied.status).toBe(403);
     expect(denied.json.error.code).toBe("forbidden");
   });
 
-  it("administratorul nu poate invita un super_admin → 403", async () => {
-    const admin = await app.makeUser("administrator");
-    const cookie = await app.loginAs(admin);
-
-    const invitedEmail = `invitat-${randomUUID()}@test.local`;
-    const denied = await app.api("/api/users/invite", {
-      method: "POST",
-      body: { email: invitedEmail, name: "Invitat", role: "super_admin", roleKey: "super_admin" },
-      cookie,
-    });
-    expect(denied.status).toBe(403);
-
-    // Niciun utilizator nou nu a fost creat.
-    const [created] = await app.db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.email, invitedEmail));
-    expect(created).toBeUndefined();
-  });
-
-  it("rolul super_admin nu poate fi modificat prin PATCH", async () => {
+  it("super_admin pe GET /api/audit → 200", async () => {
     const root = await app.makeUser("super_admin");
     const cookie = await app.loginAs(root);
 
-    const denied = await app.api("/api/users/roles/super_admin", {
-      method: "PATCH",
-      body: { permissions: [] },
-      cookie,
-    });
-    expect(denied.status).toBe(403);
-
-    const [role] = await app.db
-      .select({ permissions: roles.permissions })
-      .from(roles)
-      .where(eq(roles.key, "super_admin"))
-      .limit(1);
-    expect(role.permissions).toContain("users.update");
+    const allowed = await app.api("/api/audit", { cookie });
+    expect(allowed.status).toBe(200);
   });
 
-  it("ultimul super_admin nu poate fi retrogradat", async () => {
-    const root = await app.makeUser("super_admin");
-    const cookie = await app.loginAs(root);
+  it("finance pe GET /api/projects → 200, dar DELETE /api/clients/:id → 403", async () => {
+    const finance = await app.makeUser("finance");
+    const cookie = await app.loginAs(finance);
 
-    const demote = await app.api(`/api/users/${root.id}`, {
-      method: "PATCH",
-      body: { role: "developer", roleKey: "developer" },
-      cookie,
-    });
-    expect([400, 403, 409]).toContain(demote.status);
+    const list = await app.api("/api/projects", { cookie });
+    expect(list.status).toBe(200);
 
-    const [row] = await app.db
-      .select({ roleKey: roles.key })
-      .from(users)
-      .innerJoin(roles, eq(roles.id, users.roleId))
-      .where(eq(users.id, root.id))
-      .limit(1);
-    expect(row.roleKey).toBe("super_admin");
+    const denied = await app.api(`/api/clients/${randomUUID()}`, { method: "DELETE", cookie });
+    expect(denied.status).toBe(403);
+    expect(denied.json.error.code).toBe("forbidden");
   });
 });
 

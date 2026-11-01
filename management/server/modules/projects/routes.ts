@@ -1,7 +1,7 @@
 /**
  * Rutele pentru proiecte (§5): CRUD cu slug generat automat și unic, căutare pe
- * nume/slug/URL, filtre pe status/type/client/priority, plus echipa proiectului și
- * favoritele utilizatorului curent. Fiecare scriere lasă o intrare în timeline.
+ * nume/slug/URL, filtre pe status/type/client/priority și favoritele utilizatorului
+ * curent. Fiecare scriere lasă o intrare în timeline.
  *
  * Scoping pe rol: rolul `developer` vede toate proiectele (fără restricții — nu are
  * `scope`), iar izolarea pe client se face în portalul clientului, nu aici.
@@ -217,14 +217,6 @@ export function projectsRouter(): Router {
       },
       afterCreate: async (row: any, req: Request) => {
         await projectActivity(req, "project_created", row, `Proiect creat: ${row.name}`);
-
-        // Responsabilul devine automat membru al echipei proiectului.
-        if (row.responsibleDeveloperId) {
-          await req.ctx.db
-            .insert(projectMembers)
-            .values({ projectId: row.id, userId: row.responsibleDeveloperId })
-            .onConflictDoNothing();
-        }
       },
       afterUpdate: async (row: any, req: Request, before: any) => {
         const changed = changedFields(before, row);
