@@ -6,6 +6,10 @@ import { notificationLogs, notifications } from "../server/db/schema/ops";
 import { verifyLink, signLink } from "../server/modules/documents/files";
 import { notify, renderTemplate, retryFailed } from "../server/modules/notifications/service";
 import { setup, type Setup } from "./helpers";
+import { sendEmail } from "../server/integrations/smtp";
+
+const smtp = vi.hoisted(() => ({ sendMail: vi.fn(), createTransport: vi.fn() }));
+vi.mock("nodemailer", () => ({ default: { createTransport: smtp.createTransport } }));
 
 let ctx: Setup;
 let cookie: string;
@@ -36,12 +40,13 @@ async function newDocument() {
   return res.json.item.id as string;
 }
 
-function stubResend(handler: () => Response) {
-  const real = globalThis.fetch;
-  vi.stubGlobal("fetch", async (input: string | URL, init?: RequestInit) => {
-    if (String(input).startsWith("https://api.resend.com")) return handler();
-    return real(input, init);
-  });
+function configureSmtp(port = 587) {
+  ctx.env.SMTP_HOST = "mail.test.ro";
+  ctx.env.SMTP_PORT = port;
+  ctx.env.SMTP_USER = "esa@test.ro";
+  ctx.env.SMTP_PASS = "parola-secreta";
+  ctx.env.EMAIL_FROM = "esa@test.ro";
+  smtp.createTransport.mockReturnValue({ sendMail: smtp.sendMail });
 }
 
 describe("operațiuni", () => {
@@ -59,7 +64,12 @@ describe("operațiuni", () => {
   afterAll(() => ctx.close());
   afterEach(() => {
     vi.unstubAllGlobals();
-    ctx.env.RESEND_API_KEY = undefined;
+    ctx.env.SMTP_HOST = undefined;
+    ctx.env.SMTP_USER = undefined;
+    ctx.env.SMTP_PASS = undefined;
+    ctx.env.SMTP_PORT = 587;
+    smtp.sendMail.mockReset();
+    smtp.createTransport.mockReset();
     ctx.env.EMAIL_FROM = undefined;
   });
 
@@ -163,20 +173,30 @@ describe("operațiuni", () => {
     });
 
     it("trimite email și reîncearcă eșecurile până la limită", async () => {
-      ctx.env.RESEND_API_KEY = "re_test";
-      ctx.env.EMAIL_FROM = "esa@test.ro";
-      let answer = new Response("{}", { status: 500 });
-      stubResend(() => answer.clone());
+      configureSmtp();
+      smtp.sendMail.mockRejectedValueOnce(Object.assign(new Error("fail"), { responseCode: 550 }));
       const key = `retry:${randomUUID()}`;
       await notify(ctx.db, ctx.env, { event: "SSL Expiration", dedupeKey: key, title: "SSL expiră" });
       const [failed] = await ctx.db.select().from(notificationLogs).where(eq(notificationLogs.dedupeKey, key));
       expect(failed!.status).toBe("failed");
       expect(failed!.attempts).toBe(1);
-      answer = new Response(JSON.stringify({ id: "m1" }), { status: 200 });
+      smtp.sendMail.mockResolvedValueOnce({ messageId: "m1" });
       await retryFailed(ctx.db, ctx.env);
       const [sent] = await ctx.db.select().from(notificationLogs).where(eq(notificationLogs.dedupeKey, key));
       expect(sent!.status).toBe("sent");
       expect(sent!.sentAt).not.toBeNull();
+    });
+
+    it("SMTP cere TLS pe orice port și nu expune parola în erori", async () => {
+      configureSmtp(587);
+      smtp.sendMail.mockRejectedValueOnce(Object.assign(new Error("auth parola-secreta"), { code: "EAUTH" }));
+      const result = await sendEmail(ctx.env, { to: "a@test.ro", subject: "s", html: "h" });
+      expect(result).toEqual({ status: "failed", error: "SMTP EAUTH" });
+      expect(smtp.createTransport).toHaveBeenLastCalledWith(expect.objectContaining({ secure: false, requireTLS: true }));
+      configureSmtp(465);
+      smtp.sendMail.mockResolvedValueOnce({ messageId: "m2" });
+      expect(await sendEmail(ctx.env, { to: "a@test.ro", subject: "s", html: "h" })).toEqual({ status: "sent", id: "m2" });
+      expect(smtp.createTransport).toHaveBeenLastCalledWith(expect.objectContaining({ secure: true, requireTLS: false }));
     });
 
     it("o regulă dezactivată oprește notificarea", async () => {

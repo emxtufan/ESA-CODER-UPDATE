@@ -3,7 +3,7 @@ import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { NOTIFICATION_EVENTS } from "../../../shared/enums";
 import { emailTemplates, notificationLogs, notificationRules, notifications } from "../../db/schema/ops";
-import { isEmailConfigured, sendEmail } from "../../integrations/resend";
+import { isEmailConfigured, sendEmail } from "../../integrations/smtp";
 import { crudRouter } from "../../lib/crud";
 import { HttpError, pageQuery, paged, parse } from "../../lib/http";
 import { requireAuth, requirePermission } from "../../security/guards";
@@ -66,7 +66,7 @@ export function notificationsRouter(): Router {
       html: "<p>Emailurile din ESA Management funcționează.</p>",
     });
     if (result.status === "not_configured") {
-      throw new HttpError(503, "email_not_configured", "Emailul nu este configurat: setează RESEND_API_KEY și EMAIL_FROM");
+      throw new HttpError(503, "email_not_configured", "Emailul nu este configurat: setează SMTP_HOST, SMTP_USER, SMTP_PASS și EMAIL_FROM");
     }
     if (result.status === "failed") throw new HttpError(502, "email_failed", "Emailul de test nu a putut fi trimis");
     res.json({ status: "sent" });

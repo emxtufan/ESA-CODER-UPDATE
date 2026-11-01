@@ -1,21 +1,27 @@
-# Email (Resend)
+# Email (SMTP)
 
-Trimiterea se face prin Resend. Integrarea este „conectată” doar când sunt setate ambele variabile:
-`isConfigured` verifică `RESEND_API_KEY` **și** `EMAIL_FROM` (`server/integrations/resend.ts:22`).
+Trimiterea se face prin SMTP, cu `nodemailer` (`server/integrations/smtp.ts:25`). Integrarea este „conectată”
+doar când sunt setate `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` **și** `EMAIL_FROM`
+(`isEmailConfigured`, `server/integrations/smtp.ts:20`).
 
 ## Variabile de mediu
 
 | Variabilă | Rol |
 | --- | --- |
-| `RESEND_API_KEY` | cheia API, trimisă ca `Authorization: Bearer <key>` (`server/integrations/resend.ts:33`). Opțională în schemă (`server/env.ts:32`). |
-| `EMAIL_FROM` | expeditorul, trimis ca `from` în cererea către Resend (`server/integrations/resend.ts:36`). Opțională în schemă (`server/env.ts:33`). |
+| `SMTP_HOST` | serverul SMTP folosit la conectare (`server/integrations/smtp.ts:32`). Opțională în schemă (`server/env.ts:32`). |
+| `SMTP_PORT` | portul de conectare; implicit **587** (`server/env.ts:33`). `465` = TLS direct (`secure: true`), orice alt port cere STARTTLS (`requireTLS: true` — `server/integrations/smtp.ts:28`). |
+| `SMTP_USER` | contul SMTP (`server/integrations/smtp.ts:36`). Opțională în schemă (`server/env.ts:34`). |
+| `SMTP_PASS` | parola contului SMTP. Opțională în schemă (`server/env.ts:35`); nu apare niciodată în erori — eșecul întoarce doar codul (`server/integrations/smtp.ts:45`). |
+| `EMAIL_FROM` | expeditorul, trimis ca `from` (`server/integrations/smtp.ts:41`). Opțională în schemă (`server/env.ts:36`). |
 
-**Verificarea domeniului:** domeniul din `EMAIL_FROM` trebuie verificat în contul Resend (înregistrări DNS
-SPF/DKIM) înainte de a trimite. Fără domeniu verificat, Resend refuză expedierea.
+**Domeniul expeditorului:** domeniul din `EMAIL_FROM` trebuie să aibă înregistrări DNS SPF și DKIM, iar
+`EMAIL_FROM` trebuie să fie o adresă permisă de contul SMTP; altfel serverul refuză expedierea.
 
-Fără `RESEND_API_KEY` sau fără `EMAIL_FROM`, emailul apare **neconectat**: jurnalul marchează intrarea
+**Portul:** portul ales trebuie să fie deschis pe server; verificare rapidă: `nc -vz <host> 587`.
+
+Fără `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` sau fără `EMAIL_FROM`, emailul apare **neconectat**: jurnalul marchează intrarea
 `not_configured` (`server/modules/notifications/service.ts:74`), iar testul de trimitere întoarce
-`503 email_not_configured` cu mesajul „setează RESEND_API_KEY și EMAIL_FROM”
+`503 email_not_configured` cu mesajul „setează SMTP_HOST, SMTP_USER, SMTP_PASS și EMAIL_FROM”
 (`server/modules/notifications/routes.ts:69`). Notificările din aplicație funcționează în continuare.
 
 ## Reguli

@@ -12,7 +12,7 @@ import { z } from "zod";
 import type { Role } from "../../../shared/enums";
 import { loginHistory, passwordTokens, roles, sessions, users } from "../../db/schema/auth";
 import type { Env } from "../../env";
-import { sendEmail } from "../../integrations/resend";
+import { sendEmail } from "../../integrations/smtp";
 import { HttpError, parse } from "../../lib/http";
 import { audit } from "../../security/audit";
 import { decryptSecret, encryptSecret } from "../../security/crypto";

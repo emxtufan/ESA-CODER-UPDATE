@@ -4,7 +4,7 @@ import type { Db } from "../../db/client";
 import { roles, users } from "../../db/schema/auth";
 import { emailTemplates, notificationLogs, notificationRules, notifications } from "../../db/schema/ops";
 import type { Env } from "../../env";
-import { sendEmail } from "../../integrations/resend";
+import { sendEmail } from "../../integrations/smtp";
 
 export interface NotifyInput {
   event: NotificationEvent;

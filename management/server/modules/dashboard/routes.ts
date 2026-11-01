@@ -6,7 +6,7 @@ import { expenses, invoices, payments } from "../../db/schema/finance";
 import { commits, deployments, repositories } from "../../db/schema/github";
 import { domains, sslCertificates } from "../../db/schema/infra";
 import { incidents, monitoringChecks } from "../../db/schema/ops";
-import { isEmailConfigured } from "../../integrations/resend";
+import { isEmailConfigured } from "../../integrations/smtp";
 import { can, requireAuth } from "../../security/guards";
 import { refreshOverdue } from "../finance/invoices";
 

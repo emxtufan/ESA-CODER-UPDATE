@@ -28,8 +28,11 @@ const baseEnvSchema = z.object({
   VAULT_MASTER_KEY: optional(hex64()),
   FILE_SIGNING_KEY: optional(hex64()),
 
-  // --- Email (Resend) ---
-  RESEND_API_KEY: optional(z.string().min(1)),
+  // --- Email (SMTP) ---
+  SMTP_HOST: optional(z.string().min(1)),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+  SMTP_USER: optional(z.string().min(1)),
+  SMTP_PASS: optional(z.string().min(1)),
   EMAIL_FROM: optional(z.string().min(1)),
 
   // --- GitHub (API + webhooks) ---

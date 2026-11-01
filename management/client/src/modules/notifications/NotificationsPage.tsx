@@ -151,7 +151,7 @@ export default function NotificationsPage() {
           <Badge tone="success">Email conectat</Badge>
         ) : (
           <Badge tone="neutral" className="h-auto max-w-full whitespace-normal">
-            Email neconfigurat: setează RESEND_API_KEY și EMAIL_FROM
+            Email neconfigurat: setează SMTP_HOST, SMTP_USER, SMTP_PASS și EMAIL_FROM
           </Badge>
         )}
 

@@ -166,7 +166,7 @@ export default function DashboardPage() {
       />
 
       <div className="flex flex-wrap gap-2">
-        <Connection label="Email" on={data.integrations.email} hint="Setează RESEND_API_KEY și EMAIL_FROM" />
+        <Connection label="Email" on={data.integrations.email} hint="Setează SMTP_HOST, SMTP_USER, SMTP_PASS și EMAIL_FROM" />
         <Connection label="GitHub" on={data.integrations.githubToken} hint="Setează GITHUB_TOKEN" />
         <Connection label="Webhook" on={data.integrations.githubWebhook} hint="Setează GITHUB_WEBHOOK_SECRET" />
         <Connection label="Seif" on={data.integrations.vault} hint="Setează VAULT_MASTER_KEY" />

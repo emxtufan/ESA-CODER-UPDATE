@@ -35,7 +35,7 @@ Actualizat: 2026-11-01. Branch: `esa-management`.
 
 Nu au fost folosite credențiale reale. Fără configurare, integrările apar „neconectat”.
 
-- Trimiterea prin Resend.
+- Trimiterea prin SMTP.
 - API-ul și webhook-ul GitHub cu un depozit real.
 - Stocarea S3.
 - Instalarea cu Postgres, nginx și HTTPS: testele și E2E au rulat pe PGlite, peste HTTP local.
