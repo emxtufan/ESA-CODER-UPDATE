@@ -18,6 +18,20 @@ cp .env.example .env
 Completați `.env` conform `docs/env.md`. În dezvoltare puteți lăsa goale `DATABASE_URL`, `VAULT_MASTER_KEY` și
 `FILE_SIGNING_KEY`.
 
+## Primul cont (super_admin)
+
+```bash
+npm run user:admin -- <email> <nume>
+```
+
+Cu PGlite, creează contul cu serverul oprit: baza acceptă un singur proces.
+
+Exact două argumente poziționale, în ordinea `email`, `nume` (`server/scripts/create-admin.ts:19`); dacă lipsesc,
+scriptul afișează `Utilizare: npm run user:admin -- <email> <nume>` și iese cu cod 1
+(`server/scripts/create-admin.ts:22`). Parola este generată aleator (18 bytes, base64url —
+`server/scripts/create-admin.ts:16`, `server/scripts/create-admin.ts:50`) și afișată o singură dată în consolă
+(`server/scripts/create-admin.ts:60`); în baza de date rămâne doar hash-ul (`server/scripts/create-admin.ts:56`).
+
 ```bash
 npm run dev
 ```
@@ -30,18 +44,6 @@ Serverul ascultă implicit pe `http://127.0.0.1:5100` (`HOST`/`PORT` au implicit
 Dacă `DATABASE_URL` este gol, datele merg în PGlite, în directorul `<DATA_DIR>/pg` (`server/env.ts:23`), implicit
 `data/pg`. La pornire serverul loghează explicit „PGlite (dev)” (`server/index.ts:53`). Migrațiile se aplică automat
 la pornire (`server/db/client.ts:58`).
-
-## Primul cont (super_admin)
-
-```bash
-npm run user:admin -- <email> <nume>
-```
-
-Exact două argumente poziționale, în ordinea `email`, `nume` (`server/scripts/create-admin.ts:19`); dacă lipsesc,
-scriptul afișează `Utilizare: npm run user:admin -- <email> <nume>` și iese cu cod 1
-(`server/scripts/create-admin.ts:22`). Parola este generată aleator (18 bytes, base64url —
-`server/scripts/create-admin.ts:16`, `server/scripts/create-admin.ts:50`) și afișată o singură dată în consolă
-(`server/scripts/create-admin.ts:60`); în baza de date rămâne doar hash-ul (`server/scripts/create-admin.ts:56`).
 
 ## Teste
 

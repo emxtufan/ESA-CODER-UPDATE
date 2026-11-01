@@ -7,8 +7,8 @@ Aplicație internă pentru un singur proprietar: clienți, proiecte, taskuri, in
 ```bash
 npm install
 cp .env.example .env
-npm run dev
 npm run user:admin -- <email> <nume>
+npm run dev
 ```
 
 Aplicația pornește pe http://127.0.0.1:5100. Fără `DATABASE_URL`, datele merg în PGlite, în `DATA_DIR`.
