@@ -121,11 +121,12 @@ async function main() {
   await page.click("a[href='/vault']");
   await page.getByRole("heading", { name: "Seif" }).waitFor();
   await page.getByRole("button", { name: "Adaugă" }).first().click();
-  await page.fill("dialog[open] input[name=name]", "E2E cred");
+  const credName = `E2E cred ${stamp}`;
+  await page.fill("dialog[open] input[name=name]", credName);
   await page.selectOption("dialog[open] select[name=type]", { index: 1 });
   await page.fill("dialog[open] input[name=secret]", secret);
   await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
-  const credRow = page.locator("tr", { hasText: "E2E cred" }).first();
+  const credRow = page.locator("tr", { hasText: credName }).first();
   await credRow.waitFor();
   if ((await page.getByText(secret).count()) !== 0) throw new Error("secret vizibil înainte de reveal");
   await credRow.getByRole("button", { name: "Arată" }).click();
@@ -149,6 +150,30 @@ async function main() {
     await page.getByRole("heading", { name }).waitFor();
   }
   await shot("8d-tab-infra.png");
+
+  // 7d. GitHub: fără token apare „Neconectat”, iar sincronizarea e ascunsă
+  await page.click("a[href='/github']");
+  await page.getByRole("heading", { name: "GitHub" }).first().waitFor();
+  await page.getByText("Neconectat", { exact: false }).first().waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.fill("dialog[open] input[name=name]", `repo-${stamp}`);
+  await page.fill("dialog[open] input[name=owner]", "esa");
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: `repo-${stamp}` }).first().waitFor();
+  if ((await page.getByRole("button", { name: "Sincronizează" }).count()) !== 0) throw new Error("sync vizibil fără token");
+  await shot("8e-github.png");
+
+  // 7e. Deployments: înregistrare manuală, cu oră din formular
+  await page.click("a[href='/deployments']");
+  await page.getByRole("heading", { name: "Deployments" }).first().waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.selectOption("dialog[open] select[name=projectId]", { label: `Proiect ${stamp}` });
+  await page.selectOption("dialog[open] select[name=status]", { label: "Rolled Back" });
+  await page.fill("dialog[open] input[name=environment]", `prod-${stamp}`);
+  await page.fill("dialog[open] input[name=deployedAt]", "2026-03-05T14:30");
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: `prod-${stamp}` }).first().waitFor();
+  await shot("8f-deployments.png");
 
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);
