@@ -146,7 +146,7 @@ export function TaskModal({ taskId, open, onClose }: TaskModalProps) {
           <Spinner />
         </div>
       ) : taskQuery.error ? (
-        <p className="text-sm text-danger-600">{errorMessage(taskQuery.error, "Nu am putut încărca taskul")}</p>
+        <p className="text-sm text-danger">{errorMessage(taskQuery.error, "Nu am putut încărca taskul")}</p>
       ) : (
         <div className="space-y-8">
           <form onSubmit={onSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -156,24 +156,24 @@ export function TaskModal({ taskId, open, onClose }: TaskModalProps) {
           </form>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-neutral-800">Comentarii</h3>
+            <h3 className="text-sm font-semibold text-text">Comentarii</h3>
             {commentsQuery.isLoading ? (
               <div className="flex justify-center py-4">
                 <Spinner />
               </div>
             ) : commentsQuery.error ? (
-              <p className="text-sm text-danger-600">{errorMessage(commentsQuery.error, "Nu am putut încărca comentariile")}</p>
+              <p className="text-sm text-danger">{errorMessage(commentsQuery.error, "Nu am putut încărca comentariile")}</p>
             ) : (commentsQuery.data?.items ?? []).length === 0 ? (
-              <p className="text-sm text-neutral-500">Niciun comentariu.</p>
+              <p className="text-sm text-muted">Niciun comentariu.</p>
             ) : (
               <ul className="space-y-2">
                 {(commentsQuery.data?.items ?? []).map((comment) => (
-                  <li key={comment.id} className="rounded-md border border-neutral-200 p-3">
-                    <div className="flex items-center justify-between gap-2 text-xs text-neutral-500">
+                  <li key={comment.id} className="rounded-md border border-line p-3">
+                    <div className="flex items-center justify-between gap-2 text-xs text-muted">
                       <span>{comment.authorName ?? "—"}</span>
                       <span>{formatDate(comment.createdAt)}</span>
                     </div>
-                    <p className="mt-1 whitespace-pre-line text-sm text-neutral-800">{comment.body}</p>
+                    <p className="mt-1 whitespace-pre-line text-sm text-text">{comment.body}</p>
                   </li>
                 ))}
               </ul>
@@ -198,23 +198,23 @@ export function TaskModal({ taskId, open, onClose }: TaskModalProps) {
           </section>
 
           <section className="space-y-3">
-            <h3 className="text-sm font-semibold text-neutral-800">Dependențe</h3>
+            <h3 className="text-sm font-semibold text-text">Dependențe</h3>
             {dependenciesQuery.isLoading ? (
               <div className="flex justify-center py-4">
                 <Spinner />
               </div>
             ) : dependencies.length === 0 ? (
-              <p className="text-sm text-neutral-500">Nicio dependență.</p>
+              <p className="text-sm text-muted">Nicio dependență.</p>
             ) : (
               <ul className="space-y-2">
                 {dependencies.map((dep) => (
                   <li
                     key={dep.id}
-                    className="flex items-center justify-between gap-2 rounded-md border border-neutral-200 p-3"
+                    className="flex items-center justify-between gap-2 rounded-md border border-line p-3"
                   >
-                    <span className="text-sm text-neutral-800">{dep.title}</span>
+                    <span className="text-sm text-text">{dep.title}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-neutral-500">{dep.status ?? "—"}</span>
+                      <span className="text-xs text-muted">{dep.status ?? "—"}</span>
                       <Button
                         variant="ghost"
                         size="sm"

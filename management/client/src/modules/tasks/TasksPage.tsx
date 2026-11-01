@@ -158,7 +158,7 @@ function KanbanView({
         return (
           <div
             key={status}
-            className="flex w-72 shrink-0 flex-col gap-2 rounded-lg bg-neutral-50 p-3"
+            className="flex w-72 shrink-0 flex-col gap-2 rounded-lg bg-sidebar p-3"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
@@ -167,8 +167,8 @@ function KanbanView({
             }}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-neutral-800">{status}</h3>
-              <span className="text-xs text-neutral-500">{columnTasks.length}</span>
+              <h3 className="text-sm font-semibold text-text">{status}</h3>
+              <span className="text-xs text-muted">{columnTasks.length}</span>
             </div>
             {columnTasks.map((task) => (
               <div
@@ -176,13 +176,13 @@ function KanbanView({
                 draggable
                 onDragStart={(e) => e.dataTransfer.setData("text/plain", task.id)}
                 onClick={() => onOpenTask(task.id)}
-                className="cursor-pointer space-y-1 rounded-md border border-neutral-200 bg-white p-3 shadow-sm"
+                className="cursor-pointer space-y-1 rounded-md border border-line bg-card p-3 shadow-sm"
               >
-                <p className="text-sm font-medium text-neutral-900">{task.title}</p>
-                <p className="text-xs text-neutral-500">{task.projectName ?? "—"}</p>
+                <p className="text-sm font-medium text-text">{task.title}</p>
+                <p className="text-xs text-muted">{task.projectName ?? "—"}</p>
                 <div className="flex items-center justify-between gap-2">
                   {task.priority ? <Badge tone={statusTone(task.priority)}>{task.priority}</Badge> : <span />}
-                  <span className="text-xs text-neutral-500">{formatDate(task.due)}</span>
+                  <span className="text-xs text-muted">{formatDate(task.due)}</span>
                 </div>
                 <div onClick={(e) => e.stopPropagation()}>
                   <Select
@@ -239,7 +239,7 @@ function CalendarView({ onOpenTask }: { onOpenTask(taskId: string): void }) {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="min-w-40 text-center text-sm font-semibold text-neutral-800">{monthLabel}</span>
+        <span className="min-w-40 text-center text-sm font-semibold text-text">{monthLabel}</span>
         <Button
           variant="ghost"
           size="sm"
@@ -250,12 +250,12 @@ function CalendarView({ onOpenTask }: { onOpenTask(taskId: string): void }) {
       </div>
       <div className="grid grid-cols-7 gap-1">
         {weekdayLabels.map((label) => (
-          <div key={label} className="pb-1 text-center text-xs font-semibold text-neutral-500">
+          <div key={label} className="pb-1 text-center text-xs font-semibold text-muted">
             {label}
           </div>
         ))}
         {cells.map((day, index) => {
-          if (day === null) return <div key={`empty-${index}`} className="min-h-24 rounded-md bg-neutral-50/50" />;
+          if (day === null) return <div key={`empty-${index}`} className="min-h-24 rounded-md bg-sidebar/50" />;
           const dayIso = isoDate(new Date(month.getFullYear(), month.getMonth(), day));
           const dayTasks = items.filter((task) => (task.due ?? "").slice(0, 10) === dayIso);
           return (
@@ -263,17 +263,17 @@ function CalendarView({ onOpenTask }: { onOpenTask(taskId: string): void }) {
               key={dayIso}
               className={
                 dayIso === todayIso
-                  ? "min-h-24 space-y-1 rounded-md border border-primary-300 bg-white p-1"
-                  : "min-h-24 space-y-1 rounded-md border border-neutral-200 bg-white p-1"
+                  ? "min-h-24 space-y-1 rounded-md border border-primary bg-card p-1"
+                  : "min-h-24 space-y-1 rounded-md border border-line bg-card p-1"
               }
             >
-              <div className="text-right text-xs text-neutral-500">{day}</div>
+              <div className="text-right text-xs text-muted">{day}</div>
               {dayTasks.map((task) => (
                 <button
                   key={task.id}
                   type="button"
                   onClick={() => onOpenTask(task.id)}
-                  className="block w-full truncate rounded bg-neutral-100 px-1 py-0.5 text-left text-xs text-neutral-800 hover:bg-neutral-200"
+                  className="block w-full truncate rounded bg-bg px-1 py-0.5 text-left text-xs text-text hover:bg-sidebar"
                   title={`${task.title}${task.projectName ? ` — ${task.projectName}` : ""}`}
                 >
                   {task.title}

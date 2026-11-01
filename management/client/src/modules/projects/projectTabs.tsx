@@ -16,10 +16,10 @@ export interface ProjectOverview {
     id: string;
     name: string;
     status?: string | null;
-    website?: string | null;
+    websiteUrl?: string | null;
     [key: string]: unknown;
   };
-  client?: { id: string; name: string } | null;
+  client?: { id: string; companyName: string } | null;
   tasks: { total: number; open: number; completed: number };
   lastActivity?: {
     at?: string | null;
@@ -89,7 +89,7 @@ function OverviewTab({
       <Card title="Client">
         {client ? (
           <Link to={`/clients/${client.id}`} className="text-[--primary] hover:underline">
-            {client.name}
+            {client.companyName}
           </Link>
         ) : (
           <span className="text-sm opacity-60">Fără client</span>
@@ -97,14 +97,14 @@ function OverviewTab({
       </Card>
 
       <Card title="Website">
-        {project.website ? (
+        {project.websiteUrl ? (
           <a
-            href={project.website}
+            href={project.websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline"
           >
-            {project.website}
+            {project.websiteUrl}
           </a>
         ) : (
           <span className="text-sm opacity-60">—</span>
