@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type FieldValues } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 import {
   Button,
@@ -224,6 +224,7 @@ export function ResourcePage<T>({
 }: ResourcePageConfig<T>) {
   const toast = useToast();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
 
   const canCreate = useCan(`${perm}.create`) && !readOnly;
@@ -257,6 +258,22 @@ export function ResourcePage<T>({
     setFormOpen(false);
     setEditing(null);
   }
+
+  // Link cu `?new=1` (ex. din dashboard): deschide formularul de creare o singură dată.
+  const newRequested = searchParams.get("new") === "1";
+  useEffect(() => {
+    if (embedded || !canCreate || !newRequested) return;
+    setEditing(null);
+    setFormOpen(true);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("new");
+        return next;
+      },
+      { replace: true },
+    );
+  }, [embedded, canCreate, newRequested, setSearchParams]);
 
   function handleSort(key: string) {
     if (key === list.sort) list.setSort(key, list.dir === "asc" ? "desc" : "asc");

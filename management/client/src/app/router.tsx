@@ -26,6 +26,8 @@ const FinancePage = lazy(() => import("@/modules/finance/FinancePage"));
 const MaintenancePage = lazy(() => import("@/modules/maintenance/MaintenancePage"));
 const DocumentsPage = lazy(() => import("@/modules/documents/DocumentsPage"));
 const NotificationsPage = lazy(() => import("@/modules/notifications/NotificationsPage"));
+const MonitoringPage = lazy(() => import("@/modules/monitoring/MonitoringPage"));
+const ReportsPage = lazy(() => import("@/modules/reports/ReportsPage"));
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -52,6 +54,8 @@ export const router = createBrowserRouter([
       { path: "maintenance", element: <MaintenancePage /> },
       { path: "documents", element: <DocumentsPage /> },
       { path: "notifications", element: <NotificationsPage /> },
+      { path: "monitoring", element: <MonitoringPage /> },
+      { path: "reports", element: <ReportsPage /> },
       { path: "audit", element: <AuditPage /> },
       { path: "settings", element: <AccountPage /> },
     ],

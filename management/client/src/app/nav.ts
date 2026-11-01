@@ -1,5 +1,7 @@
 /** Navigația laterală: grupuri de module, fiecare item cu permisiune opțională. */
 import {
+  Activity,
+  BarChart3,
   Building2,
   FolderKanban,
   GitBranch,
@@ -69,6 +71,8 @@ export const NAV: NavGroup[] = [
       { label: "Mentenanță", to: "/maintenance", icon: Wrench, perm: "maintenance.view" },
       { label: "Documente", to: "/documents", icon: FileText, perm: "documents.view" },
       { label: "Notificări", to: "/notifications", icon: Bell },
+      { label: "Monitorizare", to: "/monitoring", icon: Activity, perm: "monitoring.view" },
+      { label: "Rapoarte", to: "/reports", icon: BarChart3, perm: "reports.view" },
     ],
   },
   {
