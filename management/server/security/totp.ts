@@ -46,8 +46,8 @@ function base32Decode(secret: string): Buffer | null {
   return bytes.length > 0 ? Buffer.from(bytes) : null;
 }
 
-/** Codul HOTP de 6 cifre pentru un pas dat. */
-function hotp(key: Buffer, step: number): string {
+/** Codul HOTP de 6 cifre pentru un pas dat (RFC 4226); exportat pentru teste. */
+export function hotp(key: Buffer, step: number): string {
   const counter = Buffer.alloc(8);
   counter.writeUInt32BE(Math.floor(step / 2 ** 32), 0);
   counter.writeUInt32BE(step % 2 ** 32, 4);
@@ -74,15 +74,22 @@ export function otpauthUrl(secret: string, email: string): string {
 /**
  * Verifică un cod TOTP în fereastra ±1 pas.
  * Returnează pasul potrivit sau `null`. Un pas `<= lastStep` este refuzat (anti-replay).
+ * `now` (ms epoch sau Date) e opțional — folosit la verificarea vectorilor cunoscuți.
  */
-export function verifyTotp(secret: string, code: string, lastStep?: number | null): number | null {
+export function verifyTotp(
+  secret: string,
+  code: string,
+  lastStep?: number | null,
+  now: number | Date = Date.now(),
+): number | null {
   const key = base32Decode(secret);
   if (!key) return null;
 
   const candidate = String(code ?? "").trim();
   if (!/^\d{6}$/.test(candidate)) return null;
 
-  const currentStep = Math.floor(Date.now() / 1000 / STEP_SECONDS);
+  const nowMs = now instanceof Date ? now.getTime() : now;
+  const currentStep = Math.floor(nowMs / 1000 / STEP_SECONDS);
   const candidateBuffer = Buffer.from(candidate, "utf8");
 
   for (const offset of [0, -1, 1]) {
