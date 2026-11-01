@@ -2,9 +2,11 @@
 import {
   Building2,
   FolderKanban,
+  KeyRound,
   LayoutDashboard,
   ListChecks,
   ScrollText,
+  Server,
   Settings,
   StickyNote,
   type LucideIcon,
@@ -35,6 +37,13 @@ export const NAV: NavGroup[] = [
       { label: "Clienți", to: "/clients", icon: Building2, perm: "clients.view" },
       { label: "Taskuri", to: "/tasks", icon: ListChecks, perm: "tasks.view" },
       { label: "Observații", to: "/observations", icon: StickyNote, perm: "observations.view" },
+    ],
+  },
+  {
+    group: "Infrastructură",
+    items: [
+      { label: "Infrastructură", to: "/infrastructure", icon: Server, perm: "infrastructure.view" },
+      { label: "Seif", to: "/vault", icon: KeyRound, perm: "vault.view" },
     ],
   },
   {

@@ -9,6 +9,14 @@ import { ResourcePage } from "@/components/resource/ResourcePage";
 import type { FieldDef } from "@/components/resource/fields";
 import { formatDate, statusTone } from "@/components/resource/fields";
 import { api, ApiError } from "@/lib/api";
+import {
+  DOMAIN_COLUMNS,
+  DOMAIN_FIELDS,
+  HOSTING_COLUMNS,
+  HOSTING_FIELDS,
+  SERVER_COLUMNS,
+  SERVER_FIELDS,
+} from "@/modules/infra/InfrastructurePage";
 import { OBSERVATION_FIELDS, TASK_FIELDS } from "@/modules/tasks/fields";
 
 export interface ProjectOverview {
@@ -68,6 +76,13 @@ const UPDATE_COLUMNS: DataTableColumn<Record<string, unknown>>[] = [
 
 const UPDATE_FIELDS: FieldDef[] = [
   { name: "text", label: "Update", type: "textarea", required: true, span: 2 },
+];
+
+/** Credențialele din seif: în tabă apar doar metadatele, fără secret. */
+const CREDENTIAL_COLUMNS: DataTableColumn<Record<string, unknown>>[] = [
+  { key: "name", header: "Nume" },
+  { key: "type", header: "Tip" },
+  { key: "username", header: "Utilizator", render: (row) => String(row.username ?? "—") },
 ];
 
 function OverviewTab({
