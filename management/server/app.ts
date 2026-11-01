@@ -20,6 +20,7 @@ import { deploymentsRouter } from "./modules/deployments/routes";
 import { logsRouter, notificationsRouter, rulesRouter, templatesRouter } from "./modules/notifications/routes";
 import { documentsRouter, signedFilesRouter } from "./modules/documents/routes";
 import { contractsRouter, maintenanceLogsRouter, maintenancePlansRouter } from "./modules/maintenance/routes";
+import { monitoringRouter } from "./modules/monitoring/routes";
 import { invoicesRouter } from "./modules/finance/invoices";
 import { expensesRouter, financeRouter, paymentsRouter, ratesRouter } from "./modules/finance/routes";
 import { githubRouter } from "./modules/github/routes";
@@ -118,6 +119,7 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/expenses", expensesRouter());
   app.use("/api/exchange-rates", ratesRouter());
   app.use("/api/finance", financeRouter());
+  app.use("/api/monitoring", monitoringRouter());
   app.use("/api/maintenance/plans", maintenancePlansRouter());
   app.use("/api/maintenance/logs", maintenanceLogsRouter());
   app.use("/api/contracts", contractsRouter());

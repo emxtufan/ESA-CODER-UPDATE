@@ -202,6 +202,10 @@ export const ROLE_LABELS: Record<Role, string> = {
 };
 
 // Monede — sumele se țin în minor units (integer), niciodată amestecate între monede.
+// §15 Incidente
+export const INCIDENT_SEVERITIES = ["Low", "Medium", "High", "Critical"] as const;
+export const INCIDENT_STATUSES = ["Open", "Investigating", "Resolved"] as const;
+
 export const CURRENCIES = ["RON", "EUR", "USD"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 

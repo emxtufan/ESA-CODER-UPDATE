@@ -11,6 +11,7 @@ import { createApp } from "./app";
 import { createDb } from "./db/client";
 import { seedRoles } from "./db/seed";
 import { loadEnv } from "./env";
+import { startScheduler } from "./jobs/scheduler";
 
 /** Directorul build-ului de client (`vite build` scrie în `<repo>/dist`). */
 const DIST_DIR = fileURLToPath(new URL("../dist", import.meta.url));
@@ -52,7 +53,10 @@ async function main(): Promise<void> {
     if (!env.DATABASE_URL) console.log("PGlite (dev)");
   });
 
+  const stopScheduler = startScheduler(db, env);
+
   process.on("SIGTERM", () => {
+    stopScheduler();
     server.close(() => {
       void close().finally(() => process.exit(0));
     });
