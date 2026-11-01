@@ -22,6 +22,7 @@ import {
   ErrorState,
   Modal,
   PageHeader,
+  Skeleton,
   Spinner,
   Tabs,
   cn,
@@ -235,6 +236,99 @@ function ActivityTab({ activity }: { activity: ClientActivity[] }) {
   );
 }
 
+/** Câmpurile read-only ale clientului: `CLIENT_FIELDS` cu valorile formatate. */
+function ClientFieldsPanel({ client }: { client: ClientDetail }) {
+  return (
+    <Card title="Date client">
+      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {CLIENT_FIELDS.map((field) => (
+          <div key={field.name} className={cn(field.span === 2 && "sm:col-span-2")}>
+            <dt className="text-xs text-muted">{field.label}</dt>
+            <dd className="mt-0.5 text-sm break-words text-text">
+              {displayValue(field, client[field.name])}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </Card>
+  );
+}
+
+/** Contactele clientului, filtrate pe `clientId` în tabela `contacts`. */
+function ClientContactsTab({ clientId, clientName }: { clientId: string; clientName: string }) {
+  const clientFilter = useMemo(() => ({ clientId }), [clientId]);
+
+  return (
+    <ResourcePage<ContactRow>
+      title="Contacte"
+      description={`Contactele clientului ${clientName}`}
+      endpoint="/contacts"
+      perm="clients"
+      itemName="contact"
+      columns={CONTACT_COLUMNS}
+      fields={CONTACT_FIELDS}
+      extraQuery={clientFilter}
+      defaults={clientFilter}
+      embedded
+    />
+  );
+}
+
+/**
+ * Fișa clientului refolosibilă în alte ecrane (ex. panouri laterale): datele din
+ * tabul „Date”, contactele și acțiunile rapide de editare / deschidere fișă.
+ */
+export function ClientInfo({ clientId }: { clientId: string }) {
+  const [editing, setEditing] = useState(false);
+
+  const clientQuery = useQuery<{ item: ClientDetail }>({
+    queryKey: ["client", clientId],
+    queryFn: () => api<{ item: ClientDetail }>(`/clients/${clientId}`),
+    enabled: Boolean(clientId),
+  });
+
+  const canUpdate = useCan("clients.update");
+
+  if (clientQuery.isLoading) {
+    return (
+      <div className="grid gap-3">
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-40 w-full" />
+      </div>
+    );
+  }
+
+  if (clientQuery.error || !clientQuery.data) {
+    return <ErrorState error={clientQuery.error} onRetry={() => void clientQuery.refetch()} />;
+  }
+
+  const client = clientQuery.data.item;
+
+  return (
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base font-semibold text-text">{client.companyName}</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          {canUpdate ? (
+            <Button variant="primary" onClick={() => setEditing(true)}>
+              Editează
+            </Button>
+          ) : null}
+          <Link to={`/clients/${clientId}`} className="text-sm font-medium text-primary hover:underline">
+            Deschide fișa clientului
+          </Link>
+        </div>
+      </div>
+
+      <ClientFieldsPanel client={client} />
+
+      <ClientContactsTab clientId={clientId} clientName={client.companyName} />
+
+      {editing ? <EditClientModal client={client} onClose={() => setEditing(false)} /> : null}
+    </div>
+  );
+}
+
 export function ClientDetailPage() {
   const { id = "" } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -258,8 +352,6 @@ export function ClientDetailPage() {
     queryFn: () => api<ClientSummary>(`/clients/${id}/summary`),
     enabled: Boolean(id),
   });
-
-  const clientFilter = useMemo(() => ({ clientId: id }), [id]);
 
   const canViewFinance = useCan("finance.view");
   const tabs = canViewFinance ? [...TABS, INVOICES_TAB] : TABS;
@@ -321,38 +413,14 @@ export function ClientDetailPage() {
 
       <Tabs items={tabs} value={tab} onChange={changeTab} />
 
-      {tab === "date" ? (
-        <Card title="Date client">
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {CLIENT_FIELDS.map((field) => (
-              <div key={field.name} className={cn(field.span === 2 && "sm:col-span-2")}>
-                <dt className="text-xs text-muted">{field.label}</dt>
-                <dd className="mt-0.5 text-sm break-words text-text">
-                  {displayValue(field, client[field.name])}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </Card>
-      ) : null}
+      {tab === "date" ? <ClientFieldsPanel client={client} /> : null}
 
       {tab === "projects"
         ? summaryContent((summary) => <ProjectsTab projects={summary.projects} />)
         : null}
 
       {tab === "contacts" ? (
-        <ResourcePage<ContactRow>
-          title="Contacte"
-          description={`Contactele clientului ${client.companyName}`}
-          endpoint="/contacts"
-          perm="clients"
-          itemName="contact"
-          columns={CONTACT_COLUMNS}
-          fields={CONTACT_FIELDS}
-          extraQuery={clientFilter}
-          defaults={clientFilter}
-          embedded
-        />
+        <ClientContactsTab clientId={id} clientName={client.companyName} />
       ) : null}
 
       {tab === "activity"
