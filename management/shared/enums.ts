@@ -187,13 +187,7 @@ export const MAINTENANCE_ACTIVITIES = [
 export type MaintenanceActivity = (typeof MAINTENANCE_ACTIVITIES)[number];
 
 // Roluri — cheile sunt folosite în DB (roles.key) și în DEFAULT_ROLE_PERMISSIONS.
-export const ROLES = [
-  "super_admin",
-  "administrator",
-  "developer",
-  "finance",
-  "client",
-] as const;
+export const ROLES = ["super_admin", "administrator", "developer", "finance"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const ROLE_LABELS: Record<Role, string> = {
@@ -201,13 +195,12 @@ export const ROLE_LABELS: Record<Role, string> = {
   administrator: "Administrator",
   developer: "Developer",
   finance: "Finance",
-  client: "Client",
 };
 
 // Monede — sumele se țin în minor units (integer), niciodată amestecate între monede.
 export const CURRENCIES = ["RON", "EUR", "USD"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
-// Tipuri de token de parolă (invitație / resetare).
-export const PASSWORD_TOKEN_KINDS = ["invite", "reset"] as const;
+// Tipuri de token de parolă.
+export const PASSWORD_TOKEN_KINDS = ["reset"] as const;
 export type PasswordTokenKind = (typeof PASSWORD_TOKEN_KINDS)[number];

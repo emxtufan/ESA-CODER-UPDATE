@@ -46,22 +46,6 @@ export function requirePermission(...perms: Permission[]): RequestHandler {
   };
 }
 
-/** Rutele interne: rolul `client` nu are acces. */
-export function requireStaff(req: Request, _res: Response, next: NextFunction): void {
-  const auth = authenticated(req);
-  if (auth.role.key === "client") throw new HttpError(403, "forbidden", "Acces interzis");
-  next();
-}
-
-/** Portalul clientului: doar rolul `client`, legat de un `clientId`. */
-export function requireClient(req: Request, _res: Response, next: NextFunction): void {
-  const auth = authenticated(req);
-  if (auth.role.key !== "client" || !auth.user.clientId) {
-    throw new HttpError(403, "forbidden", "Acces doar pentru clienți");
-  }
-  next();
-}
-
 /** Metodele fără efecte secundare nu au nevoie de token CSRF. */
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 

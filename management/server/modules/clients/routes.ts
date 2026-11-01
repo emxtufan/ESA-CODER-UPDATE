@@ -1,7 +1,7 @@
 /**
  * Rutele pentru clienți (§6): CRUD peste `clients` cu căutare pe datele de identificare
  * și filtre pe status/țară, un sumar (proiecte + activitate recentă) și CRUD-ul
- * contactelor suplimentare. Notele interne ies din răspuns doar pentru staff.
+ * contactelor suplimentare.
  */
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { Router, type Request } from "express";
@@ -63,11 +63,6 @@ const contactSchema = z.object({
   phone: optStr,
   notes: optStr,
 });
-
-/** Staff = orice rol în afară de `client`; notele interne rămân doar la staff. */
-function isStaff(req: Request): boolean {
-  return req.auth?.role.key !== "client";
-}
 
 /** Intrare în timeline-ul clientului (creare/modificare). */
 async function clientActivity(
@@ -147,11 +142,6 @@ export function clientsRouter(): Router {
         status: clients.status,
       },
       defaultSort: { column: clients.companyName },
-      fromRow: (row, req) => {
-        if (isStaff(req)) return row;
-        const { internalNotes: _internalNotes, ...rest } = row as Record<string, unknown>;
-        return rest;
-      },
       // Ștergerea e logică, deci FK-ul nu blochează: verificăm explicit proiectele active.
       beforeDelete: async (row: any, req: Request) => {
         const [total] = await req.ctx.db

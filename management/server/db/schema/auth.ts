@@ -14,8 +14,6 @@ import {
 import type { PasswordTokenKind, Role } from "../../../shared/enums";
 import type { Permission } from "../../../shared/permissions";
 
-import { clients } from "./core";
-
 /**
  * Helper-e locale pentru convențiile de schema: pk uuid, created_at/updated_at
  * timestamptz cu default now (actualizarea lui updated_at o face serviciul).
@@ -48,16 +46,11 @@ export const users = pgTable(
     roleId: uuid("role_id")
       .notNull()
       .references(() => roles.id, { onDelete: "restrict" }),
-    /** Referință circulară users → clients (clients e definit în core.ts). */
-    clientId: uuid("client_id").references((): AnyPgColumn => clients.id, {
-      onDelete: "set null",
-    }),
     /** Secretul TOTP criptat AES-256-GCM (VAULT_MASTER_KEY), niciodată plaintext. */
     totpSecretEnc: text("totp_secret_enc"),
     totpEnabled: boolean("totp_enabled").notNull().default(false),
     /** Ultimul pas TOTP acceptat — un cod nu poate fi refolosit (anti-replay). */
     totpLastStep: integer("totp_last_step"),
-    invitedAt: timestamp("invited_at", { withTimezone: true }),
     disabledAt: timestamp("disabled_at", { withTimezone: true }),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
@@ -65,7 +58,6 @@ export const users = pgTable(
   },
   (t) => [
     index("users_role_id_idx").on(t.roleId),
-    index("users_client_id_idx").on(t.clientId),
     index("users_name_idx").on(t.name),
   ],
 );

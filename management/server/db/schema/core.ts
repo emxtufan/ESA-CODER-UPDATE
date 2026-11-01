@@ -112,10 +112,6 @@ export const projects = pgTable(
     startDate: date("start_date"),
     deadline: date("deadline"),
     deliveryDate: date("delivery_date"),
-    responsibleDeveloperId: uuid("responsible_developer_id").references(
-      (): AnyPgColumn => users.id,
-      { onDelete: "set null" },
-    ),
     /** Valoare contract în minor units + moneda ei. */
     contractValue: integer("contract_value"),
     currency: text("currency").$type<Currency>(),
@@ -132,26 +128,7 @@ export const projects = pgTable(
     index("projects_status_idx").on(t.status),
     index("projects_type_idx").on(t.type),
     index("projects_priority_idx").on(t.priority),
-    index("projects_responsible_developer_id_idx").on(t.responsibleDeveloperId),
     index("projects_deadline_idx").on(t.deadline),
-  ],
-);
-
-/** M:N proiect ↔ utilizator (echipa proiectului). */
-export const projectMembers = pgTable(
-  "project_members",
-  {
-    projectId: uuid("project_id")
-      .notNull()
-      .references(() => projects.id, { onDelete: "cascade" }),
-    userId: uuid("user_id")
-      .notNull()
-      .references((): AnyPgColumn => users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  },
-  (t) => [
-    primaryKey({ columns: [t.projectId, t.userId] }),
-    index("project_members_user_id_idx").on(t.userId),
   ],
 );
 
@@ -184,9 +161,6 @@ export const tasks = pgTable(
       .notNull()
       .references(() => projects.id, { onDelete: "cascade" }),
     clientId: uuid("client_id").references(() => clients.id, { onDelete: "set null" }),
-    assigneeId: uuid("assignee_id").references((): AnyPgColumn => users.id, {
-      onDelete: "set null",
-    }),
     priority: text("priority").$type<Priority>().notNull(),
     status: text("status").$type<TaskStatus>().notNull(),
     due: timestamp("due", { withTimezone: true }),
@@ -200,7 +174,6 @@ export const tasks = pgTable(
   (t) => [
     index("tasks_project_id_idx").on(t.projectId),
     index("tasks_client_id_idx").on(t.clientId),
-    index("tasks_assignee_id_idx").on(t.assigneeId),
     index("tasks_status_idx").on(t.status),
     index("tasks_priority_idx").on(t.priority),
     index("tasks_due_idx").on(t.due),
@@ -237,7 +210,6 @@ export const comments = pgTable(
       onDelete: "set null",
     }),
     body: text("body").notNull(),
-    isInternal: boolean("is_internal").notNull().default(true),
     ...timestamps(),
   },
   (t) => [
@@ -310,7 +282,6 @@ export const projectUpdates = pgTable(
       onDelete: "set null",
     }),
     taskId: uuid("task_id").references((): AnyPgColumn => tasks.id, { onDelete: "set null" }),
-    approvedForClient: boolean("approved_for_client").notNull().default(false),
     ...timestamps(),
   },
   (t) => [
@@ -343,30 +314,5 @@ export const activities = pgTable(
     index("activities_actor_id_idx").on(t.actorId),
     index("activities_entity_idx").on(t.entityType, t.entityId),
     index("activities_at_idx").on(t.at),
-  ],
-);
-
-/** Solicitări venite din portalul clientului (§16). */
-export const clientRequests = pgTable(
-  "client_requests",
-  {
-    id: primaryId(),
-    clientId: uuid("client_id")
-      .notNull()
-      .references(() => clients.id, { onDelete: "cascade" }),
-    projectId: uuid("project_id").references(() => projects.id, { onDelete: "set null" }),
-    title: text("title").notNull(),
-    body: text("body"),
-    status: text("status"),
-    createdById: uuid("created_by_id").references((): AnyPgColumn => users.id, {
-      onDelete: "set null",
-    }),
-    ...timestamps(),
-  },
-  (t) => [
-    index("client_requests_client_id_idx").on(t.clientId),
-    index("client_requests_project_id_idx").on(t.projectId),
-    index("client_requests_status_idx").on(t.status),
-    index("client_requests_created_by_id_idx").on(t.createdById),
   ],
 );

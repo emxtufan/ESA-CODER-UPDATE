@@ -50,9 +50,6 @@ export const maintenancePlans = pgTable(
     renewalDate: date("renewal_date"),
     includedServices: text("included_services").array().notNull().default(sql`'{}'::text[]`),
     frequency: text("frequency"),
-    responsibleId: uuid("responsible_id").references((): AnyPgColumn => users.id, {
-      onDelete: "set null",
-    }),
     contractStatus: text("contract_status"),
     ...timestamps(),
   },
@@ -60,7 +57,6 @@ export const maintenancePlans = pgTable(
     index("maintenance_plans_project_id_idx").on(t.projectId),
     index("maintenance_plans_plan_idx").on(t.plan),
     index("maintenance_plans_renewal_date_idx").on(t.renewalDate),
-    index("maintenance_plans_responsible_id_idx").on(t.responsibleId),
     index("maintenance_plans_contract_status_idx").on(t.contractStatus),
   ],
 );
@@ -137,7 +133,6 @@ export const documents = pgTable(
     uploadDate: date("upload_date").notNull().default(sql`CURRENT_DATE`),
     expirationDate: date("expiration_date"),
     notes: text("notes"),
-    clientVisible: boolean("client_visible").notNull().default(false),
     currentVersionId: uuid("current_version_id").references(
       (): AnyPgColumn => documentVersions.id,
       { onDelete: "set null" },
