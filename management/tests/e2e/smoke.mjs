@@ -257,6 +257,8 @@ async function main() {
   // 7j. Dashboard
   await page.goto(`${BASE}/`);
   await page.getByRole("heading", { name: "Dashboard" }).first().waitFor();
+  await page.locator(".recharts-surface").first().waitFor();
+  await page.waitForTimeout(1200); // animația graficelor
   await shot(`dashboard-${stamp}.png`);
 
   // 7k. Monitorizare: verificare nouă
