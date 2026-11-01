@@ -289,6 +289,74 @@ export const PROJECT_TABS: ProjectTab[] = [
     ),
   },
   {
+    value: "infrastructure",
+    label: "Infrastructură",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          {/* Serverele se leagă de proiect prin `project_servers`; se creează din /infrastructure. */}
+          <h3 className="text-sm font-semibold text-text">Servere</h3>
+          <ResourcePage
+            title="Servere"
+            endpoint="/servers"
+            perm="infrastructure"
+            itemName="server"
+            columns={SERVER_COLUMNS}
+            fields={SERVER_FIELDS}
+            extraQuery={{ projectId }}
+            readOnly
+            embedded
+          />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Domenii</h3>
+          <ResourcePage
+            title="Domenii"
+            endpoint="/domains"
+            perm="infrastructure"
+            itemName="domeniu"
+            columns={DOMAIN_COLUMNS}
+            fields={DOMAIN_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
+            embedded
+          />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Hosting</h3>
+          <ResourcePage
+            title="Hosting"
+            endpoint="/hosting"
+            perm="infrastructure"
+            itemName="serviciu de hosting"
+            columns={HOSTING_COLUMNS}
+            fields={HOSTING_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
+            embedded
+          />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Credențiale</h3>
+          <ResourcePage
+            title="Credențiale"
+            endpoint="/vault"
+            perm="vault"
+            itemName="credențială"
+            columns={CREDENTIAL_COLUMNS}
+            fields={[]}
+            extraQuery={{ projectId }}
+            readOnly
+            embedded
+          />
+        </section>
+      </div>
+    ),
+  },
+  {
     value: "timeline",
     label: "Timeline",
     render: (projectId) => <TimelineTab projectId={projectId} />,

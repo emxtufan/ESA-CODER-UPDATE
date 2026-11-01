@@ -75,6 +75,8 @@ export interface ResourcePageConfig<T> {
   canDelete?: boolean;
   /** Acțiuni suplimentare pe rând, afișate în coloana de acțiuni (ex. „Convertește în task”). */
   rowActions?: (row: T) => ReactNode;
+  /** Doar citire: fără buton de creare, fără click pe rând și fără editare/ștergere. */
+  readOnly?: boolean;
   /** Numele entității în mesaje (ex. „client”). */
   itemName: string;
 }
@@ -218,14 +220,15 @@ export function ResourcePage<T>({
   canDelete: allowDelete = true,
   rowActions,
   itemName,
+  readOnly = false,
 }: ResourcePageConfig<T>) {
   const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const canCreate = useCan(`${perm}.create`);
-  const canUpdate = useCan(`${perm}.update`);
-  const canDelete = useCan(`${perm}.delete`) && allowDelete;
+  const canCreate = useCan(`${perm}.create`) && !readOnly;
+  const canUpdate = useCan(`${perm}.update`) && !readOnly;
+  const canDelete = useCan(`${perm}.delete`) && allowDelete && !readOnly;
 
   const list = useListParams();
   const query = useMemo(() => ({ ...list.query, ...(extraQuery ?? {}) }), [list.query, extraQuery]);
@@ -352,7 +355,13 @@ export function ResourcePage<T>({
         rowKey={(row: T) => rowId(row)}
         sort={list.sort ? { key: list.sort, dir: list.dir } : undefined}
         onSort={handleSort}
-        onRowClick={detailPath ? (row: T) => navigate(detailPath(row)) : openEdit}
+        onRowClick={
+          readOnly
+            ? undefined
+            : detailPath
+              ? (row: T) => navigate(detailPath(row))
+              : openEdit
+        }
         loading={isLoading}
         error={error}
         onRetry={() => void refetch()}
