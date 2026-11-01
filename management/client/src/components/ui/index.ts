@@ -1,6 +1,6 @@
 /**
  * Design system-ul aplicației: toate componentele UI de bază, exportate dintr-un
- * singur loc (`@/components/ui`). Fără gradient, fără blur, texte în română.
+ * singur loc (`@/components/ui`), peste componentele shadcn din `@/components/shadcn`.
  */
 export { Badge, type BadgeProps, type BadgeTone } from "./Badge";
 export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from "./Breadcrumbs";

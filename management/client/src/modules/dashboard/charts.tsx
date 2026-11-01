@@ -1,5 +1,5 @@
 /**
- * Temă alb-negru: seriile se deosebesc prin luminozitate, cu legendă și tabel. Separare și contrast validate pe #141414.
+ * Serii validate pe alb: albastru și portocaliu, cu legendă și tabel.
  */
 import type { ReactNode } from "react";
 import {
@@ -15,10 +15,10 @@ import {
   YAxis,
 } from "recharts";
 
-const SERIES_1 = "#f2f2f2";
-const SERIES_2 = "#8c8c8c";
-const GRID = "rgba(255, 255, 255, 0.1)";
-const AXIS = "#a3a3a3";
+const SERIES_1 = "#2a78d6";
+const SERIES_2 = "#eb6834";
+const GRID = "rgba(0, 0, 0, 0.08)";
+const AXIS = "#6e6e73";
 
 const monthFormat = new Intl.DateTimeFormat("ro-RO", { month: "short", timeZone: "UTC" });
 export const monthLabel = (month: string) => monthFormat.format(new Date(`${month}-01T00:00:00Z`)).replace(".", "");
@@ -170,7 +170,7 @@ export function StatusChart({ data }: { data: { status: string; count: number }[
           <YAxis type="category" dataKey="status" tick={tick} tickLine={false} axisLine={false} width={124} />
           <Tooltip cursor={{ fill: GRID }} content={<ChartTooltip format={String} />} />
           <Bar dataKey="count" name="Proiecte" fill={SERIES_1} radius={[0, 4, 4, 0]} maxBarSize={16} isAnimationActive={false}>
-            <LabelList dataKey="count" position="right" fill="#f5f5f5" fontSize={12} />
+            <LabelList dataKey="count" position="right" fill="#1d1d1f" fontSize={12} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
