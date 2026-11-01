@@ -88,7 +88,38 @@ async function main() {
     await page.click("a[href='/settings']");
     await shot("5-settings.png");
 
-    // 5. Mobil
+    // 5. Client nou
+    const stamp = Date.now();
+    await page.click("a[href='/clients']");
+    await page.getByRole("button", { name: "Adaugă" }).click();
+    await page.fill("dialog input[name=companyName]", `Client ${stamp}`);
+    await page.getByRole("button", { name: "Salvează" }).click();
+    await page.getByText(`Client ${stamp}`).first().waitFor();
+
+    // 6. Proiect nou
+    await page.click("a[href='/projects']");
+    await page.getByRole("button", { name: "Adaugă" }).click();
+    await page.fill("dialog input[name=name]", `Proiect ${stamp}`);
+    await page.getByRole("option", { name: `Client ${stamp}` }).waitFor();
+    await page.selectOption("dialog select[name=clientId]", { label: `Client ${stamp}` });
+    await page.getByRole("button", { name: "Salvează" }).click();
+    await page.getByText(`Proiect ${stamp}`).first().waitFor();
+    await page.getByText(`Proiect ${stamp}`).first().click();
+    await page.getByRole("tab", { name: "Timeline" }).waitFor();
+    await shot("7-project.png");
+
+    // 7. Kanban
+    await page.click("a[href='/tasks']");
+    await page.getByText("To Do").first().waitFor();
+    await shot("8-kanban.png");
+
+    // 8. Căutare
+    await page.fill("input[role=combobox]", `Client ${stamp}`);
+    await page.getByRole("option").first().waitFor();
+    await shot("9-search.png");
+    await page.keyboard.press("Escape");
+
+    // 9. Mobil
     await page.setViewportSize({ width: 390, height: 780 });
     await shot("6-mobile.png");
   } catch (err) {
