@@ -4,13 +4,14 @@
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 
 import { NAV, type NavItem } from "@/app/nav";
-import { Button, cn } from "@/components/ui";
+import { Button, Spinner, cn } from "@/components/ui";
 import { api } from "@/lib/api";
 import { useCan, useMe } from "@/lib/auth";
+import { GlobalSearch } from "@/modules/search/GlobalSearch";
 
 function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const allowed = useCan(item.perm);
@@ -121,6 +122,8 @@ export function Layout() {
             <Menu aria-hidden="true" className="size-4" />
           </Button>
 
+          <GlobalSearch />
+
           <div className="ml-auto flex items-center gap-3">
             <div className="text-right leading-tight">
               <p className="text-sm font-medium text-text">{me?.user.name ?? "—"}</p>
@@ -133,7 +136,15 @@ export function Layout() {
         </header>
 
         <main id="main" className="p-4 lg:p-6">
-          <Outlet />
+          <Suspense
+            fallback={
+              <div className="flex justify-center p-8">
+                <Spinner />
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

@@ -4,6 +4,7 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
+import type { KeyboardEvent } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -84,7 +85,7 @@ export function GlobalSearch() {
   }, [open]);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         const input = containerRef.current?.querySelector<HTMLInputElement>("input");
@@ -115,7 +116,7 @@ export function GlobalSearch() {
     navigate(item.link);
   };
 
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Escape") {
       event.preventDefault();
       close();

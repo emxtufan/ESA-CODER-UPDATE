@@ -287,6 +287,7 @@ export function ResourcePage<T>({
         onClick={(event) => event.stopPropagation()}
         onKeyDown={(event) => event.stopPropagation()}
       >
+        {rowActions?.(row)}
         {canUpdate ? (
           <Button variant="ghost" size="sm" onClick={() => openEdit(row)}>
             Editează
@@ -301,7 +302,7 @@ export function ResourcePage<T>({
     ),
   };
 
-  const tableColumns = canUpdate || canDelete ? [...columns, actionColumn] : columns;
+  const tableColumns = canUpdate || canDelete || rowActions ? [...columns, actionColumn] : columns;
 
   return (
     <div className="space-y-4">
