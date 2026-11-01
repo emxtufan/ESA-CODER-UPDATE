@@ -5,6 +5,8 @@ import { deployments, repositories, webhookDeliveries } from "../../db/schema";
 import type { Db } from "../../db/client";
 import { HttpError } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
+import type { Env } from "../../env";
+import { notify } from "../notifications/service";
 import { upsertCommit, upsertPull, upsertRelease } from "./sync";
 
 /** Compară în timp constant semnătura GitHub cu HMAC-ul calculat pe raw body. */
@@ -114,6 +116,28 @@ async function handleEvent(db: Db, event: string, p: any): Promise<boolean> {
   return false;
 }
 
+/** După commit-ul tranzacției: notificarea nu trebuie să țină deschisă tranzacția webhook-ului. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function notifyFromWebhook(db: Db, env: Env, event: string, deliveryId: string, p: any): Promise<void> {
+  if (event === "push" && (p.commits?.length ?? 0) > 0) {
+    await notify(db, env, {
+      event: "New Commit",
+      dedupeKey: `push:${deliveryId}`,
+      title: `${p.commits.length} commit-uri noi în ${p.repository?.full_name ?? ""}`,
+      link: "/github?tab=commits",
+    });
+  }
+  const state = p.deployment_status?.state;
+  if (event === "deployment_status" && (state === "failure" || state === "error")) {
+    await notify(db, env, {
+      event: "Failed Deployment",
+      dedupeKey: `deployment:${p.deployment?.id}:failed`,
+      title: `Deployment eșuat: ${p.deployment?.environment ?? ""}`,
+      link: "/deployments",
+    });
+  }
+}
+
 /** POST /api/webhooks/github — singura intrare fără sesiune; autentificată prin HMAC pe raw body. */
 export function githubWebhookRouter(): Router {
   const router = Router();
@@ -140,6 +164,9 @@ export function githubWebhookRouter(): Router {
       if (inserted.length === 0) return { duplicate: true };
       return { duplicate: false, handled: await handleEvent(db, event, payload) };
     });
+    if (!result.duplicate && result.handled) {
+      await notifyFromWebhook(req.ctx.db, req.ctx.env, event, deliveryId, payload);
+    }
     res.json(result);
   });
   return router;
