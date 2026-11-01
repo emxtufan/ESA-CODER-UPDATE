@@ -28,6 +28,7 @@ Actualizat: 2026-11-01. Branch: `esa-management`.
 - Aplicația e doar pentru proprietar. Nu există portal de clienți, rol de client, solicitări, echipă, asignare de taskuri, invitații sau UI de utilizatori. `requirePermission` rămâne în backend ca apărare.
 - Fără regulă explicită, New Project, New Task, New Commit, Invoice Issued și Payment Received rămân doar în aplicație.
 - Sumele nu se adună între monede.
+- Pagina proiectului e locul principal de lucru. Taburi: Prezentare, Client, Conturi, Observații, Taskuri, Infrastructură, Dezvoltare, Financiar, Documente, Mentenanță, Timeline.
 
 ## Neverificat cu servicii reale
 
@@ -44,7 +45,9 @@ Nu au fost folosite credențiale reale. Fără configurare, integrările apar �
 - Aplicația nu face backup-uri, iar „Backup Failed” nu are declanșator. Vezi [docs/backup.md](docs/backup.md).
 - Raportul de profitabilitate conține doar facturile și cheltuielile legate de un proiect. Profitul din dashboard le include pe toate, deci cele două pot diferi.
 - Filtrele din Rapoarte se aplică doar unde au sens: de exemplu, moneda nu schimbă raportul de taskuri.
-- „Verifică acum” și „Istoric” există doar în pagina Monitorizare, nu și în tabul Operațiuni al proiectului.
+- „Verifică acum” și „Istoric” există doar în pagina Monitorizare, nu și în tabul Mentenanță al proiectului.
+- Serverele se creează și se leagă de proiect din Infrastructură; în proiect sunt doar afișate.
+- E2E poate pica rar la formularul de client: robotul completează câmpul exact când formularul se inițializează. O rulare nouă a trecut.
 - E2E adaugă o verificare, dar nu apasă „Verifică acum”. Logica verificării e acoperită de `tests/phase7.test.ts`.
 - Rapoartele sunt plafonate la 10.000 de rânduri, iar interfața afișează un avertisment când plafonul e atins.
 - Limita de 60 de emailuri pe oră și joburile rulează în proces, deci aplicația presupune o singură instanță.

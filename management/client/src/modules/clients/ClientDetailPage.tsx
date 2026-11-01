@@ -322,6 +322,8 @@ export function ClientInfo({ clientId }: { clientId: string }) {
 
       <ClientFieldsPanel client={client} />
 
+      <h3 className="text-sm font-semibold text-text">Contacte</h3>
+
       <ClientContactsTab clientId={clientId} clientName={client.companyName} />
 
       {editing ? <EditClientModal client={client} onClose={() => setEditing(false)} /> : null}
