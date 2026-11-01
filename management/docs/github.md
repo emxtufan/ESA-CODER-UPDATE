@@ -54,7 +54,10 @@ Un `push` produce doar commit-uri sincronizate și o intrare de activitate de ti
 
 `POST /api/github/repositories/:id/sync` — rulează sincronizarea pentru un repository existent și întoarce
 numărul de commits / pull requests / releases aduse (`SyncResult`). Cererea trece prin gardurile obișnuite
-(sesiune confirmată, permisiuni, CSRF), nu prin webhook. Detalii de rutare: `vezi docs/SPEC.md`.
+(sesiune confirmată, permisiuni, CSRF), nu prin webhook: ruta e înregistrată cu
+`requirePermission("github.update")` (`server/modules/github/routes.ts:123`) și apelează `syncRepository`
+(`server/modules/github/routes.ts:127`), înregistrând în audit acțiunea `github_sync`
+(`server/modules/github/routes.ts:128`).
 
 ## Notificări produse de integrare
 
