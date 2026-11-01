@@ -7,7 +7,7 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "dev": "node --env-file-if-exists=.env --import tsx --watch-path=server --watch-path=shared server/index.ts",
+    "dev": "tsx watch --clear-screen=false --env-file-if-exists=.env server/index.ts",
     "build": "vite build",
     "start": "node --env-file-if-exists=.env --import tsx server/index.ts",
     "test": "vitest run",
