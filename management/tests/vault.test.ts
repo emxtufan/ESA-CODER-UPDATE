@@ -40,7 +40,7 @@ describe("/api/vault", () => {
   }
 
   it("nu expune secretul în POST, GET listă și GET /:id", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
 
     const post = await ctx.api("/api/vault", {
@@ -71,7 +71,7 @@ describe("/api/vault", () => {
   });
 
   it("stochează secretEnc versionat, fără secret în clar", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -86,7 +86,7 @@ describe("/api/vault", () => {
   });
 
   it("refuză reveal cu parolă greșită și auditează", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -101,12 +101,12 @@ describe("/api/vault", () => {
       .select()
       .from(auditLogs)
       .where(eq(auditLogs.action, "credential_reveal_denied"))
-      .orderBy(desc(auditLogs.createdAt));
+      .orderBy(desc(auditLogs.at));
     expect(logs.length).toBeGreaterThan(0);
   });
 
   it("permite reveal cu parolă corectă fără a scrie secretul în audit", async () => {
-    const user = await ctx.makeUser("admin", { password: "parola-test-sigura-123" });
+    const user = await ctx.makeUser("super_admin", { password: "parola-test-sigura-123" });
     const cookie = await ctx.loginAs(user);
     const item = await createCredential(cookie);
 
@@ -122,7 +122,7 @@ describe("/api/vault", () => {
       .select()
       .from(auditLogs)
       .where(eq(auditLogs.action, "credential_revealed"))
-      .orderBy(desc(auditLogs.createdAt));
+      .orderBy(desc(auditLogs.at));
     expect(logs.length).toBeGreaterThan(0);
 
     const metas = JSON.stringify(logs.map((l) => l.meta));
