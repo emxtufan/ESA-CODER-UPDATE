@@ -98,6 +98,7 @@ export const CREDENTIAL_TYPES = [
   "Shopify Admin",
   "cPanel",
   "Cloudflare",
+  "Resend",
   "GitHub Token",
   "API Key",
   "SMTP",

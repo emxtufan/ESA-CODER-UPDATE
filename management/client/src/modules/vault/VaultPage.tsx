@@ -354,8 +354,11 @@ function RotateModal({ credential, onClose }: RotateModalProps) {
   );
 }
 
-/** Pagina seifului: listă de credențiale + dezvăluire, rotație și revocare. */
-export default function VaultPage() {
+/**
+ * Lista seifului: credențiale + dezvăluire, rotație și revocare. Fără `projectId` se
+ * comportă exact ca pagina `/vault`; cu `projectId` se încorporează în tabul proiectului.
+ */
+export function VaultList({ projectId }: { projectId?: string }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const canReveal = useCan("vault.reveal");
@@ -391,6 +394,9 @@ export default function VaultPage() {
         itemName="credențial"
         columns={VAULT_COLUMNS}
         fields={VAULT_FIELDS}
+        embedded={projectId !== undefined}
+        extraQuery={projectId ? { projectId } : undefined}
+        defaults={projectId ? { projectId } : undefined}
         rowActions={(row) =>
           row.revokedAt ? null : (
             <div
@@ -434,4 +440,9 @@ export default function VaultPage() {
       />
     </>
   );
+}
+
+/** Pagina `/vault`: doar lista de credențiale, fără filtrare pe proiect. */
+export default function VaultPage() {
+  return <VaultList />;
 }
