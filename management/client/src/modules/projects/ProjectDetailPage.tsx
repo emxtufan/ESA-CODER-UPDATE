@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,7 @@ import {
 } from "@/components/resource/fields";
 import { PROJECT_FIELDS } from "@/modules/projects/ProjectsPage";
 import { PROJECT_TABS, type ProjectOverview } from "@/modules/projects/projectTabs";
+import { pushRecent } from "@/lib/recent";
 
 function EditProjectModal({
   onClose,
@@ -95,6 +96,13 @@ export default function ProjectDetailPage() {
     queryFn: () => api<ProjectOverview>(`/projects/${id}/overview`),
     enabled: !!id,
   });
+
+  const projectName = overviewQuery.data?.project.name;
+
+  useEffect(() => {
+    if (!projectName) return;
+    pushRecent({ label: projectName, to: `/projects/${id}` });
+  }, [projectName, id]);
 
   const favoritesQuery = useQuery({
     queryKey: ["projects", "favorites", "mine"],

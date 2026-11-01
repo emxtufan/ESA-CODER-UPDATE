@@ -30,6 +30,7 @@ import {
 } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useCan } from "@/lib/auth";
+import { pushRecent } from "@/lib/recent";
 import { InvoicesTab } from "@/modules/finance/InvoicesTab";
 
 import { CLIENT_FIELDS } from "./ClientsPage";
@@ -244,6 +245,13 @@ export function ClientDetailPage() {
     queryFn: () => api<{ item: ClientDetail }>(`/clients/${id}`),
     enabled: Boolean(id),
   });
+
+  const clientName = clientQuery.data?.item.companyName;
+
+  useEffect(() => {
+    if (!clientName) return;
+    pushRecent({ label: clientName, to: `/clients/${id}` });
+  }, [clientName, id]);
 
   const summaryQuery = useQuery<ClientSummary>({
     queryKey: ["client", id, "summary"],

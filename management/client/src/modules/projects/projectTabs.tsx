@@ -7,7 +7,7 @@ import { Badge, Button, Card, EmptyState, Input, Skeleton, useToast } from "@/co
 import type { DataTableColumn } from "@/components/ui";
 import { ResourcePage } from "@/components/resource/ResourcePage";
 import type { FieldDef } from "@/components/resource/fields";
-import { formatDate, statusTone } from "@/components/resource/fields";
+import { formatDate, formatMoney, statusTone } from "@/components/resource/fields";
 import { api, ApiError } from "@/lib/api";
 import {
   DOMAIN_COLUMNS,
@@ -23,6 +23,7 @@ import { EXPENSE_COLUMNS, EXPENSE_FIELDS } from "@/modules/finance/FinancePage";
 import { InvoicesTab } from "@/modules/finance/InvoicesTab";
 import { ContractsList, DocumentsList } from "@/modules/documents/DocumentsPage";
 import { PLAN_COLUMNS, PLAN_FIELDS } from "@/modules/maintenance/MaintenancePage";
+import { CHECK_COLUMNS, CHECK_FIELDS } from "@/modules/monitoring/MonitoringPage";
 import { OBSERVATION_FIELDS, TASK_FIELDS } from "@/modules/tasks/fields";
 
 export interface ProjectOverview {
@@ -40,6 +41,27 @@ export interface ProjectOverview {
     description?: string | null;
     actorLabel?: string | null;
   } | null;
+  lastCommit?: {
+    hash: string;
+    message?: string | null;
+    date?: string | null;
+  } | null;
+  lastDeployment?: {
+    status?: string | null;
+    environment?: string | null;
+    deployedAt?: string | null;
+  } | null;
+  finance?: {
+    invoices: { currency: string; total: number; paid: number; balance: number }[];
+    expenses: { currency: string; total: number }[];
+  } | null;
+  maintenance?: {
+    plan?: string | null;
+    monthlyPrice?: number | null;
+    currency?: string | null;
+    renewalDate?: string | null;
+  } | null;
+  problems?: { incidents: number; down: number } | null;
 }
 
 interface TimelineItem {
@@ -102,7 +124,17 @@ function OverviewTab({
     return <Skeleton className="h-40 w-full" />;
   }
 
-  const { project, client, tasks, lastActivity } = overview;
+  const {
+    project,
+    client,
+    tasks,
+    lastActivity,
+    lastCommit,
+    lastDeployment,
+    finance,
+    maintenance,
+    problems,
+  } = overview;
   const percent = tasks.total > 0 ? Math.round((tasks.completed / tasks.total) * 100) : 0;
 
   return (
@@ -160,6 +192,97 @@ function OverviewTab({
           <span className="text-sm opacity-60">—</span>
         )}
       </Card>
+
+      {lastCommit ? (
+        <Card title="Ultimul commit" className="md:col-span-2">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm">{lastCommit.message ?? "—"}</span>
+            <span className="text-xs opacity-60">
+              {lastCommit.hash.slice(0, 7)} · {formatDate(lastCommit.date)}
+            </span>
+          </div>
+        </Card>
+      ) : null}
+
+      {lastDeployment ? (
+        <Card title="Ultimul deployment">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Badge tone={statusTone(lastDeployment.status)}>
+                {lastDeployment.status ?? "—"}
+              </Badge>
+              <span className="text-sm">{lastDeployment.environment ?? "—"}</span>
+            </div>
+            <span className="text-xs opacity-60">{formatDate(lastDeployment.deployedAt)}</span>
+          </div>
+        </Card>
+      ) : null}
+
+      {finance ? (
+        <Card title="Facturi și plăți" className="md:col-span-2">
+          {finance.invoices.length === 0 && finance.expenses.length === 0 ? (
+            <span className="text-sm opacity-60">Nicio factură</span>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {finance.invoices.map((invoice) => (
+                <div
+                  key={`invoice-${invoice.currency}`}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+                >
+                  <span className="font-medium">{invoice.currency}</span>
+                  <span className="opacity-60">
+                    Facturat: {formatMoney(invoice.total, invoice.currency)}
+                  </span>
+                  <span className="opacity-60">
+                    Încasat: {formatMoney(invoice.paid, invoice.currency)}
+                  </span>
+                  <span>Sold: {formatMoney(invoice.balance, invoice.currency)}</span>
+                </div>
+              ))}
+              {finance.expenses.map((expense) => (
+                <div
+                  key={`expense-${expense.currency}`}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+                >
+                  <span className="font-medium">{expense.currency}</span>
+                  <span className="opacity-60">
+                    Cheltuieli: {formatMoney(expense.total, expense.currency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      ) : null}
+
+      {maintenance ? (
+        <Card title="Mentenanță">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm">{maintenance.plan ?? "Fără plan"}</span>
+            <span className="text-xs opacity-60">
+              {formatMoney(maintenance.monthlyPrice, maintenance.currency ?? "RON")} / lună
+              {maintenance.renewalDate ? ` · ${formatDate(maintenance.renewalDate)}` : ""}
+            </span>
+          </div>
+        </Card>
+      ) : null}
+
+      {problems ? (
+        <Card title="Probleme active">
+          {problems.incidents === 0 && problems.down === 0 ? (
+            <span className="text-sm opacity-60">Nicio problemă</span>
+          ) : (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+              <span>
+                Incidente: <span className="tabular-nums">{problems.incidents}</span>
+              </span>
+              <span>
+                Verificări căzute: <span className="tabular-nums">{problems.down}</span>
+              </span>
+            </div>
+          )}
+        </Card>
+      ) : null}
     </div>
   );
 }
@@ -447,6 +570,10 @@ export const PROJECT_TABS: ProjectTab[] = [
     label: "Operațiuni",
     render: (projectId) => (
       <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Monitorizare</h3>
+          <ResourcePage embedded title="Monitorizare" endpoint="/monitoring/checks" perm="monitoring" itemName="verificare" columns={CHECK_COLUMNS as never} fields={CHECK_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
+        </section>
         <section className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold text-text">Mentenanță</h3>
           <ResourcePage embedded title="Mentenanță" endpoint="/maintenance/plans" perm="maintenance" itemName="plan" columns={PLAN_COLUMNS as never} fields={PLAN_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
