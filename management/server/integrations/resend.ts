@@ -34,6 +34,7 @@ export async function sendEmail(env: Env, { to, subject, html }: EmailMessage): 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ from: env.EMAIL_FROM, to, subject, html }),
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!response.ok) return { status: "failed", error: `HTTP ${response.status}` };

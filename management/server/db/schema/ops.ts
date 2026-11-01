@@ -214,6 +214,7 @@ export const notificationLogs = pgTable(
     status: text("status").notNull(),
     attempts: integer("attempts").notNull().default(0),
     error: text("error"),
+    payload: jsonb("payload").$type<Record<string, string>>(),
     sentAt: timestamp("sent_at", { withTimezone: true }),
     ...timestamps(),
   },

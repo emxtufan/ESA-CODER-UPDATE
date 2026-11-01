@@ -773,7 +773,7 @@ function InvoiceDetail({ invoiceId, onClose, onEdit }: InvoiceDetailProps) {
                   {item.items.map((line, index) => (
                     <tr key={`${index}-${line.description}`} className="border-t border-line">
                       <td className="py-2 pr-3 text-text">{line.description}</td>
-                      <td className="py-2 text-right text-text">{line.quantity}</td>
+                      <td className="py-2 text-right text-text">{Number(line.quantity)}</td>
                       <td className="py-2 text-right text-text">
                         {formatMoney(line.unitPrice, currency)}
                       </td>
@@ -826,7 +826,7 @@ function InvoiceDetail({ invoiceId, onClose, onEdit }: InvoiceDetailProps) {
                     label="Sumă (lei)"
                     htmlFor="invoice-payment-amount"
                     required
-                    hint="Implicit soldul rămas; se trimite în bani (×100)."
+                    hint="Implicit, soldul rămas."
                   >
                     <Input
                       id="invoice-payment-amount"
