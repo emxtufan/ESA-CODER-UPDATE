@@ -21,6 +21,8 @@ import { COMMIT_COLUMNS, REPO_COLUMNS, REPO_FIELDS } from "@/modules/github/Gith
 import { DEPLOY_COLUMNS, DEPLOY_FIELDS } from "@/modules/deployments/DeploymentsPage";
 import { EXPENSE_COLUMNS, EXPENSE_FIELDS } from "@/modules/finance/FinancePage";
 import { InvoicesTab } from "@/modules/finance/InvoicesTab";
+import { ContractsList, DocumentsList } from "@/modules/documents/DocumentsPage";
+import { PLAN_COLUMNS, PLAN_FIELDS } from "@/modules/maintenance/MaintenancePage";
 import { OBSERVATION_FIELDS, TASK_FIELDS } from "@/modules/tasks/fields";
 
 export interface ProjectOverview {
@@ -436,6 +438,26 @@ export const PROJECT_TABS: ProjectTab[] = [
             defaults={{ projectId }}
             embedded
           />
+        </section>
+      </div>
+    ),
+  },
+  {
+    value: "operations",
+    label: "Operațiuni",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Mentenanță</h3>
+          <ResourcePage embedded title="Mentenanță" endpoint="/maintenance/plans" perm="maintenance" itemName="plan" columns={PLAN_COLUMNS as never} fields={PLAN_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
+        </section>
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Documente</h3>
+          <DocumentsList projectId={projectId} />
+        </section>
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Contracte</h3>
+          <ContractsList projectId={projectId} />
         </section>
       </div>
     ),

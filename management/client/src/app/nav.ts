@@ -12,6 +12,9 @@ import {
   Settings,
   StickyNote,
   Wallet,
+  Bell,
+  FileText,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -59,6 +62,14 @@ export const NAV: NavGroup[] = [
   {
     group: "Financiar",
     items: [{ label: "Financiar", to: "/finance", icon: Wallet, perm: "finance.view" }],
+  },
+  {
+    group: "Operațiuni",
+    items: [
+      { label: "Mentenanță", to: "/maintenance", icon: Wrench, perm: "maintenance.view" },
+      { label: "Documente", to: "/documents", icon: FileText, perm: "documents.view" },
+      { label: "Notificări", to: "/notifications", icon: Bell },
+    ],
   },
   {
     group: "Administrare",

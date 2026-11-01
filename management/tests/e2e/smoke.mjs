@@ -222,6 +222,38 @@ async function main() {
   await page.getByText("Cheltuieli").first().waitFor();
   await shot("8i-profit.png");
 
+  // 7h. Documente: fișier încărcat, versiune și descărcare
+  await page.click("a[href='/documents']");
+  await page.getByRole("heading", { name: "Documente" }).first().waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.fill("dialog[open] input[name=name]", `Doc ${stamp}`);
+  await page.selectOption("dialog[open] select[name=type]", { index: 1 });
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  const docRow = page.locator("tr", { hasText: `Doc ${stamp}` }).first();
+  await docRow.waitFor();
+  await docRow.locator("input[type=file]").setInputFiles({ name: "contract.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.7 e2e") });
+  await docRow.getByText("v1").waitFor();
+  await docRow.getByRole("button", { name: "Versiuni" }).click();
+  await page.locator("dialog[open]").getByText("Descarcă").first().waitFor();
+  await shot("8j-documente.png");
+  await page.locator("dialog[open]").getByRole("button", { name: "Închide" }).first().click();
+
+  // 7i. Mentenanță și notificări
+  await page.click("a[href='/maintenance']");
+  await page.getByRole("heading", { name: "Mentenanță" }).first().waitFor();
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.selectOption("dialog[open] select[name=projectId]", { label: `Proiect ${stamp}` });
+  await page.selectOption("dialog[open] select[name=plan]", { label: "Standard" });
+  await page.fill("dialog[open] input[name=monthlyPrice]", "150");
+  await page.selectOption("dialog[open] select[name=currency]", { label: "EUR" });
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: `Proiect ${stamp}` }).first().waitFor();
+  await shot("8k-mentenanta.png");
+  await page.click("a[aria-label='Notificări']");
+  await page.getByRole("heading", { name: "Notificări" }).first().waitFor();
+  await page.getByText(`Factura F-${stamp} a fost emisă`).first().waitFor();
+  await shot("8l-notificari.png");
+
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);
     await page.getByRole("option").first().waitFor();

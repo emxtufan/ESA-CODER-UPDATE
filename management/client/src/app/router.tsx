@@ -23,6 +23,9 @@ const VaultPage = lazy(() => import("@/modules/vault/VaultPage"));
 const GithubPage = lazy(() => import("@/modules/github/GithubPage"));
 const DeploymentsPage = lazy(() => import("@/modules/deployments/DeploymentsPage"));
 const FinancePage = lazy(() => import("@/modules/finance/FinancePage"));
+const MaintenancePage = lazy(() => import("@/modules/maintenance/MaintenancePage"));
+const DocumentsPage = lazy(() => import("@/modules/documents/DocumentsPage"));
+const NotificationsPage = lazy(() => import("@/modules/notifications/NotificationsPage"));
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -46,6 +49,9 @@ export const router = createBrowserRouter([
       { path: "github", element: <GithubPage /> },
       { path: "deployments", element: <DeploymentsPage /> },
       { path: "finance", element: <FinancePage /> },
+      { path: "maintenance", element: <MaintenancePage /> },
+      { path: "documents", element: <DocumentsPage /> },
+      { path: "notifications", element: <NotificationsPage /> },
       { path: "audit", element: <AuditPage /> },
       { path: "settings", element: <AccountPage /> },
     ],
