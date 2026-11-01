@@ -29,6 +29,8 @@ import {
   type DataTableColumn,
 } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
+import { useCan } from "@/lib/auth";
+import { InvoicesTab } from "@/modules/finance/InvoicesTab";
 
 import { CLIENT_FIELDS } from "./ClientsPage";
 
@@ -77,6 +79,9 @@ const TABS = [
   { value: "contacts", label: "Contacte" },
   { value: "activity", label: "Activitate" },
 ];
+
+/** Tab-ul de facturi apare doar pentru cine are `finance.view`. */
+const INVOICES_TAB = { value: "invoices", label: "Facturi" };
 
 /** Contactele suplimentare ale clientului (tabela `contacts`, filtrată pe `clientId`). */
 const CONTACT_FIELDS: FieldDef[] = [
@@ -248,8 +253,11 @@ export function ClientDetailPage() {
 
   const clientFilter = useMemo(() => ({ clientId: id }), [id]);
 
+  const canViewFinance = useCan("finance.view");
+  const tabs = canViewFinance ? [...TABS, INVOICES_TAB] : TABS;
+
   const requestedTab = searchParams.get("tab") ?? "";
-  const tab = TABS.some((item) => item.value === requestedTab) ? requestedTab : "date";
+  const tab = tabs.some((item) => item.value === requestedTab) ? requestedTab : "date";
 
   function changeTab(value: string) {
     setSearchParams(
@@ -303,7 +311,7 @@ export function ClientDetailPage() {
         }
       />
 
-      <Tabs items={TABS} value={tab} onChange={changeTab} />
+      <Tabs items={tabs} value={tab} onChange={changeTab} />
 
       {tab === "date" ? (
         <Card title="Date client">
@@ -342,6 +350,8 @@ export function ClientDetailPage() {
       {tab === "activity"
         ? summaryContent((summary) => <ActivityTab activity={summary.recentActivity} />)
         : null}
+
+      {tab === "invoices" && canViewFinance ? <InvoicesTab clientId={id} /> : null}
 
       {editing ? <EditClientModal client={client} onClose={() => setEditing(false)} /> : null}
     </div>

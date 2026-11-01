@@ -12,6 +12,7 @@ import { z } from "zod";
 
 import type { Permission } from "../../../shared/permissions";
 import { clients, projects, tasks } from "../../db/schema/core";
+import { invoices } from "../../db/schema/finance";
 import { commits, deployments, repositories } from "../../db/schema/github";
 import { domains, servers } from "../../db/schema/infra";
 import { parse } from "../../lib/http";
@@ -118,6 +119,16 @@ const GROUPS: SearchGroup[] = [
     title: (row) => `${row.environment ?? "—"} ${row.status}`,
     subtitle: (row) => row.branch ?? null,
     link: () => "/deployments",
+  },
+  {
+    key: "invoices",
+    label: "Facturi",
+    perm: "finance.view",
+    table: invoices,
+    columns: [invoices.number, invoices.externalId],
+    title: (row) => row.number,
+    subtitle: (row) => row.status ?? null,
+    link: () => "/finance",
   },
 ];
 
