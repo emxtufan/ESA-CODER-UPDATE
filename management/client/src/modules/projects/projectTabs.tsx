@@ -17,6 +17,8 @@ import {
   SERVER_COLUMNS,
   SERVER_FIELDS,
 } from "@/modules/infra/InfrastructurePage";
+import { COMMIT_COLUMNS, REPO_COLUMNS, REPO_FIELDS } from "@/modules/github/GithubPage";
+import { DEPLOY_COLUMNS, DEPLOY_FIELDS } from "@/modules/deployments/DeploymentsPage";
 import { OBSERVATION_FIELDS, TASK_FIELDS } from "@/modules/tasks/fields";
 
 export interface ProjectOverview {
@@ -350,6 +352,59 @@ export const PROJECT_TABS: ProjectTab[] = [
             fields={[]}
             extraQuery={{ projectId }}
             readOnly
+            embedded
+          />
+        </section>
+      </div>
+    ),
+  },
+  {
+    value: "development",
+    label: "Dezvoltare",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Repository-uri</h3>
+          <ResourcePage
+            title="Repository-uri"
+            endpoint="/github/repositories"
+            perm="github"
+            itemName="repository"
+            columns={REPO_COLUMNS}
+            fields={REPO_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
+            embedded
+          />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          {/* Commit-urile vin din webhook, deci se pot doar citi. */}
+          <h3 className="text-sm font-semibold text-text">Commit-uri</h3>
+          <ResourcePage
+            title="Commit-uri"
+            endpoint="/github/commits"
+            perm="github"
+            itemName="commit"
+            columns={COMMIT_COLUMNS}
+            fields={[]}
+            extraQuery={{ projectId }}
+            readOnly
+            embedded
+          />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Deployments</h3>
+          <ResourcePage
+            title="Deployments"
+            endpoint="/deployments"
+            perm="deployments"
+            itemName="deployment"
+            columns={DEPLOY_COLUMNS}
+            fields={DEPLOY_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
             embedded
           />
         </section>

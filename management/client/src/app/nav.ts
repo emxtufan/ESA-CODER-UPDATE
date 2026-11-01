@@ -2,9 +2,11 @@
 import {
   Building2,
   FolderKanban,
+  GitBranch,
   KeyRound,
   LayoutDashboard,
   ListChecks,
+  Rocket,
   ScrollText,
   Server,
   Settings,
@@ -44,6 +46,13 @@ export const NAV: NavGroup[] = [
     items: [
       { label: "Infrastructură", to: "/infrastructure", icon: Server, perm: "infrastructure.view" },
       { label: "Seif", to: "/vault", icon: KeyRound, perm: "vault.view" },
+    ],
+  },
+  {
+    group: "Dezvoltare",
+    items: [
+      { label: "GitHub", to: "/github", icon: GitBranch, perm: "github.view" },
+      { label: "Deployments", to: "/deployments", icon: Rocket, perm: "deployments.view" },
     ],
   },
   {

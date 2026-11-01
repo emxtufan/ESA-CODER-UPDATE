@@ -20,6 +20,8 @@ const TasksPage = lazy(() => import("@/modules/tasks/TasksPage"));
 const ObservationsPage = lazy(() => import("@/modules/observations/ObservationsPage"));
 const InfrastructurePage = lazy(() => import("@/modules/infra/InfrastructurePage"));
 const VaultPage = lazy(() => import("@/modules/vault/VaultPage"));
+const GithubPage = lazy(() => import("@/modules/github/GithubPage"));
+const DeploymentsPage = lazy(() => import("@/modules/deployments/DeploymentsPage"));
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -40,6 +42,8 @@ export const router = createBrowserRouter([
       { path: "observations", element: <ObservationsPage /> },
       { path: "infrastructure", element: <InfrastructurePage /> },
       { path: "vault", element: <VaultPage /> },
+      { path: "github", element: <GithubPage /> },
+      { path: "deployments", element: <DeploymentsPage /> },
       { path: "audit", element: <AuditPage /> },
       { path: "settings", element: <AccountPage /> },
     ],
