@@ -97,7 +97,7 @@ async function main() {
     await page.getByRole("heading", { name: "Proiecte" }).waitFor();
     await page.getByRole("button", { name: "Adaugă" }).click();
     await page.fill("dialog input[name=name]", `Proiect ${stamp}`);
-    await page.getByRole("option", { name: `Client ${stamp}` }).waitFor();
+    await page.getByRole("option", { name: `Client ${stamp}` }).waitFor({ state: "attached" });
     await page.selectOption("dialog select[name=clientId]", { label: `Client ${stamp}` });
     await page.getByRole("button", { name: "Salvează" }).click();
     await page.getByText(`Proiect ${stamp}`).first().waitFor();
