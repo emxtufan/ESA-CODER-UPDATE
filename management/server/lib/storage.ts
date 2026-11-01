@@ -17,7 +17,7 @@ const localPath = (env: Env, key: string) => join(env.DATA_DIR, "files", key);
 export async function putFile(env: Env, key: string, data: Buffer): Promise<void> {
   const remote = s3(env);
   if (remote) {
-    const res = await remote.client.fetch(remote.url(key), { method: "PUT", body: data });
+    const res = await remote.client.fetch(remote.url(key), { method: "PUT", body: new Uint8Array(data) });
     if (!res.ok) throw new HttpError(502, "storage_error", "Fișierul nu a putut fi salvat");
     return;
   }
