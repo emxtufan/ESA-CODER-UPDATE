@@ -16,11 +16,20 @@ import { auditRouter } from "./modules/audit/routes";
 import { authRouter } from "./modules/auth/routes";
 import { clientsRouter, contactsRouter } from "./modules/clients/routes";
 import { commentsRouter } from "./modules/comments/routes";
+import {
+  dnsRouter,
+  domainsRouter,
+  hostingRouter,
+  serversRouter,
+  servicesRouter,
+  sslRouter,
+} from "./modules/infra/routes";
 import { observationsRouter } from "./modules/observations/routes";
 import { projectsRouter } from "./modules/projects/routes";
 import { searchRouter } from "./modules/search/routes";
 import { tasksRouter } from "./modules/tasks/routes";
 import { updatesRouter } from "./modules/updates/routes";
+import { vaultRouter } from "./modules/vault/routes";
 import { csrfGuard } from "./security/guards";
 import { loadSession } from "./security/session";
 
@@ -84,6 +93,13 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/activities", activitiesRouter());
   app.use("/api/audit", auditRouter());
   app.use("/api/search", searchRouter());
+  app.use("/api/servers", serversRouter());
+  app.use("/api/services", servicesRouter());
+  app.use("/api/domains", domainsRouter());
+  app.use("/api/dns-records", dnsRouter());
+  app.use("/api/ssl", sslRouter());
+  app.use("/api/hosting", hostingRouter());
+  app.use("/api/vault", vaultRouter());
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true });

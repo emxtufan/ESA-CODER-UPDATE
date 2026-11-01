@@ -26,8 +26,6 @@ import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
 
-export { crudRouter };
-
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
 
 /** Adresă IP validă (v4 sau v6): string-ul gol devine `null`, câmpul absent rămâne `undefined`. */
@@ -178,6 +176,11 @@ async function infraActivity(
     entityType,
     entityId: row.id,
   });
+}
+
+/** Eticheta unui serviciu de hosting: furnizorul plus planul, când există. */
+function hostingLabel(row: any): string {
+  return `${row.provider} ${row.plan ?? ""}`.trim();
 }
 
 /** Id-urile nenule (fără duplicate) de pe o coloană a paginii curente. */

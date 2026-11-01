@@ -12,6 +12,7 @@ import { z } from "zod";
 
 import type { Permission } from "../../../shared/permissions";
 import { clients, projects, tasks } from "../../db/schema/core";
+import { domains, servers } from "../../db/schema/infra";
 import { parse } from "../../lib/http";
 import { can, requireAuth } from "../../security/guards";
 
@@ -66,6 +67,26 @@ const GROUPS: SearchGroup[] = [
     title: (row) => row.title,
     subtitle: () => null,
     link: () => "/tasks",
+  },
+  {
+    key: "servers",
+    label: "Servere",
+    perm: "infrastructure.view",
+    table: servers,
+    columns: [servers.name, servers.ip],
+    title: (row) => row.name,
+    subtitle: (row) => row.ip ?? null,
+    link: () => "/infrastructure?tab=servers",
+  },
+  {
+    key: "domains",
+    label: "Domenii",
+    perm: "infrastructure.view",
+    table: domains,
+    columns: [domains.domain],
+    title: (row) => row.domain,
+    subtitle: (row) => row.registrar ?? null,
+    link: () => "/infrastructure?tab=domains",
   },
 ];
 
