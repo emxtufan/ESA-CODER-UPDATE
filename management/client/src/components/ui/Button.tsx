@@ -42,7 +42,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center rounded-md font-medium transition-colors",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors",
         "disabled:cursor-not-allowed disabled:opacity-50",
         VARIANTS[variant],
         SIZES[size],

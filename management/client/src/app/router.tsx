@@ -9,7 +9,6 @@ import ResetPasswordPage from "@/modules/auth/ResetPasswordPage";
 import AuditPage from "@/modules/audit/AuditPage";
 import DashboardPage from "@/modules/dashboard/DashboardPage";
 import AccountPage from "@/modules/settings/AccountPage";
-import UsersPage from "@/modules/users/UsersPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -22,7 +21,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: "users", element: <UsersPage /> },
       { path: "audit", element: <AuditPage /> },
       { path: "settings", element: <AccountPage /> },
     ],

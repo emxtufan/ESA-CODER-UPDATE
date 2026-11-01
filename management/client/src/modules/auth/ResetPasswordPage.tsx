@@ -1,4 +1,4 @@
-/** Setarea parolei dintr-un link de invitație sau de resetare. */
+/** Setarea parolei dintr-un link de resetare. */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,6 @@ type ResetValues = z.infer<typeof resetSchema>;
 export function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") ?? "";
-  const isInvite = searchParams.get("invite") === "1";
 
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -47,12 +46,10 @@ export function ResetPasswordPage() {
     }
   });
 
-  const title = isInvite ? "Activează contul" : "Parolă nouă";
-
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <Card className="w-full max-w-sm">
-        <h1 className="text-lg font-semibold text-text">{title}</h1>
+        <h1 className="text-lg font-semibold text-text">Parolă nouă</h1>
 
         {!token ? (
           <>

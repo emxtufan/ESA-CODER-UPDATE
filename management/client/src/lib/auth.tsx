@@ -60,8 +60,5 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
   if (!data) return <Navigate to="/login" replace />;
 
-  // Portalul de client se implementează în faza 7.
-  if (data.user.role === "client") return <Navigate to="/portal" replace />;
-
   return <>{children}</>;
 }

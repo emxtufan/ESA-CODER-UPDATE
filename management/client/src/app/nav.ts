@@ -1,5 +1,5 @@
 /** Navigația laterală: grupuri de module, fiecare item cu permisiune opțională. */
-import { LayoutDashboard, ScrollText, Settings, Users, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, ScrollText, Settings, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -22,7 +22,6 @@ export const NAV: NavGroup[] = [
   {
     group: "Administrare",
     items: [
-      { label: "Utilizatori", to: "/users", icon: Users, perm: "users.view" },
       { label: "Audit", to: "/audit", icon: ScrollText, perm: "audit.view" },
       { label: "Cont", to: "/settings", icon: Settings },
     ],

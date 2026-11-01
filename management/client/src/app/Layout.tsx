@@ -124,7 +124,6 @@ export function Layout() {
           <div className="ml-auto flex items-center gap-3">
             <div className="text-right leading-tight">
               <p className="text-sm font-medium text-text">{me?.user.name ?? "—"}</p>
-              <p className="text-xs text-muted">{me?.user.role ?? ""}</p>
             </div>
             <Button variant="ghost" size="sm" onClick={handleLogout} loading={loggingOut}>
               <LogOut aria-hidden="true" className="size-4" />
