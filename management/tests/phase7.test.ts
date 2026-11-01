@@ -84,6 +84,15 @@ describe("faza 7", () => {
     });
   });
 
+  it("intervalul gol primește 300 de secunde la creare și la modificare", async () => {
+    const res = await ctx.api("/api/monitoring/checks", { method: "POST", cookie, body: { projectId, url: "https://example.com/x", intervalSeconds: null, enabled: true } });
+    expect(res.status).toBe(201);
+    expect(res.json.item.intervalSeconds).toBe(300);
+    const patched = await ctx.api(`/api/monitoring/checks/${res.json.item.id}`, { method: "PATCH", cookie, body: { intervalSeconds: null } });
+    expect(patched.status).toBe(200);
+    expect(patched.json.item.intervalSeconds).toBe(300);
+  });
+
   it("măsoară status și timp de răspuns", async () => {
     const ok = await checkUrl(localUrl, { allowPrivate: true });
     expect(ok).toMatchObject({ ok: true, httpStatus: 200, dnsOk: true, error: null });

@@ -572,7 +572,7 @@ export const PROJECT_TABS: ProjectTab[] = [
       <div className="flex flex-col gap-8">
         <section className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold text-text">Monitorizare</h3>
-          <ResourcePage embedded title="Monitorizare" endpoint="/monitoring/checks" perm="monitoring" itemName="verificare" columns={CHECK_COLUMNS as never} fields={CHECK_FIELDS} extraQuery={{ projectId }} defaults={{ projectId }} />
+          <ResourcePage embedded title="Monitorizare" endpoint="/monitoring/checks" perm="monitoring" itemName="verificare" columns={CHECK_COLUMNS as never} fields={CHECK_FIELDS} extraQuery={{ projectId }} defaults={{ projectId, intervalSeconds: 300, enabled: true }} />
         </section>
         <section className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold text-text">Mentenanță</h3>

@@ -114,6 +114,7 @@ function ChecksTab() {
         itemName="verificare"
         columns={CHECK_COLUMNS}
         fields={CHECK_FIELDS}
+        defaults={{ intervalSeconds: 300, enabled: true }}
         rowActions={(row) => (
           <>
             {canRun ? (

@@ -52,7 +52,7 @@ export function monitoringRouter(): Router {
         projectId: z.uuid(),
         url: httpUrl,
         type: z.enum(["http"]).optional(),
-        intervalSeconds: z.coerce.number().int().min(60).max(86_400).optional(),
+        intervalSeconds: z.preprocess((v) => (v === null || v === "" ? undefined : v), z.coerce.number().int().min(60).max(86_400).optional()),
         enabled: z.boolean().optional(),
       }),
       searchColumns: [monitoringChecks.url],
@@ -60,7 +60,7 @@ export function monitoringRouter(): Router {
       sortable: { url: monitoringChecks.url, lastCheckedAt: monitoringChecks.lastCheckedAt },
       defaultSort: { column: monitoringChecks.url },
       toRow: ((data: Record<string, unknown>, req: Request) =>
-        req.method === "POST" ? { type: "http", intervalSeconds: 300, ...data } : data) as never,
+        req.method === "POST" ? { type: "http", ...data, intervalSeconds: data.intervalSeconds ?? 300 } : data) as never,
       listTransform: attachProjectNames as never,
     }),
   );
