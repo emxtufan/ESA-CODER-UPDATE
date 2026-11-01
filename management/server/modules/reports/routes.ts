@@ -1,7 +1,8 @@
 import { Router, type Request } from "express";
 import { and, asc, desc, eq, gte, inArray, isNull, lte, notInArray, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
-import { CURRENCIES, type Permission } from "../../../shared/enums";
+import { CURRENCIES } from "../../../shared/enums";
+import type { Permission } from "../../../shared/permissions";
 import type { Db } from "../../db/client";
 import { clients, projects, tasks } from "../../db/schema/core";
 import { expenses, invoices, payments } from "../../db/schema/finance";
