@@ -3,6 +3,7 @@ import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import {
   boolean,
   index,
+  integer,
   jsonb,
   pgTable,
   text,
@@ -54,6 +55,8 @@ export const users = pgTable(
     /** Secretul TOTP criptat AES-256-GCM (VAULT_MASTER_KEY), niciodată plaintext. */
     totpSecretEnc: text("totp_secret_enc"),
     totpEnabled: boolean("totp_enabled").notNull().default(false),
+    /** Ultimul pas TOTP acceptat — un cod nu poate fi refolosit (anti-replay). */
+    totpLastStep: integer("totp_last_step"),
     invitedAt: timestamp("invited_at", { withTimezone: true }),
     disabledAt: timestamp("disabled_at", { withTimezone: true }),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
