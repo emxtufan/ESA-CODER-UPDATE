@@ -12,10 +12,10 @@ export interface BadgeProps {
 
 const TONES: Record<BadgeTone, string> = {
   neutral: "border-line bg-line text-muted",
-  success: "border-primary/30 bg-primary/15 text-primary",
-  warning: "border-warning/30 bg-warning/15 text-warning",
-  danger: "border-danger/30 bg-danger/15 text-danger",
-  info: "border-info/30 bg-info/15 text-info",
+  success: "border-text/50 bg-transparent text-text",
+  warning: "border-dashed border-text/70 bg-transparent text-text",
+  danger: "border-text bg-text text-bg",
+  info: "border-line bg-transparent text-muted",
 };
 
 /** Etichetă compactă de stare. */
