@@ -46,7 +46,7 @@ export function useCan(perm?: string): boolean {
   return data?.permissions.includes(perm) ?? false;
 }
 
-/** Cere o sesiune validă; altfel redirect la login (sau la portal, pentru clienți). */
+/** Cere o sesiune validă; altfel redirect la login. */
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { data, isLoading } = useMe();
 

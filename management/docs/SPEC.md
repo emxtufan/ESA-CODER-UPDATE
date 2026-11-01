@@ -1,5 +1,7 @@
 # ESA Management — specificație (condensată)
 
+**Un singur utilizator (proprietarul agenției). Clienții nu au cont și nu accesează aplicația; sunt doar date.**
+
 Sistem intern agenție ESA Coder Solutions. Totul real: fără date statice, fără integrări simulate; neconfigurat = afișat explicit "neconectat". Fără date inventate. DEMO doar marcat is_demo și ștergibil.
 
 ## Stack (decis)
@@ -12,7 +14,7 @@ Dark. bg #101411, sidebar #171D19, card #1C241E, primary #64A045, secondary #3C5
 
 ## Roluri
 
-Super Admin, Administrator, Developer, Finance, Client. Permisiuni granulare configurabile (`<modul>.<acțiune>`). Client izolat strict: doar datele proprii; niciodată credentiale, SSH, note/observații interne, costuri interne, profitabilitate, loguri, tokeni.
+Un singur cont (super_admin), creat cu `npm run user:admin`. Fără invitații, fără UI de utilizatori/roluri; requirePermission rămâne ca apărare în backend.
 
 ## §4 Dashboard (calculat din DB)
 
@@ -20,7 +22,7 @@ KPI: proiecte total/active/în dezvoltare/mentenanță/suspendate, clienți, ven
 
 ## §5 Projects (central, pagină cu tab-uri)
 
-name, slug, client, description, type[Custom Website, Landing Page, E-commerce, Shopify Development, Web Application, API Development, 3D Website, Redesign, Maintenance, Other], website_url, admin_url, status[Lead, Planned, In Development, Review, Awaiting Client, Completed, Active Maintenance, Suspended, Archived], priority, start_date, deadline, delivery_date, responsible_developer, team_members, contract_value, currency, maintenance_status, internal_notes, tags. Favorite per user.
+name, slug, client, description, type[Custom Website, Landing Page, E-commerce, Shopify Development, Web Application, API Development, 3D Website, Redesign, Maintenance, Other], website_url, admin_url, status[Lead, Planned, In Development, Review, Awaiting Client, Completed, Active Maintenance, Suspended, Archived], priority, start_date, deadline, delivery_date, contract_value, currency, maintenance_status, internal_notes, tags. Favorite per user.
 
 Overview: info, client, site, status, progres taskuri, ultima activitate/commit/deployment, facturi+plăți, costuri recurente, următoarea mentenanță, probleme active.
 
@@ -28,7 +30,7 @@ Timeline (activities, append-only): creare, status, modificări, commit, deploy,
 
 ## §6 Clients
 
-company_name, legal_name, cui, reg_com, vat_status, country, city, address, postal_code, website, industry; contact_person, position, phone, primary_email, billing_email; contacts suplimentare (tabel); payment_terms, preferred_currency, payment_method, status, internal_notes. Pagină: proiecte, facturi, plăți, contracte, documente, comunicare, solicitări, activitate.
+company_name, legal_name, cui, reg_com, vat_status, country, city, address, postal_code, website, industry; contact_person, position, phone, primary_email, billing_email; contacts suplimentare (tabel); payment_terms, preferred_currency, payment_method, status, internal_notes. Pagină: proiecte, facturi, plăți, contracte, documente, comunicare, activitate.
 
 ## §7 Infrastructure
 
@@ -54,11 +56,11 @@ project, repo, commit_hash, branch, environment, server, date, triggered_by, sta
 
 ## §10 Tasks & Observations
 
-Tasks: title, description, project, client, assignee, priority[Low, Medium, High, Critical], status[Backlog, To Do, In Progress, In Review, Blocked, Completed], due, completed_at, estimated/actual hours, attachments, comments, dependencies. Kanban, listă, calendar, filtre, search, sort. Observations: title, description, project, author, date, priority, attachments, status, conversie în task. Manual Update Log: text legat de commit/deployment/task.
+Tasks: title, description, project, client, priority[Low, Medium, High, Critical], status[Backlog, To Do, In Progress, In Review, Blocked, Completed], due, completed_at, estimated/actual hours, attachments, comments, dependencies. Kanban, listă, calendar, filtre, search, sort. Observations: title, description, project, author, date, priority, attachments, status, conversie în task. Manual Update Log: text legat de commit/deployment/task.
 
 ## §11 Maintenance
 
-Plan[Basic, Standard, Premium, Custom] pe proiect: monthly_price, currency, start, renewal, included_services, frequency, responsible, contract_status. Activități: Website Updates, Dependency Updates, Security Checks, Backup Verification, Performance Checks, SEO Checks, Form Testing, SSL Checks, Database Maintenance. Taskuri recurente, notificări, log intervenții.
+Plan[Basic, Standard, Premium, Custom] pe proiect: monthly_price, currency, start, renewal, included_services, frequency, contract_status. Activități: Website Updates, Dependency Updates, Security Checks, Backup Verification, Performance Checks, SEO Checks, Form Testing, SSL Checks, Database Maintenance. Taskuri recurente, notificări, log intervenții.
 
 ## §12 Finance (evidență, nu contabilitate)
 
@@ -66,19 +68,15 @@ Invoices: number, client, project, issue_date, due_date, currency, subtotal, vat
 
 ## §13 Documents
 
-Tipuri: Contracts, Commercial Offers, Invoices, Payment Proofs, GDPR Documents, Technical Documentation, Project Specifications, Delivery Reports, Other. name, type, client, project, upload_date, expiration, version, file, notes, client_visible. Upload, download, preview, version history, search, filtre, permisiuni, linkuri temporare semnate. Storage local sau S3-compatible.
+Tipuri: Contracts, Commercial Offers, Invoices, Payment Proofs, GDPR Documents, Technical Documentation, Project Specifications, Delivery Reports, Other. name, type, client, project, upload_date, expiration, version, file, notes. Upload, download, preview, version history, search, filtre, permisiuni, linkuri temporare semnate. Storage local sau S3-compatible.
 
 ## §14 Notifications
 
-Resend pt. email. Evenimente: New Project, New Task, Task Deadline, Overdue Task, New Commit, Failed Deployment, Server Down, SSL Expiration, Domain Expiration, Invoice Issued, Invoice Due, Invoice Overdue, Payment Received, Maintenance Reminder, Backup Failed. Reguli: destinatari, template HTML, subject, variabile, enable, frecvență, retry, delivery logs. Notification Center în app. Deduplicare + rate limit.
+Resend pt. email. Destinatar implicit: emailul proprietarului. Evenimente: New Project, New Task, Task Deadline, Overdue Task, New Commit, Failed Deployment, Server Down, SSL Expiration, Domain Expiration, Invoice Issued, Invoice Due, Invoice Overdue, Payment Received, Maintenance Reminder, Backup Failed. Reguli: destinatari, template HTML, subject, variabile, enable, frecvență, retry, delivery logs. Notification Center în app. Deduplicare + rate limit.
 
 ## §15 Monitoring
 
 Website: HTTP status, response time, SSL expiry, disponibilitate, DNS. Server: CPU/RAM/disk/uptime/servicii doar cu agent securizat, altfel "neconectat". Incidents: name, project, server, start, end, severity, status, description, resolution. SSRF protection la verificări.
-
-## §16 Client Portal
-
-UI separată: proiecte proprii, status, progres, actualizări aprobate, solicitări, documente, facturi (download), plăți, contracte autorizate, comentarii.
 
 ## §17 Reports
 
@@ -90,7 +88,7 @@ Client, proiect, domeniu, IP, repo, commit hash, nr. factură, task, contract, d
 
 ## §19 Security
 
-Auth, sesiuni în DB, scrypt, RBAC, TOTP 2FA, login history, audit log, revocare sesiuni, reset parolă, invitații. Audit: create, update, delete, login, logout, credential access, financial changes, permission changes, document downloads. Soft delete unde e potrivit. Validare Zod, rate limit, CSRF, CORS restrictiv, helmet/CSP.
+Auth, sesiuni în DB, scrypt, RBAC, TOTP 2FA, login history, audit log, revocare sesiuni, reset parolă. Audit: create, update, delete, login, logout, credential access, financial changes, permission changes, document downloads. Soft delete unde e potrivit. Validare Zod, rate limit, CSRF, CORS restrictiv, helmet/CSP.
 
 ## §22 UX
 
@@ -106,8 +104,12 @@ Auth, authz, CRUD, relații, webhook, calcule factură, plăți parțiale, moned
 
 ## §25 Faze
 
-1 Fundație (arhitectură, DB, auth, RBAC, design system, layout, dashboard). 2 Clients, Projects, Overview, Tasks, Observations, Timeline. 3 Servers, Domains, SSL, Hosting, Vault. 4 GitHub, Deployments. 5 Finance. 6 Maintenance, Documents, Notifications, Email. 7 Monitoring, Portal, Reports, Automatizări. După fiecare: teste, fix, docs, PROJECT_STATUS.md.
+1 Fundație (arhitectură, DB, auth, RBAC, design system, layout, dashboard). 2 Clients, Projects, Overview, Tasks, Observations, Timeline. 3 Servers, Domains, SSL, Hosting, Vault. 4 GitHub, Deployments. 5 Finance. 6 Maintenance, Documents, Notifications, Email. 7 Monitoring, Reports, Automatizări. După fiecare: teste, fix, docs, PROJECT_STATUS.md.
 
 ## §26 Docs
 
 docs/: architecture, database, api, env, install, deploy, github, email, security, backup. PROJECT_STATUS.md: module gata/în lucru/neimplementate, integrări configurate/care cer credentials, probleme cunoscute, pași următori. Interfață fără backend ≠ gata.
+
+## Scoase intenționat
+
+Client Portal, rol client, solicitări clienți, echipă/membri proiect, asignare taskuri, invitații, UI utilizatori/roluri. Se pot readăuga din istoricul git.
