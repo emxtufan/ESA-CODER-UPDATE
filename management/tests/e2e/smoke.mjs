@@ -175,6 +175,53 @@ async function main() {
   await page.locator("tr", { hasText: `prod-${stamp}` }).first().waitFor();
   await shot("8f-deployments.png");
 
+  // 7f. Financiar: factură cu linii, emitere, plată parțială
+  await page.click("a[href='/finance']");
+  await page.getByRole("heading", { name: "Financiar" }).first().waitFor();
+  await page.getByRole("button", { name: "Factură nouă" }).click();
+  await page.fill("dialog[open] input[name=number]", `F-${stamp}`);
+  await page.selectOption("dialog[open] select[name=clientId]", { index: 1 });
+  await page.fill("dialog[open] input[name=dueDate]", "2099-01-10");
+  await page.fill("dialog[open] input[name='items.0.description']", "Dezvoltare");
+  await page.fill("dialog[open] input[name='items.0.quantity']", "2");
+  await page.fill("dialog[open] input[name='items.0.unitPrice']", "100");
+  await shot("8g-factura-form.png");
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).click();
+  const invoiceRow = page.locator("tr", { hasText: `F-${stamp}` }).first();
+  await invoiceRow.waitFor();
+  await invoiceRow.getByRole("button", { name: "Detalii" }).click();
+  await page.locator("dialog[open]").getByRole("button", { name: "Emite" }).click();
+  await page.locator("#invoice-payment-amount").waitFor();
+  const suggested = Number(await page.inputValue("#invoice-payment-amount"));
+  if (suggested !== 242) throw new Error(`sold sugerat greșit: ${suggested}`);
+  await page.fill("#invoice-payment-amount", "100");
+  await page.locator("dialog[open]").getByRole("button", { name: "Înregistrează plata" }).click();
+  await page.locator("dialog[open]").getByText("Partially Paid").first().waitFor();
+  await shot("8h-factura-platita.png");
+  await page.locator("dialog[open]").getByRole("button", { name: "Închide" }).first().click();
+
+  // 7g. Cheltuială, curs și profit
+  await page.goto(new URL("/finance?tab=expenses", page.url()).href);
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.fill("dialog[open] input[name=name]", `Chelt ${stamp}`);
+  await page.selectOption("dialog[open] select[name=category]", { index: 1 });
+  await page.fill("dialog[open] input[name=amount]", "50");
+  await page.selectOption("dialog[open] select[name=currency]", { label: "RON" });
+  await page.fill("dialog[open] input[name=spentAt]", "2026-01-12");
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: `Chelt ${stamp}` }).first().waitFor();
+  await page.goto(new URL("/finance?tab=rates", page.url()).href);
+  await page.getByRole("button", { name: "Adaugă" }).first().click();
+  await page.fill("dialog[open] input[name=date]", new Date((Number(stamp) % 1e9) * 1000).toISOString().slice(0, 10));
+  await page.selectOption("dialog[open] select[name=fromCurrency]", { label: "EUR" });
+  await page.selectOption("dialog[open] select[name=toCurrency]", { label: "RON" });
+  await page.fill("dialog[open] input[name=rate]", "4.97");
+  await page.locator("dialog[open]").getByRole("button", { name: "Salvează" }).first().click();
+  await page.locator("tr", { hasText: "4.97" }).first().waitFor();
+  await page.goto(new URL("/finance?tab=profit", page.url()).href);
+  await page.getByText("Cheltuieli").first().waitFor();
+  await shot("8i-profit.png");
+
     // 8. Căutare
     await page.fill("input[role=combobox]", `Client ${stamp}`);
     await page.getByRole("option").first().waitFor();
