@@ -75,7 +75,7 @@ function Stat({ label, value, to }: { label: string; value: ReactNode; to: strin
 function List<T>({ title, to, items, empty, render }: { title: string; to: string; items: T[] | null | undefined; empty: string; render: (item: T) => { key: string; to: string; main: ReactNode; side?: ReactNode } }) {
   if (!items) return null;
   return (
-    <Card title={<Link to={to} className="hover:text-primary">{title}</Link>}>
+    <Card title={<Link to={to} className="hover:text-primary">{title}</Link>} className="min-w-0">
       {items.length === 0 ? (
         <p className="text-sm text-muted">{empty}</p>
       ) : (
@@ -85,7 +85,7 @@ function List<T>({ title, to, items, empty, render }: { title: string; to: strin
             return (
               <li key={row.key}>
                 <Link to={row.to} className="flex items-center justify-between gap-3 py-2 text-sm hover:text-primary">
-                  <span className="min-w-0 truncate text-text">{row.main}</span>
+                  <span className="min-w-0 break-words text-text">{row.main}</span>
                   {row.side ? <span className="shrink-0 text-xs text-muted">{row.side}</span> : null}
                 </Link>
               </li>
@@ -198,9 +198,9 @@ export default function DashboardPage() {
       ) : null}
 
       {money.length > 0 ? (
-        <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+        <section className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {money.map((m) => (
-            <Card key={m.currency} title={`Financiar ${m.currency}`}>
+            <Card key={m.currency} title={`Financiar ${m.currency}`} className="min-w-0">
               <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 {[
                   ["Venit total", m.revenue],
@@ -221,9 +221,10 @@ export default function DashboardPage() {
         </section>
       ) : null}
 
-      <section className="grid gap-3 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-3 lg:grid-cols-2">
         {selected ? (
           <Card
+            className="min-w-0"
             title={`Venituri și cheltuieli lunare, ${selected.currency}`}
             actions={
               money.length > 1 ? (
@@ -240,23 +241,23 @@ export default function DashboardPage() {
           </Card>
         ) : null}
         {data.finance && data.finance.invoices.paid + data.finance.invoices.unpaid + data.finance.invoices.overdue > 0 ? (
-          <Card title="Facturi plătite și neachitate">
+          <Card title="Facturi plătite și neachitate" className="min-w-0">
             <InvoiceBar {...data.finance.invoices} />
           </Card>
         ) : null}
         {data.projects && data.projects.total > 0 ? (
-          <Card title="Proiecte noi pe lună">
+          <Card title="Proiecte noi pe lună" className="min-w-0">
             <GrowthChart data={data.projects.growth} />
           </Card>
         ) : null}
         {data.projects && data.projects.total > 0 ? (
-          <Card title="Proiecte pe status">
+          <Card title="Proiecte pe status" className="min-w-0">
             <StatusChart data={data.projects.byStatus} />
           </Card>
         ) : null}
       </section>
 
-      <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
         {favorites.data && favorites.data.items.length > 0 ? (
           <List title="Favorite" to="/projects" items={favorites.data.items} empty="" render={(p) => ({ key: p.id, to: `/projects/${p.id}`, main: p.name })} />
         ) : null}
