@@ -11,6 +11,7 @@ import {
   Server,
   Settings,
   StickyNote,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -54,6 +55,10 @@ export const NAV: NavGroup[] = [
       { label: "GitHub", to: "/github", icon: GitBranch, perm: "github.view" },
       { label: "Deployments", to: "/deployments", icon: Rocket, perm: "deployments.view" },
     ],
+  },
+  {
+    group: "Financiar",
+    items: [{ label: "Financiar", to: "/finance", icon: Wallet, perm: "finance.view" }],
   },
   {
     group: "Administrare",

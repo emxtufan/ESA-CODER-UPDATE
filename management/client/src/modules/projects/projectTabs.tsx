@@ -19,6 +19,8 @@ import {
 } from "@/modules/infra/InfrastructurePage";
 import { COMMIT_COLUMNS, REPO_COLUMNS, REPO_FIELDS } from "@/modules/github/GithubPage";
 import { DEPLOY_COLUMNS, DEPLOY_FIELDS } from "@/modules/deployments/DeploymentsPage";
+import { EXPENSE_COLUMNS, EXPENSE_FIELDS } from "@/modules/finance/FinancePage";
+import { InvoicesTab } from "@/modules/finance/InvoicesTab";
 import { OBSERVATION_FIELDS, TASK_FIELDS } from "@/modules/tasks/fields";
 
 export interface ProjectOverview {
@@ -403,6 +405,33 @@ export const PROJECT_TABS: ProjectTab[] = [
             itemName="deployment"
             columns={DEPLOY_COLUMNS}
             fields={DEPLOY_FIELDS}
+            extraQuery={{ projectId }}
+            defaults={{ projectId }}
+            embedded
+          />
+        </section>
+      </div>
+    ),
+  },
+  {
+    value: "finance",
+    label: "Financiar",
+    render: (projectId) => (
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Facturi</h3>
+          <InvoicesTab projectId={projectId} />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text">Cheltuieli</h3>
+          <ResourcePage
+            title="Cheltuieli"
+            endpoint="/expenses"
+            perm="finance"
+            itemName="cheltuială"
+            columns={EXPENSE_COLUMNS}
+            fields={EXPENSE_FIELDS}
             extraQuery={{ projectId }}
             defaults={{ projectId }}
             embedded
