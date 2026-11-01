@@ -5,26 +5,16 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError, z } from "zod";
 
-/** Codurile de eroare expuse clientului (câmpul `error.code`). */
-export type ErrorCode =
-  | "validation_error"
-  | "unauthorized"
-  | "mfa_required"
-  | "forbidden"
-  | "csrf_failed"
-  | "vault_not_configured"
-  | "internal";
-
 /** Câmpuri invalide: nume de câmp → mesaj. */
 export type ErrorFields = Record<string, string>;
 
 /** Eroare controlată: status HTTP + cod stabil + mesaj (opțional câmpuri invalide). */
 export class HttpError extends Error {
   readonly status: number;
-  readonly code: ErrorCode;
+  readonly code: string;
   readonly fields?: ErrorFields;
 
-  constructor(status: number, code: ErrorCode, message: string, fields?: ErrorFields) {
+  constructor(status: number, code: string, message: string, fields?: ErrorFields) {
     super(message);
     this.name = "HttpError";
     this.status = status;
