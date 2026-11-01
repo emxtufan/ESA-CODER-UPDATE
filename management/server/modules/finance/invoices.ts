@@ -9,6 +9,7 @@ import { crudRouter, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { audit, recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
+import { notify } from "../notifications/service";
 import { deriveStatus, invoiceTotals, lineNet, todayStr, type ItemInput } from "./calc";
 
 const MAX_INT = 2_147_483_647;
@@ -240,6 +241,12 @@ export function invoicesRouter(): Router {
       description: `Factura ${row.number} a fost emisă`,
       entityType: "invoice",
       entityId: row.id,
+    });
+    await notify(db, req.ctx.env, {
+      event: "Invoice Issued",
+      dedupeKey: `invoice:${row.id}:issued`,
+      title: `Factura ${row.number} a fost emisă`,
+      link: "/finance",
     });
     res.json({ item: await load(db, row.id) });
   });

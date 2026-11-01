@@ -12,6 +12,7 @@ import { projects } from "../../db/schema/core";
 import { deployments, repositories } from "../../db/schema/github";
 import { crudRouter, optStr } from "../../lib/crud";
 import { recordActivity } from "../../security/audit";
+import { notify } from "../notifications/service";
 
 /** Câmpurile lansării din §9; `externalId` se completează doar din integrări. */
 const deploymentSchema = z.object({
@@ -124,11 +125,27 @@ export function deploymentsRouter(): Router {
           row,
           `Deployment înregistrat: ${row.environment ?? "fără mediu"} (${row.status})`,
         );
+        if (row.status === "Failed") {
+          await notify(req.ctx.db, req.ctx.env, {
+            event: "Failed Deployment",
+            dedupeKey: `deployment:${row.id}:failed`,
+            title: `Deployment eșuat: ${row.environment ?? ""}`,
+            link: "/deployments",
+          });
+        }
       },
       // Timeline doar când se schimbă statusul: o simplă notă pe log-uri nu e un eveniment.
       afterUpdate: async (row: any, req: Request, before: any) => {
         if (before.status === row.status) return;
         await deployActivity(req, row, `Status deployment: ${before.status} → ${row.status}`);
+        if (row.status === "Failed") {
+          await notify(req.ctx.db, req.ctx.env, {
+            event: "Failed Deployment",
+            dedupeKey: `deployment:${row.id}:failed`,
+            title: `Deployment eșuat: ${row.environment ?? ""}`,
+            link: "/deployments",
+          });
+        }
       },
     }),
   );

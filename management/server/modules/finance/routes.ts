@@ -9,6 +9,7 @@ import { crudRouter, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
+import { notify } from "../notifications/service";
 import { convertMinor, todayStr } from "./calc";
 import { paidAmount, recalcInvoice } from "./invoices";
 
@@ -67,6 +68,12 @@ export function paymentsRouter(): Router {
         description: `Plată înregistrată pe factura ${invoice?.number ?? ""}`,
         entityType: "invoice",
         entityId: row.invoiceId,
+      });
+      await notify(db, req.ctx.env, {
+        event: "Payment Received",
+        dedupeKey: `payment:${row.id}`,
+        title: `Plată primită pe factura ${invoice?.number ?? ""}`,
+        link: "/finance",
       });
     },
     afterUpdate: async (row: typeof payments.$inferSelect, req: Request) => recalcInvoice(req.ctx.db, row.invoiceId),

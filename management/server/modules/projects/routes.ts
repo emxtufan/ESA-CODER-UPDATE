@@ -17,6 +17,7 @@ import { crudRouter, dateStr, moneyInt, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
+import { notify } from "../notifications/service";
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
 
@@ -257,6 +258,12 @@ export function projectsRouter(): Router {
       },
       afterCreate: async (row: any, req: Request) => {
         await projectActivity(req, "project_created", row, `Proiect creat: ${row.name}`);
+        await notify(req.ctx.db, req.ctx.env, {
+          event: "New Project",
+          dedupeKey: `project:${row.id}`,
+          title: `Proiect nou: ${row.name}`,
+          link: `/projects/${row.id}`,
+        });
       },
       afterUpdate: async (row: any, req: Request, before: any) => {
         const changed = changedFields(before, row);

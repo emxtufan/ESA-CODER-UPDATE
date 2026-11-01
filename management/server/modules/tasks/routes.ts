@@ -13,6 +13,7 @@ import { crudRouter, optStr } from "../../lib/crud";
 import { HttpError, parse } from "../../lib/http";
 import { recordActivity } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
+import { notify } from "../notifications/service";
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
 
@@ -264,8 +265,15 @@ export function tasksRouter(): Router {
 
         return rows.map((row) => ({ ...row, projectName: names.get(row.projectId) ?? null }));
       },
-      afterCreate: (row: any, req: Request) =>
-        taskActivity(req, "task_created", row, `Task creat: ${row.title}`),
+      afterCreate: async (row: any, req: Request) => {
+        await taskActivity(req, "task_created", row, `Task creat: ${row.title}`);
+        await notify(req.ctx.db, req.ctx.env, {
+          event: "New Task",
+          dedupeKey: `task:${row.id}`,
+          title: `Task nou: ${row.title}`,
+          link: "/tasks",
+        });
+      },
       afterUpdate: async (row: any, req: Request, before: any) => {
         const enteredCompleted = row.status === "Completed" && before.status !== "Completed";
         const leftCompleted = row.status !== "Completed" && before.status === "Completed";
