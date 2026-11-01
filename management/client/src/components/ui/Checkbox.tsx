@@ -12,7 +12,7 @@ export function Checkbox({ label, className, ...rest }: CheckboxProps) {
     <label className={cn("inline-flex cursor-pointer items-center gap-2 text-sm text-text", className)}>
       <input
         type="checkbox"
-        className="size-4 shrink-0 cursor-pointer rounded border-line bg-bg accent-primary disabled:cursor-not-allowed disabled:opacity-50"
+        className="size-4 cursor-pointer rounded accent-primary"
         {...rest}
       />
       {label ? <span>{label}</span> : null}

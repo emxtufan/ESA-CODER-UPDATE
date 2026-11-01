@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Label } from "@/components/shadcn/label";
+
 import { cn } from "./cn";
 
 export interface FieldProps {
@@ -17,14 +19,14 @@ export interface FieldProps {
 export function Field({ label, htmlFor, error, hint, required = false, className, children }: FieldProps) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={htmlFor} className="text-sm font-medium text-text">
+      <Label htmlFor={htmlFor} className="text-sm font-medium text-text">
         {label}
         {required ? (
           <span className="text-danger" aria-hidden="true">
             {" *"}
           </span>
         ) : null}
-      </label>
+      </Label>
       {children}
       {hint && !error ? <p className="text-xs text-muted">{hint}</p> : null}
       {error ? (

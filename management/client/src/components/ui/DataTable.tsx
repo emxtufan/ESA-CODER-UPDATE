@@ -1,6 +1,8 @@
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
+
 import { cn } from "./cn";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
@@ -84,21 +86,26 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn("overflow-x-auto rounded-lg border border-line bg-card", className)}>
-      <table className="min-w-full border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-line">
+    <div
+      className={cn(
+        "overflow-hidden rounded-2xl bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)]",
+        className,
+      )}
+    >
+      <Table>
+        <TableHeader>
+          <TableRow className="border-b border-line">
             {columns.map((column) => {
               const active = sort?.key === column.key;
               const canSort = Boolean(column.sortable && onSort);
 
               return (
-                <th
+                <TableHead
                   key={column.key}
                   scope="col"
                   aria-sort={active ? (sort?.dir === "asc" ? "ascending" : "descending") : undefined}
                   className={cn(
-                    "px-3 py-2 text-xs font-medium whitespace-nowrap text-muted",
+                    "h-11 px-4 py-0 text-xs font-medium whitespace-nowrap text-muted",
                     ALIGN[column.align ?? "left"],
                     column.hideOnMobile && "hidden sm:table-cell",
                   )}
@@ -123,40 +130,40 @@ export function DataTable<T>({
                   ) : (
                     column.header
                   )}
-                </th>
+                </TableHead>
               );
             })}
-          </tr>
-        </thead>
-        <tbody>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {loading
             ? Array.from({ length: SKELETON_ROWS }, (_, index) => (
-                <tr key={`skeleton-${index}`} className="border-b border-line last:border-0">
+                <TableRow key={`skeleton-${index}`} className="border-b border-line last:border-0">
                   {columns.map((column) => (
-                    <td
+                    <TableCell
                       key={column.key}
-                      className={cn("px-3 py-2", column.hideOnMobile && "hidden sm:table-cell")}
+                      className={cn("px-4 py-3", column.hideOnMobile && "hidden sm:table-cell")}
                     >
                       <Skeleton className="h-4 w-full" />
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))
             : rows.length === 0
               ? (
-                <tr>
-                  <td colSpan={columns.length}>
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="px-4 py-3">
                     {empty ?? (
                       <EmptyState
                         title="Niciun rezultat"
                         description="Nu există date de afișat pentru filtrele curente."
                       />
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )
               : rows.map((row) => (
-                <tr
+                <TableRow
                   key={resolveRowKey(row, rowKey)}
                   tabIndex={onRowClick ? 0 : undefined}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
@@ -175,21 +182,21 @@ export function DataTable<T>({
                   )}
                 >
                   {columns.map((column) => (
-                    <td
+                    <TableCell
                       key={column.key}
                       className={cn(
-                        "px-3 py-2 text-text",
+                        "px-4 py-3 text-text",
                         ALIGN[column.align ?? "left"],
                         column.hideOnMobile && "hidden sm:table-cell",
                       )}
                     >
                       {column.render ? column.render(row) : defaultCell(row, column.key)}
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

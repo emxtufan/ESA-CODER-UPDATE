@@ -26,8 +26,8 @@ function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => v
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
-          isActive ? "bg-brand text-primary" : "text-muted hover:bg-card hover:text-text",
+          "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+          isActive ? "bg-black/5 font-medium text-text" : "text-muted hover:bg-black/[0.03] hover:text-text",
         )
       }
     >
@@ -109,21 +109,21 @@ export function Layout() {
         Sari la conținut
       </a>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-line bg-sidebar lg:block">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-line bg-sidebar/80 backdrop-blur-xl lg:block">
         <Sidebar />
       </aside>
 
       {drawerOpen ? (
         <div className="lg:hidden">
           <div className="fixed inset-0 z-40 bg-black/60" onClick={closeDrawer} aria-hidden="true" />
-          <aside className="fixed inset-y-0 left-0 z-50 w-60 border-r border-line bg-sidebar">
+          <aside className="fixed inset-y-0 left-0 z-50 w-60 border-r border-line bg-sidebar/80 backdrop-blur-xl">
             <Sidebar onNavigate={closeDrawer} onClose={closeDrawer} />
           </aside>
         </div>
       ) : null}
 
       <div className="lg:pl-60">
-        <header className="flex h-14 items-center gap-3 border-b border-line bg-bg px-4">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line bg-bg/80 px-4 backdrop-blur-xl lg:px-8">
           <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setDrawerOpen(true)} aria-label="Deschide meniul">
             <Menu aria-hidden="true" className="size-4" />
           </Button>
@@ -138,7 +138,7 @@ export function Layout() {
             >
               <Bell aria-hidden="true" className="size-4" />
               {unreadCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold leading-4 text-primary">
+                <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               ) : null}
@@ -154,7 +154,7 @@ export function Layout() {
           </div>
         </header>
 
-        <main id="main" className="p-4 lg:p-6">
+        <main id="main" className="mx-auto w-full max-w-[1400px] p-4 lg:p-8">
           <Suspense
             fallback={
               <div className="flex justify-center p-8">
