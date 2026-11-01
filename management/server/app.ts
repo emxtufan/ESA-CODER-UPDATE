@@ -18,6 +18,7 @@ import { clientsRouter, contactsRouter } from "./modules/clients/routes";
 import { commentsRouter } from "./modules/comments/routes";
 import { deploymentsRouter } from "./modules/deployments/routes";
 import { logsRouter, notificationsRouter, rulesRouter, templatesRouter } from "./modules/notifications/routes";
+import { documentsRouter, signedFilesRouter } from "./modules/documents/routes";
 import { invoicesRouter } from "./modules/finance/invoices";
 import { expensesRouter, financeRouter, paymentsRouter, ratesRouter } from "./modules/finance/routes";
 import { githubRouter } from "./modules/github/routes";
@@ -116,6 +117,8 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/expenses", expensesRouter());
   app.use("/api/exchange-rates", ratesRouter());
   app.use("/api/finance", financeRouter());
+  app.use("/api/documents", documentsRouter());
+  app.use("/api/files", signedFilesRouter());
   app.use("/api/notifications", notificationsRouter());
   app.use("/api/notification-rules", rulesRouter());
   app.use("/api/email-templates", templatesRouter());
