@@ -19,9 +19,6 @@ type Repository = typeof repositories.$inferSelect;
 const GITHUB_API = "https://api.github.com";
 const REQUEST_TIMEOUT_MS = 15000;
 
-/** Status folosit când nu există răspuns HTTP (eroare de rețea sau timeout). */
-const NO_STATUS = 0;
-
 export interface CommitInput {
   hash: string;
   message: string | null;
@@ -197,7 +194,7 @@ async function githubGet<T>(token: string, path: string): Promise<T> {
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch {
-    throw new HttpError(502, "github_error", `GitHub a răspuns ${NO_STATUS}`);
+    throw new HttpError(502, "github_error", "GitHub nu răspunde");
   }
 
   if (!response.ok) {

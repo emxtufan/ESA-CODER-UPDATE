@@ -16,6 +16,9 @@ import { auditRouter } from "./modules/audit/routes";
 import { authRouter } from "./modules/auth/routes";
 import { clientsRouter, contactsRouter } from "./modules/clients/routes";
 import { commentsRouter } from "./modules/comments/routes";
+import { deploymentsRouter } from "./modules/deployments/routes";
+import { githubRouter } from "./modules/github/routes";
+import { githubWebhookRouter } from "./modules/github/webhook";
 import {
   dnsRouter,
   domainsRouter,
@@ -78,6 +81,9 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
     jsonBody(req, res, next);
   });
 
+  // Webhook-urile își verifică semnătura pe raw body, deci se montează înainte de sesiune.
+  app.use("/api/webhooks/github", githubWebhookRouter());
+
   app.use(loadSession);
   app.use("/api", csrfGuard);
 
@@ -100,6 +106,8 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/ssl", sslRouter());
   app.use("/api/hosting", hostingRouter());
   app.use("/api/vault", vaultRouter());
+  app.use("/api/github", githubRouter());
+  app.use("/api/deployments", deploymentsRouter());
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true });

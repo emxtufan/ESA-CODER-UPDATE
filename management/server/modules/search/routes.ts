@@ -12,6 +12,7 @@ import { z } from "zod";
 
 import type { Permission } from "../../../shared/permissions";
 import { clients, projects, tasks } from "../../db/schema/core";
+import { commits, deployments, repositories } from "../../db/schema/github";
 import { domains, servers } from "../../db/schema/infra";
 import { parse } from "../../lib/http";
 import { can, requireAuth } from "../../security/guards";
@@ -88,6 +89,36 @@ const GROUPS: SearchGroup[] = [
     subtitle: (row) => row.registrar ?? null,
     link: () => "/infrastructure?tab=domains",
   },
+  {
+    key: "repositories",
+    label: "Repository-uri",
+    perm: "github.view",
+    table: repositories,
+    columns: [repositories.name, repositories.owner],
+    title: (row) => row.name,
+    subtitle: (row) => row.owner ?? null,
+    link: () => "/github",
+  },
+  {
+    key: "commits",
+    label: "Commit-uri",
+    perm: "github.view",
+    table: commits,
+    columns: [commits.hash, commits.message],
+    title: (row) => row.hash.slice(0, 7),
+    subtitle: (row) => row.message ?? null,
+    link: () => "/github?tab=commits",
+  },
+  {
+    key: "deployments",
+    label: "Deployments",
+    perm: "deployments.view",
+    table: deployments,
+    columns: [deployments.commitHash, deployments.branch],
+    title: (row) => `${row.environment ?? "—"} ${row.status}`,
+    subtitle: (row) => row.branch ?? null,
+    link: () => "/deployments",
+  },
 ];
 
 /** `%text%` pentru `ilike`, cu metacaracterele utilizatorului escapate. */
@@ -111,7 +142,7 @@ export function searchRouter(): Router {
           .where(
             and(
               or(...group.columns.map((column) => ilike(column, pattern))),
-              isNull((group.table as any).deletedAt),
+              "deletedAt" in group.table ? isNull((group.table as any).deletedAt) : undefined,
             ),
           )
           .limit(5);
