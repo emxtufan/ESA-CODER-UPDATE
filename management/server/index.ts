@@ -60,6 +60,7 @@ async function main(): Promise<void> {
     server.close(() => {
       void close().finally(() => process.exit(0));
     });
+    server.closeAllConnections();
   });
 }
 
