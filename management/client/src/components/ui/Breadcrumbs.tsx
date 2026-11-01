@@ -1,7 +1,13 @@
-import { ChevronRight } from "lucide-react";
 import { Fragment } from "react";
 
-import { cn } from "./cn";
+import {
+  Breadcrumb,
+  BreadcrumbItem as ShadcnItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/shadcn/breadcrumb";
 
 export interface BreadcrumbItem {
   label: string;
@@ -18,29 +24,21 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav aria-label="Breadcrumbs" className={cn("text-xs text-muted", className)}>
-      <ol className="flex flex-wrap items-center gap-1">
+    <Breadcrumb className={className}>
+      <BreadcrumbList className="text-xs">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
 
           return (
             <Fragment key={`${item.label}-${index}`}>
-              <li>
-                {item.href && !isLast ? (
-                  <a href={item.href} className="hover:text-text">
-                    {item.label}
-                  </a>
-                ) : (
-                  <span aria-current={isLast ? "page" : undefined} className={isLast ? "text-text" : undefined}>
-                    {item.label}
-                  </span>
-                )}
-              </li>
-              {isLast ? null : <ChevronRight aria-hidden="true" className="size-3 shrink-0 text-muted" />}
+              <ShadcnItem>
+                {item.href && !isLast ? <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink> : <BreadcrumbPage>{item.label}</BreadcrumbPage>}
+              </ShadcnItem>
+              {isLast ? null : <BreadcrumbSeparator />}
             </Fragment>
           );
         })}
-      </ol>
-    </nav>
+      </BreadcrumbList>
+    </Breadcrumb>
   );
 }

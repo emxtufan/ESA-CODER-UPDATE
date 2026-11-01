@@ -1,38 +1,35 @@
 import type { SelectHTMLAttributes } from "react";
 
+import { NativeSelect, NativeSelectOption } from "@/components/shadcn/native-select";
+
 import { cn } from "./cn";
-import { FIELD_BASE, FIELD_INVALID } from "./field-styles";
 
 export interface SelectOption {
   value: string;
   label: string;
 }
 
-export interface SelectProps
-  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "className" | "children"> {
+export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "className" | "children" | "size"> {
   options: SelectOption[];
   placeholder?: string;
   invalid?: boolean;
   className?: string;
 }
 
+/** Select nativ: funcționează direct cu `register` din react-hook-form. */
 export function Select({ options, placeholder, invalid = false, className, ...rest }: SelectProps) {
   return (
-    <select
-      aria-invalid={invalid || undefined}
-      className={cn(FIELD_BASE, "h-9 cursor-pointer", invalid && FIELD_INVALID, className)}
-      {...rest}
-    >
+    <NativeSelect aria-invalid={invalid || undefined} className={cn("h-10 cursor-pointer rounded-lg bg-background shadow-none", className)} {...rest}>
       {placeholder ? (
-        <option value="" disabled>
+        <NativeSelectOption value="" disabled>
           {placeholder}
-        </option>
+        </NativeSelectOption>
       ) : null}
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <NativeSelectOption key={option.value} value={option.value}>
           {option.label}
-        </option>
+        </NativeSelectOption>
       ))}
-    </select>
+    </NativeSelect>
   );
 }

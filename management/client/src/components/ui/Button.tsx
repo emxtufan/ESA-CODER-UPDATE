@@ -1,4 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes } from "react";
+
+import { Button as ShadcnButton } from "@/components/shadcn/button";
 
 import { cn } from "./cn";
 import { Spinner } from "./Spinner";
@@ -6,52 +8,19 @@ import { Spinner } from "./Spinner";
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md";
 
-export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  className?: string;
-  children?: ReactNode;
 }
 
-const VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-bg hover:bg-primary/90",
-  secondary: "bg-secondary text-text hover:bg-secondary/90",
-  ghost: "border border-line bg-transparent text-text hover:bg-card",
-  danger: "bg-danger text-bg hover:bg-danger/90",
-};
+const VARIANTS = { primary: "default", secondary: "secondary", ghost: "ghost", danger: "destructive" } as const;
 
-const SIZES: Record<ButtonSize, string> = {
-  sm: "h-8 gap-1.5 px-3 text-xs",
-  md: "h-9 gap-2 px-4 text-sm",
-};
-
-export function Button({
-  variant = "primary",
-  size = "md",
-  loading = false,
-  disabled,
-  type = "button",
-  className,
-  children,
-  ...rest
-}: ButtonProps) {
+export function Button({ variant = "primary", size = "md", loading = false, disabled, className, children, type = "button", ...rest }: ButtonProps) {
   return (
-    <button
-      type={type}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        VARIANTS[variant],
-        SIZES[size],
-        className,
-      )}
-      {...rest}
-    >
-      {loading ? <Spinner className="size-3.5" /> : null}
+    <ShadcnButton type={type} variant={VARIANTS[variant]} size={size === "sm" ? "sm" : "default"} disabled={disabled || loading} className={cn("rounded-full", className)} {...rest}>
+      {loading ? <Spinner /> : null}
       {children}
-    </button>
+    </ShadcnButton>
   );
 }

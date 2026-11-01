@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Card as ShadcnCard, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shadcn/card";
+
 import { cn } from "./cn";
 
 export interface CardProps {
@@ -12,22 +14,25 @@ export interface CardProps {
   bodyClassName?: string;
 }
 
-/** Container de conținut, fără gradient și fără efecte decorative. */
 export function Card({ title, description, actions, children, className, bodyClassName }: CardProps) {
   const hasHeader = title !== undefined || description !== undefined || actions !== undefined;
 
   return (
-    <div className={cn("rounded-lg border border-line bg-card", className)}>
+    <ShadcnCard className={cn("gap-0 rounded-2xl border-0 py-0 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)]", className)}>
       {hasHeader ? (
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line px-4 py-3">
+        <CardHeader className="flex flex-wrap items-start justify-between gap-3 px-5 pt-5 pb-0">
           <div className="min-w-0">
-            {title !== undefined ? <h2 className="text-sm font-semibold text-text">{title}</h2> : null}
-            {description !== undefined ? <p className="mt-0.5 text-xs text-muted">{description}</p> : null}
+            {title !== undefined ? (
+              <CardTitle>
+                <h2 className="text-sm font-semibold tracking-tight text-text">{title}</h2>
+              </CardTitle>
+            ) : null}
+            {description !== undefined ? <CardDescription className="mt-0.5 text-xs">{description}</CardDescription> : null}
           </div>
           {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
-        </div>
+        </CardHeader>
       ) : null}
-      {children !== undefined ? <div className={cn("p-4", bodyClassName)}>{children}</div> : null}
-    </div>
+      {children !== undefined ? <CardContent className={cn("p-5", bodyClassName)}>{children}</CardContent> : null}
+    </ShadcnCard>
   );
 }
