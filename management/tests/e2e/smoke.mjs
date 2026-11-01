@@ -74,11 +74,6 @@ async function main() {
     await page.getByText("Dashboard").first().waitFor();
     await shot("2-dash.png");
 
-    // 2. Utilizatori
-    await page.click("a[href='/users']");
-    await page.getByText(EMAIL).first().waitFor();
-    await shot("3-users.png");
-
     // 3. Audit
     await page.click("a[href='/audit']");
     await page.waitForTimeout(1500);
