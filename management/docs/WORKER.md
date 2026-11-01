@@ -31,9 +31,9 @@
 - `useToast() → {success(msg), error(msg)}` (necesită `ToastProvider`); `cn(...)`; `BadgeTone`
 
 ## ResourcePage (`@/components/resource/ResourcePage.tsx`)
-- `ResourcePageConfig<T> {title; description?; endpoint; perm; columns: DataTableColumn<T>[]; fields: FieldDef[]; filters?: FilterDef[]; searchPlaceholder?; detailPath?(row): string; defaults?: Record<string,unknown>; extraQuery?: Record<string,string|number>; embedded?; canDelete?; rowActions?(row): ReactNode; itemName}`
+- `ResourcePageConfig<T> {title; description?; endpoint; perm; columns: DataTableColumn<T>[]; fields: FieldDef[]; filters?: FilterDef[]; searchPlaceholder?; detailPath?(row): string; defaults?: Record<string,unknown>; extraQuery?: Record<string,string|number>; embedded?; canDelete?; readOnly?; rowActions?(row): ReactNode; itemName}`
 - `FilterDef {name; label; options?: readonly FieldOption[]; endpoint?; labelKey?}`
-- `perm` = modul de permisiuni (`"clients"` → `.view/.create/.update/.delete`); fără `detailPath` click pe rând = edit; cu `detailPath` = navigare
+- `perm` = modul de permisiuni (`"clients"` → `.view/.create/.update/.delete`); fără `detailPath` click pe rând = edit; cu `detailPath` = navigare; `readOnly` = fără creare/editare/ștergere și fără click pe rând
 
 ## fields.tsx (`@/components/resource/fields`)
 - `FieldType = "text"|"textarea"|"number"|"money"|"date"|"datetime"|"select"|"checkbox"|"email"|"url"|"relation"|"tags"|"password"`
@@ -58,7 +58,8 @@
 
 ## Server
 - `crudRouter(cfg: CrudConfig): Router` → `GET /` (listare) | `GET /:id` → `{item}` | `POST /` → 201 `{item}` | `PATCH /:id` → `{item}` | `DELETE /:id` → 204
-- `CrudConfig {table; entityType: string; permission: PermissionModule|{view,create,update,delete}; schema: ZodObject; updateSchema?; searchColumns: PgColumn[]; filters?: Record<string,PgColumn>; sortable: Record<string,PgColumn>; defaultSort?: {column; dir?}; softDelete?; scope?(req): SQL|undefined; toRow?(data,req); fromRow?(row,req); listTransform?(rows,req); afterCreate?; afterUpdate?(row,req,before); afterDelete?; beforeDelete?; sensitiveFields?: string[]}`
+- `CrudConfig {table; entityType: string; permission: PermissionModule|{view,create,update,delete}; schema: ZodObject; updateSchema?; searchColumns: PgColumn[]; filters?: Record<string,PgColumn>; sortable: Record<string,PgColumn>; defaultSort?: {column; dir?}; softDelete?; scope?(req): SQL|undefined; toRow?(data,req); fromRow?(row,req); listTransform?(rows,req); afterCreate?; afterUpdate?(row,req,before); afterDelete?; beforeDelete?; sensitiveFields?: string[]; readOnly?}`
+- `readOnly`: se montează doar `GET /` și `GET /:id`; `POST`/`PATCH`/`DELETE` nu există (404 din `/api`)
 - Filtre: `eq`, sau `inArray` pentru valori CSV; `q` doar pe `searchColumns`; sortare doar din `sortable`; id invalid → 422, absent/în afara `scope` → 404; FK/unic → 409
 - Helperi crud: `dateStr` (""→null), `optStr` (trim, ""→null), `moneyInt` (coerce int ≥ 0)
 - http: `HttpError(status, code, message, fields?)`; `parse(schema, data)` → 422 `{code:"validation_error"}`; `errorHandler`; `pageQuery {page=1, pageSize=25 ≤100, q?, sort?, dir?}`; `Paged<T> {items,total,page,pageSize}`; `paged(items, total, q)`

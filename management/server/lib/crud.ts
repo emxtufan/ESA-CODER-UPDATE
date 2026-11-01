@@ -71,6 +71,8 @@ export interface CrudConfig {
   beforeDelete?: (row: any, req: Request) => Promise<void>;
   /** Cheile ale căror valori nu ajung în audit (lista cheilor modificate rămâne). */
   sensitiveFields?: string[];
+  /** Doar citire: se montează doar `GET /` și `GET /:id`; scrierile lipsesc (404). */
+  readOnly?: boolean;
 }
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
@@ -263,6 +265,9 @@ export function crudRouter(cfg: CrudConfig): Router {
     const row = await find(req, id);
     res.json({ item: toResponse(row, req) });
   });
+
+  // `readOnly`: rămân doar rutele de citire; scrierile nu există, deci cad în 404 din /api.
+  if (cfg.readOnly) return router;
 
   /** Creare: validare Zod (422), insert, audit cu id-ul noului rând. */
   router.post("/", requirePermission(permissions.create), async (req, res) => {

@@ -153,6 +153,7 @@ export const deployments = pgTable(
     status: text("status").$type<DeploymentStatus>().notNull(),
     logs: text("logs"),
     url: text("url"),
+    externalId: text("external_id"),
     ...timestamps(),
   },
   (t) => [
@@ -163,5 +164,6 @@ export const deployments = pgTable(
     index("deployments_status_idx").on(t.status),
     index("deployments_deployed_at_idx").on(t.deployedAt),
     index("deployments_triggered_by_id_idx").on(t.triggeredById),
+    uniqueIndex("deployments_external_id_idx").on(t.externalId),
   ],
 );
