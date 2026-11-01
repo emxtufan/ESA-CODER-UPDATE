@@ -59,10 +59,12 @@ export interface CrudConfig {
   softDelete?: boolean;
   /** Restrânge rândurile vizibile (ex. un singur client); se aplică pe toate rutele. */
   scope?: (req: Request) => SQL | undefined;
-  /** Transformă datele validate înainte de scriere (normalizări, denormalizări). */
-  toRow?: (data: any, req: Request) => Record<string, unknown>;
+  /** Transformă datele validate înainte de scriere (normalizări, denormalizări); poate fi async. */
+  toRow?: (data: any, req: Request) => Record<string, unknown> | Promise<Record<string, unknown>>;
   /** Forma rândului în răspuns (ex. ascunde câmpuri interne). */
   fromRow?: (row: any, req: Request) => unknown;
+  /** Transformă rândurile listării (pagina curentă) înainte de răspuns; poate fi async. */
+  listTransform?: (rows: any[], req: Request) => unknown[] | Promise<unknown[]>;
   afterCreate?: (row: any, req: Request) => Promise<void>;
   afterUpdate?: (row: any, req: Request, before: any) => Promise<void>;
   afterDelete?: (row: any, req: Request) => Promise<void>;
@@ -243,7 +245,12 @@ export function crudRouter(cfg: CrudConfig): Router {
 
     res.json(
       paged(
-        rows.map((row: any) => toResponse(row, req)),
+        cfg.listTransform
+          ? await cfg.listTransform(
+              rows.map((row: any) => toResponse(row, req)),
+              req,
+            )
+          : rows.map((row: any) => toResponse(row, req)),
         totals?.total ?? 0,
         query,
       ),
@@ -260,7 +267,7 @@ export function crudRouter(cfg: CrudConfig): Router {
   /** Creare: validare Zod (422), insert, audit cu id-ul noului rând. */
   router.post("/", requirePermission(permissions.create), async (req, res) => {
     const input = parse(cfg.schema, req.body);
-    const values = cfg.toRow ? cfg.toRow(input, req) : (input as Record<string, unknown>);
+    const values = cfg.toRow ? await cfg.toRow(input, req) : (input as Record<string, unknown>);
 
     const row = await insert(req, values);
     await audit(req, `${cfg.entityType}_created`, cfg.entityType, row.id, { id: row.id });
@@ -278,7 +285,7 @@ export function crudRouter(cfg: CrudConfig): Router {
     >;
     const before = await find(req, id);
 
-    const values = cfg.toRow ? cfg.toRow(input, req) : { ...input };
+    const values = cfg.toRow ? await cfg.toRow(input, req) : { ...input };
     if (columns.updatedAt) values.updatedAt = new Date();
 
     const row = await updateRow(req, id, values);
