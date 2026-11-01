@@ -2,10 +2,10 @@
  * Scheletul zonei de management: sidebar fix pe desktop, drawer pe mobil,
  * header cu utilizatorul curent și conținutul rutei în `<main id="main">`.
  */
-import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Menu, X } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell, LogOut, Menu, X } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { Link, NavLink, Outlet, useNavigate } from "react-router";
 
 import { NAV, type NavItem } from "@/app/nav";
 import { Button, Spinner, cn } from "@/components/ui";
@@ -69,6 +69,12 @@ export function Layout() {
   const { data: me } = useMe();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { data: unread } = useQuery({
+    queryKey: ["unread-count"],
+    queryFn: () => api<{ count: number }>("/notifications/unread-count"),
+    refetchInterval: 60000,
+  });
+  const unreadCount = unread?.count ?? 0;
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -125,6 +131,19 @@ export function Layout() {
           <GlobalSearch />
 
           <div className="ml-auto flex items-center gap-3">
+            <Link
+              to="/notifications"
+              aria-label="Notificări"
+              className="relative inline-flex size-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card hover:text-text"
+            >
+              <Bell aria-hidden="true" className="size-4" />
+              {unreadCount > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold leading-4 text-primary">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              ) : null}
+            </Link>
+
             <div className="text-right leading-tight">
               <p className="text-sm font-medium text-text">{me?.user.name ?? "—"}</p>
             </div>
