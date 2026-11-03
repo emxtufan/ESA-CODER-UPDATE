@@ -8,6 +8,7 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { closePdfBrowser, renderPdf } from "../server/lib/pdf";
+import { fillSignerName } from "../server/modules/legal/signing-public";
 import { setup } from "./helpers";
 
 /** SMTP e înlocuit cu un transport fals, ca să citim linkul și codul din emailurile trimise. */
@@ -29,6 +30,26 @@ function lastEmail(to: string): { subject: string; html: string } {
   if (!call) throw new Error(`Niciun email trimis către ${to}`);
   return call[0] as { subject: string; html: string };
 }
+
+/** Numele semnatarului e scris în document; restul HTML-ului rămâne neatins. */
+describe("semnare: numele semnatarului", () => {
+  const MARKUP = `<p>Prin: <span data-sign-name="client">……</span></p>`;
+
+  it("înlocuiește marcajul cu numele și rolul, escapat", () => {
+    const filled = fillSignerName(MARKUP, "Ion <Pop>", "Administrator");
+    expect(filled).toContain("Ion &lt;Pop&gt;, Administrator");
+    expect(filled).not.toContain("data-sign-name");
+  });
+
+  it("fără rol rămâne doar numele", () => {
+    const filled = fillSignerName(MARKUP, "Ion <Pop>");
+    expect(filled).toBe(`<p>Prin: Ion &lt;Pop&gt;</p>`);
+  });
+
+  it("documentul fără marcaj rămâne neschimbat", () => {
+    expect(fillSignerName(HTML, "Ion Popescu")).toBe(HTML);
+  });
+});
 
 describe("semnare: flux complet", () => {
   beforeAll(async () => {

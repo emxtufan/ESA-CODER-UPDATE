@@ -215,6 +215,11 @@ function certificate({
   ].join("");
 }
 
+/** Înlocuiește marcajul numelui semnatarului (`data-sign-name="client"`) cu numele real, escapat. */
+export function fillSignerName(html: string, name: string, role?: string | null): string {
+  return html.replace(/<span data-sign-name="client">[^<]*<\/span>/g, () => esc(role ? `${name}, ${role}` : name));
+}
+
 /** Pagina de certificat, inserată înainte de ultimul `</body>` al documentului. */
 function withCertificate(html: string, page: string): string {
   const index = html.toLowerCase().lastIndexOf("</body");
@@ -460,7 +465,7 @@ export function publicSignRouter(): Router {
         role,
         signaturePng: input.signaturePng,
       });
-      const pdf = await renderPdf(withCertificate(html, page), env);
+      const pdf = await renderPdf(withCertificate(fillSignerName(html, input.name, role), page), env);
       const signedPdfKey = `signatures/${row.id}/${i}.signed.pdf`;
       await putFile(env, signedPdfKey, pdf);
       docs.push({ ...doc, signedPdfKey, signedSha256: sha256(pdf) });
