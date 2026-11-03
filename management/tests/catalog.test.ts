@@ -1,7 +1,12 @@
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { catalogCategories, catalogPackageItems, catalogPackages, catalogServices } from "../server/db/schema/legal";
+import { importCatalogFile } from "../server/modules/catalog/transfer";
 import { CATEGORIES, PACKAGES, SERVICES, seedCatalog, shortOf } from "../server/modules/catalog/seed";
 import { setup, type Setup } from "./helpers";
 
@@ -234,5 +239,142 @@ describe("catalog: API", () => {
     expect((await ctx.api(`/api/catalog/packages/${pkg.id}`, { method: "DELETE", cookie })).status).toBe(204);
     expect((await ctx.api(`/api/catalog/packages/${pkg.id}`, { cookie })).status).toBe(404);
     expect((await ctx.api("/api/catalog/packages", { cookie })).json.items).toHaveLength(12);
+  });
+});
+
+describe("catalog: export / import", () => {
+  let c: Setup;
+  let ck: string;
+  beforeAll(async () => {
+    c = await setup();
+    ck = await c.loginAs(await c.makeUser("super_admin"));
+  });
+  afterAll(() => c.close());
+
+  const importCall = (data: unknown, dryRun?: boolean) =>
+    c.api("/api/catalog/import", { method: "POST", cookie: ck, body: { data, dryRun } });
+  const exportFile = async () => (await c.api("/api/catalog/export", { cookie: ck })).json;
+  const service = async (code: string) => (await c.db.select().from(catalogServices).where(eq(catalogServices.code, code)))[0]!;
+
+  it("401 fără sesiune", async () => {
+    expect((await c.api("/api/catalog/export")).status).toBe(401);
+    expect((await c.api("/api/catalog/import", { method: "POST", body: { data: {} } })).status).toBe(401);
+  });
+
+  it("export → modificare → import readuce valorile din fișier", async () => {
+    const res = await c.api("/api/catalog/export", { cookie: ck });
+    expect(res.status).toBe(200);
+    const file = res.json;
+    expect(file).toMatchObject({ format: "esa-catalog", version: 1 });
+    expect(file.services).toHaveLength(144);
+    expect(file.packages).toHaveLength(12);
+    expect(file.services[0]).not.toHaveProperty("id");
+
+    // fișierul exportat după setarea prețului
+    const before = await service("B02");
+    await c.db.update(catalogServices).set({ recommendedPrice: 123400, currency: "EUR" }).where(eq(catalogServices.code, "B02"));
+    const priced = await exportFile();
+    expect(priced.services.find((s: any) => s.code === "B02")).toMatchObject({ recommendedPrice: 123400, currency: "EUR" });
+
+    // prețul se strică în DB, apoi se readuce din fișier
+    await c.db.update(catalogServices).set({ recommendedPrice: 5, currency: "RON" }).where(eq(catalogServices.code, "B02"));
+    const imported = await importCall(priced);
+    expect(imported.status).toBe(200);
+    expect(imported.json.services).toEqual({ created: 0, updated: 1, unchanged: 143 });
+    expect(imported.json.packages).toEqual({ created: 0, updated: 0, unchanged: 12 });
+    expect(await service("B02")).toMatchObject({ id: before.id, recommendedPrice: 123400, currency: "EUR" });
+
+    // al doilea import al aceluiași fișier nu schimbă nimic
+    expect((await importCall(priced)).json.services).toEqual({ created: 0, updated: 0, unchanged: 144 });
+    await c.db.update(catalogServices).set({ recommendedPrice: null, currency: null }).where(eq(catalogServices.code, "B02"));
+  });
+
+  it("creează serviciu și pachet noi, cu componentele în ordine", async () => {
+    const file = await exportFile();
+    file.services.push({ ...file.services[0], code: "Z99", categoryCode: "A", name: "Serviciu nou", recommendedPrice: 5000, currency: "RON" });
+    file.packages.push({ ...file.packages[0], name: "Pachet importat", serviceCodes: ["Z99", "A01"] });
+    const res = await importCall(file);
+    expect(res.status).toBe(200);
+    expect(res.json.services).toMatchObject({ created: 1, updated: 0 });
+    expect(res.json.packages).toMatchObject({ created: 1, updated: 0 });
+    const pkgs = (await c.api("/api/catalog/packages", { cookie: ck })).json.items;
+    const pkg = pkgs.find((p: any) => p.name === "Pachet importat");
+    expect(pkg.items.map((s: any) => s.code)).toEqual(["Z99", "A01"]);
+    expect((await service("Z99")).recommendedPrice).toBe(5000);
+
+    // pachet existent: componentele se înlocuiesc
+    file.packages.find((p: any) => p.name === "Pachet importat").serviceCodes = ["A01"];
+    const again = await importCall(file);
+    expect(again.json.packages).toMatchObject({ created: 0, updated: 1 });
+    const pkg2 = (await c.api("/api/catalog/packages", { cookie: ck })).json.items.find((p: any) => p.name === "Pachet importat");
+    expect(pkg2.items.map((s: any) => s.code)).toEqual(["A01"]);
+  });
+
+  it("dryRun nu scrie nimic", async () => {
+    const file = await exportFile();
+    file.services.push({ ...file.services[0], code: "Z98", name: "Doar test" });
+    file.services.find((s: any) => s.code === "A01").recommendedPrice = 777;
+    file.packages.push({ ...file.packages[0], name: "Pachet fantomă", serviceCodes: ["Z98"] });
+    const res = await importCall(file, true);
+    expect(res.json).toMatchObject({ dryRun: true, services: { created: 1, updated: 1 }, packages: { created: 1 } });
+    expect(await c.db.select().from(catalogServices).where(eq(catalogServices.code, "Z98"))).toHaveLength(0);
+    expect((await service("A01")).recommendedPrice).toBeNull();
+    expect(await c.db.select().from(catalogPackages).where(eq(catalogPackages.name, "Pachet fantomă"))).toHaveLength(0);
+  });
+
+  it("cod necunoscut în pachet → 422 fără modificări", async () => {
+    const file = await exportFile();
+    file.services.find((s: any) => s.code === "A01").recommendedPrice = 4242;
+    file.packages[0].serviceCodes = [...file.packages[0].serviceCodes, "Q77", "Q78"];
+    const res = await importCall(file);
+    expect(res.status).toBe(422);
+    expect(res.json.error.message).toContain("Q77");
+    expect(res.json.error.message).toContain("Q78");
+    expect((await service("A01")).recommendedPrice).toBeNull();
+  });
+
+  it("format greșit, versiune greșită sau câmpuri invalide → 422", async () => {
+    const file = await exportFile();
+    expect((await importCall({ ...file, format: "altceva" })).status).toBe(422);
+    expect((await importCall({ ...file, version: 2 })).status).toBe(422);
+    expect((await importCall({ ...file, extra: 1 })).status).toBe(422);
+    expect((await importCall("nu e obiect")).status).toBe(422);
+    const bad = await exportFile();
+    bad.services[0].recommendedPrice = 1.5;
+    expect((await importCall(bad)).status).toBe(422);
+  });
+
+  it("starea de arhivare se aplică", async () => {
+    const file = await exportFile();
+    file.services.find((s: any) => s.code === "A02").archived = true;
+    await importCall(file);
+    expect((await service("A02")).archivedAt).not.toBeNull();
+    file.services.find((s: any) => s.code === "A02").archived = false;
+    await importCall(file);
+    expect((await service("A02")).archivedAt).toBeNull();
+  });
+
+  it("CATALOG_IMPORT_FILE: nu suprascrie, dar creează ce lipsește", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "esa-catalog-"));
+    try {
+      const file = await exportFile();
+      file.services.find((s: any) => s.code === "A03").recommendedPrice = 9999;
+      file.services.push({ ...file.services[0], code: "Z97", name: "Serviciu din fișier" });
+      const path = join(dir, "catalog.json");
+      await writeFile(path, JSON.stringify(file));
+
+      await c.db.update(catalogServices).set({ name: "Modificat de utilizator" }).where(eq(catalogServices.code, "A03"));
+      const result = await importCatalogFile(c.db, path);
+      expect(result?.services).toMatchObject({ created: 1, updated: 0 });
+      expect(await service("A03")).toMatchObject({ name: "Modificat de utilizator", recommendedPrice: null });
+      expect((await service("Z97")).name).toBe("Serviciu din fișier");
+
+      // fișier lipsă sau stricat: nu aruncă
+      expect(await importCatalogFile(c.db, join(dir, "lipsa.json"))).toBeNull();
+      await writeFile(path, "{ nu e json");
+      expect(await importCatalogFile(c.db, path)).toBeNull();
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });

@@ -374,7 +374,9 @@
   "3d-modeling",
   "3d-modeling-text",
   "video-and-reels",
-  "video-and-reels-text"
+  "video-and-reels-text",
+  "shopify-development",
+  "shopify-development-text"
  ],
  "components/services/servicesData": [],
  "components/works/cards": [
@@ -793,6 +795,25 @@
   "crafted-websites",
   "website-redesign",
   "ecommerce-website-design"
+ ],
+ "/services/shopify-development": [
+  "all-services",
+  "what-s-included",
+  "start-a-project",
+  "recent-work",
+  "need-this-for-your-project",
+  "tell-us-where-you-are-and",
+  "get-in-touch",
+  "meta-title",
+  "meta-description",
+  "title",
+  "lead",
+  "body",
+  "included",
+  "next",
+  "related-1",
+  "related-2",
+  "related-3"
  ],
  "/services/software-and-erp": [
   "all-services",

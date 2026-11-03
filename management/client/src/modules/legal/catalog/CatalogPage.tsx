@@ -2,7 +2,7 @@
  * Catalogul de servicii (`/legal/catalog`): servicii, pachete și categorii.
  * Se editează în dialoguri; prețurile se introduc în unități majore și se salvează în minore.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import type { Currency } from "@shared/enums";
@@ -25,7 +25,7 @@ import {
   useToast,
   type DataTableColumn,
 } from "@/components/ui";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
 import { useCan } from "@/lib/auth";
 
 import { MoneyInput, NumInput, LabeledField as Field } from "../offers/Inputs";
@@ -40,6 +40,16 @@ const DEFAULT_STATUS_OPTIONS = [
 ];
 
 const msg = (error: unknown, fallback: string) => (error instanceof Error ? error.message : fallback);
+
+/** Mesajul erorii, cu detaliile pe câmpuri (ex. lista codurilor necunoscute) când există. */
+function detailedMsg(error: unknown, fallback: string): string {
+  const base = msg(error, fallback);
+  if (!(error instanceof ApiError) || !error.fields) return base;
+  const details = Object.entries(error.fields)
+    .filter(([, v]) => !base.includes(v))
+    .map(([k, v]) => `${k}: ${v}`);
+  return details.length ? [base, ...details.slice(0, 10)].join("\n") : base;
+}
 
 /* ------------------------------------------------------------------ servicii */
 
@@ -676,6 +686,175 @@ function CategoriesTab({ categories }: { categories: CatalogCategory[] }) {
   );
 }
 
+/* ------------------------------------------------------------------ export / import */
+
+interface ImportCounts {
+  created: number;
+  updated: number;
+  unchanged: number;
+}
+
+interface ImportSummary {
+  dryRun: boolean;
+  categories: ImportCounts;
+  services: ImportCounts;
+  packages: ImportCounts;
+  warnings: string[];
+}
+
+const countsText = (c: ImportCounts) => `${c.created} noi, ${c.updated} actualizate, ${c.unchanged} neschimbate`;
+
+function ImportExport() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const canExport = useCan("documents.view");
+  const canCreate = useCan("documents.create");
+  const canUpdate = useCan("documents.update");
+  const canImport = canCreate && canUpdate;
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [exporting, setExporting] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [data, setData] = useState<unknown>(null);
+  const [fileName, setFileName] = useState("");
+  const [summary, setSummary] = useState<ImportSummary | null>(null);
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+
+  async function download() {
+    setExporting(true);
+    try {
+      const response = await fetch("/api/catalog/export", { headers: { "x-requested-with": "esa" }, credentials: "same-origin" });
+      if (!response.ok) throw new Error(`Exportul a eșuat (${response.status}).`);
+      const blob = await response.blob();
+      const name = /filename="([^"]+)"/.exec(response.headers.get("content-disposition") ?? "")?.[1] ?? "esa-catalog.json";
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = name;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(msg(e, "Exportul a eșuat."));
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  async function chooseFile(file: File | undefined) {
+    if (fileInput.current) fileInput.current.value = "";
+    if (!file) return;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(await file.text());
+    } catch {
+      toast.error("Fișierul nu este un JSON valid.");
+      return;
+    }
+    setData(parsed);
+    setFileName(file.name);
+    setSummary(null);
+    setError("");
+    setOpen(true);
+    setBusy(true);
+    try {
+      setSummary(await api<ImportSummary>("/catalog/import", { method: "POST", body: { data: parsed, dryRun: true } }));
+    } catch (e) {
+      setError(detailedMsg(e, "Fișierul nu a putut fi verificat."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function apply() {
+    setBusy(true);
+    setError("");
+    try {
+      await api("/catalog/import", { method: "POST", body: { data, dryRun: false } });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["catalog-categories"] }),
+        queryClient.invalidateQueries({ queryKey: ["catalog-services"] }),
+        queryClient.invalidateQueries({ queryKey: ["catalog-packages"] }),
+      ]);
+      toast.success("Am importat catalogul.");
+      close();
+    } catch (e) {
+      setError(detailedMsg(e, "Importul a eșuat."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function close() {
+    setOpen(false);
+    setData(null);
+    setSummary(null);
+    setError("");
+  }
+
+  return (
+    <>
+      <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-wrap items-center gap-2">
+          {canExport ? (
+            <Button variant="secondary" loading={exporting} onClick={() => void download()}>
+              Exportă catalogul
+            </Button>
+          ) : null}
+          {canImport ? (
+            <Button variant="secondary" disabled={busy} onClick={() => fileInput.current?.click()}>
+              Importă catalogul
+            </Button>
+          ) : null}
+          <input ref={fileInput} type="file" accept=".json,application/json" className="hidden" onChange={(e) => void chooseFile(e.target.files?.[0])} />
+        </div>
+        <p className="max-w-md text-right text-xs text-muted">
+          Exportă catalogul după ce setezi prețurile și păstrează fișierul. Pe altă instalare îl imporți cu un click.
+        </p>
+      </div>
+      <Modal
+        open={open}
+        onClose={() => (busy ? undefined : close())}
+        title="Importă catalogul"
+        footer={
+          <>
+            <Button variant="secondary" disabled={busy} onClick={close}>
+              Renunță
+            </Button>
+            <Button loading={busy} disabled={!summary} onClick={() => void apply()}>
+              Aplică importul
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3 text-sm">
+          <p className="text-muted">Fișier: {fileName}</p>
+          {busy && !summary ? (
+            <div className="flex justify-center py-4">
+              <Spinner />
+            </div>
+          ) : null}
+          {summary ? (
+            <ul className="space-y-1">
+              <li>Servicii: {countsText(summary.services)}</li>
+              <li>Pachete: {countsText(summary.packages)}</li>
+              <li>Categorii: {countsText(summary.categories)}</li>
+            </ul>
+          ) : null}
+          {summary?.warnings.length ? (
+            <ul className="list-disc space-y-1 pl-5 text-amber-600">
+              {summary.warnings.map((w) => (
+                <li key={w}>{w}</li>
+              ))}
+            </ul>
+          ) : null}
+          {summary ? <p className="text-xs text-muted">Nu se șterge nimic din catalogul curent. Ofertele existente nu sunt afectate.</p> : null}
+          {error ? <p className="whitespace-pre-wrap text-danger">{error}</p> : null}
+        </div>
+      </Modal>
+    </>
+  );
+}
+
 /* ------------------------------------------------------------------ pagina */
 
 export function CatalogPage() {
@@ -685,7 +864,7 @@ export function CatalogPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeader title="Catalog servicii" description="Serviciile, pachetele și categoriile din care se construiesc ofertele." />
+      <PageHeader title="Catalog servicii" description="Serviciile, pachetele și categoriile din care se construiesc ofertele." actions={<ImportExport />} />
       <Tabs
         value={tab}
         onChange={setTab}

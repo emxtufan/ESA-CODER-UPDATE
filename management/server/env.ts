@@ -39,6 +39,10 @@ const baseEnvSchema = z.object({
   /** Calea către Chromium/Chrome; gol = Chromium-ul instalat de Playwright, apoi Chrome-ul sistemului. */
   PDF_CHROMIUM_PATH: optional(z.string().min(1)),
 
+  // --- Catalog ---
+  /** Fișier de export al catalogului, încărcat la pornire doar pentru ce lipsește din DB. */
+  CATALOG_IMPORT_FILE: optional(z.string().min(1)),
+
   // --- GitHub (API + webhooks) ---
   GITHUB_TOKEN: optional(z.string().min(1)),
   GITHUB_WEBHOOK_SECRET: optional(z.string().min(1)),

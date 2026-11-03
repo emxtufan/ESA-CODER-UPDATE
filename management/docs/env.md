@@ -23,6 +23,7 @@ problemele într-un singur mesaj (`server/env.ts:74`).
 | `SMTP_PASS` | nu | — | Parola contului SMTP (`server/env.ts:35`). |
 | `EMAIL_FROM` | nu | — | Expeditorul din emailuri, ex. `"ESA Management <no-reply@domeniu.ro>"` (`server/env.ts:36`). |
 | `PDF_CHROMIUM_PATH` | nu | — | Calea către Chromium/Chrome pentru PDF-ul din Legal; gol = Chromium instalat de Playwright, apoi Chrome (`server/env.ts`). |
+| `CATALOG_IMPORT_FILE` | nu | — | Calea către un export JSON al catalogului; la pornire, după seed, se creează doar ce lipsește din DB (nu suprascrie modificările); erorile se loghează și nu blochează pornirea (`server/index.ts`). |
 | `GITHUB_TOKEN` | nu | — | Acces la API-ul GitHub (`server/env.ts:36`). |
 | `GITHUB_WEBHOOK_SECRET` | nu | — | Secretul webhook-ului, folosit la verificarea HMAC SHA-256 pe raw body (`server/env.ts:37`). |
 | `S3_ENDPOINT` | nu | — | Endpoint S3-compatible; fără toate cele patru variabile `S3_*` se folosește storage local în `DATA_DIR/files` (`server/env.ts:40`, `server/lib/storage.ts:9`). |

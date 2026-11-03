@@ -12,6 +12,7 @@ import { createDb } from "./db/client";
 import { seedRoles } from "./db/seed";
 import { loadEnv } from "./env";
 import { seedCatalog } from "./modules/catalog/seed";
+import { importCatalogFile } from "./modules/catalog/transfer";
 import { startScheduler } from "./jobs/scheduler";
 import { closePdfBrowser } from "./lib/pdf";
 
@@ -43,6 +44,10 @@ async function main(): Promise<void> {
   const { db, close } = await createDb({ url: env.DATABASE_URL, dataDir: env.DATA_DIR });
 
   await seedRoles(db);
+  // Fișierul de catalog rulează ÎNAINTEA seed-ului: pe o bază nouă creează serviciile și pachetele
+  // cu prețurile proprietarului; seed-ul completează apoi doar ce lipsește. Pe o bază existentă,
+  // importul de la pornire creează doar ce lipsește și nu suprascrie modificările făcute în aplicație.
+  if (env.CATALOG_IMPORT_FILE) await importCatalogFile(db, env.CATALOG_IMPORT_FILE);
   await seedCatalog(db);
 
   const app = await createApp({

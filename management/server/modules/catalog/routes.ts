@@ -4,53 +4,23 @@
  */
 import { and, asc, eq, ilike, inArray, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
-import { Router } from "express";
+import express, { Router } from "express";
 import { z } from "zod";
 
-import { CURRENCIES } from "../../../shared/enums";
 import { BILLINGS } from "../../../shared/offers";
 import type { Db } from "../../db/client";
 import { catalogCategories, catalogPackageItems, catalogPackages, catalogServices } from "../../db/schema/legal";
 import { HttpError, pageQuery, parse } from "../../lib/http";
 import { audit } from "../../security/audit";
 import { requirePermission } from "../../security/guards";
+import { currency, minor, serviceCode, serviceFields, text } from "./schemas";
+import { IMPORT_BODY_LIMIT, exportCatalog, importBodySchema, importCatalog, parseCatalogFile } from "./transfer";
 
 /** Sub acest prag lista serviciilor se întoarce întreagă, fără paginare. */
 const NO_PAGING_LIMIT = 500;
 
 const idSchema = z.object({ id: z.uuid("Identificator invalid") });
 const codeParam = z.object({ code: z.string().regex(/^[A-Z]$/, "Cod de categorie invalid") });
-
-const text = (max: number) => z.string().trim().max(max, `Maximum ${max} de caractere`);
-/** Sumă în unități minore: întreg, ≥ 0. */
-const minor = z.number().finite().int("Suma trebuie să fie în unități minore (întreg)").min(0).max(2_000_000_000);
-const currency = z.enum(CURRENCIES);
-
-const serviceFields = {
-  categoryCode: z.string().regex(/^[A-Z]$/, "Cod de categorie invalid"),
-  name: text(200).min(1, "Câmp obligatoriu"),
-  shortDescription: text(300),
-  description: text(4000),
-  deliverables: text(2000),
-  acceptance: text(2000),
-  unit: text(40).min(1, "Câmp obligatoriu"),
-  defaultQuantity: z.number().finite().min(0).max(1_000_000_000),
-  recommendedPrice: minor.nullable(),
-  currency: currency.nullable(),
-  billing: z.enum(BILLINGS),
-  defaultPeriods: z.number().int().min(1).max(600),
-  defaultStatus: z.enum(["accepted", "optional", "client_direct"]),
-  advanced: z.boolean(),
-  duration: text(200),
-  conditions: text(2000),
-  sort: z.number().int().min(0).max(1_000_000),
-};
-
-const serviceCode = z
-  .string()
-  .trim()
-  .toUpperCase()
-  .regex(/^[A-Z0-9][A-Z0-9_-]{0,19}$/, "Cod invalid (litere, cifre, - sau _, maximum 20)");
 
 const serviceCreateSchema = z.object({
   code: serviceCode.optional(),
@@ -184,6 +154,38 @@ async function writeItems(tx: Db, packageId: string, serviceIds: string[]) {
 
 export function catalogRouter(): Router {
   const router = Router();
+
+  // --- Export / import ---
+  router.get("/export", requirePermission("documents.view"), async (req, res) => {
+    const file = await exportCatalog(req.ctx.db);
+    res
+      .set({
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Disposition": `attachment; filename="esa-catalog-${file.exportedAt!.slice(0, 10)}.json"`,
+      })
+      .send(JSON.stringify(file, null, 2));
+  });
+
+  // Corp până la 5 MB: parser propriu (parserul global îl ocolește, vezi `server/app.ts`).
+  router.post(
+    "/import",
+    requirePermission("documents.create"),
+    requirePermission("documents.update"),
+    express.json({ limit: IMPORT_BODY_LIMIT }),
+    async (req, res) => {
+      const { data, dryRun } = parse(importBodySchema, req.body);
+      const file = parseCatalogFile(data);
+      const result = await importCatalog(req.ctx.db, file, { dryRun });
+      if (!dryRun) {
+        await audit(req, "catalog_imported", "catalog", null, {
+          categories: result.categories,
+          services: result.services,
+          packages: result.packages,
+        });
+      }
+      res.json(result);
+    },
+  );
 
   // --- Categorii ---
   router.get("/categories", requirePermission("documents.view"), async (req, res) => {

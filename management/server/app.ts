@@ -87,9 +87,9 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   });
 
   // JSON doar în afara webhook-urilor (raw body pentru semnătură) și a rutelor cu corp mare
-  // (PDF-ul din HTML și arhivarea PDF-ului în base64), care își au propriul parser.
+  // (PDF-ul din HTML, arhivarea PDF-ului în base64 și importul catalogului), care își au propriul parser.
   const jsonBody = express.json({ limit: "1mb" });
-  const largeBody = /^\/api\/legal\/(pdf\/?|documents\/[^/]+\/archive\/?)$/;
+  const largeBody = /^\/api\/legal\/(pdf\/?|documents\/[^/]+\/archive\/?)$|^\/api\/catalog\/import\/?$/;
   app.use((req, res, next) => {
     if (req.path.startsWith("/api/webhooks/") || largeBody.test(req.path)) return next();
     jsonBody(req, res, next);
