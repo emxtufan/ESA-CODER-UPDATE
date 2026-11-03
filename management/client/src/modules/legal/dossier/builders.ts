@@ -95,6 +95,8 @@ const ul = (items: string[]): string => `<ul>${items.map((i) => `<li>${i}</li>`)
 /** Denumirea unei linii; pachetele apar îngroșat. */
 const nm = (l: OfferLine): string => (l.isPackage ? `<strong>${esc(l.name)}</strong>` : esc(l.name));
 const mut = (t: string): string => `<span class="mut">${esc(t)}</span>`;
+/** Text deja escapat, pe un singur rând (sume în tabele: „4.990 lei” nu se rupe). */
+const nw = (html: string): string => `<span class="nw">${html}</span>`;
 
 interface Ctx {
   s: OfferSnapshot;
@@ -283,7 +285,7 @@ export function buildOffer(input: DossierInput): string {
         cells: [
           nm(n.line) + (n.line.isPackage ? `<br>${mut("pachet")}` : ""),
           esc(g(n.line.description)),
-          `${esc(m(a.total))}${disc}`,
+          `${nw(esc(m(a.total)))}${disc}`,
         ],
       });
       for (const c of n.comps) {
@@ -320,7 +322,7 @@ export function buildOffer(input: DossierInput): string {
     }
     out.push(
       table(
-        [{ h: "Serviciu" }, { h: "Descriere detaliată" }, { h: "Frecvență" }, { h: "Pe perioadă", cls: "r" }, { h: "Perioade", cls: "c" }, { h: "Total", cls: "r" }],
+        [{ h: "Serviciu" }, { h: "Descriere detaliată" }, { h: "Frecvență", cls: "nb" }, { h: "Pe perioadă", cls: "r" }, { h: "Perioade", cls: "c" }, { h: "Total", cls: "r" }],
         rows,
       ),
     );
@@ -408,8 +410,8 @@ export function buildOffer(input: DossierInput): string {
 
 function discountText(l: OfferLine, a: LineAmounts, m: (n: number) => string): string {
   if (a.discount <= 0) return "–";
-  const pct = l.discountType === "percent" ? ` (${fmtPct(l.discountValue)})` : "";
-  return `${esc(m(a.discount))}${pct}`;
+  const pct = l.discountType === "percent" ? ` ${nw(`(${esc(fmtPct(l.discountValue))})`)}` : "";
+  return `${nw(esc(m(a.discount)))}${pct}`;
 }
 
 export function buildServicesAnnex(input: DossierInput): string {
@@ -431,9 +433,9 @@ export function buildServicesAnnex(input: DossierInput): string {
         `${nm(l)}${l.isPackage ? ` ${mut("(pachet)")}` : ""}${g(l.description) ? `<br>${esc(g(l.description))}` : ""}`,
         { h: esc(fmtQty(l.quantity)), cls: "r" },
         esc(g(l.unit) || "–"),
-        { h: esc(m(l.unitPrice)), cls: "r" },
+        { h: nw(esc(m(l.unitPrice))), cls: "r" },
         { h: discountText(l, a, m), cls: "r" },
-        { h: `${esc(m(a.total))}${rec}`, cls: "r" },
+        { h: `${nw(esc(m(a.total)))}${rec}`, cls: "r" },
       ],
     });
     n.comps.forEach((c, k) => {
@@ -463,10 +465,10 @@ export function buildServicesAnnex(input: DossierInput): string {
     table(
       [
         { h: "Nr. crt.", cls: "nr" },
-        { h: "Cod" },
+        { h: "Cod", cls: "nw" },
         { h: "Serviciu și descriere" },
         { h: "Cant.", cls: "r" },
-        { h: "UM" },
+        { h: "UM", cls: "nw" },
         { h: "Preț unitar", cls: "r" },
         { h: "Reducere", cls: "r" },
         { h: "Valoare", cls: "r" },
@@ -571,7 +573,7 @@ export function buildScheduleAnnex(input: DossierInput): string {
   if (cfg.stages.length) {
     out.push(
       table(
-        [{ h: "Nr.", cls: "nr" }, { h: "Etapă" }, { h: "Livrabile" }, { h: "Termen" }, { h: "Tip termen" }],
+        [{ h: "Nr.", cls: "nr" }, { h: "Etapă" }, { h: "Livrabile" }, { h: "Termen", cls: "nb" }, { h: "Tip termen", cls: "nb" }],
         cfg.stages.map((st, i) => ({
           cells: [
             { h: `${i + 1}`, cls: "nr" },
@@ -675,7 +677,7 @@ export function buildHandoverPv(input: DossierInput): string {
   );
   out.push(
     table(
-      [{ h: "Serviciu" }, { h: "Livrabil" }, { h: "Criteriu de recepție" }, { h: "Mod de predare" }, { h: "Rezultat" }],
+      [{ h: "Serviciu" }, { h: "Livrabil" }, { h: "Criteriu de recepție" }, { h: "Mod de predare", cls: "nb" }, { h: "Rezultat", cls: "nb" }],
       rows.length ? rows : [{ cells: [{ h: "Nu există livrabile contractate.", span: 5 }] }],
     ),
   );
@@ -869,7 +871,7 @@ export function buildMaintenanceAnnex(input: DossierInput): string {
   out.push(h2("Servicii recurente contractate"));
   out.push(
     table(
-      [{ h: "Serviciu și descriere" }, { h: "Frecvență" }, { h: "Sumă pe perioadă", cls: "r" }, { h: "Nr. perioade", cls: "c" }, { h: "Total", cls: "r" }],
+      [{ h: "Serviciu și descriere" }, { h: "Frecvență", cls: "nb" }, { h: "Sumă pe perioadă", cls: "r" }, { h: "Nr. perioade", cls: "c" }, { h: "Total", cls: "r" }],
       rows,
     ),
   );
@@ -897,9 +899,9 @@ export function buildSummary(input: DossierInput): string {
   const { cfg, t, m } = ctxOf(input.snapshot);
   const s = input.snapshot;
   const cols: Col[] = [
-    { h: "Cod" },
+    { h: "Cod", cls: "nw" },
     { h: "Serviciu" },
-    { h: "Frecvență" },
+    { h: "Frecvență", cls: "nb" },
     { h: "Cant.", cls: "r" },
     { h: "Pe perioadă", cls: "r" },
     { h: "Perioade", cls: "c" },

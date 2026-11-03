@@ -6,6 +6,11 @@
 .pc p.ctr{text-align:center}
 .pc table{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pc td,.pc th{overflow-wrap:anywhere}
+/* Antetele, sumele și coloanele scurte (`nb`) se rup doar între cuvinte; `nw` = pe un singur rând.
+   Cu `anywhere`, lățimea minimă a coloanei scade la o literă și tabelul o îngustează până rupe
+   „Cod”, „Cant.”, „acceptat” sau „4.990 lei”. Textul liber (descrieri) păstrează `anywhere`. */
+.pc th,.pc td.r,.pc td.c,.pc td.nb,.pc td.nw{overflow-wrap:normal}
+.pc td.nw,.pc .nw{white-space:nowrap}
 .pc th.r,.pc td.r{text-align:right}
 .pc th.c,.pc td.c{text-align:center}
 .pc td.nr{width:1%;white-space:nowrap}

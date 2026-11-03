@@ -211,6 +211,15 @@ describe("dosar: anexa de servicii", () => {
     expect(html).toMatch(/Total de plată<\/td><td class="r">550 €/);
     expect(html).toContain("Criteriu Design responsive");
   });
+  it("codul, UM și sumele nu se rup în mijlocul cuvântului", () => {
+    // Fără `nw`, `overflow-wrap:anywhere` îngusta coloanele până la „Co/d”, „servi/ciu”, „4.99/0 lei”.
+    expect(html).toContain('<th class="nw">Cod</th>');
+    expect(html).toContain('<th class="nw">UM</th>');
+    const tbody = html.slice(html.indexOf("<tbody>"), html.indexOf("</tbody>"));
+    const money = [...tbody.matchAll(/<td class="r">(.*?)<\/td>/g)].map((m) => m[1]).filter((c) => /\d €/.test(c));
+    expect(money.length).toBeGreaterThan(0);
+    for (const cell of money) expect(cell).toMatch(/^<span class="nw">[^<]*\d €<\/span>/);
+  });
 });
 
 describe("dosar: graficul", () => {
@@ -303,6 +312,9 @@ describe("dosar: PV", () => {
     const html = buildHandoverPv(input(config(georgiLines()), { results: { pkg: "accepted_minor", l2: "bogus" } }));
     expect(html).toContain("<strong>acceptat cu defecte minore</strong>");
     expect(html).not.toContain("bogus");
+    // „acceptat” nu se rupe în „accepta/t”: coloana se rupe doar între cuvinte.
+    expect(html).toContain('<th class="nb">Rezultat</th>');
+    expect(html).toMatch(/<td class="nb"><strong>acceptat cu defecte minore<\/strong>/);
   });
 });
 
