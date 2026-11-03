@@ -44,6 +44,7 @@ import { DOCX_MIME, contractBodyHtml, htmlToDocx } from "../dossier/docx";
 import { DOSSIER_SKELETON, HEADER_TITLES, exportHtml, fileName, renderDossierDoc } from "../dossier/render";
 import type { AmendmentInput, DossierInput, DossierRenderType } from "../dossier/types";
 import { buildDossierZip, ZIP_MIME } from "../dossier/zip";
+import { markSignSpots } from "../dossier/signSpots";
 import { LabeledField as Field } from "./Inputs";
 import { DocFrame, renderHidden, type DocFrameHandle } from "./DocFrame";
 import { SignaturesPanel } from "./SignaturesPanel";
@@ -358,6 +359,7 @@ export function DossierPage() {
       const t = type as DossierRenderType;
       const { doc, dispose } = await renderHidden(DOSSIER_SKELETON, (d, img) => renderDossierDoc(t, input, d, img));
       try {
+        markSignSpots(doc);
         out.push({ title: DOSSIER_DOC_LABELS[type], html: await exportHtml(doc) });
       } finally {
         dispose();
@@ -368,6 +370,7 @@ export function DossierPage() {
       const values = { ...defaultValues(), ...(contract.data ?? {}) };
       const { doc, dispose } = await renderHidden(CONTRACT_SKELETON, (d, img) => renderContract(values, d, template, img));
       try {
+        markSignSpots(doc);
         out.push({ title: DOSSIER_DOC_LABELS.contract, html: await exportHtml(doc) });
       } finally {
         dispose();
