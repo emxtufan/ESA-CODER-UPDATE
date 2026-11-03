@@ -151,7 +151,8 @@ export function keepNext(el: Element): boolean {
 
 /**
  * Sparge un `<tr>` prea înalt în două. Fiecare celulă e citită ca o listă de „linii” (copiii bloc
- * sau segmentele separate de `<br>`; textul simplu e o singură linie). `tr` primește câte linii
+ * sau segmentele separate de `<br>` (și din interiorul wrapper-elor inline, fiecare segment cu
+ * wrapper-ul lui clonat; textul simplu e o singură linie). `tr` primește câte linii
  * încap, măsurat cu `fits` — deci trebuie să fie deja atașat în `.pc.meas` —, iar restul liniilor
  * se mută într-un rând clonat, cu celulele epuizate goale și fără `rowspan`.
  * Întoarce `[tr, rest]`, cu `rest = null` când nu s-a putut sparge (rândul încape întreg sau nu
@@ -161,15 +162,58 @@ export function splitRow(tr: HTMLElement, fits: () => boolean): [HTMLElement, HT
   const doc = tr.ownerDocument;
   const block = /^(P|DIV|UL|OL|TABLE|H[1-6]|LI|BLOCKQUOTE|PRE|SECTION|ARTICLE|DL|HEADER|FOOTER|FIGURE)$/;
   const linesOf = (cell: HTMLElement): { lines: Node[][]; br: boolean } => {
-    const kids = [...cell.childNodes];
-    if (kids.some((n) => n.nodeType === 1 && (n as Element).tagName === "BR")) {
-      const segs: Node[][] = [[]];
-      kids.forEach((n) => { if (n.nodeType === 1 && (n as Element).tagName === "BR") segs.push([]); else segs[segs.length - 1].push(n); });
-      return { lines: segs, br: true };
-    }
     const els = [...cell.children] as HTMLElement[];
     if (els.length && els.every((e) => block.test(e.tagName))) return { lines: els.map((e) => [e]), br: false };
-    return { lines: [kids], br: false };
+    /* Conținutul se împarte în segmente la fiecare `<br>`, inclusiv înăuntrul wrapper-elor inline
+       (span.f etc.): fiecare segment primește o clonă goală a wrapper-ului din care provine. */
+    const out: Node[][] = [[]];
+    let br = false;
+    let holder: HTMLElement | null = null;
+    let holderChain: Node[] | null = null;
+    const put = (n: Node, chain: Node[] | null) => {
+      if (holder && holderChain === chain) {
+        holder.appendChild(n);
+        return;
+      }
+      const line = out[out.length - 1];
+      if (!chain) {
+        holder = null;
+        holderChain = null;
+        line.push(n);
+        return;
+      }
+      const root = (chain[0] as Element).cloneNode(false) as HTMLElement;
+      let inner = root;
+      for (let i = 1; i < chain.length; i++) {
+        const c = (chain[i] as Element).cloneNode(false) as HTMLElement;
+        inner.appendChild(c);
+        inner = c;
+      }
+      line.push(root);
+      holder = inner;
+      holderChain = chain;
+      holder.appendChild(n);
+    };
+    function walk(parent: Node, chain: Node[] | null) {
+      for (const n of [...parent.childNodes]) {
+        const el = n.nodeType === 1 ? (n as Element) : null;
+        if (el && el.tagName === "BR") {
+          br = true;
+          out.push([]);
+          holder = null;
+          holderChain = null;
+          continue;
+        }
+        if (el && !block.test(el.tagName) && el.querySelector("br")) {
+          walk(el, chain ? chain.concat([el]) : [el]);
+          continue;
+        }
+        put(n, chain);
+      }
+    }
+    walk(cell, null);
+    while (out.length > 1 && !out[out.length - 1].length) out.pop();
+    return { lines: out, br };
   };
   const move = (cell: HTMLElement, lines: Node[][], from: number, br: boolean) => {
     for (let k = from; k < lines.length; k++) {
@@ -184,6 +228,86 @@ export function splitRow(tr: HTMLElement, fits: () => boolean): [HTMLElement, HT
   restCells.forEach((c) => { c.removeAttribute("rowspan"); c.textContent = ""; });
   cells.forEach((c) => { c.textContent = ""; });
   const total = info.reduce((n, x) => Math.max(n, x.lines.length), 0);
+  let cut: { cell: number; rest: Node[] } | null = null;
+  /* Un segment de text care nu încape nici pe pagina goală se taie pe cuvinte: căutare binară pe numărul
+     de cuvinte care încap (măsurat cu `fits`), iar restul pleacă în rândul de continuare, în același wrapper. */
+  const cutWords = (): { cell: number; rest: Node[] } | null => {
+    const hasBlock = (nodes: Node[]): boolean =>
+      nodes.some((n) => {
+        if (n.nodeType !== 1) return false;
+        const el = n as Element;
+        return block.test(el.tagName) || [...el.querySelectorAll("*")].some((c) => block.test(c.tagName));
+      });
+    const wordStarts = (t: string): number[] => {
+      const re = /\S+/g;
+      const starts: number[] = [];
+      let m: RegExpExecArray | null = null;
+      while ((m = re.exec(t))) starts.push(m.index);
+      return starts;
+    };
+    /* Taie o clonă a conținutului la `off` caractere: întoarce [început, rest], ambele cu wrapper-ele intacte. */
+    const cutAt = (src: Node[], off: number): [Node[], Node[]] => {
+      const tmp = doc.createElement("div");
+      src.forEach((n) => tmp.appendChild(n.cloneNode(true)));
+      const texts: Text[] = [];
+      const collect = (n: Node) => n.childNodes.forEach((c) => { if (c.nodeType === 3) texts.push(c as Text); else collect(c); });
+      collect(tmp);
+      let at: Text | null = null;
+      let local = 0;
+      let acc = 0;
+      for (const t of texts) {
+        const len = (t.data || "").length;
+        if (off <= acc + len) { at = t; local = off - acc; break; }
+        acc += len;
+      }
+      if (!at) return [[...tmp.childNodes], []];
+      const r = doc.createRange();
+      r.setStart(tmp, 0);
+      r.setEnd(at, local);
+      const head = [...r.cloneContents().childNodes];
+      r.setStart(at, local);
+      r.setEnd(tmp, tmp.childNodes.length);
+      return [head, [...r.cloneContents().childNodes]];
+    };
+    let ci = -1;
+    let text = "";
+    info.forEach((x, i) => {
+      const line = x.lines[0];
+      if (!line.length || hasBlock(line)) return;
+      const t = line.map((n) => n.textContent || "").join("");
+      if (t.trim().length > text.trim().length) { ci = i; text = t; }
+    });
+    if (ci < 0) return null;
+    const starts = wordStarts(text);
+    if (starts.length < 2) {
+      console.warn("paginate: cuvânt forțat peste limită", text.slice(0, 40));
+      return null;
+    }
+    const src = [...cells[ci].childNodes];
+    const place = (m: number): Node[] => {
+      const [head, tail] = cutAt(src, starts[m]);
+      cells[ci].textContent = "";
+      head.forEach((n) => cells[ci].appendChild(n));
+      return tail;
+    };
+    let lo = 1;
+    let hi = starts.length - 1;
+    let ok = 0;
+    let tail: Node[] = [];
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      const restOf = place(mid);
+      if (fits()) { ok = mid; tail = restOf; lo = mid + 1; } else hi = mid - 1;
+    }
+    if (!ok) {
+      console.warn("paginate: text forțat peste limită", text.slice(0, 40));
+      cells[ci].textContent = "";
+      src.forEach((n) => cells[ci].appendChild(n));
+      return null;
+    }
+    place(ok);
+    return { cell: ci, rest: tail };
+  };
   let placed = 0;
   for (let k = 0; k < total; k++) {
     const undo: [HTMLElement, Node[]][] = [];
@@ -196,12 +320,27 @@ export function splitRow(tr: HTMLElement, fits: () => boolean): [HTMLElement, HT
       undo.push([cells[ci], ns]);
     });
     if (fits()) { placed = k + 1; continue; }
+    if (k === 0) cut = cutWords();
+    if (cut) break;
     undo.forEach(([c, ns]) => ns.forEach((n) => c.removeChild(n)));
     break;
   }
-  if (!placed) {
+  if (!placed && !cut) {
+    cells.forEach((c) => { c.textContent = ""; });
     info.forEach((x, ci) => move(cells[ci], x.lines, 0, x.br));
     return [tr, null];
+  }
+  if (cut) {
+    const { cell: bi, rest: tail } = cut;
+    info.forEach((x, ci) => {
+      const target = restCells[ci];
+      if (ci === bi) tail.forEach((n) => target.appendChild(n));
+      for (let k = 1; k < x.lines.length; k++) {
+        if (x.br) target.appendChild(doc.createElement("br"));
+        x.lines[k].forEach((n) => target.appendChild(n));
+      }
+    });
+    return [tr, rest];
   }
   if (placed === total) return [tr, null];
   info.forEach((x, ci) => move(restCells[ci], x.lines, placed, x.br));
