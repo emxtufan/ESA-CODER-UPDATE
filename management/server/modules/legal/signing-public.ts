@@ -339,7 +339,10 @@ export function publicSignRouter(): Router {
     if (!updated) throw new HttpError(409, "conflict", "Documentele sunt deja semnate");
 
     if (row.contractId && SIGNED_CONTRACT_STATUS) {
-      await db.update(contracts).set({ status: SIGNED_CONTRACT_STATUS }).where(eq(contracts.id, row.contractId));
+      await db
+        .update(contracts)
+        .set({ status: SIGNED_CONTRACT_STATUS, signedAt: now })
+        .where(eq(contracts.id, row.contractId));
     }
 
     const provider = await loadProvider(db);

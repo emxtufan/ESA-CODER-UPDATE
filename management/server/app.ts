@@ -38,6 +38,8 @@ import {
 import { offersRouter } from "./modules/legal/offers";
 import { legalPdfRouter } from "./modules/legal/pdf";
 import { legalRouter } from "./modules/legal/routes";
+import { signaturesRouter } from "./modules/legal/signatures";
+import { publicSignRouter } from "./modules/legal/signing-public";
 import { catalogRouter } from "./modules/catalog/routes";
 import { observationsRouter } from "./modules/observations/routes";
 import { projectsRouter } from "./modules/projects/routes";
@@ -89,7 +91,7 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   // JSON doar în afara webhook-urilor (raw body pentru semnătură) și a rutelor cu corp mare
   // (PDF-ul din HTML, arhivarea PDF-ului în base64 și importul catalogului), care își au propriul parser.
   const jsonBody = express.json({ limit: "1mb" });
-  const largeBody = /^\/api\/legal\/(pdf\/?|documents\/[^/]+\/archive\/?)$|^\/api\/catalog\/import\/?$/;
+  const largeBody = /^\/api\/legal\/(pdf\/?|signatures\/?|documents\/[^/]+\/archive\/?)$|^\/api\/catalog\/import\/?$|^\/api\/public\/sign\/[^/]+\/sign\/?$/;
   app.use((req, res, next) => {
     if (req.path.startsWith("/api/webhooks/") || largeBody.test(req.path)) return next();
     jsonBody(req, res, next);
@@ -136,6 +138,8 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/legal/pdf", legalPdfRouter());
   app.use("/api/legal", offersRouter());
   app.use("/api/legal", legalRouter());
+  app.use("/api/legal", signaturesRouter());
+  app.use("/api/public/sign", publicSignRouter());
   app.use("/api/catalog", catalogRouter());
   app.use("/api/documents", documentsRouter());
   app.use("/api/files", signedFilesRouter());
