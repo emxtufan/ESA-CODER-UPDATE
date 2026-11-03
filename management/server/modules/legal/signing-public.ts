@@ -8,7 +8,7 @@
 import { createHash, randomInt, timingSafeEqual } from "node:crypto";
 
 import { and, eq, ne } from "drizzle-orm";
-import { Router } from "express";
+import express, { Router } from "express";
 import { z } from "zod";
 
 import { ACCEPT_TEXT } from "../../../shared/signing";
@@ -282,7 +282,7 @@ export function publicSignRouter(): Router {
   });
 
   /** Semnarea propriu-zisă: codul OTP, datele semnatarului, semnătura desenată și PDF-urile semnate. */
-  router.post("/:token/sign", async (req, res) => {
+  router.post("/:token/sign", express.json({ limit: "1mb" }), async (req, res) => {
     const { db, env } = req.ctx;
     const token = tokenOf(req.params.token);
     const input = parse(signSchema, req.body);
