@@ -7,9 +7,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { fill } from "../client/src/modules/legal/contract/engine";
 import template from "../client/src/modules/legal/contract/template.html?raw";
-import { applySignature } from "../server/modules/legal/signing-public";
 
-/** Tabelul din cazul 2: doar celula BENEFICIAR trebuie marcată, o dată. */
+/** Tabelul din cazul 2: ambele celule (PRESTATOR și BENEFICIAR) trebuie completate. */
 const TABLE = `<table><tr><th>PRESTATOR</th><th>BENEFICIAR</th></tr><tr><td>Prin: X<br><br>Semnătura: ……<br><br>Data: ……</td><td>Prin: Y<br><br>Semnătura: ……<br><br>Data: ……</td></tr></table>`;
 
 /** Sursele `signSpots.ts` compilează într-un script clasic, injectat în pagină. */
@@ -43,11 +42,27 @@ async function mark(page: Page): Promise<void> {
   await page.evaluate(() => (window as unknown as { markSignSpots: (doc: Document) => void }).markSignSpots(document));
 }
 
-function counts(page: Page): Promise<{ sign: number; date: number }> {
-  return page.evaluate(() => ({
-    sign: document.querySelectorAll('span[data-sign="client"]').length,
-    date: document.querySelectorAll('span[data-sign-date="client"]').length,
-  }));
+/** Textele celulelor cu „Semnătura” din rândurile de date ale tabelelor care au BENEFICIAR în antet. */
+function beneficiaryCells(page: Page): Promise<string[][]> {
+  return page.evaluate(() =>
+    Array.from(document.querySelectorAll("table"))
+      .filter((table) => {
+        const header = table.rows[0];
+        return !!header && Array.from(header.cells).some((c) =>
+          (c.textContent ?? "").toUpperCase().includes("BENEFICIAR"),
+        );
+      })
+      .map((table) => {
+        const texts: string[] = [];
+        for (const row of Array.from(table.rows).slice(1)) {
+          for (const cell of Array.from(row.cells)) {
+            const text = cell.textContent ?? "";
+            if (text.includes("Semnătura")) texts.push(text);
+          }
+        }
+        return texts;
+      }),
+  );
 }
 
 describe("signSpots: marcaj semnături", () => {
@@ -65,68 +80,54 @@ describe("signSpots: marcaj semnături", () => {
     browser = null;
   });
 
-  it("marchează doar Semnătura în contractul completat, idempotent", async (t) => {
+  it("completează Semnătura în ambele coloane ale tabelelor cu BENEFICIAR, idempotent", async (t) => {
     if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
     const page = await pageWith(fill(template, {}));
     try {
       await mark(page);
 
-      expect(await counts(page)).toEqual({ sign: 3, date: 0 });
+      const tables = await beneficiaryCells(page);
+      expect(tables).toHaveLength(3);
+      for (const cells of tables) {
+        expect(cells).toHaveLength(2);
+        for (const text of cells) {
+          expect(text).toContain("Semnătura: electronică, art. 23.11");
+          expect(text).not.toContain("…");
+        }
+      }
 
-      // Toate marcajele stau în celula de pe coloana BENEFICIAR a tabelului lor.
-      const misplaced = await page.evaluate(() => {
-        const spans = Array.from(document.querySelectorAll('span[data-sign="client"]'));
-        return spans.filter((span) => {
-          const cell = span.closest("td,th") as HTMLTableCellElement | null;
-          const header = cell?.closest("table")?.rows[0];
-          if (!cell || !header) return true;
-          const th = header.cells[cell.cellIndex];
-          return !th || !(th.textContent ?? "").toUpperCase().includes("BENEFICIAR");
-        }).length;
-      });
-      expect(misplaced).toBe(0);
+      // „Data:” fără puncte (urmat de data contractului) rămâne neatins.
+      expect(tables.flat().some((text) => text.includes("Data: conform certificatului"))).toBe(false);
 
-      // A doua rulare nu adaugă nimic.
-      await mark(page);
-      expect(await counts(page)).toEqual({ sign: 3, date: 0 });
-    } finally {
-      await page.close();
-    }
-  });
-
-  it("marchează Semnătura și Data în celula BENEFICIAR, idempotent", async (t) => {
-    if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
-    const page = await pageWith(TABLE);
-    try {
-      await mark(page);
-
-      expect(await counts(page)).toEqual({ sign: 1, date: 1 });
-
-      const second = await page.evaluate(() => {
-        const cell = (document.querySelectorAll("tr")[1] as HTMLTableRowElement).cells[1];
-        return {
-          sign: cell.querySelectorAll('span[data-sign="client"]').length,
-          date: cell.querySelectorAll('span[data-sign-date="client"]').length,
-        };
-      });
-      expect(second).toEqual({ sign: 1, date: 1 });
-
-      await mark(page);
-      expect(await counts(page)).toEqual({ sign: 1, date: 1 });
-    } finally {
-      await page.close();
-    }
-  });
-
-  it("completează marcajele cu imaginea semnăturii și data semnării", async (t) => {
-    if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
-    const page = await pageWith(TABLE);
-    try {
-      await mark(page);
+      // A doua rulare nu schimbă nimic.
       const html = await page.evaluate(() => document.body.innerHTML);
-      const signed = applySignature(html, "data:image/png;base64,iVBORw0KGgo=", "05.03.2026");
-      expect(signed).toContain("<img");
-      expect(signed).toContain("05.03.2026");
+      await mark(page);
+      expect(await page.evaluate(() => document.body.innerHTML)).toBe(html);
+    } finally {
+      await page.close();
+    }
+  });
+
+  it("completează Semnătura și Data în ambele celule ale tabelului PRESTATOR/BENEFICIAR", async (t) => {
+    if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
+    const page = await pageWith(TABLE);
+    try {
+      await mark(page);
+
+      const tables = await beneficiaryCells(page);
+      expect(tables).toHaveLength(1);
+      const cells = tables[0];
+      expect(cells).toHaveLength(2);
+      for (const text of cells) {
+        expect(text).toContain("Semnătura: electronică, art. 23.11");
+        expect(text).toContain("Data: conform certificatului");
+        expect(text).not.toContain("…");
+      }
+
+      // A doua rulare nu schimbă nimic.
+      const html = await page.evaluate(() => document.body.innerHTML);
+      await mark(page);
+      expect(await page.evaluate(() => document.body.innerHTML)).toBe(html);
     } finally {
       await page.close();
     }

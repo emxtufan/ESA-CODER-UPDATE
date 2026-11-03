@@ -1,13 +1,14 @@
 /**
- * Marchează locurile de semnare (Semnătura / Data) din celula BENEFICIAR a tabelelor de semnături,
- * ca să poată fi completate ulterior (canvas de semnătură peste `<span data-sign="client">`).
+ * Completează locurile de semnare (Semnătura / Data) din tabelele de semnături, adică tabelele
+ * al căror antet (primul rând) conține BENEFICIAR: în toate coloanele lor, punctele de completat
+ * devin textul semnării electronice (`Semnătura: electronică, art. 23.11`, `Data: conform certificatului`).
  */
 
-type Rule = { re: RegExp; attr: string; value: string; needText?: boolean };
+type Rule = { re: RegExp; replace: string };
 
 const RULES: Rule[] = [
-  { re: /(Semnătura:\s*)([.…_\s]*)/, attr: "data-sign", value: "client" },
-  { re: /(Data:\s*)([.…_\s]*)/, attr: "data-sign-date", value: "client", needText: true },
+  { re: /(Semnătura:\s*)[.…_\s]*[.…_]/g, replace: "$1electronică, art. 23.11" },
+  { re: /(Data:\s*)[.…_\s]*[.…_]/g, replace: "$1conform certificatului" },
 ];
 
 function textNodesIn(root: Node): Text[] {
@@ -22,44 +23,13 @@ function textNodesIn(root: Node): Text[] {
   return out;
 }
 
-/** Desparte nodul text în jurul potrivirii și pune marcajul într-un `<span>`; întoarce textul de după marcaj. */
-function splitTextNode(doc: Document, node: Text, rule: Rule, m: RegExpExecArray): Text | null {
-  const text = node.data;
-  const before = text.slice(0, m.index);
-  const after = text.slice(m.index + m[0].length);
-
-  const span = doc.createElement("span");
-  span.setAttribute(rule.attr, rule.value);
-  span.textContent = m[2] || " ";
-
-  const frag = doc.createDocumentFragment();
-  if (before) frag.appendChild(doc.createTextNode(before));
-  frag.appendChild(doc.createTextNode(m[1]));
-  frag.appendChild(span);
-  const afterNode = after ? doc.createTextNode(after) : null;
-  if (afterNode) frag.appendChild(afterNode);
-
-  node.replaceWith(frag);
-  return afterNode;
+/** Înlocuiește punctele de completat din nodul text; fără puncte nu se schimbă nimic (idempotent). */
+function markTextNode(node: Text): void {
+  for (const rule of RULES) node.data = node.data.replace(rule.re, rule.replace);
 }
 
-function markTextNode(doc: Document, node: Text): void {
-  let rest: Text | null = node;
-  while (rest) {
-    const text = rest.data;
-    let best: { index: number; rule: Rule; match: RegExpExecArray } | null = null;
-    for (const rule of RULES) {
-      const m = rule.re.exec(text);
-      if (m && (!rule.needText || /\S/.test(m[2])) && (!best || m.index < best.index)) best = { index: m.index, rule, match: m };
-    }
-    if (!best) return;
-    rest = splitTextNode(doc, rest, best.rule, best.match);
-  }
-}
-
-function markCell(doc: Document, cell: HTMLTableCellElement): void {
-  if (cell.querySelector("span[data-sign], span[data-sign-date]")) return;
-  for (const node of textNodesIn(cell)) markTextNode(doc, node);
+function markCell(cell: HTMLTableCellElement): void {
+  for (const node of textNodesIn(cell)) markTextNode(node);
 }
 
 export function markSignSpots(doc: Document): void {
@@ -67,16 +37,14 @@ export function markSignSpots(doc: Document): void {
     const headerRow = table.rows[0];
     if (!headerRow) continue;
 
-    const col = Array.from(headerRow.cells).findIndex((c) =>
+    const hasBeneficiary = Array.from(headerRow.cells).some((c) =>
       (c.textContent ?? "").toUpperCase().includes("BENEFICIAR"),
     );
-    if (col < 0) continue;
+    if (!hasBeneficiary) continue;
 
     for (const row of Array.from(table.rows)) {
       if (row === headerRow) continue;
-      const cell = row.cells[col];
-      if (!cell) continue;
-      markCell(doc, cell);
+      for (const cell of Array.from(row.cells)) markCell(cell);
     }
   }
 }
