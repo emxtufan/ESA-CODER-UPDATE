@@ -15,7 +15,7 @@ import { ACCEPT_TEXT } from "../../../shared/signing";
 import type { Db } from "../../db/client";
 import { signatureRequests, type SignatureDoc } from "../../db/schema/legal";
 import { contracts } from "../../db/schema/ops";
-import { sendEmail } from "../../integrations/smtp";
+import { emailCode, emailDetails, escHtml?, emailLayout, emailList, type EmailBrand } from "../../integrations/emailLayout";
 import { HttpError, parse } from "../../lib/http";
 import { renderPdf } from "../../lib/pdf";
 import { getFile, putFile } from "../../lib/storage";

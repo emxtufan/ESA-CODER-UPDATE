@@ -13,6 +13,7 @@ import { z } from "zod";
 import { SIGN_LINK_DAYS } from "../../../shared/signing";
 import type { Db } from "../../db/client";
 import { signatureRequests, type SignatureDoc } from "../../db/schema/legal";
+import { escHtml, emailLayout, emailList, type EmailBrand } from "../../integrations/emailLayout";
 import { sendEmail } from "../../integrations/smtp";
 import { HttpError, parse } from "../../lib/http";
 import { renderPdf, sanitizeHtml } from "../../lib/pdf";
@@ -88,21 +89,52 @@ export function publicView(row: SignatureRow): PublicSignatureRow {
   return rest;
 }
 
-/** Escape pentru titlurile introduse de utilizator, în corpul emailului. */
-function escapeHtml(value: string): string {
-  const map: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-  return value.replace(/[&<>"']/g, (char) => map[char] ?? char);
+/** Datele prestatorului, așa cum vin din `loadProvider`. */
+type Provider = Awaited<ReturnType<typeof loadProvider>>;
+
+/** Brand-ul din datele prestatorului, pentru șablonul de email (valorile rămân neescapate). */
+export function brandOf(provider: Provider): EmailBrand {
+  const legal = [provider.esaNume, provider.esaCui && `CUI ${provider.esaCui}`].filter(Boolean).join(", ");
+  return {
+    name: provider.esaMarca,
+    legal,
+    address: provider.esaAdresa,
+    email: provider.esaEmail,
+    phone: provider.esaTel,
+    web: provider.esaSite,
+  };
 }
 
-/** Email scurt cu titlurile documentelor și linkul de semnare (fără resurse externe). */
-function signEmail(titles: string[], link: string): string {
-  return [
-    `<h1>Documente spre semnare</h1>`,
-    `<ul>${titles.map((title) => `<li>${escapeHtml(title)}</li>`).join("")}</ul>`,
-    `<p><a href="${link}">Deschide documentele și semnează</a></p>`,
-    `<p>Sau copiază linkul în browser: ${link}</p>`,
-    `<p>Linkul e valabil ${SIGN_LINK_DAYS} de zile.</p>`,
-  ].join("");
+/** Data și ora expirării linkului, în ora României. */
+const RO_DATE = new Intl.DateTimeFormat("ro-RO", {
+  dateStyle: "long",
+  timeStyle: "short",
+  timeZone: "Europe/Bucharest",
+});
+
+interface SignEmailInput {
+  titles: string[];
+  link: string;
+  name: string | null;
+  expiresAt: Date;
+  brand: EmailBrand;
+}
+
+/** Emailul de invitație la semnare: documentele, linkul personal și valabilitatea lui. */
+function signEmail({ titles, link, name, expiresAt, brand }: SignEmailInput): string {
+  return emailLayout({
+    preheader: `${brand.name} v-a trimis documente spre semnare`,
+    heading: "Aveți documente de semnat",
+    body: [
+      `<p style="margin:0 0 16px;">Bună ziua${name ? `, ${escHtml(name)}` : ""},</p>`,
+      `<p style="margin:0 0 16px;">${escHtml(brand.name)} v-a trimis spre semnare electronică:</p>`,
+      emailList(titles),
+      `<p style="margin:0 0 16px;">Semnarea durează sub un minut: citiți documentele, confirmați acordul, semnați și introduceți codul primit pe e-mail.</p>`,
+    ].join(""),
+    button: { label: "Vezi și semnează documentele", url: link },
+    note: `Linkul este personal și valabil până la ${RO_DATE.format(expiresAt)}. Nu îl redirecționați.`,
+    brand,
+  });
 }
 
 /** Linkul public de semnare pentru un token proaspăt. */
@@ -161,10 +193,13 @@ export function signaturesRouter(): Router {
       const result = await sendEmail(env, {
         to: input.email,
         subject: `Document spre semnare – ${provider.esaMarca}`,
-        html: signEmail(
-          docs.map((doc) => doc.title),
-          signLink(env, token),
-        ),
+        html: signEmail({
+          titles: docs.map((doc) => doc.title),
+          link: signLink(env, token),
+          name: row.signerName,
+          expiresAt: row.expiresAt,
+          brand: brandOf(provider),
+        }),
       });
 
       await audit(req, "signature.create", "signature_request", id, {
@@ -251,10 +286,13 @@ export function signaturesRouter(): Router {
     const result = await sendEmail(env, {
       to: row.signerEmail,
       subject: `Document spre semnare – ${provider.esaMarca}`,
-      html: signEmail(
-        row.docs.map((doc) => doc.title),
-        signLink(env, token),
-      ),
+      html: signEmail({
+        titles: row.docs.map((doc) => doc.title),
+        link: signLink(env, token),
+        name: row.signerName,
+        expiresAt: updated.expiresAt,
+        brand: brandOf(provider),
+      }),
     });
 
     await audit(req, "signature.resend", "signature_request", id, {
