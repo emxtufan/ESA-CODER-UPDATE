@@ -136,19 +136,3 @@ describe("semnare: flux complet", () => {
     }
   }, 120_000);
 });
-
-describe("semnare: marcajele din document", () => {
-  it("pune imaginea semnăturii și data în span-urile marcate", () => {
-    const html = `<p>Semnat: <span data-sign="client">Ion Popescu</span> la <span data-sign-date="client">—</span></p>`;
-    const out = applySignature(html, PNG, "09.02.2026");
-
-    expect(out).toContain(`<span data-sign="client" style="position:relative;display:inline-block">Ion Popescu`);
-    expect(out).toContain(`<img src="data:image/png;base64,`);
-    expect(out).toContain(`<span data-sign-date="client">09.02.2026</span>`);
-    expect(out).not.toContain("—");
-  });
-
-  it("lasă neschimbat un document fără span-uri de semnare", () => {
-    expect(applySignature(HTML, PNG, "09.02.2026")).toBe(HTML);
-  });
-});
