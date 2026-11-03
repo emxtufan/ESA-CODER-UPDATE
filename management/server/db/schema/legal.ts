@@ -198,3 +198,48 @@ export const dossierDocuments = pgTable(
     uniqueIndex("dossier_documents_offer_type_version_uq").on(t.offerId, t.type, t.version),
   ],
 );
+
+/** Un document din pachetul trimis spre semnare (originalul + versiunea semnată). */
+export type SignatureDoc = {
+  title: string;
+  htmlKey: string;
+  pdfKey: string;
+  sha256: string;
+  signedPdfKey?: string;
+  signedSha256?: string;
+};
+
+/** Cererile de semnătură electronică (link public cu token + OTP). */
+export const signatureRequests = pgTable(
+  "signature_requests",
+  {
+    id: primaryId(),
+    offerId: uuid("offer_id").references((): AnyPgColumn => offers.id, { onDelete: "set null" }),
+    contractId: uuid("contract_id").references((): AnyPgColumn => contracts.id, { onDelete: "set null" }),
+    signerEmail: text("signer_email").notNull(),
+    signerName: text("signer_name"),
+    /** Hash-ul tokenului din link; tokenul în clar nu se stochează. */
+    tokenHash: text("token_hash").notNull().unique(),
+    status: text("status").$type<"sent" | "viewed" | "signed" | "cancelled">().notNull().default("sent"),
+    /** Documentele trimise spre semnare, cu hash-urile lor. */
+    docs: jsonb("docs").$type<SignatureDoc[]>().notNull(),
+    otpHash: text("otp_hash"),
+    otpExpiresAt: timestamp("otp_expires_at", { withTimezone: true }),
+    otpAttempts: integer("otp_attempts").notNull().default(0),
+    otpSentAt: timestamp("otp_sent_at", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    viewedAt: timestamp("viewed_at", { withTimezone: true }),
+    signedAt: timestamp("signed_at", { withTimezone: true }),
+    signedName: text("signed_name"),
+    signedRole: text("signed_role"),
+    signedIp: text("signed_ip"),
+    signedUa: text("signed_ua"),
+    /** Semnătura desenată (PNG, data URL). */
+    signaturePng: text("signature_png"),
+    createdBy: uuid("created_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    index("signature_requests_offer_id_idx").on(t.offerId)
+  ],
+);

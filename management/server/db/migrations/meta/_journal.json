@@ -36,6 +36,13 @@
       "when": 1793708444803,
       "tag": "0004_misty_hedge_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793800000000,
+      "tag": "0005_signature_requests",
+      "breakpoints": true
     }
   ]
 }
