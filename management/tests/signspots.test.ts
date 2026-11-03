@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
+import { stripTypeScriptTypes } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import { chromium, type Browser, type Page } from "playwright-core";
-import * as ts from "typescript";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { fill } from "../client/src/modules/legal/contract/engine";
@@ -13,12 +13,9 @@ import { applySignature } from "../server/modules/legal/signing-public";
 const TABLE = `<table><tr><th>PRESTATOR</th><th>BENEFICIAR</th></tr><tr><td>Prin: X<br><br>Semnătura: ……<br><br>Data: ……</td><td>Prin: Y<br><br>Semnătura: ……<br><br>Data: ……</td></tr></table>`;
 
 /** Sursele `signSpots.ts` compilează într-un script clasic, injectat în pagină. */
-const script = ts
-  .transpileModule(
-    readFileSync(fileURLToPath(new URL("../client/src/modules/legal/dossier/signSpots.ts", import.meta.url)), "utf8"),
-    { compilerOptions: { module: ts.ModuleKind.None, target: ts.ScriptTarget.ES2020 } },
-  )
-  .outputText.replace(/^export /gm, "");
+const script = stripTypeScriptTypes(
+  readFileSync(fileURLToPath(new URL("../client/src/modules/legal/dossier/signSpots.ts", import.meta.url)), "utf8"),
+).replace(/^export /gm, "");
 
 let browser: Browser | null = null;
 let available = true;
