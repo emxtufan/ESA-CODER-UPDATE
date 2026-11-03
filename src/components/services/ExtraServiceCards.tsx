@@ -22,6 +22,16 @@ const SHINE = (v: 'a' | 'b') => ({
 
 const CARDS = [
   {
+    href: '/services/shopify-development', key: 'shopify-development', title: $t("shopify-development"), text: $t("shopify-development-text"),
+    art: (
+      <div className="svx-shop">
+        <span className="svx-shop-bar"><i /><i /><i /></span>
+        <span className="svx-shop-hero" />
+        <span className="svx-shop-grid">{[0, 1, 2].map((n) => <b key={n} />)}</span>
+      </div>
+    ),
+  },
+  {
     href: '/services/software-and-erp', key: 'software-and-erp', title: $t("software-and-erp"), text: $t("software-and-erp-text"),
     art: <div className="svx-frame"><img src="/services/erp-dashboard.webp" alt="" loading="lazy" decoding="async" /></div>,
   },

@@ -4047,7 +4047,9 @@
     "3d-modeling-text": "Modele și randări 3D pentru produse, spații și branduri, gata pentru web.",
     "video-and-reels": "Videoclipuri și reels",
     "video-and-reels-text": "Videoclipuri scurte pentru social media și website, montate pe formatul fiecărei platforme.",
-    "meta-description": ""
+    "meta-description": "",
+    "shopify-development": "Magazine Shopify 100% custom",
+    "shopify-development-text": "Temă scrisă de la zero în Liquid, design propriu și secțiuni editabile din editorul Shopify."
   },
   "/services/cms-and-dynamic-websites": {
     "meta-title": "CMS și site-uri dinamice | ESA Coder Solutions",
@@ -4865,5 +4867,42 @@
     "section-5-body": "Poți șterge sau bloca datele website-ului din browser. Ștergerea preferinței de consimțământ determină afișarea din nou a alegerilor. Blocarea tuturor cookie-urilor poate împiedica autentificarea administratorului; blocarea stocării locale poate împiedica memorarea temei și a preferinței.",
     "section-6-title": "Contact și versiune",
     "section-6-body": "Pentru întrebări despre cookie-uri și preferințele tale, scrie-ne la support@esa-coder-solutions.com. Informațiile despre operator, celelalte prelucrări și drepturile tale se găsesc în Politica de confidențialitate. Data versiunii este afișată la începutul paginii."
+  },
+  "/services/shopify-development": {
+    "all-services": "Toate serviciile",
+    "what-s-included": "Ce include",
+    "start-a-project": "Începe un proiect",
+    "recent-work": "Proiecte recente",
+    "need-this-for-your-project": "Ai nevoie de asta?",
+    "tell-us-where-you-are-and": "Spune-ne ce ai acum și unde vrei să ajungi. Îți spunem sincer ce ar presupune.",
+    "get-in-touch": "Hai să vorbim",
+    "meta-title": "Magazine Shopify 100% custom, teme Liquid | ESA Coder Solutions",
+    "meta-description": "Dezvoltăm magazine online și website-uri de prezentare pe Shopify cu temă construită de la zero în Liquid (Online Store 2.0), design propriu, secțiuni editabile, migrare și integrări custom.",
+    "title": "Shopify\n100% custom",
+    "lead": "Magazine online și website-uri pe Shopify cu o temă scrisă de la zero în Liquid, nu o temă cumpărată și ajustată. Designul e al tău, iar echipa ta îl poate actualiza din editorul Shopify, fără cod.",
+    "body": [
+      "Pornim de la brandul tău, nu de la o temă gata făcută. Designul se face separat pentru fiecare proiect, iar apoi îl construim ca temă Shopify proprie, în Liquid, pe arhitectura Online Store 2.0. Rezultatul nu seamănă cu alte magazine care folosesc aceeași temă și nu moștenește cod de care nu ai nevoie.",
+      "Fiecare pagină se construiește din secțiuni și blocuri pe care le editezi direct din editorul Shopify: reordonezi, adaugi sau schimbi texte, imagini și bannere fără să cerem ajutorul unui programator. Stabilim de la început ce vrei să poți modifica singur.",
+      "Paginile de produs, colecțiile și landing page-urile pot fi personalizate cu metafields și metaobjects: specificații, ghiduri de mărimi, avantaje, întrebări frecvente sau conținut diferit pe categorii, toate administrate din panoul Shopify.",
+      "Dacă ai deja un magazin pe WooCommerce, PrestaShop sau altă platformă, ne ocupăm de migrare: produse, categorii, clienți și comenzi, plus redirecționări 301 ca să nu pierzi poziționarea din Google. Nu orice date se pot muta identic, iar ce se poate și ce nu stabilim înainte de start.",
+      "Conectăm magazinul la plăți, curierat, facturare și ERP. Când aplicațiile din Shopify App Store nu acoperă ce ai nevoie, construim aplicații Shopify custom. Pe lângă magazine, facem și website-uri de prezentare pe Shopify, pentru firmele care vor un singur loc pentru site și vânzări.",
+      "Mobilul e punctul de plecare, nu o adaptare ulterioară. Ținem sub control viteza de încărcare, imaginile, scripturile aplicațiilor și SEO-ul tehnic: structura, datele structurate, meta-datele și adresele curate.",
+      "Abonamentul Shopify și aplicațiile plătite se achită de tine direct către Shopify. Noi facturăm doar munca de proiectare și dezvoltare, iar costurile platformei ți le explicăm înainte de început."
+    ],
+    "included": [
+      "Temă Shopify custom în Liquid (Online Store 2.0)",
+      "Design unic, aliniat brandului",
+      "Secțiuni și blocuri editabile din editorul Shopify",
+      "Pagini de produs, colecții și landing page-uri cu metafields și metaobjects",
+      "Migrare de pe WooCommerce, PrestaShop sau alte platforme, cu redirecționări SEO",
+      "Integrări cu plăți, curierat, facturare și ERP",
+      "Aplicații Shopify custom, când cele existente nu ajung",
+      "Viteză, mobil și SEO tehnic",
+      "Website-uri de prezentare pe Shopify"
+    ],
+    "next": "Următorul: Magazine\nonline",
+    "related-1": "Magazine\nonline",
+    "related-2": "CMS și site-uri\ndinamice",
+    "related-3": "Optimizare\nde performanță"
   }
 }

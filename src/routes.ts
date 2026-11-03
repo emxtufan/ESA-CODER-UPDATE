@@ -28,6 +28,7 @@ export const routes: Record<string, ResolvedRoute> = {
   "/services/business-automation": {title: text("/services/business-automation")('meta-title'), page: lazy(() => import('@/pages/services/business-automation'))},
   "/services/3d-modeling": {title: text("/services/3d-modeling")('meta-title'), page: lazy(() => import('@/pages/services/3d-modeling'))},
   "/services/video-and-reels": {title: text("/services/video-and-reels")('meta-title'), page: lazy(() => import('@/pages/services/video-and-reels'))},
+  "/services/shopify-development": {title: text("/services/shopify-development")('meta-title'), page: lazy(() => import('@/pages/services/shopify-development'))},
   "/services/website-redesign": {title: text("/services/website-redesign")('meta-title'), page: lazy(() => import('@/pages/services/website-redesign'))},
   "/terms-and-conditions": {title: text("/terms-and-conditions")('meta-title'), page: lazy(() => import('@/pages/terms-and-conditions'))},
   "/works": {title: text("/works")('meta-title'), page: lazy(() => import('@/pages/works'))},
