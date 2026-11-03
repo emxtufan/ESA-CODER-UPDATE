@@ -7,6 +7,7 @@ import NotFound from "@/app/NotFound";
 import { RequireAuth } from "@/lib/auth";
 import LoginPage from "@/modules/auth/LoginPage";
 import ResetPasswordPage from "@/modules/auth/ResetPasswordPage";
+import SignPage from "@/modules/signing/SignPage";
 import AuditPage from "@/modules/audit/AuditPage";
 import AccountPage from "@/modules/settings/AccountPage";
 
@@ -38,6 +39,7 @@ const ReportsPage = lazy(() => import("@/modules/reports/ReportsPage"));
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/reset-password", element: <ResetPasswordPage /> },
+  { path: "/semnare/:token", element: <SignPage /> },
   {
     element: (
       <RequireAuth>
