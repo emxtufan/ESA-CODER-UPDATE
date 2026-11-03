@@ -1,5 +1,5 @@
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { AwsClient } from "aws4fetch";
 import type { Env } from "../env";
 import { HttpError } from "./http";
@@ -21,7 +21,7 @@ export async function putFile(env: Env, key: string, data: Buffer): Promise<void
     if (!res.ok) throw new HttpError(502, "storage_error", "Fișierul nu a putut fi salvat");
     return;
   }
-  await mkdir(join(env.DATA_DIR, "files"), { recursive: true });
+  await mkdir(dirname(localPath(env, key)), { recursive: true });
   await writeFile(localPath(env, key), data);
 }
 
