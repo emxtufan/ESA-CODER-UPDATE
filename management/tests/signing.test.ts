@@ -16,6 +16,8 @@ const smtp = vi.hoisted(() => ({ sendMail: vi.fn(), createTransport: vi.fn() }))
 vi.mock("nodemailer", () => ({ default: { createTransport: smtp.createTransport } }));
 
 const HTML = `<!doctype html><html><body><p>Contract</p></body></html>`;
+/** Document paginat ca cele din aplicație (`.pg` = o pagină A4), pentru previzualizare. */
+const PAGED = `<!doctype html><html><head><style>.pg{width:210mm;height:297mm}</style></head><body><div id="pages"><section class="pg"><p>Contract</p></section><section class="pg"><p>Pagina 2</p></section></div></body></html>`;
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
 const SIGNER = "semnatar@test.local";
 /** Emailul mascat așteptat în răspunsurile publice: „s***@test.local”. */
@@ -82,7 +84,7 @@ describe("semnare: flux complet", () => {
       const created = await ctx.api("/api/legal/signatures", {
         method: "POST",
         cookie,
-        body: { email: SIGNER, name: "Ion Popescu", docs: [{ title: "Test", html: HTML }] },
+        body: { email: SIGNER, name: "Ion Popescu", docs: [{ title: "Test", html: PAGED }] },
       });
       expect(created.status).toBe(201);
       expect(created.json.status).toBe("sent");
@@ -100,16 +102,17 @@ describe("semnare: flux complet", () => {
       expect(state.json.docs).toHaveLength(1);
       expect(state.json.otp).toBeNull();
 
-      // 2b. HTML-ul documentului (toate paginile, și pe telefon): fără scripturi, fără rețea.
-      const html = await fetch(`${ctx.url}/api/public/sign/${token}/docs/0/html`);
-      expect(html.status).toBe(200);
-      expect(html.headers.get("content-type")).toContain("text/html");
-      const csp = html.headers.get("content-security-policy") ?? "";
-      expect(csp).toContain("sandbox allow-same-origin");
-      expect(csp).toContain("default-src 'none'");
-      expect(csp).not.toContain("allow-scripts");
-      expect(await html.text()).toContain("<p>Contract</p>");
-      expect((await fetch(`${ctx.url}/api/public/sign/${token}/docs/5/html`)).status).toBe(404);
+      // 2b. Previzualizarea (și pe telefon): paginile ca imagini PNG, randate o dată, apoi din storage.
+      const pages = await ctx.api(`/api/public/sign/${token}/docs/0/pages`);
+      expect(pages.status).toBe(200);
+      expect(pages.json.pages).toBe(2);
+      const image = await fetch(`${ctx.url}/api/public/sign/${token}/docs/0/pages/2`);
+      expect(image.status).toBe(200);
+      expect(image.headers.get("content-type")).toBe("image/png");
+      expect(Buffer.from(await image.arrayBuffer()).subarray(1, 4).toString()).toBe("PNG");
+      expect((await ctx.api(`/api/public/sign/${token}/docs/0/pages`)).json.pages).toBe(2);
+      expect((await fetch(`${ctx.url}/api/public/sign/${token}/docs/0/pages/3`)).status).toBe(404);
+      expect((await fetch(`${ctx.url}/api/public/sign/${token}/docs/5/pages`)).status).toBe(404);
 
       // 3. Un singur cod pe minut: al doilea cerut imediat e refuzat.
       const otp = await ctx.api(`/api/public/sign/${token}/otp`, { method: "POST" });

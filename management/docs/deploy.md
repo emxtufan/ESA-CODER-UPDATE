@@ -112,4 +112,13 @@ Paginarea documentelor se face în browserul utilizatorului, iar serverul prime�
 
 Pachetul de sistem `fonts-crosextra-carlito` rămâne recomandat ca rezervă pentru HTML-ul salvat înainte de includerea fontului, de exemplu cererile de semnare deja trimise, pe care serverul le randează din nou la semnare. Fără el, Chromium folosește Liberation Sans, mai lat decât Calibri, iar textul ajunge peste footer. După instalarea fontului, reporniți aplicația, pentru că Chromium citește fonturile doar la pornire.
 
+Chiar și cu același font, browserul utilizatorului (de exemplu Chrome pe Windows) poate rupe un rând altfel decât Chromium-ul de pe server. De aceea, înaintea fiecărui PDF și a imaginilor de previzualizare, serverul verifică fiecare pagină (`server/lib/page-layout.js`, rulat cu `page.evaluate`; scripturile documentului rămân dezactivate). Textul trebuie să se termine în zona de text: 230 mm de la începutul ei și cel puțin 10 mm deasupra liniei footerului. O pagină care o depășește e micșorată uniform cât să încapă, de obicei sub 2%, pe toată lățimea zonei. Paginile ajustate apar în log: `PDF: pagini micșorate ca textul să rămână deasupra footerului: …`.
+
+La semnare, același script pune semnătura desenată în fiecare loc de semnare al Beneficiarului:
+
+- coloana BENEFICIAR din tabelele PRESTATOR/BENEFICIAR, fără modelul gol de proces-verbal din Anexa 2 a contractului;
+- acceptarea expresă a clauzelor (art. 24.1).
+
+Tot atunci completează „Prin:” cu numele și funcția semnatarului și „Data:” (dacă era necompletată sau „conform certificatului”) cu data semnării. Pe fiecare pagină, între text și footer, adaugă semnătura, numele și data. Semnătura crește doar cât spațiu liber are pagina, deci nu împinge textul spre footer.
+
 Alternativ, setați `PDF_CHROMIUM_PATH` în `.env` la un Chromium/Chrome deja instalat (ex. `/usr/bin/chromium`). Ordinea: `PDF_CHROMIUM_PATH`, apoi Chromium-ul instalat de Playwright, apoi Chrome-ul sistemului (`channel: "chrome"`). Dacă nu se găsește niciunul, ruta răspunde 503 și clientul folosește print-ul din browser. Browserul este unul singur, pornit la prima cerere și închis la `SIGTERM`; cererile se procesează pe rând.

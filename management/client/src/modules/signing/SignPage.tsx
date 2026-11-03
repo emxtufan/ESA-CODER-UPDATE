@@ -41,13 +41,6 @@ interface SignState {
 const PAD_W = 600;
 const PAD_H = 200;
 
-/** Lățimea unei pagini A4, în pixeli CSS. */
-const PAGE_PX = (210 * 96) / 25.4;
-
-/** Stilul adăugat documentului afișat: margini mici, fără spațiul barei de unelte din generator. */
-const VIEW_CSS =
-  "html,body{background:#f2f2f0!important;overflow:hidden!important}body{padding:6px 0!important}#pages{gap:10px!important}";
-
 /** Mesajul de eroare afișabil pentru o cerere eșuată. */
 function errorMessage(error: unknown): string {
   if (error instanceof ApiError) return error.message;
@@ -92,76 +85,56 @@ function clearSaved(token: string): void {
 }
 
 /**
- * Paginile unui document, din HTML-ul din care s-a generat PDF-ul, încadrate pe lățimea
- * containerului. Un PDF într-un iframe arată pe telefon doar prima pagină (iOS) sau nimic
- * (browserele din aplicațiile de email), deci afișăm sursa lui. Documentul rulează fără
- * scripturi (`sandbox`); pagina îi setează zoom-ul și înălțimea, ca toate paginile să se vadă.
+ * Previzualizarea unui document: imaginile paginilor, randate pe server exact ca PDF-ul.
+ * Pe telefon, un PDF într-un iframe arată doar prima pagină (iOS) sau nimic (browserele din
+ * aplicațiile de email), iar HTML-ul micșorat iese din pagină (mărimea minimă a textului,
+ * zoom-ul de text al sistemului). Imaginile se încarcă pe măsură ce semnatarul derulează.
  */
-function DocPages({ src, title }: { src: string; title: string }) {
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  const [height, setHeight] = useState<number | null>(null);
+function DocPages({ apiPath, fileBase, title }: { apiPath: string; fileBase: string; title: string }) {
+  const [count, setCount] = useState<number | null>(null);
   const [failed, setFailed] = useState(false);
 
-  const fit = useCallback(() => {
-    const frame = frameRef.current;
-    const doc = frame?.contentDocument;
-    const pages = doc?.getElementById("pages");
-    if (!frame || !doc || !pages) return;
-    pages.style.setProperty("--z", String(Math.min(1, (frame.clientWidth - 8) / PAGE_PX)));
-    setHeight(Math.ceil(doc.documentElement.scrollHeight));
-  }, []);
-
-  const onLoad = () => {
-    const doc = frameRef.current?.contentDocument;
-    if (!doc?.getElementById("pages")) {
-      setFailed(true);
-      return;
-    }
-    if (!doc.getElementById("esa-view")) {
-      const style = doc.createElement("style");
-      style.id = "esa-view";
-      style.textContent = VIEW_CSS;
-      doc.head.appendChild(style);
-    }
-    fit();
-  };
-
-  // La rotirea telefonului sau redimensionare, paginile se reîncadrează.
   useEffect(() => {
-    const frame = frameRef.current;
-    if (!frame) return;
-    let width = frame.clientWidth;
-    const observer = new ResizeObserver(() => {
-      if (frame.clientWidth === width) return;
-      width = frame.clientWidth;
-      fit();
-    });
-    observer.observe(frame);
-    return () => observer.disconnect();
-  }, [fit]);
+    let alive = true;
+    setCount(null);
+    setFailed(false);
+    api<{ pages: number }>(`${apiPath}/pages`)
+      .then((result) => alive && setCount(result.pages))
+      .catch(() => alive && setFailed(true));
+    return () => {
+      alive = false;
+    };
+  }, [apiPath]);
 
   if (failed) {
-    return <p className="px-2 py-6 text-center text-sm text-muted">Documentul nu poate fi afișat aici. Descarcă PDF-ul.</p>;
+    return (
+      <p className="px-2 py-6 text-center text-sm text-muted">
+        Previzualizarea nu e disponibilă acum. Deschide PDF-ul de mai jos.
+      </p>
+    );
+  }
+
+  if (count === null) {
+    return (
+      <div className="flex aspect-[210/297] w-full flex-col items-center justify-center gap-2 rounded-md border border-line bg-white">
+        <Spinner className="size-5 text-muted" />
+        <p className="text-xs text-muted">Se pregătește documentul…</p>
+      </div>
+    );
   }
 
   return (
-    <div className="relative">
-      {height === null ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Spinner className="size-5 text-muted" />
-        </div>
-      ) : null}
-      <iframe
-        ref={frameRef}
-        src={src}
-        title={title}
-        sandbox="allow-same-origin"
-        loading="lazy"
-        scrolling="no"
-        onLoad={onLoad}
-        style={{ height: height ?? 240 }}
-        className="block w-full rounded-lg border border-line bg-[#f2f2f0]"
-      />
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: count }, (_, k) => (
+        <img
+          key={k}
+          src={`${fileBase}/pages/${k + 1}`}
+          alt={`${title}, pagina ${k + 1} din ${count}`}
+          loading={k < 2 ? "eager" : "lazy"}
+          decoding="async"
+          className="block aspect-[210/296.4] h-auto w-full rounded-md border border-line bg-white"
+        />
+      ))}
     </div>
   );
 }
@@ -553,17 +526,16 @@ export function SignPage() {
       </header>
 
       {state.docs.map((doc) => (
-        <Card
-          key={doc.i}
-          title={doc.title}
-          actions={
-            <a className="text-sm text-primary hover:underline" href={docUrl(doc.i)} download>
-              Descarcă PDF
-            </a>
-          }
-          bodyClassName="p-2 sm:p-3"
-        >
-          <DocPages src={`${docUrl(doc.i)}/html`} title={doc.title} />
+        <Card key={doc.i} title={doc.title} bodyClassName="flex flex-col gap-3 p-2 sm:p-3">
+          <DocPages apiPath={`${apiPath}/docs/${doc.i}`} fileBase={docUrl(doc.i)} title={doc.title} />
+          <a
+            href={docUrl(doc.i)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-line bg-white text-sm font-medium text-text hover:bg-bg"
+          >
+            Deschide PDF
+          </a>
         </Card>
       ))}
 

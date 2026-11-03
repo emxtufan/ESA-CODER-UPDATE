@@ -18,7 +18,8 @@ import { contracts } from "../../db/schema/ops";
 import { emailCode, emailDetails, emailLayout, emailList, type EmailBrand } from "../../integrations/emailLayout";
 import { sendEmail } from "../../integrations/smtp";
 import { HttpError, parse } from "../../lib/http";
-import { renderPdf } from "../../lib/pdf";
+import type { Env } from "../../env";
+import { renderPageImages, renderPdf } from "../../lib/pdf";
 import { getFile, putFile } from "../../lib/storage";
 import { createLimiter } from "../../security/ratelimit";
 import { appBaseUrl } from "../auth/routes";
@@ -59,6 +60,14 @@ const publicLimiter = createLimiter(60, 60_000);
 const RO_DATE = new Intl.DateTimeFormat("ro-RO", {
   dateStyle: "long",
   timeStyle: "medium",
+  timeZone: "Europe/Bucharest",
+});
+
+/** Data semnării în locurile de semnare din documente (zz.ll.aaaa), în ora României. */
+const RO_DAY = new Intl.DateTimeFormat("ro-RO", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
   timeZone: "Europe/Bucharest",
 });
 
@@ -356,20 +365,47 @@ async function checkOtp(db: Db, row: SignatureRow, code: string, now: Date): Pro
 
 const verifySchema = z.object({ code: z.string().regex(/^\d{6}$/, "Codul are exact 6 cifre") });
 
+/** Imaginile de pagină: o pagină redeschisă cere din nou zeci de imagini (deja randate, din storage). */
+const pageImageLimiter = createLimiter(600, 60_000);
+const PAGE_IMAGE_PATH = /^\/[^/]+\/docs\/\d+\/pages\/\d+$/;
+
+/** Randările în curs, ca cererile simultane pentru același document să nu-l randeze de două ori. */
+const renderingPages = new Map<string, Promise<number>>();
+
 /**
- * CSP-ul HTML-ului unui document afișat pe pagina de semnare: fără scripturi (sandbox), fără rețea;
- * doar stilurile, imaginile și fontul incluse în document. `allow-same-origin` permite paginii
- * părinte să încadreze paginile pe lățimea ecranului.
+ * Imaginile paginilor documentului `i` (randate o singură dată, apoi din storage), pentru
+ * previzualizarea de pe pagina de semnare. Întoarce numărul de pagini.
  */
-const DOC_HTML_CSP =
-  "sandbox allow-same-origin; default-src 'none'; img-src data:; font-src data:; style-src 'unsafe-inline'; frame-ancestors 'self'";
+function ensurePageImages(env: Env, row: SignatureRow, i: number): Promise<number> {
+  const base = `signatures/${row.id}/${i}`;
+  const existing = renderingPages.get(base);
+  if (existing) return existing;
+
+  const job = (async () => {
+    try {
+      const manifest = JSON.parse((await getFile(env, `${base}.pages.json`)).toString("utf8")) as { count?: unknown };
+      if (typeof manifest.count === "number" && manifest.count > 0) return manifest.count;
+    } catch {
+      // nerandat încă
+    }
+    const html = (await getFile(env, row.docs[i].htmlKey)).toString("utf8");
+    const images = await renderPageImages(html, env);
+    if (!images.length) throw new HttpError(422, "pdf_render_failed", "Documentul nu are pagini de afișat.");
+    for (const [k, image] of images.entries()) await putFile(env, `${base}.p${k + 1}.png`, image);
+    await putFile(env, `${base}.pages.json`, Buffer.from(JSON.stringify({ count: images.length })));
+    return images.length;
+  })().finally(() => renderingPages.delete(base));
+  renderingPages.set(base, job);
+  return job;
+}
 
 /** Rutele publice de semnare: starea cererii, documentele, codul OTP și semnarea. */
 export function publicSignRouter(): Router {
   const router = Router();
 
   router.use((req, _res, next) => {
-    if (!publicLimiter.hit(req.ip ?? "unknown")) {
+    const limiter = req.method === "GET" && PAGE_IMAGE_PATH.test(req.path) ? pageImageLimiter : publicLimiter;
+    if (!limiter.hit(req.ip ?? "unknown")) {
       throw new HttpError(429, "rate_limited", "Prea multe cereri. Încearcă din nou într-un minut.");
     }
     next();
@@ -407,25 +443,42 @@ export function publicSignRouter(): Router {
   });
 
   /**
-   * HTML-ul paginat al unui document (sursa din care s-a generat PDF-ul), afișat pe pagina de
-   * semnare. Pe telefon, un PDF într-un iframe arată doar prima pagină sau deloc.
+   * Previzualizarea unui document: numărul de pagini, cu imaginile lor randate (la prima cerere).
+   * Pe telefon, un PDF într-un iframe arată doar prima pagină sau nimic, iar HTML-ul micșorat iese
+   * din pagină (mărimea minimă a textului, zoom-ul de text al sistemului); imaginile arată ca PDF-ul.
    */
-  router.get("/:token/docs/:i/html", async (req, res) => {
+  router.get("/:token/docs/:i/pages", async (req, res) => {
     const { db, env } = req.ctx;
     const token = tokenOf(req.params.token);
     const row = await resolve(db, token);
-    const doc = docAt(row, req.params.i);
+    docAt(row, req.params.i);
 
-    const html = await getFile(env, doc.htmlKey);
+    res.set("Cache-Control", "private, no-store").json({ pages: await ensurePageImages(env, row, Number(req.params.i)) });
+  });
+
+  /** Imaginea PNG a paginii `p` (de la 1) dintr-un document. */
+  router.get("/:token/docs/:i/pages/:p", async (req, res) => {
+    const { db, env } = req.ctx;
+    const token = tokenOf(req.params.token);
+    const row = await resolve(db, token);
+    docAt(row, req.params.i);
+    const index = Number(req.params.i);
+    const pageNo = Number(req.params.p);
+
+    const count = await ensurePageImages(env, row, index);
+    if (!Number.isInteger(pageNo) || pageNo < 1 || pageNo > count) {
+      throw new HttpError(404, "not_found", "Pagina nu există");
+    }
+    const image = await getFile(env, `signatures/${row.id}/${index}.p${pageNo}.png`);
     res
       .status(200)
       .set({
-        "Content-Type": "text/html; charset=utf-8",
-        "Content-Security-Policy": DOC_HTML_CSP,
-        "Cache-Control": "private, no-store",
+        "Content-Type": "image/png",
+        // Conținutul nu se schimbă niciodată; telefonul nu le mai descarcă la redeschiderea linkului.
+        "Cache-Control": "private, max-age=86400, immutable",
         "X-Content-Type-Options": "nosniff",
       })
-      .send(html);
+      .send(image);
   });
 
   /** PDF-ul unui document din pachet: originalul sau versiunea semnată. */
@@ -553,7 +606,9 @@ export function publicSignRouter(): Router {
         role,
         signaturePng: input.signaturePng,
       });
-      const pdf = await renderPdf(withCertificate(fillSignerName(html, input.name, role), page), env);
+      // Semnătura apare în fiecare loc de semnare al Beneficiarului și pe fiecare pagină.
+      const stamp = { png: input.signaturePng, name: input.name, role, date: RO_DAY.format(now) };
+      const pdf = await renderPdf(withCertificate(fillSignerName(html, input.name, role), page), env, { sign: stamp });
       const signedPdfKey = `signatures/${row.id}/${i}.signed.pdf`;
       await putFile(env, signedPdfKey, pdf);
       docs.push({ ...doc, signedPdfKey, signedSha256: sha256(pdf) });
