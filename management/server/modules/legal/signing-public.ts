@@ -15,7 +15,8 @@ import { ACCEPT_TEXT } from "../../../shared/signing";
 import type { Db } from "../../db/client";
 import { signatureRequests, type SignatureDoc } from "../../db/schema/legal";
 import { contracts } from "../../db/schema/ops";
-import { emailCode, emailDetails, escHtml?, emailLayout, emailList, type EmailBrand } from "../../integrations/emailLayout";
+import { emailCode, emailDetails, emailLayout, emailList, type EmailBrand } from "../../integrations/emailLayout";
+import { sendEmail } from "../../integrations/smtp";
 import { HttpError, parse } from "../../lib/http";
 import { renderPdf } from "../../lib/pdf";
 import { getFile, putFile } from "../../lib/storage";
@@ -23,7 +24,7 @@ import { createLimiter } from "../../security/ratelimit";
 import { appBaseUrl } from "../auth/routes";
 import { contentDisposition } from "./pdf";
 import { CONTRACT_STATUSES, loadProvider } from "./routes";
-import { loadByToken, maskEmail } from "./signatures";
+import { brandOf, loadByToken, maskEmail } from "./signatures";
 
 type SignatureRow = typeof signatureRequests.$inferSelect;
 
@@ -172,31 +173,82 @@ function withCertificate(html: string, page: string): string {
   return `${html.slice(0, index)}${page}${html.slice(index)}`;
 }
 
+interface OtpEmailInput {
+  code: string;
+  titles: string[];
+  brand: EmailBrand;
+}
+
 /** Emailul cu codul de acces (fără resurse externe). */
-function otpEmail(code: string, marca: string): string {
-  return [
-    `<h1>Cod de semnare: ${code}</h1>`,
-    `<p>Codul expiră în 10 minute.</p>`,
-    `<p>Dacă nu ai cerut acest cod, ignoră acest email.</p>`,
-    `<p>${esc(marca)}</p>`,
-  ].join("");
+function otpEmail({ code, titles, brand }: OtpEmailInput): string {
+  return emailLayout({
+    preheader: "Codul dumneavoastră de semnare",
+    heading: "Codul de semnare",
+    body: [
+      `<p style="margin:0 0 16px;">Introduceți codul de mai jos pentru a semna documentele:</p>`,
+      emailCode(code),
+      emailList(titles),
+    ].join(""),
+    note: "Codul expiră în 10 minute. Dacă nu ați solicitat semnarea, ignorați acest mesaj.",
+    brand,
+  });
+}
+
+interface SignedEmailInput {
+  titles: string[];
+  link: string;
+  name: string;
+  role: string | null;
+  now: Date;
+  brand: EmailBrand;
 }
 
 /** Emailul de confirmare pentru semnatar: documentele semnate și linkul lor. */
-function signedEmail(titles: string[], link: string): string {
-  return [
-    `<h1>Documente semnate</h1>`,
-    `<ul>${titles.map((title) => `<li>${esc(title)}</li>`).join("")}</ul>`,
-    `<p><a href="${link}">Descarcă documentele semnate</a></p>`,
-  ].join("");
+function signedEmail({ titles, link, name, role, now, brand }: SignedEmailInput): string {
+  return emailLayout({
+    preheader: "Semnătura a fost înregistrată",
+    heading: "Documentele au fost semnate",
+    body: [
+      `<p style="margin:0 0 16px;">Vă mulțumim! Semnătura a fost înregistrată.</p>`,
+      emailDetails([
+        ["Semnat de", role ? `${name} (${role})` : name],
+        ["Data și ora", RO_DATE.format(now)],
+        ["Documente", titles.join(", ")],
+      ]),
+    ].join(""),
+    button: { label: "Descarcă documentele semnate", url: link },
+    note: "Păstrați acest e-mail; linkul rămâne activ 30 de zile de la trimitere.",
+    brand,
+  });
+}
+
+interface ProviderEmailInput {
+  titles: string[];
+  dossierLink: string | null;
+  name: string;
+  role: string | null;
+  email: string;
+  ip: string | null;
+  now: Date;
+  brand: EmailBrand;
 }
 
 /** Emailul către furnizor: ce s-a semnat și de către cine. */
-function providerEmail(titles: string[], signedName: string, link: string): string {
-  return [
-    `<h1>Semnat: ${esc(titles.join(", "))} – ${esc(signedName)}</h1>`,
-    `<p><a href="${link}">Vezi cererea de semnare</a></p>`,
-  ].join("");
+function providerEmail({ titles, dossierLink, name, role, email, ip, now, brand }: ProviderEmailInput): string {
+  return emailLayout({
+    preheader: `${name} a semnat documentele trimise spre semnare`,
+    heading: `${name} a semnat`,
+    body: emailDetails([
+      ["Semnatar", name],
+      ["Funcție", role ?? "—"],
+      ["E-mail", email],
+      ["Data și ora", RO_DATE.format(now)],
+      ["Adresă IP", ip ?? "—"],
+      ["Documente", titles.join(", ")],
+    ]),
+    button: dossierLink ? { label: "Deschide dosarul", url: dossierLink } : undefined,
+    brand,
+  });
 }
 
 /** Rutele publice de semnare: starea cererii, documentele, codul OTP și semnarea. */
@@ -295,7 +347,7 @@ export function publicSignRouter(): Router {
     const result = await sendEmail(env, {
       to: row.signerEmail,
       subject: `Cod de semnare: ${code}`,
-      html: otpEmail(code, provider.esaMarca),
+      html: otpEmail({ code, titles: row.docs.map((doc) => doc.title), brand: brandOf(provider) }),
     });
     if (result.status !== "sent") {
       throw new HttpError(503, "email_failed", "Codul nu a putut fi trimis pe email. Încearcă din nou.");
@@ -370,17 +422,19 @@ export function publicSignRouter(): Router {
     }
 
     const provider = await loadProvider(db);
+    const brand = brandOf(provider);
     const titles = docs.map((doc) => doc.title);
     const link = `${appBaseUrl(env)}/semnare/${token}`;
+    const dossierLink = row.offerId ? `${appBaseUrl(env)}/legal/offers/${row.offerId}/dossier` : null;
     await sendEmail(env, {
       to: row.signerEmail,
       subject: `Documente semnate – ${provider.esaMarca}`,
-      html: signedEmail(titles, link),
+      html: signedEmail({ titles, link, name: input.name, role, now, brand }),
     });
     await sendEmail(env, {
       to: provider.esaEmail,
       subject: `Semnat: ${titles.join(", ")} – ${input.name}`,
-      html: providerEmail(titles, input.name, link),
+      html: providerEmail({ titles, dossierLink, name: input.name, role, email: row.signerEmail, ip, now, brand }),
     });
 
     res.json({ status: "signed", signedAt: now.toISOString() });
