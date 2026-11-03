@@ -1,10 +1,12 @@
 /**
  * Seed pentru catalogul de servicii (categoriile A–L, serviciile și pachetele din
  * `docs/legal-oferte-spec.md`). Idempotent: inserează doar ce lipsește (după `code` /
- * `name`) și nu suprascrie modificările utilizatorului. Fără prețuri recomandate.
+ * `name`). Prețurile recomandate (în lei) se scriu la inserare, iar înregistrările rămase
+ * fără preț primesc valoarea din seed; prețurile deja setate nu se ating.
  */
-import { inArray } from "drizzle-orm";
+import { eq, inArray, isNull } from "drizzle-orm";
 
+import type { Currency } from "../../../shared/enums";
 import type { Billing, LineStatus } from "../../../shared/offers";
 import type { Db } from "../../db/client";
 import {
@@ -38,6 +40,8 @@ export interface SeedPackage {
   name: string;
   description: string;
   billing: Billing;
+  /** Preț recomandat în lei (întregi); în DB se stochează în bani (lei × 100). */
+  price: number;
   codes: string[];
 }
 
