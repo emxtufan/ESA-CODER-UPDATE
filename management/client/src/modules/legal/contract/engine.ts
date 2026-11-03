@@ -130,7 +130,7 @@ function getMeas(doc: Document): HTMLElement {
 
 export function limitPx(doc: Document): number {
   const t = doc.createElement("div");
-  t.style.cssText = "position:absolute;visibility:hidden;height:234mm;width:1px";
+  t.style.cssText = "position:absolute;visibility:hidden;height:230mm;width:1px";
   doc.body.appendChild(t);
   const h = t.offsetHeight;
   t.remove();
@@ -159,6 +159,9 @@ export function splitUnits(box: Element): HTMLElement[] {
 export function paginate(box: Element, doc: Document): HTMLElement[][] {
   const meas = getMeas(doc);
   const LIM = limitPx(doc);
+  const pagesEl = doc.getElementById("pages");
+  const oldZ = pagesEl ? pagesEl.style.getPropertyValue("--z") : "";
+  if (pagesEl) pagesEl.style.setProperty("--z", "1");
   const pages: HTMLElement[][] = [];
   let nodes: HTMLElement[] = [];
   meas.innerHTML = "";
