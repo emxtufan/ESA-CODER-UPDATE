@@ -143,6 +143,65 @@ export function keepNext(el: Element): boolean {
   return /^H[1-3]$/.test(el.tagName) || endsLabel(el) || (el.tagName === "P" && !!el.nextElementSibling && el.nextElementSibling.tagName === "TABLE" && (el.textContent || "").length < 160);
 }
 
+/**
+ * Sparge un `<tr>` prea înalt în două. Fiecare celulă e citită ca o listă de „linii” (copiii bloc
+ * sau segmentele separate de `<br>`; textul simplu e o singură linie). `tr` primește câte linii
+ * încap, măsurat cu `fits` — deci trebuie să fie deja atașat în `.pc.meas` —, iar restul liniilor
+ * se mută într-un rând clonat, cu celulele epuizate goale și fără `rowspan`.
+ * Întoarce `[tr, rest]`, cu `rest = null` când nu s-a putut sparge (rândul încape întreg sau nu
+ * încape nici măcar prima linie).
+ */
+export function splitRow(tr: HTMLElement, fits: () => boolean): [HTMLElement, HTMLElement | null] {
+  const doc = tr.ownerDocument;
+  const block = /^(P|DIV|UL|OL|TABLE|H[1-6]|LI|BLOCKQUOTE|PRE|SECTION|ARTICLE|DL|HEADER|FOOTER|FIGURE)$/;
+  const linesOf = (cell: HTMLElement): { lines: Node[][]; br: boolean } => {
+    const kids = [...cell.childNodes];
+    if (kids.some((n) => n.nodeType === 1 && (n as Element).tagName === "BR")) {
+      const segs: Node[][] = [[]];
+      kids.forEach((n) => { if (n.nodeType === 1 && (n as Element).tagName === "BR") segs.push([]); else segs[segs.length - 1].push(n); });
+      return { lines: segs, br: true };
+    }
+    const els = [...cell.children] as HTMLElement[];
+    if (els.length && els.every((e) => block.test(e.tagName))) return { lines: els.map((e) => [e]), br: false };
+    return { lines: [kids], br: false };
+  };
+  const move = (cell: HTMLElement, lines: Node[][], from: number, br: boolean) => {
+    for (let k = from; k < lines.length; k++) {
+      if (br && k > from) cell.appendChild(doc.createElement("br"));
+      lines[k].forEach((n) => cell.appendChild(n));
+    }
+  };
+  const cells = [...tr.children] as HTMLElement[];
+  const info = cells.map(linesOf);
+  const rest = tr.cloneNode(true) as HTMLElement;
+  const restCells = [...rest.children] as HTMLElement[];
+  restCells.forEach((c) => { c.removeAttribute("rowspan"); c.textContent = ""; });
+  cells.forEach((c) => { c.textContent = ""; });
+  const total = info.reduce((n, x) => Math.max(n, x.lines.length), 0);
+  let placed = 0;
+  for (let k = 0; k < total; k++) {
+    const undo: [HTMLElement, Node[]][] = [];
+    info.forEach((x, ci) => {
+      if (k >= x.lines.length) return;
+      const ns: Node[] = [];
+      if (x.br && k > 0) ns.push(doc.createElement("br"));
+      x.lines[k].forEach((n) => ns.push(n));
+      ns.forEach((n) => cells[ci].appendChild(n));
+      undo.push([cells[ci], ns]);
+    });
+    if (fits()) { placed = k + 1; continue; }
+    undo.forEach(([c, ns]) => ns.forEach((n) => c.removeChild(n)));
+    break;
+  }
+  if (!placed) {
+    info.forEach((x, ci) => move(cells[ci], x.lines, 0, x.br));
+    return [tr, null];
+  }
+  if (placed === total) return [tr, null];
+  info.forEach((x, ci) => move(restCells[ci], x.lines, placed, x.br));
+  return [tr, rest];
+}
+
 export function splitUnits(box: Element): HTMLElement[] {
   const u: HTMLElement[] = [];
   ([...box.children] as HTMLElement[]).forEach((c) => {
@@ -211,9 +270,19 @@ export function paginate(box: Element, doc: Document): HTMLElement[][] {
       if (fits()) { placed++; i++; continue; }
       body.removeChild(items[i]);
       if (placed === 0) {
-        meas.removeChild(shell);
-        if (nodes.length) { flush(true); [shell, body] = mk(); attach(); continue; }
-        attach(); body.appendChild(items[i]); placed++; i++; continue;
+        if (nodes.length) { meas.removeChild(shell); flush(true); [shell, body] = mk(); attach(); continue; }
+        const row = items[i];
+        if (row.tagName === "TR") {
+          body.appendChild(row);
+          const [, tail] = splitRow(row, fits);
+          if (tail) { nodes.push(shell); flush(false); items[i] = tail; [shell, body] = mk(); attach(); continue; }
+          if (fits()) { placed++; i++; continue; }
+        } else {
+          attach(); body.appendChild(row);
+        }
+        console.warn("paginate: bloc forțat peste limită", row.tagName, meas.offsetHeight);
+        placed++; i++;
+        continue;
       }
       nodes.push(shell); flush(false);
       if (kind !== "table" && u.tagName === "OL") {
@@ -229,13 +298,18 @@ export function paginate(box: Element, doc: Document): HTMLElement[][] {
     if (u.dataset && u.dataset.force && nodes.length) flush(false);
     if (put(u)) return;
     const tag = u.tagName;
-    if (tag === "TABLE" && u.querySelectorAll("tbody>tr").length > 1) { putSplit(u, "table"); return; }
+    if (tag === "TABLE" && u.querySelectorAll("tbody>tr").length > 0) { putSplit(u, "table"); return; }
     if ((tag === "UL" || tag === "OL") && u.children.length > 1) { putSplit(u, "list"); return; }
     if (nodes.length) { flush(true); if (put(u)) return; }
     meas.appendChild(u); nodes.push(u);
+    console.warn("paginate: bloc forțat peste limită", u.tagName, meas.offsetHeight);
   });
   if (nodes.length) pages.push(nodes);
   meas.innerHTML = "";
+  if (pagesEl) {
+    if (oldZ) pagesEl.style.setProperty("--z", oldZ);
+    else pagesEl.style.removeProperty("--z");
+  }
   return pages;
 }
 
