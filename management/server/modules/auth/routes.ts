@@ -89,7 +89,7 @@ function sha256(value: string): string {
 }
 
 /** Baza URL-urilor din emailuri: `APP_URL`, altfel adresa configurată a serverului. */
-function appBaseUrl(env: Env): string {
+export function appBaseUrl(env: Env): string {
   const base = env.APP_URL ?? `http://${env.HOST}:${env.PORT}`;
   return base.replace(/\/+$/, "");
 }
