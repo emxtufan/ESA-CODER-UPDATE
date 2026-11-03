@@ -308,7 +308,33 @@ export const PACKAGES: SeedPackage[] = [
  * Inserează categoriile, serviciile și pachetele care lipsesc. Nu modifică și nu șterge
  * nimic existent, deci modificările utilizatorului rămân.
  */
+/** Completează prețurile lipsă din seed: doar unde prețul e NULL; ce a setat utilizatorul rămâne neatins. */
+export async function fillSeedPrices(db: Db): Promise<void> {
+  const all = await db.select({ id: catalogServices.id, code: catalogServices.code, price: catalogServices.recommendedPrice }).from(catalogServices);
+  const idByCode = new Map(all.map((s) => [s.code, s.id]));
+  for (const s of all) {
+    const lei = PRICES[s.code];
+    if (s.price === null && lei !== undefined) {
+      await db.update(catalogServices).set({ recommendedPrice: lei * 100, currency: "RON" }).where(eq(catalogServices.id, s.id));
+    }
+  }
+  for (const pkg of PACKAGES) {
+    const [row] = await db.select({ id: catalogPackages.id, price: catalogPackages.recommendedPrice }).from(catalogPackages).where(eq(catalogPackages.name, pkg.name));
+    if (!row || row.price !== null) continue;
+    await db.transaction(async (tx) => {
+      await tx.update(catalogPackages).set({ recommendedPrice: pkg.price * 100, currency: "RON" }).where(eq(catalogPackages.id, row.id));
+      await tx.delete(catalogPackageItems).where(eq(catalogPackageItems.packageId, row.id));
+      const items = pkg.codes.flatMap((code, i) => {
+        const serviceId = idByCode.get(code);
+        return serviceId ? [{ packageId: row.id, serviceId, sort: (i + 1) * 10 }] : [];
+      });
+      if (items.length) await tx.insert(catalogPackageItems).values(items);
+    });
+  }
+}
+
 export async function seedCatalog(db: Db): Promise<void> {
+  await fillSeedPrices(db);
   await db
     .insert(catalogCategories)
     .values(CATEGORIES.map((c, i) => ({ code: c.code, name: c.name, note: c.note, sort: (i + 1) * 10 })))
@@ -344,10 +370,10 @@ export async function seedCatalog(db: Db): Promise<void> {
   const existing = await db.select({ name: catalogPackages.name }).from(catalogPackages);
   const have = new Set(existing.map((p) => p.name));
   const missing = PACKAGES.filter((p) => !have.has(p.name));
-  if (missing.length > 0) {
+  if (missing.length === 0) return;
 
-    const services = await db
-      .select({ id: catalogServices.id, code: catalogServices.code })
+  const services = await db
+    .select({ id: catalogServices.id, code: catalogServices.code })
     .from(catalogServices)
     .where(inArray(catalogServices.code, [...new Set(missing.flatMap((p) => p.codes))]));
   const idByCode = new Map(services.map((s) => [s.code, s.id]));
@@ -356,7 +382,7 @@ export async function seedCatalog(db: Db): Promise<void> {
     const index = PACKAGES.indexOf(pkg);
     const [row] = await db
       .insert(catalogPackages)
-      .values({ name: pkg.name, description: pkg.description, billing: pkg.billing, sort: (index + 1) * 10 })
+      .values({ name: pkg.name, description: pkg.description, billing: pkg.billing, recommendedPrice: pkg.price * 100, currency: "RON" as Currency, sort: (index + 1) * 10 })
       .onConflictDoNothing({ target: catalogPackages.name })
       .returning({ id: catalogPackages.id });
     if (!row) continue;
