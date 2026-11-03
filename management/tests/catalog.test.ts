@@ -318,7 +318,7 @@ describe("catalog: export / import", () => {
     const res = await importCall(file, true);
     expect(res.json).toMatchObject({ dryRun: true, services: { created: 1, updated: 1 }, packages: { created: 1 } });
     expect(await c.db.select().from(catalogServices).where(eq(catalogServices.code, "Z98"))).toHaveLength(0);
-    expect((await service("A01")).recommendedPrice).toBeNull();
+    expect((await service("A01")).recommendedPrice).toBe(PRICES.A01 * 100);
     expect(await c.db.select().from(catalogPackages).where(eq(catalogPackages.name, "Pachet fantomă"))).toHaveLength(0);
   });
 
@@ -330,7 +330,7 @@ describe("catalog: export / import", () => {
     expect(res.status).toBe(422);
     expect(res.json.error.message).toContain("Q77");
     expect(res.json.error.message).toContain("Q78");
-    expect((await service("A01")).recommendedPrice).toBeNull();
+    expect((await service("A01")).recommendedPrice).toBe(PRICES.A01 * 100);
   });
 
   it("format greșit, versiune greșită sau câmpuri invalide → 422", async () => {
@@ -366,7 +366,7 @@ describe("catalog: export / import", () => {
       await c.db.update(catalogServices).set({ name: "Modificat de utilizator" }).where(eq(catalogServices.code, "A03"));
       const result = await importCatalogFile(c.db, path);
       expect(result?.services).toMatchObject({ created: 1, updated: 0 });
-      expect(await service("A03")).toMatchObject({ name: "Modificat de utilizator", recommendedPrice: null });
+      expect(await service("A03")).toMatchObject({ name: "Modificat de utilizator", recommendedPrice: PRICES.A03 * 100 });
       expect((await service("Z97")).name).toBe("Serviciu din fișier");
 
       // fișier lipsă sau stricat: nu aruncă
@@ -376,5 +376,30 @@ describe("catalog: export / import", () => {
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("catalog: prețuri din seed", () => {
+  let c: Setup;
+  beforeAll(async () => { c = await setup(); });
+  afterAll(() => c.close());
+  const service = async (code: string) => (await c.db.select().from(catalogServices).where(eq(catalogServices.code, code)))[0]!;
+
+  it("serviciile și pachetele au prețuri în RON", async () => {
+    expect(await service("B02")).toMatchObject({ recommendedPrice: 249000, currency: "RON" });
+    const [pkg] = await c.db.select().from(catalogPackages).where(eq(catalogPackages.name, "Website Start"));
+    expect(pkg).toMatchObject({ recommendedPrice: 249000, currency: "RON" });
+    const items = await c.db.select({ code: catalogServices.code }).from(catalogPackageItems)
+      .innerJoin(catalogServices, eq(catalogServices.id, catalogPackageItems.serviceId))
+      .where(eq(catalogPackageItems.packageId, pkg!.id)).orderBy(asc(catalogPackageItems.sort));
+    expect(items.map((i) => i.code)).toEqual(["B04", "B06", "B07", "B08", "B09", "E01", "E05", "F02", "F13", "K01", "K03"]);
+  });
+
+  it("completează doar prețurile lipsă", async () => {
+    await c.db.update(catalogServices).set({ recommendedPrice: 100 }).where(eq(catalogServices.code, "B02"));
+    await c.db.update(catalogServices).set({ recommendedPrice: null }).where(eq(catalogServices.code, "B03"));
+    await seedCatalog(c.db);
+    expect((await service("B02")).recommendedPrice).toBe(100);
+    expect((await service("B03")).recommendedPrice).toBe(PRICES.B03 * 100);
   });
 });
