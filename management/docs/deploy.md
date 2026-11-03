@@ -105,6 +105,11 @@ Ruta `POST /api/legal/pdf` generează PDF-urile documentelor din Legal cu Chromi
 
 ```bash
 npx playwright install --with-deps chromium
+sudo apt-get install -y fonts-crosextra-carlito
 ```
+
+Paginarea documentelor se face în browserul utilizatorului, iar serverul primește pagini deja tăiate. Ca rândurile să se rupă identic în ambele locuri, documentele includ fontul Carlito ca data URL (`client/src/modules/legal/contract/fonts.ts`, pachetul `@fontsource/carlito`). De aceea CSP-ul permite `font-src data:` (`server/app.ts`).
+
+Pachetul de sistem `fonts-crosextra-carlito` rămâne recomandat ca rezervă pentru HTML-ul salvat înainte de includerea fontului, de exemplu cererile de semnare deja trimise, pe care serverul le randează din nou la semnare. Fără el, Chromium folosește Liberation Sans, mai lat decât Calibri, iar textul ajunge peste footer. După instalarea fontului, reporniți aplicația, pentru că Chromium citește fonturile doar la pornire.
 
 Alternativ, setați `PDF_CHROMIUM_PATH` în `.env` la un Chromium/Chrome deja instalat (ex. `/usr/bin/chromium`). Ordinea: `PDF_CHROMIUM_PATH`, apoi Chromium-ul instalat de Playwright, apoi Chrome-ul sistemului (`channel: "chrome"`). Dacă nu se găsește niciunul, ruta răspunde 503 și clientul folosește print-ul din browser. Browserul este unul singur, pornit la prima cerere și închis la `SIGTERM`; cererile se procesează pe rând.

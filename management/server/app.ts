@@ -74,6 +74,8 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
               directives: {
                 defaultSrc: ["'self'"],
                 imgSrc: ["'self'", "data:"],
+                // Documentele din Legal includ fontul Carlito ca data URL (`contract/fonts.ts`).
+                fontSrc: ["'self'", "data:"],
                 styleSrc: ["'self'", "'unsafe-inline'"],
                 connectSrc: ["'self'"],
               },

@@ -6,15 +6,17 @@
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import { fit, render, type ImageSet, type Values } from "./contract/engine";
+import { docFontsReady, FONT_CSS } from "./contract/fonts";
 import { loadImages } from "./contract/images";
 import pageCss from "./contract/page.css?raw";
 import template from "./contract/template.html?raw";
 
 const RENDER_DEBOUNCE_MS = 180;
 
-/** Scheletul documentului din iframe (scris o singură dată, ca `srcdoc`). */
+/** Scheletul documentului din iframe (scris o singură dată, ca `srcdoc`), cu fontul inclus. */
 export const CONTRACT_SKELETON =
   '<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Contract ESA</title><style>' +
+  FONT_CSS +
   pageCss +
   '</style></head><body><div id="pages"></div></body></html>';
 
@@ -85,7 +87,9 @@ export function ContractPreview({ values, ref }: ContractPreviewProps) {
     async prepare() {
       const doc = frameRef.current?.contentDocument;
       if (!doc) return null;
-      render(valuesRef.current, doc, template, images ?? (await loadImages()));
+      const set = images ?? (await loadImages());
+      await docFontsReady(doc);
+      render(valuesRef.current, doc, template, set);
       await Promise.all([...doc.images].map((img) => (img.complete ? Promise.resolve() : img.decode().catch(() => undefined))));
       return doc;
     },
@@ -96,6 +100,7 @@ export function ContractPreview({ values, ref }: ContractPreviewProps) {
       if (!frame || !doc || !win) return;
 
       const set = images ?? (await loadImages());
+      await docFontsReady(doc);
       render(valuesRef.current, doc, template, set);
       // Imaginile trebuie să fie gata înainte de print.
       await Promise.all(
@@ -120,7 +125,11 @@ export function ContractPreview({ values, ref }: ContractPreviewProps) {
       ref={frameRef}
       title="Previzualizare contract"
       srcDoc={CONTRACT_SKELETON}
-      onLoad={() => setLoaded(true)}
+      onLoad={(e) => {
+        // Prima paginare abia după încărcarea fontului (altfel s-ar măsura cu fontul de rezervă).
+        const doc = e.currentTarget.contentDocument;
+        void (doc ? docFontsReady(doc) : Promise.resolve()).then(() => setLoaded(true));
+      }}
       className="block h-full w-full rounded-lg border border-line bg-[#f2f2f0]"
     />
   );

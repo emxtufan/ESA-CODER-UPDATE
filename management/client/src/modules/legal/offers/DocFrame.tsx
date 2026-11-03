@@ -5,6 +5,7 @@
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import { fit, type ImageSet } from "../contract/engine";
+import { docFontsReady } from "../contract/fonts";
 import { loadImages } from "../contract/images";
 import { DOSSIER_SKELETON } from "../dossier/render";
 
@@ -78,6 +79,7 @@ export function DocFrame({ render, renderKey, skeleton = DOSSIER_SKELETON, title
     const doc = frameRef.current?.contentDocument;
     if (!doc) return null;
     const set = images ?? (await loadImages());
+    await docFontsReady(doc);
     renderRef.current(doc, set);
     await Promise.all([...doc.images].map((img) => (img.complete ? Promise.resolve() : img.decode().catch(() => undefined))));
     return doc;
@@ -108,7 +110,11 @@ export function DocFrame({ render, renderKey, skeleton = DOSSIER_SKELETON, title
       ref={frameRef}
       title={title}
       srcDoc={skeleton}
-      onLoad={() => setLoaded(true)}
+      onLoad={(e) => {
+        // Prima paginare abia după încărcarea fontului (altfel s-ar măsura cu fontul de rezervă).
+        const doc = e.currentTarget.contentDocument;
+        void (doc ? docFontsReady(doc) : Promise.resolve()).then(() => setLoaded(true));
+      }}
       className={className ?? "block h-full w-full rounded-lg border border-line bg-[#f2f2f0]"}
     />
   );
@@ -129,6 +135,7 @@ export async function renderHidden(skeleton: string, fn: (doc: Document, img: Im
   });
   const doc = frame.contentDocument!;
   const img = await loadImages();
+  await docFontsReady(doc);
   fn(doc, img);
   await Promise.all([...doc.images].map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => undefined))));
   return { doc, dispose: () => frame.remove() };

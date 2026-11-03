@@ -4,14 +4,16 @@
  */
 import { DOSSIER_DOC_LABELS, type DossierDocType } from "@shared/offers";
 import { renderPages, type ImageSet } from "../contract/engine";
+import { FONT_CSS } from "../contract/fonts";
 import pageCss from "../contract/page.css?raw";
 import { buildDossierBody } from "./builders";
 import dossierCss from "./dossier.css?raw";
 import type { AmendmentInput, DossierInput, DossierRenderType } from "./types";
 
-/** Scheletul documentului din iframe (`srcdoc`): `page.css` urmat de `dossier.css`. */
+/** Scheletul documentului din iframe (`srcdoc`): fontul inclus, `page.css`, apoi `dossier.css`. */
 export const DOSSIER_SKELETON =
   '<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Document ESA</title><style>' +
+  FONT_CSS +
   pageCss +
   dossierCss +
   '</style></head><body><div id="pages"></div></body></html>';

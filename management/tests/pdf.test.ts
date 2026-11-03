@@ -2,6 +2,7 @@ import { inflateSync } from "node:zlib";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { DOC_FONT, FONT_CSS } from "../client/src/modules/legal/contract/fonts";
 import { HttpError } from "../server/lib/http";
 import { PDF_BUSY, closePdfBrowser, createSerialQueue, renderPdf, sanitizeHtml } from "../server/lib/pdf";
 import { contentDisposition } from "../server/modules/legal/pdf";
@@ -87,6 +88,21 @@ describe("pdf: Chromium", () => {
     } finally {
       await ctx.close();
     }
+  }, 60_000);
+
+  it("folosește fontul inclus în document (data URL), nu fonturile serverului", async (t) => {
+    if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
+    // Familie redenumită: nu există printre fonturile instalate, deci Carlito poate veni doar din HTML.
+    const css = FONT_CSS.replaceAll(`"${DOC_FONT}"`, '"DocFontTest"');
+    const out = await renderPdf(
+      `<!doctype html><html><head><meta charset="utf-8"><style>${css}body{font:12pt DocFontTest,serif}</style></head>` +
+        `<body><p>Grădinița Georgi ăâîșț <b>Bold ăâîșț</b></p></body></html>`,
+      { PDF_CHROMIUM_PATH: process.env.PDF_CHROMIUM_PATH },
+    );
+    const fonts = [...out.toString("latin1").matchAll(/\/BaseFont\s*\/[A-Z]{6}\+([\w-]+)/g)].map((m) => m[1]);
+    expect(fonts).toContain("Carlito-Regular");
+    expect(fonts).toContain("Carlito-Bold");
+    expect(fonts.every((f) => f.startsWith("Carlito"))).toBe(true);
   }, 60_000);
 });
 
