@@ -16,7 +16,7 @@ export interface ImageSet {
   web: string;
 }
 
-type Computed = Record<string, { t: string; filled: boolean }>;
+type Computed = Record<string, { t: string; filled: boolean; raw?: boolean }>;
 
 /* ---------- calcule ---------- */
 const U = ["zero","una","două","trei","patru","cinci","șase","șapte","opt","nouă","zece","unsprezece","douăsprezece","treisprezece","paisprezece","cincisprezece","șaisprezece","șaptesprezece","optsprezece","nouăsprezece"];
@@ -47,9 +47,12 @@ export const zile = (n: number): string => (n === 1 ? "1 zi" : n >= 20 ? n + " d
 
 export function compute(V: Values): Computed {
   const C: Computed = {};
-  const set = (k: string, t: string, filled = true) => { C[k] = { t, filled }; };
+  const set = (k: string, t: string, filled = true, raw = false) => { C[k] = raw ? { t, filled, raw } : { t, filled }; };
   const g = (k: string) => (V[k] || "").trim();
   ["nr","clNume","clSediu","clRc","clCui","clIban","clBanca","clEmail","clTel","clRep","clFunctie","esaNume","esaCui","esaRc","esaAdresa","esaIban","esaBanca","esaEmail","esaTel","esaSite","esaRep","esaFunctie","cmdNr","proiect","livrabile","tehnologii","plati","derog","a3Date","a3Pers","spec","etape","accesib","regim","cod","terti","mentenanta","confidential","datePers","tip"].forEach((k) => { if (g(k)) set(k, g(k)); });
+  /* livrabile: fiecare linie nevidă devine un rând numerotat în tabelul din Anexa 1 */
+  const liv = (V.livrabile || "").split("\n").map((s) => s.trim()).filter(Boolean);
+  set("livrabile_rows", (liv.length ? liv : ["—"]).map((l, i) => "<tr><td>" + (i + 1) + '</td><td><span class="f">' + esc(l) + "</span></td></tr>").join(""), true, true);
   set("data", fmtDate(g("data")), !!g("data"));
   if (!g("data")) delete C.data;
   if (g("cmdData")) set("cmdData", fmtDate(g("cmdData")));
@@ -80,11 +83,14 @@ export const esc = (s: unknown): string =>
 const DOT = (n: number): string => "…".repeat(n);
 const LEN: Record<string, number> = { clNume: 22, clSediu: 30, clRc: 12, clCui: 10, clIban: 14, clBanca: 12, clEmail: 14, clTel: 12, clRep: 14, clFunctie: 12, esaIban: 14, esaBanca: 12 };
 
-/** Înlocuiește `{{cheie}}` / `{{cheie~text}}` din șablon cu valorile completate. */
+/**
+ * Înlocuiește `{{cheie}}` / `{{cheie~text}}` din șablon cu valorile completate.
+ * Cheile marcate `raw` (ex. `livrabile_rows`) se inserează ca HTML, nu ca text escapat.
+ */
 export function fill(html: string, V: Values): string {
   const C = compute(V);
   return html.replace(/\{\{(\w+)(?:~([^}]*))?\}\}/g, (_m, k: string, fb: string | undefined) => {
-    if (C[k] && C[k].filled !== false) return '<span class="f">' + esc(C[k].t) + "</span>";
+    if (C[k] && C[k].filled !== false) return C[k].raw ? C[k].t : '<span class="f">' + esc(C[k].t) + "</span>";
     if (fb !== undefined) return fb;
     return '<span class="b">' + DOT(LEN[k] || 10) + "</span>";
   });
