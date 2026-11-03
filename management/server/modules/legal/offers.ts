@@ -359,9 +359,9 @@ function contractData(snapshot: OfferSnapshot, contractNumber: string, offerTitl
     proiect: config.projectName || offerTitle,
     tip: "",
     spec: lines.map((l) => (l.description ? `${l.name} – ${shortOf(l.description)}` : l.name)).join("\n"),
-    livrabile: lines.filter((l) => l.deliverables.trim())
-      .slice(0, 1)
-      .map(() => "Conform Anexei nr. 1.1 – Servicii și deviz (secțiunea „Livrabile și criterii de recepție”), parte integrantă din prezenta Comandă.")
+    livrabile: lines
+      .map((l) => l.deliverables.trim())
+      .filter(Boolean)
       .join("\n"),
     pret: Number.isInteger(net) ? String(net) : net.toFixed(2),
     moneda: MONEDA[config.currency],

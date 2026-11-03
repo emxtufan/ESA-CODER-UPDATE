@@ -396,7 +396,7 @@ describe("offers: API", () => {
     expect(c.data.data).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(c.data.spec).toContain("Website – Website de prezentare");
     expect(c.data.spec).not.toContain("Videoclip");
-    expect(c.data.livrabile).toBe("Conform Anexei nr. 1.1 – Servicii și deviz (secțiunea „Livrabile și criterii de recepție”), parte integrantă din prezenta Comandă.");
+    expect(c.data.livrabile).toBe("Verificări lunare");
     expect(c.data.etape).toBe("Design – 15 zile (estimativ)");
     expect(c.data.mentenanta).toContain("Mentenanță");
     expect(c.data.mentenanta).toContain("50 €/lună, 3 luni");
