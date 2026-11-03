@@ -3,11 +3,11 @@
  * ca să poată fi completate ulterior (canvas de semnătură peste `<span data-sign="client">`).
  */
 
-type Rule = { re: RegExp; attr: string; value: string };
+type Rule = { re: RegExp; attr: string; value: string; needText?: boolean };
 
 const RULES: Rule[] = [
   { re: /(Semnătura:\s*)([.…_\s]*)/, attr: "data-sign", value: "client" },
-  { re: /(Data:\s*)([.…_\s]*)/, attr: "data-sign-date", value: "client" },
+  { re: /(Data:\s*)([.…_\s]*)/, attr: "data-sign-date", value: "client", needText: true },
 ];
 
 function textNodesIn(root: Node): Text[] {
@@ -50,7 +50,7 @@ function markTextNode(doc: Document, node: Text): void {
     let best: { index: number; rule: Rule; match: RegExpExecArray } | null = null;
     for (const rule of RULES) {
       const m = rule.re.exec(text);
-      if (m && (!best || m.index < best.index)) best = { index: m.index, rule, match: m };
+      if (m && (!rule.needText || /\S/.test(m[2])) && (!best || m.index < best.index)) best = { index: m.index, rule, match: m };
     }
     if (!best) return;
     rest = splitTextNode(doc, rest, best.rule, best.match);
@@ -58,7 +58,7 @@ function markTextNode(doc: Document, node: Text): void {
 }
 
 function markCell(doc: Document, cell: HTMLTableCellElement): void {
-  if (cell.querySelector("span[data-sign]")) return;
+  if (cell.querySelector("span[data-sign], span[data-sign-date]")) return;
   for (const node of textNodesIn(cell)) markTextNode(doc, node);
 }
 
