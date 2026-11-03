@@ -2,12 +2,12 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { catalogCategories, catalogPackageItems, catalogPackages, catalogServices } from "../server/db/schema/legal";
 import { importCatalogFile } from "../server/modules/catalog/transfer";
-import { CATEGORIES, PACKAGES, SERVICES, seedCatalog, shortOf } from "../server/modules/catalog/seed";
+import { CATEGORIES, PACKAGES, PRICES, SERVICES, seedCatalog, shortOf } from "../server/modules/catalog/seed";
 import { setup, type Setup } from "./helpers";
 
 let ctx: Setup;
@@ -45,7 +45,7 @@ describe("catalog: seed", () => {
     expect(by.get("B02")).toMatchObject({ billing: "one_time", defaultStatus: "accepted", defaultPeriods: 1 });
 
     for (const r of rows) {
-      expect(r.recommendedPrice).toBeNull();
+      expect(r.recommendedPrice).toBe(PRICES[r.code] !== undefined ? PRICES[r.code] * 100 : null);
       expect(r.deliverables.length).toBeGreaterThan(10);
       expect(r.acceptance.length).toBeGreaterThan(10);
       expect(r.shortDescription.length).toBeGreaterThan(5);
