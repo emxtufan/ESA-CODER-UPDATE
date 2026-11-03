@@ -12,6 +12,7 @@ import { z } from "zod";
 import type { Role } from "../../../shared/enums";
 import { loginHistory, passwordTokens, roles, sessions, users } from "../../db/schema/auth";
 import type { Env } from "../../env";
+import { emailLayout, escHtml } from "../../integrations/emailLayout";
 import { sendEmail } from "../../integrations/smtp";
 import { HttpError, parse } from "../../lib/http";
 import { audit } from "../../security/audit";
@@ -114,12 +115,14 @@ function currentAuth(req: Request): NonNullable<Request["auth"]> {
 
 /** Email simplu cu un singur link — fără resurse externe, ca să nu fie blocat. */
 function actionEmail(title: string, intro: string, label: string, link: string): string {
-  return [
-    `<h1>${title}</h1>`,
-    `<p>${intro}</p>`,
-    `<p><a href="${link}">${label}</a></p>`,
-    `<p>Dacă nu tu ai făcut această cerere, ignoră acest email.</p>`,
-  ].join("");
+  return emailLayout({
+    preheader: intro,
+    heading: title,
+    body: `<p style="margin:0 0 16px;font-family:-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:15px;line-height:1.6;color:#3f3f46;">${escHtml(intro)}</p>`,
+    button: { label, url: link },
+    note: "Dacă nu tu ai făcut această cerere, ignoră acest email.",
+    brand: { name: "ESA Coder Solutions", web: "esa-coder-solutions.com" },
+  });
 }
 
 /** Verifică un cod TOTP pentru utilizatorul dat; întoarce pasul acceptat sau aruncă eroare. */
