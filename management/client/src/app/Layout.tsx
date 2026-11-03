@@ -5,7 +5,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, LogOut, Menu, X } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router";
 
 import { NAV, type NavItem } from "@/app/nav";
 import { Button, Spinner, cn } from "@/components/ui";
@@ -15,6 +15,7 @@ import { GlobalSearch } from "@/modules/search/GlobalSearch";
 
 function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const allowed = useCan(item.perm);
+  const location = useLocation();
   if (!allowed) return null;
 
   const Icon = item.icon;
@@ -24,12 +25,14 @@ function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => v
       to={item.to}
       end={item.to === "/"}
       onClick={onNavigate}
-      className={({ isActive }) =>
-        cn(
+      className={({ isActive: routeActive }) => {
+        // „Contracte” (/legal) acoperă doar contractele, nu și /legal/offers sau /legal/catalog.
+        const isActive = item.to === "/legal" ? /^\/legal(\/contracts(\/|$)|$)/.test(location.pathname) : routeActive;
+        return cn(
           "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
           isActive ? "bg-black/5 font-medium text-text" : "text-muted hover:bg-black/[0.03] hover:text-text",
-        )
-      }
+        );
+      }}
     >
       <Icon aria-hidden="true" className="size-4 shrink-0" />
       <span className="truncate">{item.label}</span>

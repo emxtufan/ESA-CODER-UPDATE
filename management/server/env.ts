@@ -35,6 +35,10 @@ const baseEnvSchema = z.object({
   SMTP_PASS: optional(z.string().min(1)),
   EMAIL_FROM: optional(z.string().min(1)),
 
+  // --- PDF pe server (Chromium headless) ---
+  /** Calea către Chromium/Chrome; gol = Chromium-ul instalat de Playwright, apoi Chrome-ul sistemului. */
+  PDF_CHROMIUM_PATH: optional(z.string().min(1)),
+
   // --- GitHub (API + webhooks) ---
   GITHUB_TOKEN: optional(z.string().min(1)),
   GITHUB_WEBHOOK_SECRET: optional(z.string().min(1)),

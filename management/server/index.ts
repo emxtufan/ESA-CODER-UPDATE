@@ -11,7 +11,9 @@ import { createApp } from "./app";
 import { createDb } from "./db/client";
 import { seedRoles } from "./db/seed";
 import { loadEnv } from "./env";
+import { seedCatalog } from "./modules/catalog/seed";
 import { startScheduler } from "./jobs/scheduler";
+import { closePdfBrowser } from "./lib/pdf";
 
 /** Directorul build-ului de client (`vite build` scrie în `<repo>/dist`). */
 const DIST_DIR = fileURLToPath(new URL("../dist", import.meta.url));
@@ -41,6 +43,7 @@ async function main(): Promise<void> {
   const { db, close } = await createDb({ url: env.DATABASE_URL, dataDir: env.DATA_DIR });
 
   await seedRoles(db);
+  await seedCatalog(db);
 
   const app = await createApp({
     db,
@@ -57,6 +60,7 @@ async function main(): Promise<void> {
 
   process.on("SIGTERM", () => {
     stopScheduler();
+    void closePdfBrowser();
     server.close(() => {
       void close().finally(() => process.exit(0));
     });

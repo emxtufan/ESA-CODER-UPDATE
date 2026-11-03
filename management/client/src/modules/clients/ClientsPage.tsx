@@ -22,6 +22,13 @@ export const CLIENT_FIELDS: FieldDef[] = [
   { name: "legalName", label: "Denumire legală", type: "text" },
   { name: "cui", label: "CUI", type: "text" },
   { name: "regCom", label: "Reg. Com.", type: "text" },
+  {
+    name: "iban",
+    label: "IBAN",
+    type: "text",
+    pattern: { value: /^RO\d{2}[A-Z]{4}[A-Z0-9]{16}$/i, message: "IBAN românesc invalid (ex. RO49AAAA1B31007593840000)." },
+  },
+  { name: "bank", label: "Banca", type: "text" },
   { name: "vatStatus", label: "Status TVA", type: "text" },
   { name: "country", label: "Țară", type: "text" },
   { name: "city", label: "Oraș", type: "text" },

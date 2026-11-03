@@ -43,6 +43,8 @@ export const clients = pgTable(
     legalName: text("legal_name"),
     cui: text("cui"),
     regCom: text("reg_com"),
+    iban: text("iban"),
+    bank: text("bank"),
     vatStatus: text("vat_status"),
     country: text("country"),
     city: text("city"),

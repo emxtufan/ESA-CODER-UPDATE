@@ -35,6 +35,10 @@ import {
   servicesRouter,
   sslRouter,
 } from "./modules/infra/routes";
+import { offersRouter } from "./modules/legal/offers";
+import { legalPdfRouter } from "./modules/legal/pdf";
+import { legalRouter } from "./modules/legal/routes";
+import { catalogRouter } from "./modules/catalog/routes";
 import { observationsRouter } from "./modules/observations/routes";
 import { projectsRouter } from "./modules/projects/routes";
 import { searchRouter } from "./modules/search/routes";
@@ -82,10 +86,12 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
     next();
   });
 
-  // JSON doar în afara webhook-urilor: acelea își verifică semnătura pe raw body.
+  // JSON doar în afara webhook-urilor (raw body pentru semnătură) și a rutelor cu corp mare
+  // (PDF-ul din HTML și arhivarea PDF-ului în base64), care își au propriul parser.
   const jsonBody = express.json({ limit: "1mb" });
+  const largeBody = /^\/api\/legal\/(pdf\/?|documents\/[^/]+\/archive\/?)$/;
   app.use((req, res, next) => {
-    if (req.path.startsWith("/api/webhooks/")) return next();
+    if (req.path.startsWith("/api/webhooks/") || largeBody.test(req.path)) return next();
     jsonBody(req, res, next);
   });
 
@@ -127,6 +133,10 @@ export async function createApp({ db, env, frontend }: CreateAppOptions): Promis
   app.use("/api/maintenance/plans", maintenancePlansRouter());
   app.use("/api/maintenance/logs", maintenanceLogsRouter());
   app.use("/api/contracts", contractsRouter());
+  app.use("/api/legal/pdf", legalPdfRouter());
+  app.use("/api/legal", offersRouter());
+  app.use("/api/legal", legalRouter());
+  app.use("/api/catalog", catalogRouter());
   app.use("/api/documents", documentsRouter());
   app.use("/api/files", signedFilesRouter());
   app.use("/api/notifications", notificationsRouter());

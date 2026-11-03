@@ -98,3 +98,13 @@ pornire, în `createDb`, prin migratorul Drizzle: `migrateNodePg` pentru Postgre
 Rulați o singură instanță a aplicației. Joburile periodice rulează în procesul aplicației, pornite de
 `startScheduler(db, env)` (`server/index.ts:56`); două instanțe ar însemna joburi duplicate și un PGlite partajat
 imposibil.
+
+## PDF pe server (Chromium)
+
+Ruta `POST /api/legal/pdf` generează PDF-urile documentelor din Legal cu Chromium headless (`playwright-core`, `server/lib/pdf.ts`). Pe server trebuie instalat Chromium, o singură dată, după `npm ci`:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
+Alternativ, setați `PDF_CHROMIUM_PATH` în `.env` la un Chromium/Chrome deja instalat (ex. `/usr/bin/chromium`). Ordinea: `PDF_CHROMIUM_PATH`, apoi Chromium-ul instalat de Playwright, apoi Chrome-ul sistemului (`channel: "chrome"`). Dacă nu se găsește niciunul, ruta răspunde 503 și clientul folosește print-ul din browser. Browserul este unul singur, pornit la prima cerere și închis la `SIGTERM`; cererile se procesează pe rând.

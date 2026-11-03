@@ -27,6 +27,12 @@ const MaintenancePage = lazy(() => import("@/modules/maintenance/MaintenancePage
 const DocumentsPage = lazy(() => import("@/modules/documents/DocumentsPage"));
 const NotificationsPage = lazy(() => import("@/modules/notifications/NotificationsPage"));
 const MonitoringPage = lazy(() => import("@/modules/monitoring/MonitoringPage"));
+const LegalPage = lazy(() => import("@/modules/legal/LegalPage"));
+const ContractGeneratorPage = lazy(() => import("@/modules/legal/ContractGeneratorPage"));
+const OffersPage = lazy(() => import("@/modules/legal/offers/OffersPage"));
+const OfferEditorPage = lazy(() => import("@/modules/legal/offers/OfferEditorPage"));
+const DossierPage = lazy(() => import("@/modules/legal/offers/DossierPage"));
+const CatalogPage = lazy(() => import("@/modules/legal/catalog/CatalogPage"));
 const ReportsPage = lazy(() => import("@/modules/reports/ReportsPage"));
 
 export const router = createBrowserRouter([
@@ -56,6 +62,14 @@ export const router = createBrowserRouter([
       { path: "notifications", element: <NotificationsPage /> },
       { path: "monitoring", element: <MonitoringPage /> },
       { path: "reports", element: <ReportsPage /> },
+      { path: "legal", element: <LegalPage /> },
+      { path: "legal/contracts/new", element: <ContractGeneratorPage /> },
+      { path: "legal/contracts/:id", element: <ContractGeneratorPage /> },
+      { path: "legal/offers", element: <OffersPage /> },
+      { path: "legal/offers/new", element: <OfferEditorPage /> },
+      { path: "legal/offers/:id", element: <OfferEditorPage /> },
+      { path: "legal/offers/:id/dossier", element: <DossierPage /> },
+      { path: "legal/catalog", element: <CatalogPage /> },
       { path: "audit", element: <AuditPage /> },
       { path: "settings", element: <AccountPage /> },
     ],

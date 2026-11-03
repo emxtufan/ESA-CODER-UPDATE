@@ -13,6 +13,7 @@ import { createDb, type Db } from "../server/db/client";
 import { roles, users } from "../server/db/schema/auth";
 import { seedRoles } from "../server/db/seed";
 import { loadEnv } from "../server/env";
+import { seedCatalog } from "../server/modules/catalog/seed";
 import { hashPassword } from "../server/security/password";
 import type { Role } from "../shared/enums";
 
@@ -45,6 +46,7 @@ export async function setup() {
 
   const { db, close: closeDb } = await createDb({ memory: true });
   await seedRoles(db);
+  await seedCatalog(db);
 
   const app = await createApp({ db, env });
 

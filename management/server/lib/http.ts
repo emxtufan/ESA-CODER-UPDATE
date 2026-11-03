@@ -38,13 +38,15 @@ export class HttpError extends Error {
   readonly status: number;
   readonly code: string;
   readonly fields?: ErrorFields;
+  readonly headers?: Record<string, string>;
 
-  constructor(status: number, code: string, message: string, fields?: ErrorFields) {
+  constructor(status: number, code: string, message: string, fields?: ErrorFields, headers?: Record<string, string>) {
     super(message);
     this.name = "HttpError";
     this.status = status;
     this.code = code;
     this.fields = fields;
+    this.headers = headers;
   }
 }
 
@@ -68,10 +70,29 @@ export function parse<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>
 /** Forma răspunsului de eroare: `{ error: { code, message, fields? } }`. */
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof HttpError) {
+    if (err.headers) res.set(err.headers);
     res.status(err.status).json({
       error: { code: err.code, message: err.message, fields: err.fields },
     });
     return;
+  }
+
+  // Erori din body-parser / middleware-uri Express (corp prea mare, JSON invalid etc.).
+  if (typeof err === "object" && err !== null) {
+    const { type, status, expose } = err as { type?: unknown; status?: unknown; expose?: unknown };
+    if (type === "entity.too.large" || status === 413) {
+      res.status(413).json({ error: { code: "payload_too_large", message: "Conținutul trimis este prea mare." } });
+      return;
+    }
+    if (type === "entity.parse.failed") {
+      res.status(400).json({ error: { code: "bad_request", message: "JSON invalid." } });
+      return;
+    }
+    if (typeof status === "number" && status >= 400 && status < 500 && expose === true) {
+      const text = err instanceof Error ? err.message : "Cerere invalidă";
+      res.status(status).json({ error: { code: "bad_request", message: text } });
+      return;
+    }
   }
 
   const name = err instanceof Error ? err.name : "UnknownError";

@@ -40,6 +40,8 @@ const clientSchema = z.object({
   legalName: optStr,
   cui: optStr,
   regCom: optStr,
+  iban: optStr,
+  bank: optStr,
   vatStatus: optStr,
   country: optStr,
   city: optStr,

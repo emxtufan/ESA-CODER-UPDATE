@@ -53,6 +53,8 @@ export interface FieldDef {
   showIf?: (values: Record<string, unknown>) => boolean;
   /** Câmpul apare doar la creare (ex. parola inițială). */
   omitOnEdit?: boolean;
+  /** Validare opțională de format (verificată la trimitere, după eliminarea spațiilor). */
+  pattern?: { value: RegExp; message: string };
 }
 
 /** Rândul brut dintr-o listă de relații (`GET endpoint?pageSize=100`). */
@@ -195,10 +197,17 @@ export function ResourceFormField({ field, form }: ResourceFormFieldProps) {
 
   const error = form.formState.errors[field.name] as FieldError | undefined;
   const invalid = Boolean(error);
-  const register = form.register(
-    field.name,
-    field.required ? { required: `${field.label} este obligatoriu.` } : undefined,
-  );
+  const register = form.register(field.name, {
+    ...(field.required ? { required: `${field.label} este obligatoriu.` } : {}),
+    ...(field.pattern
+      ? {
+          validate: (value: unknown) => {
+            const text = typeof value === "string" ? value.replace(/\s+/g, "") : "";
+            return text === "" || field.pattern!.value.test(text) || field.pattern!.message;
+          },
+        }
+      : {}),
+  });
 
   let control: ReactNode;
 

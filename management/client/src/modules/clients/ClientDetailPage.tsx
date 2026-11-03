@@ -33,6 +33,8 @@ import { api, ApiError } from "@/lib/api";
 import { useCan } from "@/lib/auth";
 import { pushRecent } from "@/lib/recent";
 import { InvoicesTab } from "@/modules/finance/InvoicesTab";
+import { ClientContractsTab } from "@/modules/legal/ClientContractsTab";
+import { ClientOffersTab } from "@/modules/legal/offers/ClientOffersTab";
 
 import { CLIENT_FIELDS } from "./ClientsPage";
 
@@ -84,6 +86,12 @@ const TABS = [
 
 /** Tab-ul de facturi apare doar pentru cine are `finance.view`. */
 const INVOICES_TAB = { value: "invoices", label: "Facturi" };
+
+/** Tab-ul de contracte apare doar pentru cine are `documents.view`. */
+const CONTRACTS_TAB = { value: "contracts", label: "Contracte" };
+
+/** Tab-ul de oferte, lângă „Contracte”, cu aceeași permisiune. */
+const OFFERS_TAB = { value: "offers", label: "Oferte" };
 
 /** Contactele suplimentare ale clientului (tabela `contacts`, filtrată pe `clientId`). */
 const CONTACT_FIELDS: FieldDef[] = [
@@ -356,7 +364,8 @@ export function ClientDetailPage() {
   });
 
   const canViewFinance = useCan("finance.view");
-  const tabs = canViewFinance ? [...TABS, INVOICES_TAB] : TABS;
+  const canViewDocuments = useCan("documents.view");
+  const tabs = [...TABS, ...(canViewFinance ? [INVOICES_TAB] : []), ...(canViewDocuments ? [CONTRACTS_TAB, OFFERS_TAB] : [])];
 
   const requestedTab = searchParams.get("tab") ?? "";
   const tab = tabs.some((item) => item.value === requestedTab) ? requestedTab : "date";
@@ -430,6 +439,9 @@ export function ClientDetailPage() {
         : null}
 
       {tab === "invoices" && canViewFinance ? <InvoicesTab clientId={id} /> : null}
+
+      {tab === "contracts" && canViewDocuments ? <ClientContractsTab clientId={id} /> : null}
+      {tab === "offers" && canViewDocuments ? <ClientOffersTab clientId={id} /> : null}
 
       {editing ? <EditClientModal client={client} onClose={() => setEditing(false)} /> : null}
     </div>

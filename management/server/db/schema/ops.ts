@@ -24,6 +24,7 @@ import type {
 import { users } from "./auth";
 import { clients, projects } from "./core";
 import { servers } from "./infra";
+import { offers } from "./legal";
 
 const primaryId = () => uuid("id").primaryKey().defaultRandom();
 
@@ -99,7 +100,15 @@ export const contracts = pgTable(
     documentId: uuid("document_id").references((): AnyPgColumn => documents.id, {
       onDelete: "set null",
     }),
+    /** Oferta din care provine contractul generat. */
+    offerId: uuid("offer_id").references((): AnyPgColumn => offers.id, { onDelete: "set null" }),
     title: text("title").notNull(),
+    /** Numărul contractului generat (`ESA-AAAA-NNN`); null pentru cele vechi. */
+    number: text("number"),
+    /** `generated` pentru contractele din generator; null pentru cele vechi. */
+    kind: text("kind"),
+    /** Valorile formularului din generator. */
+    data: jsonb("data"),
     /** Valoare în minor units + moneda. */
     value: integer("value"),
     currency: text("currency").$type<Currency>(),
@@ -112,8 +121,10 @@ export const contracts = pgTable(
     index("contracts_client_id_idx").on(t.clientId),
     index("contracts_project_id_idx").on(t.projectId),
     index("contracts_document_id_idx").on(t.documentId),
+    index("contracts_offer_id_idx").on(t.offerId),
     index("contracts_status_idx").on(t.status),
     index("contracts_expires_at_idx").on(t.expiresAt),
+    uniqueIndex("contracts_number_uq").on(t.number).where(sql`${t.number} is not null`),
   ],
 );
 
@@ -320,3 +331,10 @@ export const incidents = pgTable(
     index("incidents_started_at_idx").on(t.startedAt),
   ],
 );
+
+/** Setări de aplicație (cheie → valoare JSON), ex. datele prestatorului pentru Legal. */
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

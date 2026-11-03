@@ -8,3 +8,4 @@ export * from "./infra";
 export * from "./github";
 export * from "./finance";
 export * from "./ops";
+export * from "./legal";

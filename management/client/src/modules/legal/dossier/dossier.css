@@ -1,0 +1,25 @@
+/* Completări la page.css pentru documentele dosarului (oferte, anexe, PV, act adițional). */
+.pc .kicker{text-align:center;font-size:9pt;letter-spacing:.18em;color:#555;margin:0 0 .15em}
+.pc p.big{font-size:22pt;font-weight:700;text-align:left;line-height:1.15;margin:.1em 0 .15em}
+.pc p.mut,.pc .mut{color:#555;font-size:8.8pt}
+.pc p.warn{border:1.5pt solid #111;padding:4pt 7pt;font-weight:700;text-align:left}
+.pc p.ctr{text-align:center}
+.pc table{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pc th.r,.pc td.r{text-align:right;white-space:nowrap}
+.pc th.c,.pc td.c{text-align:center}
+.pc td.nr{width:1%;white-space:nowrap}
+.pc tr.grp td{background:#f3f3f3}
+.pc tr.grp td[colspan]{font-weight:700}
+.pc tr.sub td:first-child{padding-left:14pt}
+.pc tr.sub td{color:#333}
+.pc tr.tot td{font-weight:700;border-top:1.2pt solid #111;background:#f3f3f3}
+.pc tr.add td:first-child{border-left:3pt solid #111}
+.pc tr.rem td:first-child{border-left:3pt dashed #111}
+.pc tr.rem td{font-style:italic}
+.pc tr.chg td:first-child{border-left:3pt double #111}
+.pc td.tip{font-weight:700;white-space:nowrap}
+.pc table.sig td{height:2.6cm;text-align:left}
+.pc table.kv td:first-child{width:34%;font-weight:700}
+@media print{
+ .pc tr.grp td,.pc tr.tot td{background:#f3f3f3}
+}
