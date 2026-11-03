@@ -4,7 +4,7 @@
  * `name`). Prețurile recomandate (în lei) se scriu la inserare, iar înregistrările rămase
  * fără preț primesc valoarea din seed; prețurile deja setate nu se ating.
  */
-import { eq, inArray, isNull } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 import type { Currency } from "../../../shared/enums";
 import type { Billing, LineStatus } from "../../../shared/offers";
@@ -333,8 +333,8 @@ export async function seedCatalog(db: Db): Promise<void> {
           billing: s.billing,
           defaultStatus: s.defaultStatus,
           advanced: s.advanced,
-          recommendedPrice: null,
-          currency: null,
+          recommendedPrice: PRICES[s.code] !== undefined ? PRICES[s.code] * 100 : null,
+          currency: PRICES[s.code] !== undefined ? ("RON" as Currency) : null,
           sort,
         };
       }),
@@ -344,10 +344,10 @@ export async function seedCatalog(db: Db): Promise<void> {
   const existing = await db.select({ name: catalogPackages.name }).from(catalogPackages);
   const have = new Set(existing.map((p) => p.name));
   const missing = PACKAGES.filter((p) => !have.has(p.name));
-  if (missing.length === 0) return;
+  if (missing.length > 0) {
 
-  const services = await db
-    .select({ id: catalogServices.id, code: catalogServices.code })
+    const services = await db
+      .select({ id: catalogServices.id, code: catalogServices.code })
     .from(catalogServices)
     .where(inArray(catalogServices.code, [...new Set(missing.flatMap((p) => p.codes))]));
   const idByCode = new Map(services.map((s) => [s.code, s.id]));
