@@ -55,6 +55,14 @@ const RO_DATE = new Intl.DateTimeFormat("ro-RO", {
   timeZone: "Europe/Bucharest",
 });
 
+/** Data semnării în format scurt (zz.ll.aaaa), tot în ora României. */
+const RO_DAY = new Intl.DateTimeFormat("ro-RO", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  timeZone: "Europe/Bucharest",
+});
+
 const ESCAPES: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
 /** Escape pentru orice valoare care ajunge în HTML/PDF. */
@@ -140,6 +148,21 @@ function certificate({ doc, row, now, ip, ua, name, role, signaturePng }: Certif
     `<img src="${esc(signaturePng)}" alt="Semnătura semnatarului" style="display:block;max-height:35mm;max-width:90mm">`,
     `</section>`,
   ].join("");
+}
+
+/**
+ * Semnătura desenată și data semnării, puse în locurile marcate din document:
+ * `<span data-sign="client">Nume</span>` primește imaginea suprapusă peste nume,
+ * iar `<span data-sign-date="client">…</span>` primește data semnării.
+ */
+export function applySignature(html: string, png: string, date: string): string {
+  const image = esc(png);
+  return html
+    .replace(
+      /<span data-sign="client">([^<]*)<\/span>/g,
+      `<span data-sign="client" style="position:relative;display:inline-block">$1<img src="${image}" alt="" style="position:absolute;left:0;bottom:-1mm;height:12mm;max-width:45mm"></span>`,
+    )
+    .replace(/<span data-sign-date="client">[^<]*<\/span>/g, `<span data-sign-date="client">${esc(date)}</span>`);
 }
 
 /** Pagina de certificat, inserată înainte de ultimul `</body>` al documentului. */
@@ -315,7 +338,8 @@ export function publicSignRouter(): Router {
     for (const [i, doc] of row.docs.entries()) {
       const html = (await getFile(env, doc.htmlKey)).toString("utf8");
       const page = certificate({ doc, row, now, ip, ua, name: input.name, role, signaturePng: input.signaturePng });
-      const pdf = await renderPdf(withCertificate(html, page), env);
+      const signedHtml = applySignature(html, input.signaturePng, RO_DAY.format(now));
+      const pdf = await renderPdf(withCertificate(signedHtml, page), env);
       const signedPdfKey = `signatures/${row.id}/${i}.signed.pdf`;
       await putFile(env, signedPdfKey, pdf);
       docs.push({ ...doc, signedPdfKey, signedSha256: sha256(pdf) });
