@@ -11,6 +11,9 @@ import template from "../client/src/modules/legal/contract/template.html?raw";
 /** Tabelul din cazul 2: ambele celule (PRESTATOR și BENEFICIAR) trebuie completate. */
 const TABLE = `<table><tr><th>PRESTATOR</th><th>BENEFICIAR</th></tr><tr><td>Prin: X<br><br>Semnătura: ……<br><br>Data: ……</td><td>Prin: Y<br><br>Semnătura: ……<br><br>Data: ……</td></tr></table>`;
 
+/** Tabelul din cazul 3: doar locul gol de după „Prin:” din coloana BENEFICIAR trebuie marcat. */
+const PRIN_TABLE = `<table><tr><th>PRESTATOR</th><th>BENEFICIAR</th></tr><tr><td>Prin: X<br><br>Semnătura: ……</td><td>Prin: ……<br><br>Semnătura: ……</td></tr></table>`;
+
 /** Sursele `signSpots.ts` compilează într-un script clasic, injectat în pagină. */
 const script = stripTypeScriptTypes(
   readFileSync(fileURLToPath(new URL("../client/src/modules/legal/dossier/signSpots.ts", import.meta.url)), "utf8"),
@@ -65,6 +68,35 @@ function beneficiaryCells(page: Page): Promise<string[][]> {
   );
 }
 
+/** Câte `span[data-sign-name="client"]` are celula cu „Prin:” din fiecare tabel, pe coloane. */
+function prinSigns(page: Page): Promise<{ beneficiary: number; prestator: number }[]> {
+  return page.evaluate(() =>
+    Array.from(document.querySelectorAll("table"))
+      .filter((table) => {
+        const header = table.rows[0];
+        return !!header && Array.from(header.cells).some((c) =>
+          (c.textContent ?? "").toUpperCase().includes("BENEFICIAR"),
+        );
+      })
+      .map((table) => {
+        const header = table.rows[0];
+        const column = (name: string): number =>
+          Array.from(header.cells).findIndex((c) => (c.textContent ?? "").toUpperCase().includes(name));
+        const count = (index: number): number => {
+          let total = 0;
+          for (const row of Array.from(table.rows).slice(1)) {
+            const cell = row.cells.item(index);
+            if (cell && (cell.textContent ?? "").includes("Prin:")) {
+              total += cell.querySelectorAll('[data-sign-name="client"]').length;
+            }
+          }
+          return total;
+        };
+        return { beneficiary: count(column("BENEFICIAR")), prestator: count(column("PRESTATOR")) };
+      }),
+  );
+}
+
 describe("signSpots: marcaj semnături", () => {
   beforeAll(async () => {
     try {
@@ -99,6 +131,14 @@ describe("signSpots: marcaj semnături", () => {
       // „Data:” fără puncte (urmat de data contractului) rămâne neatins.
       expect(tables.flat().some((text) => text.includes("Data: conform certificatului"))).toBe(false);
 
+      // „Prin:” gol din coloana BENEFICIAR primește un singur marcaj; PRESTATOR rămâne neatins.
+      const signs = await prinSigns(page);
+      expect(signs).toHaveLength(3);
+      for (const counts of signs) {
+        expect(counts.beneficiary).toBe(1);
+        expect(counts.prestator).toBe(0);
+      }
+
       // A doua rulare nu schimbă nimic.
       const html = await page.evaluate(() => document.body.innerHTML);
       await mark(page);
@@ -128,6 +168,26 @@ describe("signSpots: marcaj semnături", () => {
       const html = await page.evaluate(() => document.body.innerHTML);
       await mark(page);
       expect(await page.evaluate(() => document.body.innerHTML)).toBe(html);
+    } finally {
+      await page.close();
+    }
+  });
+
+  it("marchează doar locul gol de după „Prin:” din celula BENEFICIAR", async (t) => {
+    if (!available) return t.skip(`Chromium indisponibil: ${skipReason}`);
+    const page = await pageWith(PRIN_TABLE);
+    try {
+      await mark(page);
+
+      const cells = await page.evaluate(() =>
+        Array.from(document.querySelectorAll("td")).map((cell) => ({
+          signs: cell.querySelectorAll('[data-sign-name="client"]').length,
+          html: cell.innerHTML,
+        })),
+      );
+      expect(cells.map((c) => c.signs)).toEqual([0, 1]);
+      expect(cells[1].html).toContain('<span data-sign-name="client">……</span>');
+      expect(cells[1].html).not.toContain("Prin: ……");
     } finally {
       await page.close();
     }
