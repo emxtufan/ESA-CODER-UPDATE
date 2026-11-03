@@ -46,6 +46,7 @@ import type { AmendmentInput, DossierInput, DossierRenderType } from "../dossier
 import { buildDossierZip, ZIP_MIME } from "../dossier/zip";
 import { LabeledField as Field } from "./Inputs";
 import { DocFrame, renderHidden, type DocFrameHandle } from "./DocFrame";
+import { SignaturesPanel } from "./SignaturesPanel";
 import {
   OFFER_STATUS_TONES,
   PdfUnavailableError,
@@ -210,6 +211,12 @@ export function DossierPage() {
   const accepted = offer.status === "accepted";
   const hasRecurring = !!offer.acceptedSnapshot && contractedLines(offer.acceptedSnapshot.config.lines).some((l) => l.billing !== "one_time");
 
+  /** Tipurile pe care le-ar exporta ZIP-ul: ultima versiune existentă în dosar + contractul, dacă există. */
+  const generatedTypes = new Set(docs.filter((d) => d.type !== "contract").map((d) => d.type));
+  const available: { type: DossierDocType; label: string }[] = DOSSIER_DOC_TYPES.filter((t) =>
+    t === "contract" ? Boolean(contract && offer.acceptedSnapshot) : generatedTypes.has(t),
+  ).map((t) => ({ type: t, label: DOSSIER_DOC_LABELS[t] }));
+
   const refreshDocs = () => queryClient.invalidateQueries({ queryKey: ["legal-offer-docs", id] });
 
   async function generate(type: DossierDocType) {
@@ -330,6 +337,44 @@ export function DossierPage() {
       setBusy("");
       setConfirmDelete(false);
     }
+  }
+
+  /** Aceleași documente ca în ZIP (ultima versiune per tip + contractul), dar ca HTML, pentru semnare. */
+  async function buildDocs(types: DossierDocType[]): Promise<{ title: string; html: string }[]> {
+    const wanted = new Set<DossierDocType>(types);
+    const snapshot = offer?.acceptedSnapshot;
+    const latest = new Map<DossierDocType, DossierRow>();
+    for (const d of docs) if (d.type !== "contract" && (latest.get(d.type)?.version ?? 0) < d.version) latest.set(d.type, d);
+    const out: { title: string; html: string }[] = [];
+
+    for (const type of DOSSIER_DOC_TYPES) {
+      if (type === "contract" || !latest.has(type) || !wanted.has(type)) continue;
+      const row = latest.get(type)!;
+      const { item } = await queryClient.fetchQuery({
+        queryKey: ["legal-dossier-doc", row.id],
+        queryFn: () => api<{ item: DossierDetail }>(`/legal/documents/${row.id}`),
+      });
+      const input = inputOf(item, contract);
+      const t = type as DossierRenderType;
+      const { doc, dispose } = await renderHidden(DOSSIER_SKELETON, (d, img) => renderDossierDoc(t, input, d, img));
+      try {
+        out.push({ title: DOSSIER_DOC_LABELS[type], html: await exportHtml(doc) });
+      } finally {
+        dispose();
+      }
+    }
+
+    if (wanted.has("contract") && contract && snapshot) {
+      const values = { ...defaultValues(), ...(contract.data ?? {}) };
+      const { doc, dispose } = await renderHidden(CONTRACT_SKELETON, (d, img) => renderContract(values, d, template, img));
+      try {
+        out.push({ title: DOSSIER_DOC_LABELS.contract, html: await exportHtml(doc) });
+      } finally {
+        dispose();
+      }
+    }
+
+    return out;
   }
 
   /** ZIP: ultima versiune a fiecărui document generat + contractul, PDF (server) și Word + configurația. */
@@ -641,6 +686,16 @@ export function DossierPage() {
           )}
         </div>
       </div>
+
+      <SignaturesPanel
+        offerId={id}
+        contractId={contract?.id}
+        canCreate={canCreate}
+        available={available}
+        defaultEmail={offer.acceptedSnapshot?.client?.clEmail ?? ""}
+        defaultName={offer.acceptedSnapshot?.client?.clRep || offer.acceptedSnapshot?.client?.clNume || ""}
+        buildDocs={buildDocs}
+      />
 
       <ConfirmDialog
         open={confirmDelete}
