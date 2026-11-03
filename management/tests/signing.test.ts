@@ -98,6 +98,18 @@ describe("semnare: flux complet", () => {
       expect(state.json.status).toBe("viewed");
       expect(state.json.signerEmail).toBe(SIGNER_MASKED);
       expect(state.json.docs).toHaveLength(1);
+      expect(state.json.otp).toBeNull();
+
+      // 2b. HTML-ul documentului (toate paginile, și pe telefon): fără scripturi, fără rețea.
+      const html = await fetch(`${ctx.url}/api/public/sign/${token}/docs/0/html`);
+      expect(html.status).toBe(200);
+      expect(html.headers.get("content-type")).toContain("text/html");
+      const csp = html.headers.get("content-security-policy") ?? "";
+      expect(csp).toContain("sandbox allow-same-origin");
+      expect(csp).toContain("default-src 'none'");
+      expect(csp).not.toContain("allow-scripts");
+      expect(await html.text()).toContain("<p>Contract</p>");
+      expect((await fetch(`${ctx.url}/api/public/sign/${token}/docs/5/html`)).status).toBe(404);
 
       // 3. Un singur cod pe minut: al doilea cerut imediat e refuzat.
       const otp = await ctx.api(`/api/public/sign/${token}/otp`, { method: "POST" });
@@ -109,6 +121,25 @@ describe("semnare: flux complet", () => {
       expect(otpMail.subject).toContain("Cod de semnare");
       const code = /Cod de semnare: (\d{6})/.exec(`${otpMail.subject} ${otpMail.html}`)?.[1];
       if (!code) throw new Error("Codul de semnare lipsește din email");
+
+      // 3b. Pagina redeschisă (după citirea emailului) vede codul trimis, fără să ceară altul.
+      const reopened = await ctx.api(`/api/public/sign/${token}`);
+      expect(reopened.json.otp.sentTo).toBe(SIGNER_MASKED);
+      expect(Date.parse(reopened.json.otp.expiresAt)).toBeGreaterThan(Date.now());
+      expect(Date.parse(reopened.json.otp.resendAt)).toBeGreaterThan(Date.now());
+
+      // 3c. Confirmarea emailului: codul greșit e refuzat, cel corect prelungește valabilitatea (~30 min).
+      const verify = (c: string) => ctx.api(`/api/public/sign/${token}/otp/verify`, { method: "POST", body: { code: c } });
+      expect((await verify("12")).status).toBe(422);
+      const wrongVerify = await verify(code === "000000" ? "111111" : "000000");
+      expect(wrongVerify.status).toBe(422);
+      expect(wrongVerify.json.error.code).toBe("otp_wrong");
+      const verified = await verify(code);
+      expect(verified.status).toBe(200);
+      expect(verified.json.verified).toBe(true);
+      expect(Date.parse(verified.json.expiresAt)).toBeGreaterThan(Date.now() + 25 * 60_000);
+      const afterVerify = await ctx.api(`/api/public/sign/${token}`);
+      expect(afterVerify.json.otp.expiresAt).toBe(verified.json.expiresAt);
 
       const signBody = (code1: string) => ({
         code: code1,
@@ -131,6 +162,7 @@ describe("semnare: flux complet", () => {
       const afterSign = await ctx.api(`/api/public/sign/${token}`);
       expect(afterSign.json.status).toBe("signed");
       expect(afterSign.json.signedName).toBe("Ion Popescu");
+      expect(afterSign.json.otp).toBeNull();
       expect((await sign(signBody(code))).status).toBe(409);
 
       // 6. PDF-ul public e versiunea semnată; adminul vede datele semnării, fără hash-uri.

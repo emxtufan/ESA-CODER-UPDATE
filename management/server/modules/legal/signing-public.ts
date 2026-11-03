@@ -31,6 +31,12 @@ type SignatureRow = typeof signatureRequests.$inferSelect;
 /** Valabilitatea codului trimis pe email. */
 const OTP_TTL_MS = 10 * 60 * 1000;
 
+/**
+ * Valabilitatea codului după ce a fost verificat (`POST /otp/verify`): semnatarul confirmă întâi
+ * emailul, apoi completează datele și desenează semnătura, iar codul trebuie să rămână valabil până atunci.
+ */
+const OTP_VERIFIED_TTL_MS = 30 * 60 * 1000;
+
 /** Pauza minimă între două coduri cerute pentru aceeași cerere. */
 const OTP_RESEND_MS = 60 * 1000;
 
@@ -305,6 +311,59 @@ function providerEmail({ titles, dossierLink, name, role, email, ip, now, brand 
   });
 }
 
+/** Documentul `i` din cerere sau 404. */
+function docAt(row: SignatureRow, i: string): SignatureDoc {
+  const index = Number(i);
+  const doc = Number.isInteger(index) && index >= 0 ? row.docs[index] : undefined;
+  if (!doc) throw new HttpError(404, "not_found", "Documentul nu există");
+  return doc;
+}
+
+/**
+ * Codul trimis care încă poate fi folosit (nu a expirat și nu s-au epuizat încercările), ca pagina
+ * redeschisă după citirea emailului să ceară direct codul, fără să trimită altul.
+ */
+function pendingOtp(row: SignatureRow, now: Date) {
+  if (row.status === "signed" || !row.otpHash || !row.otpExpiresAt || !row.otpSentAt) return null;
+  if (row.otpExpiresAt.getTime() <= now.getTime() || row.otpAttempts >= MAX_OTP_ATTEMPTS) return null;
+  return {
+    sentTo: maskEmail(row.signerEmail),
+    sentAt: row.otpSentAt,
+    expiresAt: row.otpExpiresAt,
+    resendAt: new Date(row.otpSentAt.getTime() + OTP_RESEND_MS),
+  };
+}
+
+/** Verifică codul OTP; o încercare greșită se numără. Aruncă 422 (expirat / greșit) sau 429. */
+async function checkOtp(db: Db, row: SignatureRow, code: string, now: Date): Promise<void> {
+  if (!row.otpHash || !row.otpExpiresAt || row.otpExpiresAt.getTime() < now.getTime()) {
+    throw new HttpError(422, "otp_expired", "Codul a expirat, cere unul nou");
+  }
+  if (row.otpAttempts >= MAX_OTP_ATTEMPTS) {
+    throw new HttpError(429, "rate_limited", "Prea multe încercări, cere un cod nou");
+  }
+
+  const expected = Buffer.from(row.otpHash, "utf8");
+  const received = Buffer.from(sha256(`${row.id}:${code}`), "utf8");
+  if (expected.length !== received.length || !timingSafeEqual(expected, received)) {
+    await db
+      .update(signatureRequests)
+      .set({ otpAttempts: row.otpAttempts + 1 })
+      .where(eq(signatureRequests.id, row.id));
+    throw new HttpError(422, "otp_wrong", "Cod greșit");
+  }
+}
+
+const verifySchema = z.object({ code: z.string().regex(/^\d{6}$/, "Codul are exact 6 cifre") });
+
+/**
+ * CSP-ul HTML-ului unui document afișat pe pagina de semnare: fără scripturi (sandbox), fără rețea;
+ * doar stilurile, imaginile și fontul incluse în document. `allow-same-origin` permite paginii
+ * părinte să încadreze paginile pe lățimea ecranului.
+ */
+const DOC_HTML_CSP =
+  "sandbox allow-same-origin; default-src 'none'; img-src data:; font-src data:; style-src 'unsafe-inline'; frame-ancestors 'self'";
+
 /** Rutele publice de semnare: starea cererii, documentele, codul OTP și semnarea. */
 export function publicSignRouter(): Router {
   const router = Router();
@@ -343,7 +402,30 @@ export function publicSignRouter(): Router {
       signedName: current.signedName,
       expiresAt: current.expiresAt,
       acceptText: ACCEPT_TEXT,
+      otp: pendingOtp(current, new Date()),
     });
+  });
+
+  /**
+   * HTML-ul paginat al unui document (sursa din care s-a generat PDF-ul), afișat pe pagina de
+   * semnare. Pe telefon, un PDF într-un iframe arată doar prima pagină sau deloc.
+   */
+  router.get("/:token/docs/:i/html", async (req, res) => {
+    const { db, env } = req.ctx;
+    const token = tokenOf(req.params.token);
+    const row = await resolve(db, token);
+    const doc = docAt(row, req.params.i);
+
+    const html = await getFile(env, doc.htmlKey);
+    res
+      .status(200)
+      .set({
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy": DOC_HTML_CSP,
+        "Cache-Control": "private, no-store",
+        "X-Content-Type-Options": "nosniff",
+      })
+      .send(html);
   });
 
   /** PDF-ul unui document din pachet: originalul sau versiunea semnată. */
@@ -351,10 +433,7 @@ export function publicSignRouter(): Router {
     const { db, env } = req.ctx;
     const token = tokenOf(req.params.token);
     const row = await resolve(db, token);
-
-    const index = Number(req.params.i);
-    const doc = Number.isInteger(index) && index >= 0 ? row.docs[index] : undefined;
-    if (!doc) throw new HttpError(404, "not_found", "Documentul nu există");
+    const doc = docAt(row, req.params.i);
 
     const isSigned = row.status === "signed";
     const key = isSigned && doc.signedPdfKey ? doc.signedPdfKey : doc.pdfKey;
@@ -407,7 +486,31 @@ export function publicSignRouter(): Router {
       throw new HttpError(503, "email_failed", "Codul nu a putut fi trimis pe email. Încearcă din nou.");
     }
 
-    res.json({ sentTo: maskEmail(row.signerEmail) });
+    res.json({
+      sentTo: maskEmail(row.signerEmail),
+      expiresAt: new Date(now.getTime() + OTP_TTL_MS),
+      resendAt: new Date(now.getTime() + OTP_RESEND_MS),
+    });
+  });
+
+  /**
+   * Confirmă emailul înainte de semnare: verifică codul (fără să-l consume) și îi prelungește
+   * valabilitatea, ca semnatarul să completeze apoi datele fără să mai iasă din pagină.
+   */
+  router.post("/:token/otp/verify", async (req, res) => {
+    const { db } = req.ctx;
+    const token = tokenOf(req.params.token);
+    const input = parse(verifySchema, req.body);
+    const row = await resolve(db, token);
+    if (row.status === "signed") throw new HttpError(409, "conflict", "Documentele sunt deja semnate");
+
+    const now = new Date();
+    await checkOtp(db, row, input.code, now);
+
+    const extended = new Date(now.getTime() + OTP_VERIFIED_TTL_MS);
+    const expiresAt = row.otpExpiresAt && row.otpExpiresAt > extended ? row.otpExpiresAt : extended;
+    await db.update(signatureRequests).set({ otpExpiresAt: expiresAt }).where(eq(signatureRequests.id, row.id));
+    res.json({ verified: true, expiresAt });
   });
 
   /** Semnarea propriu-zisă: codul OTP, datele semnatarului, semnătura desenată și PDF-urile semnate. */
@@ -419,22 +522,7 @@ export function publicSignRouter(): Router {
     if (row.status === "signed") throw new HttpError(409, "conflict", "Documentele sunt deja semnate");
 
     const now = new Date();
-    if (!row.otpHash || !row.otpExpiresAt || row.otpExpiresAt.getTime() < now.getTime()) {
-      throw new HttpError(422, "otp_expired", "Codul a expirat, cere unul nou");
-    }
-    if (row.otpAttempts >= MAX_OTP_ATTEMPTS) {
-      throw new HttpError(429, "rate_limited", "Prea multe încercări, cere un cod nou");
-    }
-
-    const expected = Buffer.from(row.otpHash, "utf8");
-    const received = Buffer.from(sha256(`${row.id}:${input.code}`), "utf8");
-    if (expected.length !== received.length || !timingSafeEqual(expected, received)) {
-      await db
-        .update(signatureRequests)
-        .set({ otpAttempts: row.otpAttempts + 1 })
-        .where(eq(signatureRequests.id, row.id));
-      throw new HttpError(422, "otp_wrong", "Cod greșit");
-    }
+    await checkOtp(db, row, input.code, now);
 
     const ip = req.ip ?? null;
     const ua = req.get("user-agent")?.slice(0, MAX_UA) ?? null;
