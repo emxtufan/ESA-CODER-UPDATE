@@ -5,7 +5,6 @@
 .pc p.warn{border:1.5pt solid #111;padding:4pt 7pt;font-weight:700;text-align:left}
 .pc p.ctr{text-align:center}
 .pc table{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.pc table{table-layout:fixed}
 .pc td,.pc th{overflow-wrap:anywhere}
 .pc th.r,.pc td.r{text-align:right}
 .pc th.c,.pc td.c{text-align:center}
