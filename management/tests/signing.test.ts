@@ -8,7 +8,6 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { closePdfBrowser, renderPdf } from "../server/lib/pdf";
-import { applySignature } from "../server/modules/legal/signing-public";
 import { setup } from "./helpers";
 
 /** SMTP e înlocuit cu un transport fals, ca să citim linkul și codul din emailurile trimise. */

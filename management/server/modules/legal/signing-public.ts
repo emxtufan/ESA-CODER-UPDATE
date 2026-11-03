@@ -11,7 +11,7 @@ import { and, eq, ne } from "drizzle-orm";
 import express, { Router } from "express";
 import { z } from "zod";
 
-import { ACCEPT_TEXT } from "../../../shared/signing";
+import { ACCEPT_TEXT, ESIGN_ARTICLE } from "../../../shared/signing";
 import type { Db } from "../../db/client";
 import { signatureRequests, type SignatureDoc } from "../../db/schema/legal";
 import { contracts } from "../../db/schema/ops";
@@ -56,14 +56,6 @@ const RO_DATE = new Intl.DateTimeFormat("ro-RO", {
   timeZone: "Europe/Bucharest",
 });
 
-/** Data semnării în format scurt (zz.ll.aaaa), tot în ora României. */
-const RO_DAY = new Intl.DateTimeFormat("ro-RO", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  timeZone: "Europe/Bucharest",
-});
-
 const ESCAPES: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
 /** Escape pentru orice valoare care ajunge în HTML/PDF. */
@@ -104,9 +96,23 @@ async function resolve(db: Db, token: string): Promise<SignatureRow> {
   return row;
 }
 
+/** Datele prestatorului, așa cum vin din `loadProvider`. */
+type Provider = Awaited<ReturnType<typeof loadProvider>>;
+
+/** Un document din cerere, cu HTML-ul original și numărul lui de pagini. */
+interface OriginalDoc {
+  doc: SignatureDoc;
+  html: string;
+  pages: number;
+}
+
 interface CertificateInput {
   doc: SignatureDoc;
+  documents: OriginalDoc[];
+  total: number;
+  pages: number;
   row: SignatureRow;
+  provider: Provider;
   now: Date;
   ip: string | null;
   ua: string | null;
@@ -115,55 +121,98 @@ interface CertificateInput {
   signaturePng: string;
 }
 
+/** Numărul de pagini al unui document: câte secțiuni `class="pg` are HTML-ul original. */
+function pageCount(html: string): number {
+  return html.split('class="pg').length - 1;
+}
+
+/** Celula tabelelor din certificat: bordură subțire, text compact. */
+const CERT_CELL = "border:0.5pt solid #999;padding:2.6pt 6pt;text-align:left;vertical-align:top";
+
+/** Un rând etichetă/valoare din tabelele certificatului. */
+function certRow(label: string, value: string): string {
+  return `<tr><th style="${CERT_CELL}background:#f3f3f3;width:32%">${esc(label)}</th><td style="${CERT_CELL};word-break:break-word">${esc(value)}</td></tr>`;
+}
+
+/** Un tabel etichetă/valoare, cu titlul deasupra lui. */
+function certTable(title: string, rows: Array<[string, string]>): string {
+  return [
+    `<h2 style="font-size:11.5pt;margin:0 0 1.2mm">${esc(title)}</h2>`,
+    `<table style="border-collapse:collapse;width:100%;font-size:9.5pt;line-height:1.3">`,
+    `<tbody>`,
+    rows.map(([label, value]) => certRow(label, value)).join(""),
+    `</tbody>`,
+    `</table>`,
+  ].join("");
+}
+
 /** Pagina de certificat a semnării, cu toate valorile escapate. */
-function certificate({ doc, row, now, ip, ua, name, role, signaturePng }: CertificateInput): string {
-  const rows: Array<[string, string]> = [
-    ["Document", doc.title],
-    ["Amprentă SHA-256 a documentului original", doc.sha256],
-    ["Semnatar", name],
+function certificate({
+  doc,
+  documents,
+  total,
+  pages,
+  row,
+  provider,
+  now,
+  ip,
+  ua,
+  name,
+  role,
+  signaturePng,
+}: CertificateInput): string {
+  const documentsTable = [
+    `<h2 style="font-size:11.5pt;margin:0 0 1.2mm">Documente semnate</h2>`,
+    `<table style="border-collapse:collapse;width:100%;font-size:8.5pt;line-height:1.25">`,
+    `<thead><tr>`,
+    `<th style="${CERT_CELL}background:#f3f3f3;width:7%">Nr.</th>`,
+    `<th style="${CERT_CELL}background:#f3f3f3;width:26%">Document</th>`,
+    `<th style="${CERT_CELL}background:#f3f3f3;width:9%">Pagini</th>`,
+    `<th style="${CERT_CELL}background:#f3f3f3">Amprentă SHA-256 (originală)</th>`,
+    `</tr></thead>`,
+    `<tbody>`,
+    documents
+      .map(
+        (item, index) =>
+          `<tr><td style="${CERT_CELL};text-align:center">${index + 1}</td><td style="${CERT_CELL}">${esc(item.doc.title)}</td><td style="${CERT_CELL};text-align:center">${item.pages}</td><td style="${CERT_CELL};word-break:break-all">${esc(item.doc.sha256)}</td></tr>`,
+      )
+      .join(""),
+    `</tbody>`,
+    `</table>`,
+    `<p style="margin:1.5mm 0 3.5mm">Total: ${total} pagini.</p>`,
+  ].join("");
+
+  const issuer = certTable("Emitent (Prestator)", [
+    ["Denumire legală", provider.esaNume],
+    ["CUI", provider.esaCui],
+    ["Reprezentant", provider.esaRep],
+  ]);
+
+  const signer = certTable("Semnatar (Beneficiar)", [
+    ["Nume", name],
     ["Funcție", role || "—"],
     ["E-mail (verificat prin cod unic)", row.signerEmail],
     ["Data și ora", `${RO_DATE.format(now)} (${now.toISOString()})`],
     ["Adresă IP", ip || "—"],
     ["Browser", ua || "—"],
-    ["ID cerere", row.id],
-  ];
+  ]);
 
-  const cell = "border:0.5pt solid #999;padding:2.6pt 6pt;text-align:left;vertical-align:top";
+  const closing = `Prezentul certificat face parte integrantă din documentele enumerate mai sus și validează semnătura Beneficiarului pentru toate paginile acestora (${total} pagini), conform ${ESIGN_ARTICLE} din Contract. Este atașat ca ultimă pagină a documentului „${doc.title}” (pagina ${pages + 1}).`;
 
   return [
-    `<section class="pg" style="padding:22mm;font-size:11pt;line-height:1.45;text-align:left;box-sizing:border-box;break-before:page;page-break-before:always">`,
-    `<h1 style="font-size:15pt;text-align:center;margin:0 0 8mm">Certificat de semnare electronică</h1>`,
-    `<table style="border-collapse:collapse;width:100%;font-size:10pt;line-height:1.35">`,
-    `<tbody>`,
-    rows
-      .map(
-        ([label, value]) =>
-          `<tr><th style="${cell}background:#f3f3f3;width:38%">${esc(label)}</th><td style="${cell};word-break:break-word">${esc(value)}</td></tr>`,
-      )
-      .join(""),
-    `</tbody>`,
-    `</table>`,
-    `<p style="margin:6mm 0 0"><b>Declarație:</b> ${esc(ACCEPT_TEXT)}</p>`,
-    `<p style="margin:4mm 0 0"><b>Semnătura:</b></p>`,
-    `<img src="${esc(signaturePng)}" alt="Semnătura semnatarului" style="display:block;max-height:35mm;max-width:90mm">`,
+    `<section class="pg" style="padding:16mm;font-size:11pt;line-height:1.35;text-align:left;box-sizing:border-box;break-before:page;page-break-before:always">`,
+    `<h1 style="font-size:14pt;text-align:center;margin:0 0 1mm">Certificat de semnare electronică</h1>`,
+    `<p style="text-align:center;margin:0 0 3.5mm;font-size:10pt">ID cerere: ${esc(row.id)}</p>`,
+    documentsTable,
+    issuer,
+    `<p style="margin:1.5mm 0 3.5mm">Transmis spre semnare la ${esc(RO_DATE.format(row.createdAt))} către ${esc(row.signerEmail)}</p>`,
+    signer,
+    `<p style="margin:3.5mm 0 0"><b>Declarație acceptată:</b> ${esc(ACCEPT_TEXT)}</p>`,
+    `<p style="margin:3mm 0 0"><b>Semnătura:</b></p>`,
+    `<img src="${esc(signaturePng)}" alt="Semnătura semnatarului" style="display:block;max-height:28mm;max-width:90mm">`,
+    `<p style="margin:3.5mm 0 0;font-size:9.5pt">${esc(closing)}</p>`,
     `</section>`,
   ].join("");
-}
-
-/**
- * Semnătura desenată și data semnării, puse în locurile marcate din document:
- * `<span data-sign="client">Nume</span>` primește imaginea suprapusă peste nume,
- * iar `<span data-sign-date="client">…</span>` primește data semnării.
- */
-export function applySignature(html: string, png: string, date: string): string {
-  const image = esc(png);
-  return html
-    .replace(
-      /<span data-sign="client">([^<]*)<\/span>/g,
-      `<span data-sign="client" style="position:relative;display:inline-block">$1<img src="${image}" alt="" style="position:absolute;left:0;bottom:-1mm;height:12mm;max-width:45mm"></span>`,
-    )
-    .replace(/<span data-sign-date="client">[^<]*<\/span>/g, `<span data-sign-date="client">${esc(date)}</span>`);
 }
 
 /** Pagina de certificat, inserată înainte de ultimul `</body>` al documentului. */
@@ -386,12 +435,32 @@ export function publicSignRouter(): Router {
     const ua = req.get("user-agent")?.slice(0, MAX_UA) ?? null;
     const role = input.role && input.role !== "" ? input.role : null;
 
-    const docs: SignatureDoc[] = [];
-    for (const [i, doc] of row.docs.entries()) {
+    const provider = await loadProvider(db);
+
+    const originals: OriginalDoc[] = [];
+    for (const doc of row.docs) {
       const html = (await getFile(env, doc.htmlKey)).toString("utf8");
-      const page = certificate({ doc, row, now, ip, ua, name: input.name, role, signaturePng: input.signaturePng });
-      const signedHtml = applySignature(html, input.signaturePng, RO_DAY.format(now));
-      const pdf = await renderPdf(withCertificate(signedHtml, page), env);
+      originals.push({ doc, html, pages: pageCount(html) });
+    }
+    const total = originals.reduce((sum, item) => sum + item.pages, 0);
+
+    const docs: SignatureDoc[] = [];
+    for (const [i, { doc, html, pages }] of originals.entries()) {
+      const page = certificate({
+        doc,
+        documents: originals,
+        total,
+        pages,
+        row,
+        provider,
+        now,
+        ip,
+        ua,
+        name: input.name,
+        role,
+        signaturePng: input.signaturePng,
+      });
+      const pdf = await renderPdf(withCertificate(html, page), env);
       const signedPdfKey = `signatures/${row.id}/${i}.signed.pdf`;
       await putFile(env, signedPdfKey, pdf);
       docs.push({ ...doc, signedPdfKey, signedSha256: sha256(pdf) });
@@ -421,7 +490,6 @@ export function publicSignRouter(): Router {
         .where(eq(contracts.id, row.contractId));
     }
 
-    const provider = await loadProvider(db);
     const brand = brandOf(provider);
     const titles = docs.map((doc) => doc.title);
     const link = `${appBaseUrl(env)}/semnare/${token}`;
