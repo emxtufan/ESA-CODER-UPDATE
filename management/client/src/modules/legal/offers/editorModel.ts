@@ -11,7 +11,7 @@ import {
 } from "@shared/offers";
 
 import { lineFromService } from "../dossier/drafts";
-import type { CatalogPackage } from "./lib";
+import { packageListPrice, type CatalogPackage } from "./lib";
 
 export const uid = (): string => crypto.randomUUID();
 
@@ -70,12 +70,16 @@ export function blankLine(): OfferLine {
 
 /** Un pachet din catalog → linia de pachet (acceptată) și componentele `included`. */
 export function linesFromPackage(pkg: CatalogPackage, currency: Currency): OfferLine[] {
+  const price = pkg.currency === currency && pkg.recommendedPrice != null ? pkg.recommendedPrice : 0;
+  // Componentele la preț de listă → reducere vizibilă (preț tăiat) până la prețul pachetului.
+  const list = price > 0 ? packageListPrice(pkg) : null;
   const head: OfferLine = {
     ...blankLine(),
     name: pkg.name,
     description: pkg.description,
     unit: "pachet",
-    unitPrice: pkg.currency === currency && pkg.recommendedPrice != null ? pkg.recommendedPrice : 0,
+    unitPrice: list ?? price,
+    ...(list != null ? { discountType: "fixed" as const, discountValue: list - price } : {}),
     billing: pkg.billing,
     status: "accepted",
     isPackage: true,

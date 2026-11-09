@@ -186,6 +186,13 @@ describe("dosar: oferta", () => {
     expect(html).toContain("Prețurile nu includ TVA");
     expect(buildOffer(input(config(georgiLines(), { vatRate: 19 })))).toContain("Total cu TVA: <strong>654,50 €</strong>");
   });
+  it("reducerea: totalul vechi tăiat și suma redusă", () => {
+    expect(html).not.toContain('class="was"');
+    const disc = georgiLines().map((l) => (l.id === "pkg" ? { ...l, unitPrice: 60000, discountType: "fixed" as const, discountValue: 20000 } : l));
+    const h = buildOffer(input(config(disc)));
+    expect(h).toContain('<p class="was"><s>750 €</s></p>');
+    expect(h).toContain("Reducere acordată: <strong>200 € (−27%)</strong>");
+  });
   it("valorile utilizatorului sunt escapate", () => {
     const evil = "<script>alert(1)</script>";
     const i = input(config(georgiLines(), { intro: evil, notes: evil }), { x: evil }, evil);

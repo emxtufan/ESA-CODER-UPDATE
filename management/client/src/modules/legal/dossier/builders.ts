@@ -256,7 +256,12 @@ export function buildOffer(input: DossierInput): string {
 
   /* valoarea ofertei */
   out.push(h2("Valoarea ofertei"));
+  if (t.discount > 0) out.push(para(`<s>${esc(m(t.net + t.discount))}</s>`, "was"));
   out.push(para(esc(m(t.net)), "big"));
+  if (t.discount > 0) {
+    const pct = Math.round((t.discount / (t.net + t.discount)) * 100);
+    out.push(para(`Reducere acordată: <strong>${esc(m(t.discount))} (−${pct}%)</strong>`));
+  }
   const recLines = cfg.lines.filter((l) => l.status === "accepted" && isRecurring(l));
   if (recLines.length) {
     const parts: string[] = [];

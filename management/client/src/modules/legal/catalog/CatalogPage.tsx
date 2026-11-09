@@ -29,6 +29,7 @@ import { ApiError, api } from "@/lib/api";
 import { useCan } from "@/lib/auth";
 
 import { MoneyInput, NumInput, LabeledField as Field } from "../offers/Inputs";
+import { PackagePrice } from "../offers/CatalogSheet";
 import { useCategories, usePackages, useServices } from "../offers/hooks";
 import { CURRENCY_OPTIONS, norm, type CatalogCategory, type CatalogPackage, type CatalogServiceRow } from "../offers/lib";
 
@@ -597,7 +598,7 @@ function PackagesTab() {
       key: "recommendedPrice",
       header: "Preț recomandat",
       align: "right",
-      render: (r) => (r.recommendedPrice != null ? formatMoney(r.recommendedPrice, r.currency ?? "RON") : "—"),
+      render: (r) => <PackagePrice pkg={r} currency="RON" />,
     },
   ];
 

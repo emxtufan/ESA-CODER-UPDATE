@@ -11,7 +11,20 @@ import { BILLING_LABELS, formatMoney, type OfferLine } from "@shared/offers";
 import { Badge, Button, Input, Spinner, Tabs, cn } from "@/components/ui";
 
 import { useCategories, usePackages, useServices } from "./hooks";
-import { norm, type CatalogPackage, type CatalogServiceRow } from "./lib";
+import { norm, packageListPrice, type CatalogPackage, type CatalogServiceRow } from "./lib";
+
+/** Prețul pachetului; dacă e sub suma componentelor, suma apare tăiată cu roșu. */
+export function PackagePrice({ pkg, currency }: { pkg: CatalogPackage; currency: Currency }) {
+  if (pkg.recommendedPrice == null) return <>—</>;
+  const list = packageListPrice(pkg);
+  const cur = pkg.currency ?? currency;
+  return (
+    <span className="whitespace-nowrap tabular-nums">
+      {list != null ? <s className="mr-1.5 text-danger">{formatMoney(list, cur)}</s> : null}
+      <span className="font-semibold text-text">{formatMoney(pkg.recommendedPrice, cur)}</span>
+    </span>
+  );
+}
 
 export interface CatalogSheetProps {
   open: boolean;
@@ -197,7 +210,12 @@ export function CatalogSheet({ open, onClose, currency, lines, onAdd, onAddCusto
                           {p.description ? <p className="mt-0.5 text-xs text-muted">{p.description}</p> : null}
                           <p className="mt-0.5 text-xs text-muted">
                             {p.items.length} componente · {BILLING_LABELS[p.billing]}
-                            {p.recommendedPrice != null ? ` · ${formatMoney(p.recommendedPrice, p.currency ?? currency)}` : ""}
+                            {p.recommendedPrice != null ? (
+                              <>
+                                {" · "}
+                                <PackagePrice pkg={p} currency={currency} />
+                              </>
+                            ) : null}
                           </p>
                           {isOpen ? (
                             <ul className="mt-2 space-y-1 border-l border-line pl-3">

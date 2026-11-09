@@ -109,6 +109,7 @@ interface Fmt {
   i?: boolean;
   sz?: number;
   color?: string;
+  strike?: boolean;
 }
 
 type Item = { t: "text"; text: string; fmt: Fmt } | { t: "br" };
@@ -122,7 +123,7 @@ interface State {
   emitted: number;
 }
 
-const INLINE = new Set(["strong", "b", "em", "i", "span", "a", "small", "u", "br", "img", "code", "sup", "sub", "font", "#text"]);
+const INLINE = new Set(["strong", "b", "em", "i", "s", "del", "span", "a", "small", "u", "br", "img", "code", "sup", "sub", "font", "#text"]);
 
 function collect(nodes: HNode[], fmt: Fmt, out: Item[]): void {
   for (const n of nodes) {
@@ -136,6 +137,10 @@ function collect(nodes: HNode[], fmt: Fmt, out: Item[]): void {
       const f: Fmt = { ...fmt };
       if (n.tag === "strong" || n.tag === "b") f.b = true;
       if (n.tag === "em" || n.tag === "i") f.i = true;
+      if (n.tag === "s" || n.tag === "del") {
+        f.strike = true;
+        f.color = "C62828";
+      }
       if (n.tag === "small" || hasCls(n, "mut")) {
         f.sz = 17;
         f.color = "555555";
@@ -146,7 +151,7 @@ function collect(nodes: HNode[], fmt: Fmt, out: Item[]): void {
 }
 
 function runXml(text: string, fmt: Fmt): string {
-  const pr = (fmt.b ? "<w:b/><w:bCs/>" : "") + (fmt.i ? "<w:i/><w:iCs/>" : "") + (fmt.color ? `<w:color w:val="${fmt.color}"/>` : "") + (fmt.sz ? `<w:sz w:val="${fmt.sz}"/><w:szCs w:val="${fmt.sz}"/>` : "");
+  const pr = (fmt.b ? "<w:b/><w:bCs/>" : "") + (fmt.i ? "<w:i/><w:iCs/>" : "") + (fmt.strike ? "<w:strike/>" : "") + (fmt.color ? `<w:color w:val="${fmt.color}"/>` : "") + (fmt.sz ? `<w:sz w:val="${fmt.sz}"/><w:szCs w:val="${fmt.sz}"/>` : "");
   return `<w:r>${pr ? `<w:rPr>${pr}</w:rPr>` : ""}<w:t xml:space="preserve">${x(text)}</w:t></w:r>`;
 }
 

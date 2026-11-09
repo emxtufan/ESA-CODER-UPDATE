@@ -87,6 +87,18 @@ export interface CatalogPackage {
   items: CatalogServiceRow[];
 }
 
+/** Suma componentelor la preț de listă (aceeași monedă și frecvență ca pachetul), doar dacă depășește prețul pachetului. */
+export function packageListPrice(pkg: CatalogPackage): number | null {
+  if (pkg.recommendedPrice == null) return null;
+  let sum = 0;
+  for (const s of pkg.items) {
+    if (s.recommendedPrice != null && s.currency === pkg.currency && s.billing === pkg.billing) {
+      sum += Math.round(s.recommendedPrice * (s.defaultQuantity > 0 ? s.defaultQuantity : 1));
+    }
+  }
+  return sum > pkg.recommendedPrice ? sum : null;
+}
+
 export const OFFER_STATUS_TONES: Record<OfferStatus, BadgeTone> = {
   draft: "neutral",
   sent: "warning",

@@ -226,10 +226,15 @@ function LineRow(props: RowProps) {
             {line.quantity.toLocaleString("ro-RO")} × {formatMoney(line.unitPrice, currency)}
             {SUFFIX[line.billing]}
             {line.billing !== "one_time" && line.periods > 1 ? ` × ${line.periods} ${PERIOD_UNIT[line.billing]}` : ""}
-            {amounts.discount > 0 ? <span className="ml-2 text-xs">(-{formatMoney(amounts.discount, currency)})</span> : null}
+            {amounts.discount > 0 ? (
+              <Badge tone="danger" className="ml-2">−{Math.round((amounts.discount / amounts.gross) * 100)}%</Badge>
+            ) : null}
           </div>
         ) : null}
         <div className="min-w-20 text-right text-sm font-semibold text-text tabular-nums">
+          {!included && amounts.discount > 0 ? (
+            <s className="block text-xs font-normal text-danger">{formatMoney(amounts.gross * amounts.periods, currency)}</s>
+          ) : null}
           {included ? "—" : formatMoney(amounts.total, currency)}
         </div>
         <Select
