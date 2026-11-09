@@ -55,6 +55,7 @@ export type ContactRequest = {
 };
 export type ContactStatus = 'new' | 'in_progress' | 'replied' | 'done' | 'rejected';
 export type RecaptchaSettings = {enabled: boolean; siteKey: string; secretKey?: string; hasSecret?: boolean; minScore: number};
+export type CloudflareSettings = {enabled: boolean; zone: string; token?: string; hasToken?: boolean; lastPurge?: string | null; lastError?: string; proxied?: boolean | null; dnsError?: string};
 export type SmtpSettings = {enabled: boolean; host: string; port: number; secure: boolean; user: string; pass?: string; hasPass?: boolean; from: string; to: string; autoReply: boolean; replySubject: string; replyText: string};
 
 // --- section-based admin (server/sections.json) ---------------------------------------------
@@ -146,6 +147,10 @@ export const api = {
   recaptcha: () => call<{settings: RecaptchaSettings}>('/api/admin/recaptcha'),
   saveRecaptcha: (settings: RecaptchaSettings) =>
     call<{settings: RecaptchaSettings}>('/api/admin/recaptcha', {method: 'PUT', headers: {'content-type': 'application/json'}, body: JSON.stringify(settings)}),
+  cloudflare: () => call<{settings: CloudflareSettings}>('/api/admin/cloudflare'),
+  saveCloudflare: (settings: CloudflareSettings) =>
+    call<{settings: CloudflareSettings}>('/api/admin/cloudflare', {method: 'PUT', headers: {'content-type': 'application/json'}, body: JSON.stringify(settings)}),
+  purgeCloudflare: () => call<{settings: CloudflareSettings}>('/api/admin/cloudflare/purge', {method: 'POST'}),
   analytics: (days: number) => call<AnalyticsSummary>(`/api/admin/analytics?days=${days}`),
   deleteVisit: (sid: string) => call(`/api/admin/analytics/visits/${encodeURIComponent(sid)}`, {method: 'DELETE'}),
   clearAnalytics: () => call('/api/admin/analytics', {method: 'DELETE'}),

@@ -2,6 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {api, type Block, type Item, type SectionError, type SectionView, type TextField} from './api';
 import {AutoTextarea, ImageTile, Mark} from './Advanced';
 import Analytics from './Analytics';
+import Cloudflare from './Cloudflare';
 import Gdpr from './Gdpr';
 import Ai from './Ai';
 import Requests, {EmailSettings} from './Requests';
@@ -20,6 +21,7 @@ const REQUESTS = 'requests';
 const EMAIL = 'email-settings';
 const GDPR = 'gdpr';
 const AI = 'ai-assistant';
+const CDN = 'cloudflare-cache';
 
 const idOf = (scope: string, key: string) => `${scope}::${key}`;
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
@@ -84,7 +86,7 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
     if (r.ok) {
       setGroups(r.groups);
       setSections(r.sections);
-      setActive((a) => (a === ANALYTICS || a === REQUESTS || a === EMAIL || a === GDPR || a === AI || r.sections.some((s) => s.key === a) ? a : r.sections[0]?.key ?? ''));
+      setActive((a) => (a === ANALYTICS || a === REQUESTS || a === EMAIL || a === GDPR || a === AI || a === CDN || r.sections.some((s) => s.key === a) ? a : r.sections[0]?.key ?? ''));
     }
   }, [onLogout]);
   useEffect(() => {
@@ -116,7 +118,7 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
   };
 
   const section = sections.find((s) => s.key === active);
-  if (!section && active !== ANALYTICS && active !== REQUESTS && active !== EMAIL && active !== GDPR && active !== AI) return <div className="a-center"><span className="a-spinner" /></div>;
+  if (!section && active !== ANALYTICS && active !== REQUESTS && active !== EMAIL && active !== GDPR && active !== AI && active !== CDN) return <div className="a-center"><span className="a-spinner" /></div>;
   const group = groups.find((g) => g.key === section?.group);
 
   return (
@@ -160,6 +162,9 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
                 onClick={() => go(AI)}
               >
                 <span>AI Assistant</span>
+              </button>
+              <button className={`a-nav-item a-nav-flat${active === CDN ? ' is-active' : ''}`} aria-current={active === CDN ? 'page' : undefined} onClick={() => go(CDN)}>
+                <span>Cache Cloudflare</span>
               </button>
             </div>
           </div>
@@ -227,6 +232,8 @@ export default function Sections({onLogout}: {onLogout: () => void}) {
         <Gdpr />
       ) : active === AI ? (
         <Ai />
+      ) : active === CDN ? (
+        <Cloudflare onLogout={onLogout} notify={notify} />
       ) : (
         <Analytics onLogout={onLogout} />
       )}

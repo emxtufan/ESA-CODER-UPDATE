@@ -11,6 +11,7 @@ import {fileURLToPath} from 'node:url';
 import {createAdmin} from './admin.mjs';
 import {createAi} from './ai/routes.mjs';
 import {createAnalytics} from './analytics.mjs';
+import {createCloudflare} from './cloudflare.mjs';
 import {imageOptimizer} from './images.mjs';
 import {isKnownPath} from './routes.mjs';
 import {createContactStore, createRateLimiter, parseSubmission} from './contacts.mjs';
@@ -57,6 +58,9 @@ const store = createContactStore(dataFile);
 const allow = createRateLimiter({limit: 5, windowMs: 10 * 60 * 1000});
 const mailer = createMailer(path.resolve(root, process.env.SMTP_FILE || 'data/smtp.json'));
 const recaptcha = createRecaptcha(path.resolve(root, process.env.RECAPTCHA_FILE || 'data/recaptcha.json'));
+const cdn = createCloudflare(path.resolve(root, process.env.CLOUDFLARE_FILE || 'data/cloudflare.json'));
+// a deploy changes files: start from an empty edge cache
+if (isProd) cdn.purge().catch((err) => console.error('[cloudflare] purge at startup failed:', err.message));
 
 // Public: the reCAPTCHA site key the contact form needs ('' = check is off).
 app.get('/api/recaptcha', async (_req, res) => res.set('Cache-Control', 'no-store').json({ok: true, siteKey: await recaptcha.siteKey()}));
@@ -176,6 +180,25 @@ admin.router.get('/recaptcha', async (_req, res) => res.json({ok: true, settings
 admin.router.put('/recaptcha', express.json({limit: '8kb'}), async (req, res) => {
   const r = await recaptcha.save(req.body ?? {});
   res.status(r.error ? 422 : 200).json(r.error ? {ok: false, error: r.error} : {ok: true, settings: r.settings});
+});
+admin.router.get('/cloudflare', async (_req, res) => res.set('Cache-Control', 'no-store').json({ok: true, settings: await cdn.adminSettings()}));
+admin.router.put('/cloudflare', express.json({limit: '8kb'}), async (req, res) => {
+  const r = await cdn.save(req.body ?? {});
+  res.status(r.error ? 422 : 200).json(r.error ? {ok: false, error: r.error} : {ok: true, settings: r.settings});
+});
+admin.router.post('/cloudflare/purge', async (_req, res) => {
+  try {
+    if (!(await cdn.purge())) return res.status(422).json({ok: false, error: 'Activează întâi cache-ul Cloudflare.'});
+    res.json({ok: true, settings: await cdn.adminSettings()});
+  } catch (err) {
+    res.status(502).json({ok: false, error: err.message});
+  }
+});
+// After a successful admin change the public pages show (texts, images, lists), empty the Cloudflare cache.
+const SITE_CHANGES = new RegExp('^/(texts|image|image/restore|upload|collections/[^/]+|sections/[^/]+)$');
+app.use('/api/admin', (req, res, next) => {
+  if (req.method !== 'GET' && SITE_CHANGES.test(req.path)) res.on('finish', () => res.statusCode < 400 && cdn.schedulePurge());
+  next();
 });
 app.use('/api/admin', admin.router);
 app.use('/api/admin', (error, _req, res, _next) => res.status(error.status || 500).json({ok: false, error: error.status ? error.message : 'Operațiunea nu a reușit.'}));
